@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{7E27BACC-A142-45FD-AB41-8D65869177A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{D6030C6E-8906-40A6-85CE-5DA974ABEEC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{0155DEBD-CE56-417C-9CFB-C26D00940E48}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{24134946-825A-46B6-B69F-C52FA344CED4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8E4E1538-97AD-448A-9E88-6CBF45667210}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.MD = README.MD
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "src\Console\Console.csproj", "{4A1E4417-5533-4E37-8A1B-F0A75EBE7418}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E27BACC-A142-45FD-AB41-8D65869177A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E27BACC-A142-45FD-AB41-8D65869177A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E27BACC-A142-45FD-AB41-8D65869177A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E27BACC-A142-45FD-AB41-8D65869177A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6030C6E-8906-40A6-85CE-5DA974ABEEC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6030C6E-8906-40A6-85CE-5DA974ABEEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6030C6E-8906-40A6-85CE-5DA974ABEEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6030C6E-8906-40A6-85CE-5DA974ABEEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0155DEBD-CE56-417C-9CFB-C26D00940E48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0155DEBD-CE56-417C-9CFB-C26D00940E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0155DEBD-CE56-417C-9CFB-C26D00940E48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0155DEBD-CE56-417C-9CFB-C26D00940E48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24134946-825A-46B6-B69F-C52FA344CED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24134946-825A-46B6-B69F-C52FA344CED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24134946-825A-46B6-B69F-C52FA344CED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24134946-825A-46B6-B69F-C52FA344CED4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1E4417-5533-4E37-8A1B-F0A75EBE7418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1E4417-5533-4E37-8A1B-F0A75EBE7418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1E4417-5533-4E37-8A1B-F0A75EBE7418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1E4417-5533-4E37-8A1B-F0A75EBE7418}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7E27BACC-A142-45FD-AB41-8D65869177A0} = {B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}
+		{D6030C6E-8906-40A6-85CE-5DA974ABEEC8} = {B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}
+		{0155DEBD-CE56-417C-9CFB-C26D00940E48} = {B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}
+		{24134946-825A-46B6-B69F-C52FA344CED4} = {B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}
+		{4A1E4417-5533-4E37-8A1B-F0A75EBE7418} = {B30F8C68-6DB3-4AF2-B120-8CCACE6C0DBC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E67BF5F8-B1A9-4A25-AFC7-592BABA60493}
+	EndGlobalSection
+EndGlobal
