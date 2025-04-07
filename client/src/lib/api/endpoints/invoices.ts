@@ -12,7 +12,10 @@ import type { CreateInvoiceCommand, InvoiceResponseDto, PrintInvoiceCommand } fr
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
-export const printInvoice = (printInvoiceCommand: PrintInvoiceCommand, options?: SecondParameter<typeof customInstance>) => {
+export const printInvoice = (
+  printInvoiceCommand: PrintInvoiceCommand,
+  options?: SecondParameter<typeof customInstance>
+) => {
   return customInstance<Blob>(
     {
       url: `/api/Invoices/PrintInvoice`,
@@ -26,12 +29,19 @@ export const printInvoice = (printInvoiceCommand: PrintInvoiceCommand, options?:
 };
 
 export const getPrintInvoiceMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof printInvoice>>, TError, { data: PrintInvoiceCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof printInvoice>>,
+    TError,
+    { data: PrintInvoiceCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<Awaited<ReturnType<typeof printInvoice>>, TError, { data: PrintInvoiceCommand }, TContext> => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof printInvoice>>, { data: PrintInvoiceCommand }> = (props) => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof printInvoice>>, { data: PrintInvoiceCommand }> = (
+    props
+  ) => {
     const { data } = props ?? {};
 
     return printInvoice(data, requestOptions);
@@ -45,27 +55,47 @@ export type PrintInvoiceMutationBody = PrintInvoiceCommand;
 export type PrintInvoiceMutationError = unknown;
 
 export const usePrintInvoice = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof printInvoice>>, TError, { data: PrintInvoiceCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof printInvoice>>,
+    TError,
+    { data: PrintInvoiceCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<Awaited<ReturnType<typeof printInvoice>>, TError, { data: PrintInvoiceCommand }, TContext> => {
   const mutationOptions = getPrintInvoiceMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
-export const createInvoice = (createInvoiceCommand: CreateInvoiceCommand, options?: SecondParameter<typeof customInstance>) => {
+export const createInvoice = (
+  createInvoiceCommand: CreateInvoiceCommand,
+  options?: SecondParameter<typeof customInstance>
+) => {
   return customInstance<InvoiceResponseDto>(
-    { url: `/api/Invoices`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: createInvoiceCommand },
+    {
+      url: `/api/Invoices`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createInvoiceCommand
+    },
     options
   );
 };
 
 export const getCreateInvoiceMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createInvoice>>,
+    TError,
+    { data: CreateInvoiceCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext> => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoice>>, { data: CreateInvoiceCommand }> = (props) => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoice>>, { data: CreateInvoiceCommand }> = (
+    props
+  ) => {
     const { data } = props ?? {};
 
     return createInvoice(data, requestOptions);
@@ -79,7 +109,12 @@ export type CreateInvoiceMutationBody = CreateInvoiceCommand;
 export type CreateInvoiceMutationError = unknown;
 
 export const useCreateInvoice = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createInvoice>>,
+    TError,
+    { data: CreateInvoiceCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext> => {
   const mutationOptions = getCreateInvoiceMutationOptions(options);

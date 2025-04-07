@@ -20,7 +20,11 @@ import type { ExcludeOrderCommand, GetOrdersParams, OrderDto, Void } from '../mo
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
-export const getOrders = (params: GetOrdersParams, options?: SecondParameter<typeof customInstance>, signal?: AbortSignal) => {
+export const getOrders = (
+  params: GetOrdersParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal
+) => {
   return customInstance<OrderDto[]>({ url: `/api/Orders`, method: 'GET', params, signal }, options);
 };
 
@@ -39,11 +43,14 @@ export const getGetOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getOr
 
   const queryKey = queryOptions?.queryKey ?? getGetOrdersQueryKey(params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) => getOrders(params, requestOptions, signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) =>
+    getOrders(params, requestOptions, signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData> & {
-    queryKey: QueryKey;
-  };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOrders>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
 };
 
 export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>;
@@ -65,7 +72,10 @@ export const useGetOrders = <TData = Awaited<ReturnType<typeof getOrders>>, TErr
   return query;
 };
 
-export const excludeOrder = (excludeOrderCommand: ExcludeOrderCommand, options?: SecondParameter<typeof customInstance>) => {
+export const excludeOrder = (
+  excludeOrderCommand: ExcludeOrderCommand,
+  options?: SecondParameter<typeof customInstance>
+) => {
   return customInstance<Void>(
     { url: `/api/Orders`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: excludeOrderCommand },
     options
@@ -73,12 +83,19 @@ export const excludeOrder = (excludeOrderCommand: ExcludeOrderCommand, options?:
 };
 
 export const getExcludeOrderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof excludeOrder>>, TError, { data: ExcludeOrderCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof excludeOrder>>,
+    TError,
+    { data: ExcludeOrderCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<Awaited<ReturnType<typeof excludeOrder>>, TError, { data: ExcludeOrderCommand }, TContext> => {
   const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof excludeOrder>>, { data: ExcludeOrderCommand }> = (props) => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof excludeOrder>>, { data: ExcludeOrderCommand }> = (
+    props
+  ) => {
     const { data } = props ?? {};
 
     return excludeOrder(data, requestOptions);
@@ -92,7 +109,12 @@ export type ExcludeOrderMutationBody = ExcludeOrderCommand;
 export type ExcludeOrderMutationError = unknown;
 
 export const useExcludeOrder = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof excludeOrder>>, TError, { data: ExcludeOrderCommand }, TContext>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof excludeOrder>>,
+    TError,
+    { data: ExcludeOrderCommand },
+    TContext
+  >;
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<Awaited<ReturnType<typeof excludeOrder>>, TError, { data: ExcludeOrderCommand }, TContext> => {
   const mutationOptions = getExcludeOrderMutationOptions(options);
