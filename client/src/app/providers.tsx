@@ -6,6 +6,8 @@ import { ThemeProvider } from 'next-themes';
 import { ReactNode, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 
+import ConfirmationDialog from '@/components/ConfirmationDialog';
+
 export interface ProvidersProps {
   children: ReactNode;
 }
@@ -28,6 +30,7 @@ export function Providers({ children }: ProvidersProps) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
+          <ConfirmationDialog />
         </ThemeProvider>
         <Toaster position="bottom-right" />
       </QueryClientProvider>

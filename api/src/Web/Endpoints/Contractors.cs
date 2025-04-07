@@ -1,6 +1,7 @@
 ﻿using Application.Contractors.Commands.CreateContractor;
 using Application.Contractors.Commands.DeleteContractor;
 using Application.Contractors.Commands.UpdateContractor;
+using Application.Contractors.Queries.GetContractor;
 using Application.Contractors.Queries.GetContractors;
 using Domain.Entities;
 using MediatR;
@@ -15,10 +16,16 @@ public class Contractors : EndpointGroupBase
     {
         app.MapGroup(this)
             .RequireAuthorization()
+            .MapGet(GetContractor, "{id}")
             .MapGet(GetContractors)
             .MapPost(CreateContractor)
             .MapPut(UpdateContractor, "{id}")
             .MapDelete(DeleteContractor);
+    }
+
+    public async Task<Contractor> GetContractor(ISender sender, int id)
+    {
+        return await sender.Send(new GetContractorQuery { Id = id });
     }
 
     public async Task<IEnumerable<Contractor>> GetContractors(ISender sender)

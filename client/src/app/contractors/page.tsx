@@ -1,7 +1,8 @@
 'use client';
 
+import { useConfirmationStore } from '@/stores/confirmation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Plus, RefreshCcw, Trash } from 'lucide-react';
+import { Cog, Plus, RefreshCcw, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -16,13 +17,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 export default function Contractors() {
   const [searchQuery, setSearchQuery] = useState('');
 
+  const { openConfirmation } = useConfirmationStore();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data, refetch } = useGetContractors();
   const { mutate } = useDeleteContractor({
     mutation: {
       onSuccess() {
-        toast.success('Poprawnie usunięty');
+        toast.success('Usunięto kontrahenta.');
         queryClient.invalidateQueries({
           queryKey: getGetContractorsQueryKey()
         });
@@ -30,7 +32,26 @@ export default function Contractors() {
     }
   });
 
-  const filteredContractors = data?.filter((contractor) => contractor.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredContractors = data?.filter((contractor) =>
+    contractor.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleDeleteConfirmation = (contractorId: number) => {
+    openConfirmation({
+      title: 'Potwierdź usunięcie',
+      description: 'Czy na pewno chcesz usunąć tego kontrahenta? Tej operacji nie można cofnąć.',
+      cancelLabel: 'Anuluj',
+      actionLabel: 'Usuń',
+      onAction: () => {
+        mutate({
+          data: {
+            id: contractorId
+          }
+        });
+      },
+      onCancel: () => {}
+    });
+  };
 
   return (
     <div>
@@ -69,19 +90,18 @@ export default function Contractors() {
               <TableCell className="text-right">{contractor.email}</TableCell>
               <TableCell className="text-right">
                 {
-                  <Button
-                    onClick={() =>
-                      mutate({
-                        data: {
-                          id: contractor.id ?? 0
-                        }
-                      })
-                    }
-                    size="icon"
-                    variant="destructive"
-                  >
-                    <Trash />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      onClick={() => handleDeleteConfirmation(contractor.id ?? 0)}
+                    >
+                      <Trash />
+                    </Button>
+                    <Button onClick={() => router.push(`/contractors/${contractor.id}`)} size="icon" variant="default">
+                      <Cog />
+                    </Button>
+                  </div>
                 }
               </TableCell>
             </TableRow>

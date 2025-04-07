@@ -20,6 +20,103 @@ import type { Contractor, CreateContractorCommand, DeleteContractorCommand, Upda
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
+export const getContractor = (id: number, options?: SecondParameter<typeof customInstance>, signal?: AbortSignal) => {
+  return customInstance<Contractor>({ url: `/api/Contractors/${id}`, method: 'GET', signal }, options);
+};
+
+export const getGetContractorQueryKey = (id: number) => {
+  return [`/api/Contractors/${id}`] as const;
+};
+
+export const getGetContractorQueryOptions = <TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown>(
+  id: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>;
+    request?: SecondParameter<typeof customInstance>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetContractorQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractor>>> = ({ signal }) => getContractor(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getContractor>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetContractorQueryResult = NonNullable<Awaited<ReturnType<typeof getContractor>>>;
+export type GetContractorQueryError = unknown;
+
+export const useGetContractor = <TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown>(
+  id: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>;
+    request?: SecondParameter<typeof customInstance>;
+  }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetContractorQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const updateContractor = (
+  id: number,
+  updateContractorCommand: UpdateContractorCommand,
+  options?: SecondParameter<typeof customInstance>
+) => {
+  return customInstance<Void>(
+    { url: `/api/Contractors/${id}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, data: updateContractorCommand },
+    options
+  );
+};
+
+export const getUpdateContractorMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateContractor>>,
+    TError,
+    { id: number; data: UpdateContractorCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError, { id: number; data: UpdateContractorCommand }, TContext> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateContractor>>, { id: number; data: UpdateContractorCommand }> = (
+    props
+  ) => {
+    const { id, data } = props ?? {};
+
+    return updateContractor(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateContractorMutationResult = NonNullable<Awaited<ReturnType<typeof updateContractor>>>;
+export type UpdateContractorMutationBody = UpdateContractorCommand;
+export type UpdateContractorMutationError = unknown;
+
+export const useUpdateContractor = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateContractor>>,
+    TError,
+    { id: number; data: UpdateContractorCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationResult<Awaited<ReturnType<typeof updateContractor>>, TError, { id: number; data: UpdateContractorCommand }, TContext> => {
+  const mutationOptions = getUpdateContractorMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 export const getContractors = (options?: SecondParameter<typeof customInstance>, signal?: AbortSignal) => {
   return customInstance<Contractor[]>({ url: `/api/Contractors`, method: 'GET', signal }, options);
 };
@@ -124,56 +221,6 @@ export const useDeleteContractor = <TError = unknown, TContext = unknown>(option
   request?: SecondParameter<typeof customInstance>;
 }): UseMutationResult<Awaited<ReturnType<typeof deleteContractor>>, TError, { data: DeleteContractorCommand }, TContext> => {
   const mutationOptions = getDeleteContractorMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-export const updateContractor = (
-  id: number,
-  updateContractorCommand: UpdateContractorCommand,
-  options?: SecondParameter<typeof customInstance>
-) => {
-  return customInstance<Void>(
-    { url: `/api/Contractors/${id}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, data: updateContractorCommand },
-    options
-  );
-};
-
-export const getUpdateContractorMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updateContractor>>,
-    TError,
-    { id: number; data: UpdateContractorCommand },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError, { id: number; data: UpdateContractorCommand }, TContext> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateContractor>>, { id: number; data: UpdateContractorCommand }> = (
-    props
-  ) => {
-    const { id, data } = props ?? {};
-
-    return updateContractor(id, data, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type UpdateContractorMutationResult = NonNullable<Awaited<ReturnType<typeof updateContractor>>>;
-export type UpdateContractorMutationBody = UpdateContractorCommand;
-export type UpdateContractorMutationError = unknown;
-
-export const useUpdateContractor = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updateContractor>>,
-    TError,
-    { id: number; data: UpdateContractorCommand },
-    TContext
-  >;
-  request?: SecondParameter<typeof customInstance>;
-}): UseMutationResult<Awaited<ReturnType<typeof updateContractor>>, TError, { id: number; data: UpdateContractorCommand }, TContext> => {
-  const mutationOptions = getUpdateContractorMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

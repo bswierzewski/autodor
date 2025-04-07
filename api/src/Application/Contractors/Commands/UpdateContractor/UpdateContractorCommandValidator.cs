@@ -1,9 +1,10 @@
 ﻿namespace Application.Contractors.Commands.UpdateContractor;
 
-class UpdateContractorCommandValidator : AbstractValidator<UpdateContractorCommand>
+public class UpdateContractorCommandValidator : AbstractValidator<UpdateContractorCommand>
 {
     public UpdateContractorCommandValidator()
     {
+        RuleFor(c => c.Id).NotNull().NotEmpty();
         RuleFor(c => c.Name).NotNull().NotEmpty();
         RuleFor(c => c.City).NotNull().NotEmpty();
         RuleFor(c => c.NIP).NotNull().NotEmpty();

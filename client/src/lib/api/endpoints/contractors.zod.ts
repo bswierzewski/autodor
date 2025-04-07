@@ -6,6 +6,41 @@
  */
 import { z as zod } from 'zod';
 
+export const getContractorParams = zod.object({
+  id: zod.number()
+});
+
+export const getContractorResponse = zod.object({
+  id: zod.number().optional(),
+  domainEvents: zod.array(zod.object({})).nullish(),
+  created: zod.string().datetime().optional(),
+  createdBy: zod.string().nullish(),
+  lastModified: zod.string().datetime().optional(),
+  lastModifiedBy: zod.string().nullish(),
+  name: zod.string().nullish(),
+  city: zod.string().nullish(),
+  street: zod.string().nullish(),
+  nip: zod.string().nullish(),
+  zipCode: zod.string().nullish(),
+  email: zod.string().nullish()
+});
+
+export const updateContractorParams = zod.object({
+  id: zod.number()
+});
+
+export const updateContractorBody = zod.object({
+  id: zod.number(),
+  name: zod.string().min(1),
+  city: zod.string().min(1),
+  nip: zod.string().min(1),
+  zipCode: zod.string().min(1),
+  street: zod.string().min(1),
+  email: zod.string().nullish()
+});
+
+export const updateContractorResponse = zod.object({});
+
 export const getContractorsResponseItem = zod.object({
   id: zod.number().optional(),
   domainEvents: zod.array(zod.object({})).nullish(),
@@ -38,19 +73,3 @@ export const deleteContractorBody = zod.object({
 });
 
 export const deleteContractorResponse = zod.object({});
-
-export const updateContractorParams = zod.object({
-  id: zod.number()
-});
-
-export const updateContractorBody = zod.object({
-  id: zod.number().optional(),
-  name: zod.string().nullish(),
-  city: zod.string().nullish(),
-  nip: zod.string().nullish(),
-  zipCode: zod.string().nullish(),
-  street: zod.string().nullish(),
-  email: zod.string().nullish()
-});
-
-export const updateContractorResponse = zod.object({});

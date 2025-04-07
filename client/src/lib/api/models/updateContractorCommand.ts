@@ -6,17 +6,17 @@
  */
 
 export interface UpdateContractorCommand {
-  /** @nullable */
-  city?: string | null;
+  /** @minLength 1 */
+  city: string;
   /** @nullable */
   email?: string | null;
-  id?: number;
-  /** @nullable */
-  name?: string | null;
-  /** @nullable */
-  nip?: string | null;
-  /** @nullable */
-  street?: string | null;
-  /** @nullable */
-  zipCode?: string | null;
+  id: number;
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  nip: string;
+  /** @minLength 1 */
+  street: string;
+  /** @minLength 1 */
+  zipCode: string;
 }

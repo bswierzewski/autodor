@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 
-import { useCreateContractor } from '@/lib/api/endpoints/contractors';
-import { createContractorBody } from '@/lib/api/endpoints/contractors.zod';
+import { useGetContractor, useUpdateContractor } from '@/lib/api/endpoints/contractors';
+import { updateContractorBody } from '@/lib/api/endpoints/contractors.zod';
 
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
@@ -18,19 +18,21 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
         <em className="text-red-500">{field.state.meta.errors.map((err) => err.message).join(',')}</em>
       ) : null}
-      {field.state.meta.isValidating ? 'Walidowanie...' : null}
+      {field.state.meta.isValidating ? 'Validating...' : null}
     </>
   );
 }
 
-export type createContractorSchema = z.infer<typeof createContractorBody>;
+export type updateContractorSchema = z.infer<typeof updateContractorBody>;
 
-export default function AddContractor() {
+export default function UpdateContractor({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { mutate, isPending } = useCreateContractor({
+  const { data } = useGetContractor(Number(params.id), { query: { gcTime: 0 } });
+
+  const { mutate, isPending } = useUpdateContractor({
     mutation: {
       onSuccess() {
-        toast.success('Dodano kontrahenta');
+        toast.success('Zaktualizowano kontrahenta.');
         router.back();
       }
     }
@@ -38,20 +40,26 @@ export default function AddContractor() {
 
   const form = useForm({
     defaultValues: {
-      city: '',
-      email: '',
-      name: '',
-      nip: '',
-      street: '',
-      zipCode: ''
-    } as createContractorSchema,
+      id: Number(params.id),
+      name: data?.name ?? '',
+      city: data?.city ?? '',
+      nip: data?.nip ?? '',
+      zipCode: data?.zipCode ?? '',
+      street: data?.street ?? '',
+      email: data?.email ?? ''
+    } as updateContractorSchema,
     onSubmit: (values) => {
       mutate({
+        id: Number(params.id),
         data: values.value
       });
     },
-    validators: { onSubmit: createContractorBody }
+    validators: {
+      onSubmit: updateContractorBody
+    }
   });
+
+  if (!data) return <div>Loading...</div>;
 
   return (
     <form
@@ -71,7 +79,7 @@ export default function AddContractor() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Nazwa"
                 />
@@ -88,7 +96,7 @@ export default function AddContractor() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Miasto"
                 />
@@ -105,7 +113,7 @@ export default function AddContractor() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Ulica"
                 />
@@ -122,7 +130,7 @@ export default function AddContractor() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="NIP"
                 />
@@ -139,7 +147,7 @@ export default function AddContractor() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="00-000"
                 />
@@ -166,7 +174,7 @@ export default function AddContractor() {
           </form.Field>
         </div>
       </div>
-      <FormButtons isPending={isPending} mode="create" />
+      <FormButtons isPending={isPending} mode="update" />
     </form>
   );
 }

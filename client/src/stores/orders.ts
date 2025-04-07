@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { OrderDto } from '@/lib/api/autodor';
+import { OrderDto } from '@/lib/api/models';
 
 type OrderDtoExtended = OrderDto & {
   isSelected: boolean;
@@ -70,9 +70,7 @@ export const useOrdersStore = create<State & Actions>((set, get) => ({
     }),
   excludeOrder: (orderId) =>
     set((state) => {
-      const updatedOrders = state.orders.map((order) =>
-        order.id === orderId ? { ...order, isExcluded: !order.isExcluded } : order
-      );
+      const updatedOrders = state.orders.map((order) => (order.id === orderId ? { ...order, isExcluded: !order.isExcluded } : order));
 
       return {
         orders: updatedOrders
