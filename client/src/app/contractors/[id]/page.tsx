@@ -8,20 +8,10 @@ import { z } from 'zod';
 import { useGetContractor, useUpdateContractor } from '@/lib/api/endpoints/contractors';
 import { updateContractorBody } from '@/lib/api/endpoints/contractors.zod';
 
+import FieldInfo from '@/components/FieldInfo';
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em className="text-red-500">{field.state.meta.errors.map((err) => err.message).join(',')}</em>
-      ) : null}
-      {field.state.meta.isValidating ? 'Validating...' : null}
-    </>
-  );
-}
 
 export type updateContractorSchema = z.infer<typeof updateContractorBody>;
 
