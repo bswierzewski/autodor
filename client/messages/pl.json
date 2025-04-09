@@ -1,4 +1,22 @@
 {
+  "Contractor": {
+    "form": {
+      "name": "Nazwa",
+      "city": "Miasto",
+      "street": "Ulica",
+      "nip": "NIP",
+      "zipCode": "Kod pocztowy",
+      "email": "Email",
+      "placeholder": {
+        "name": "Nazwa",
+        "city": "Miasto",
+        "street": "Ulica",
+        "nip": "NIP",
+        "zipCode": "00-000",
+        "email": "Email"
+      }
+    }
+  },
   "Zod": {
     "invalid_type": "Nieprawidłowy typ danych",
     "invalid_literal": "Wartość niezgodna z dozwoloną",
