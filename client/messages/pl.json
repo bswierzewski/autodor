@@ -1,0 +1,35 @@
+{
+  "Zod": {
+    "invalid_type": "Nieprawidłowy typ danych",
+    "invalid_literal": "Wartość niezgodna z dozwoloną",
+    "unrecognized_keys": "Obiekt zawiera nieznane klucze",
+    "invalid_union": "Wartość nie pasuje do żadnej z dozwolonych opcji",
+    "invalid_union_discriminator": "Nieprawidłowa wartość dyskryminatora typu",
+    "invalid_enum_value": "Wartość nie należy do dozwolonych opcji",
+    "invalid_arguments": "Nieprawidłowe argumenty funkcji",
+    "invalid_return_type": "Nieprawidłowy typ zwracany przez funkcję",
+    "invalid_date": "Nieprawidłowy format daty",
+    "invalid_string": {
+      "default": "Nieprawidłowy ciąg znaków",
+      "email": "Nieprawidłowy adres e-mail",
+      "url": "Nieprawidłowy adres URL",
+      "uuid": "Nieprawidłowy UUID",
+      "regex": "Nieprawidłowy format",
+      "cuid": "Nieprawidłowy CUID",
+      "cuid2": "Nieprawidłowy CUID2",
+      "ulid": "Nieprawidłowy ULID",
+      "startsWith": "Nieprawidłowy początek ciągu",
+      "endsWith": "Nieprawidłowe zakończenie ciągu",
+      "datetime": "Nieprawidłowy format daty i czasu",
+      "length": "Nieprawidłowa długość ciągu"
+    },
+    "too_small": "Wartość jest zbyt mała",
+    "too_big": "Wartość jest zbyt duża",
+    "custom": "Nieprawidłowa wartość",
+    "invalid_intersection_types": "Typy nie są zgodne",
+    "not_multiple_of": "Wartość nie jest wielokrotnością dozwolonej liczby",
+    "not_finite": "Wartość musi być skończoną liczbą",
+    "invalid_function": "Błąd walidacji funkcji",
+    "invalid_pipeline": "Błąd walidacji potoku"
+  }
+}
