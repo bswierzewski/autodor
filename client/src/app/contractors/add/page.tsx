@@ -1,6 +1,6 @@
 'use client';
 
-import { AnyFieldApi, useForm } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
@@ -8,20 +8,10 @@ import { z } from 'zod';
 import { useCreateContractor } from '@/lib/api/endpoints/contractors';
 import { createContractorBody } from '@/lib/api/endpoints/contractors.zod';
 
+import FieldInfo from '@/components/FieldInfo';
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em className="text-red-500">{field.state.meta.errors.map((err) => err.message).join(',')}</em>
-      ) : null}
-      {field.state.meta.isValidating ? 'Walidowanie...' : null}
-    </>
-  );
-}
 
 export type createContractorSchema = z.infer<typeof createContractorBody>;
 
