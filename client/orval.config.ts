@@ -8,6 +8,7 @@ module.exports = {
       client: 'react-query',
       target: 'src/lib/api/endpoints',
       schemas: 'src/lib/api/models',
+      prettier: true,
       override: {
         mutator: {
           path: 'src/lib/api/axios.ts',
@@ -24,7 +25,16 @@ module.exports = {
       mode: 'tags',
       client: 'zod',
       target: 'src/lib/api/endpoints',
-      fileExtension: '.zod.ts'
+      schemas: 'src/lib/api/models',
+      fileExtension: '.zod.ts',
+      prettier: true,
+      override: {
+        zod: {
+          dateTimeOptions: {
+            offset: true
+          }
+        }
+      }
     }
   }
 };
