@@ -1,7 +1,7 @@
 import { AnyFieldApi } from '@tanstack/react-form';
 import { IntlErrorCode, useTranslations } from 'next-intl';
 
-export default function FieldInfo({ field }: { field: AnyFieldApi }) {
+export default function FieldInfoWithTranslation({ field }: { field: AnyFieldApi }) {
   const t = useTranslations('Zod');
 
   const translateError = (code: string) => {

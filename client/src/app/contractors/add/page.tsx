@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { useCreateContractor } from '@/lib/api/endpoints/contractors';
 import { createContractorBody } from '@/lib/api/endpoints/contractors.zod';
 
-import FieldInfo from '@/components/FieldInfo';
+import FieldInfoWithTranslation from '@/components/FieldInfoWithTranslation';
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -71,7 +71,7 @@ export default function AddContractor() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder={placeholders[fieldName]}
                   />
-                  <FieldInfo field={field} />
+                  <FieldInfoWithTranslation field={field} />
                 </>
               )}
             </form.Field>
