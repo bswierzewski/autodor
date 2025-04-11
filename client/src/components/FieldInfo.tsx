@@ -1,6 +1,6 @@
 import { AnyFieldApi } from '@tanstack/react-form';
 
-export default function FieldInfoWithTranslation({ field }: { field: AnyFieldApi }) {
+export default function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
