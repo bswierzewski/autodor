@@ -13,6 +13,7 @@ namespace Infrastructure.Services.Polcar;
 public class DistributorsSalesService(IMapper mapper, IOptions<PolcarOptions> polcarOptions, ILogger<DistributorsSalesService> logger) : IDistributorsSalesService
 {
     private readonly DistributorsSalesServiceSoapClient _client = new(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap12);
+
     private readonly AsyncRetryPolicy _retryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
@@ -49,6 +50,30 @@ public class DistributorsSalesService(IMapper mapper, IOptions<PolcarOptions> po
                 return mapper.Map<IEnumerable<Order>>(responseBody.ListOfOrders);
 
             return new List<Order>();
+        });
+    }
+
+    public async Task<Order> GetOrderAsync(string orderId)
+    {
+        return await _retryPolicy.ExecuteAsync(async () =>
+        {
+            var response = await _client.GetOrderDetailsAsync(
+                DistributorCode: polcarOptions.Value.DistributorCode,
+                OrderID: orderId,
+                Login: polcarOptions.Value.Login,
+                Password: polcarOptions.Value.Password,
+                LanguageID: polcarOptions.Value.LanguageId
+            );
+
+            var responseBody = response.Body.GetOrderDetailsResult;
+
+            if (responseBody.ErrorCode != "0")
+                throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
+
+            if (responseBody != null)
+                return mapper.Map<Order>(responseBody);
+
+            return new Order();
         });
     }
 }

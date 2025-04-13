@@ -1,10 +1,9 @@
-﻿using Application.Common.Interfaces;
+﻿using System.Text.Json;
+using Application.Common.Interfaces;
 using Application.Invoices.Commands.DTOs;
 using Application.Invoices.Extensions;
-using Application.Orders.Queries;
 using AutoMapper;
 using Domain.Entities;
-using System.Text.Json;
 
 namespace Application.Invoices.Commands.CreateInvoice;
 
@@ -13,76 +12,81 @@ public class CreateInvoiceCommand : IRequest<InvoiceResponseDto>
     public int? InvoiceNumber { get; set; }
     public DateTime SaleDate { get; set; }
     public DateTime IssueDate { get; set; }
-    public IEnumerable<OrderDto> Orders { get; set; }
-    public Contractor Contractor { get; set; }
+    public IEnumerable<DateTime> Dates { get; set; }
+    public IEnumerable<string> OrderIds { get; set; }
+    public int ContractorId { get; set; }
 }
 
 public class CreateInvoiceCommandHandler(IMapper mapper,
     IFirmaService firmaService,
     IDistributorsSalesService distributorsSalesService,
-    IProductsService productsService) : IRequestHandler<CreateInvoiceCommand, InvoiceResponseDto>
+    IProductsService productsService,
+    IApplicationDbContext context) : IRequestHandler<CreateInvoiceCommand, InvoiceResponseDto>
 {
     public async Task<InvoiceResponseDto> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        var items = new List<OrderItem>();
+        // Start both tasks in parallel
+        var ordersTask = FetchOrdersAsync(request.Dates);
+        var productsTask = productsService.GetProductsAsync();
 
-        var dates = request.Orders.Select(x => x.Date).Distinct().ToList();
+        await Task.WhenAll(ordersTask, productsTask).ConfigureAwait(false);
 
-        var orders = new List<Order>();
+        var allOrders = await ordersTask.ConfigureAwait(false);
+        var products = await productsTask.ConfigureAwait(false);
 
-        foreach (var date in dates)
-            orders.AddRange(await distributorsSalesService.GetOrdersAsync(date));
+        var filteredOrders = FilterOrdersByIds(allOrders, request.OrderIds);
+        var items = MapInvoiceItems(filteredOrders, products);
+        var invoice = await CreateInvoiceDtoAsync(request, items).ConfigureAwait(false);
 
-        foreach (var requestOrder in request.Orders)
-        {
-            var ordersItems = orders
-                .Where(order => order.Id == requestOrder.Id)
-                .SelectMany(order => order.Items);
-
-            items.AddRange(ordersItems);
-        }
-
-        var pozycje = new List<Pozycje>();
-
-        var products = await productsService.GetProductsAsync();
-
-        foreach (var item in items)
-        {
-            if (item.TotalPrice <= 0)
-                continue;
-
-            var existsName = products.ContainsKey(item?.PartNumber ?? "");
-
-            pozycje.Add(new Pozycje
-            {
-                Ilosc = item.Quantity,
-                CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
-                Jednostka = "sztuk",
-                NazwaPelna = $"{(existsName ? products[item.PartNumber].Name : item.PartNumber)}{(existsName ? $" ({item.PartNumber})" : "")}",
-                StawkaVat = 0.23M,
-                TypStawkiVat = "PRC"
-            });
-        }
-
-        var invoice = CreateInvoiceDto(request, pozycje);
-
-        var response = await firmaService.AddInvoice(invoice);
-
-        var responseText = await response.Content.ReadAsStringAsync();
+        var response = await firmaService.AddInvoice(invoice).ConfigureAwait(false);
+        var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<InvoiceResponseDto>(responseText);
     }
 
-    private InvoiceDto CreateInvoiceDto(CreateInvoiceCommand request, List<Pozycje> pozycje)
+    private async Task<Order[]> FetchOrdersAsync(IEnumerable<DateTime> dates)
     {
+        var tasks = dates.Distinct().Select(distributorsSalesService.GetOrdersAsync);
+        var ordersPerDate = await Task.WhenAll(tasks).ConfigureAwait(false);
+        return ordersPerDate.SelectMany(x => x).ToArray();
+    }
+    
+    private static Order[] FilterOrdersByIds(IEnumerable<Order> orders, IEnumerable<string> ids)
+        => orders.Where(o => ids.Distinct().Contains(o.Id)).ToArray();
+
+    private List<Pozycje> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products)
+    {
+        return orders
+            .SelectMany(order => order.Items)
+            .Where(item => item.TotalPrice > 0)
+            .Select(item =>
+            {
+                var partNumber = item.PartNumber ?? "";
+                var hasProduct = products.TryGetValue(partNumber, out var product);
+
+                return new Pozycje
+                {
+                    Ilosc = item.Quantity,
+                    CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
+                    Jednostka = "sztuk",
+                    NazwaPelna = hasProduct ? $"{product.Name} ({partNumber})" : partNumber,
+                    StawkaVat = 0.23M,
+                    TypStawkiVat = "PRC"
+                };
+            })
+            .ToList();
+    }
+
+    private async Task<InvoiceDto> CreateInvoiceDtoAsync(CreateInvoiceCommand request, List<Pozycje> pozycje)
+    {
+        var contractor = await context.Contractors.FindAsync(request.ContractorId)
+            ?? throw new Exception("Contractor not found");
+
         var invoice = InvoiceExtensions.CreateDefaultInvoiceDto(pozycje);
-
-        var kontrahent = mapper.Map<Kontrahent>(request.Contractor);
-
         invoice.Numer = request.InvoiceNumber;
         invoice.DataWystawienia = request.IssueDate.ToString("yyyy-MM-dd");
         invoice.DataSprzedazy = request.SaleDate.ToString("yyyy-MM-dd");
-        invoice.Kontrahent = kontrahent;
+        invoice.Kontrahent = mapper.Map<Kontrahent>(contractor);
 
         return invoice;
     }

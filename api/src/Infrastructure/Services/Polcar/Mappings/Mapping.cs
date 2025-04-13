@@ -22,5 +22,20 @@ public class Mapping : Profile
             .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PartNumber))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.QuantityOrdered))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Price));
+
+        // Order
+        CreateMap<SalesOrderResponse, Order>()
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.ShipmentDate))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.OrderID))
+            .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.PolcarOrderNumber))
+            .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.OrderingPerson))
+            .ForMember(dest => dest.CustomerNumber, opt => opt.MapFrom(src => src.CustomerNumber))
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderedItemsResponse));
+
+        // Order Item
+        CreateMap <SalesOrderItemResponse, OrderItem>()
+            .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(src => src.PolcarPartNumber))
+            .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.QuantityOrdered))
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.CustomerPrice));
     }
 }

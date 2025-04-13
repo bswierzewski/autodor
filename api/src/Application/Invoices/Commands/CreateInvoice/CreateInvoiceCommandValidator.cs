@@ -3,7 +3,8 @@ public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceComm
 {
     public CreateInvoiceCommandValidator()
     {
-        RuleFor(o => o.Orders)
-        .NotEmpty();
+        RuleFor(o => o.OrderIds).NotEmpty().NotNull();
+        RuleFor(o => o.Dates).NotEmpty().NotNull();
+        RuleFor(o => o.ContractorId).NotEmpty().NotNull();
     }
 }
