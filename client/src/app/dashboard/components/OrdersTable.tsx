@@ -75,8 +75,8 @@ export default function OrdersTable() {
   return (
     <>
       <div className="flex flex-col md:flex-row gap-5">
-        <DatePicker date={dateFrom} setDate={setDateFrom} label="Data od" />
-        <DatePicker date={dateTo} setDate={setDateTo} label="Data do" />
+        <DatePicker date={dateFrom} onSelect={setDateFrom} label="Data od" />
+        <DatePicker date={dateTo} onSelect={setDateTo} label="Data do" />
         <Button className="md:mt-6" disabled={isFetching} size="default" onClick={() => refetch()}>
           <RotateCw className={isFetching ? 'animate-spin' : ''} />
           <span className="ml-3 inline md:hidden">Odśwież</span>
@@ -130,7 +130,10 @@ export default function OrdersTable() {
                 <TableCell className="text-right">
                   <div className="flex flex-row gap-5">
                     {order.isExcluded ? (
-                      <BookmarkX onClick={() => mutate({ data: { orderId: order.id ?? '' } })} className="cursor-pointer" />
+                      <BookmarkX
+                        onClick={() => mutate({ data: { orderId: order.id ?? '' } })}
+                        className="cursor-pointer"
+                      />
                     ) : (
                       <BookmarkCheck
                         onClick={() => mutate({ data: { orderId: order.id ?? '' } })}

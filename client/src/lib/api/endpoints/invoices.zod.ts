@@ -17,46 +17,9 @@ export const createInvoiceBody = zod.object({
   invoiceNumber: zod.number().nullish(),
   saleDate: zod.string().datetime({ offset: true }).optional(),
   issueDate: zod.string().datetime({ offset: true }).optional(),
-  orders: zod
-    .array(
-      zod.object({
-        isExcluded: zod.boolean().optional(),
-        date: zod.string().datetime({ offset: true }).optional(),
-        id: zod.string().nullish(),
-        number: zod.string().nullish(),
-        person: zod.string().nullish(),
-        customerNumber: zod.string().nullish(),
-        items: zod
-          .array(
-            zod.object({
-              partNumber: zod.string().nullish(),
-              partName: zod.string().nullish(),
-              quantity: zod.number().optional(),
-              totalPrice: zod.number().optional()
-            })
-          )
-          .nullish(),
-        itemsCount: zod.number().optional(),
-        totalPrice: zod.number().optional()
-      })
-    )
-    .min(1),
-  contractor: zod
-    .object({
-      id: zod.number().optional(),
-      domainEvents: zod.array(zod.object({})).nullish(),
-      created: zod.string().datetime({ offset: true }).optional(),
-      createdBy: zod.string().nullish(),
-      lastModified: zod.string().datetime({ offset: true }).optional(),
-      lastModifiedBy: zod.string().nullish(),
-      name: zod.string().nullish(),
-      city: zod.string().nullish(),
-      street: zod.string().nullish(),
-      nip: zod.string().nullish(),
-      zipCode: zod.string().nullish(),
-      email: zod.string().nullish()
-    })
-    .optional()
+  dates: zod.array(zod.string().datetime({ offset: true })).min(1),
+  orderIds: zod.array(zod.string()).min(1),
+  contractorId: zod.number()
 });
 
 export const createInvoiceResponse = zod.object({

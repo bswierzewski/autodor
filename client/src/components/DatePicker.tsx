@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -13,12 +13,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 type Props = {
   date: Date | undefined;
-  setDate: Dispatch<SetStateAction<Date | undefined>>;
+  onSelect: (date: Date | undefined) => void;
   className?: string;
   label?: string;
 };
 
-export function DatePicker({ date, setDate, className, label }: Props) {
+export function DatePicker({ date, onSelect, className, label }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,7 +41,7 @@ export function DatePicker({ date, setDate, className, label }: Props) {
             selected={date}
             onSelect={(e) => {
               setOpen(false);
-              setDate(e);
+              onSelect(e);
             }}
             required
             initialFocus

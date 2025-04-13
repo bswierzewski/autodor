@@ -4,8 +4,6 @@
  * Web
  * OpenAPI spec version: 1.0
  */
-import type { Contractor } from './contractor';
-import type { OrderDto } from './orderDto';
 
 export interface CreateInvoiceCommand {
   /** @nullable */
@@ -13,6 +11,8 @@ export interface CreateInvoiceCommand {
   saleDate?: string;
   issueDate?: string;
   /** @minItems 1 */
-  orders: OrderDto[];
-  contractor?: Contractor;
+  dates: string[];
+  /** @minItems 1 */
+  orderIds: string[];
+  contractorId: number;
 }
