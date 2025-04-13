@@ -4,17 +4,14 @@ import { useForm } from '@tanstack/react-form';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { z } from 'zod';
 
 import { useCreateContractor } from '@/lib/api/endpoints/contractors';
-import { createContractorBody } from '@/lib/api/endpoints/contractors.zod';
+import { CreateContractorCommand } from '@/lib/api/models';
 
-import FieldInfoWithTranslation from '@/components/FieldInfoWithTranslation';
+import FieldInfo from '@/components/FieldInfo';
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-export type createContractorSchema = z.infer<typeof createContractorBody>;
 
 export default function AddContractor() {
   const t = useTranslations('Contractor');
@@ -36,13 +33,25 @@ export default function AddContractor() {
       nip: '',
       street: '',
       zipCode: ''
-    } as createContractorSchema,
+    } as CreateContractorCommand,
     onSubmit: (values) => {
       mutate({
         data: values.value
       });
     },
-    validators: { onSubmit: createContractorBody }
+    validators: {
+      onSubmit: ({ value }) => {
+        return {
+          fields: {
+            name: value.name.length === 0 ? 'Pole jest wymagane' : undefined,
+            city: value.city.length === 0 ? 'Pole jest wymagane' : undefined,
+            street: value.street.length === 0 ? 'Pole jest wymagane' : undefined,
+            nip: value.nip.length === 0 ? 'Pole jest wymagane' : undefined,
+            zipCode: value.zipCode.length === 0 ? 'Pole jest wymagane' : undefined
+          }
+        };
+      }
+    }
   });
 
   const placeholders = t.raw('form.placeholder');
@@ -71,7 +80,7 @@ export default function AddContractor() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder={placeholders[fieldName]}
                   />
-                  <FieldInfoWithTranslation field={field} />
+                  <FieldInfo field={field} />
                 </>
               )}
             </form.Field>

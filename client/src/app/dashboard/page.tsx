@@ -7,10 +7,9 @@ import { BookPlus, Loader2 } from 'lucide-react';
 import moment from 'moment';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { z } from 'zod';
 
 import { useCreateInvoice } from '@/lib/api/endpoints/invoices';
-import { createInvoiceBody } from '@/lib/api/endpoints/invoices.zod';
+import { CreateInvoiceCommand } from '@/lib/api/models';
 
 import ContractorPopover from './components/ContractorPopover';
 import OrdersTable from './components/OrdersTable';
@@ -20,8 +19,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-
-type InvoiceData = z.infer<typeof createInvoiceBody>;
 
 export default function Dashboard() {
   const orders = useOrdersStore((state) => state.orders);
@@ -64,7 +61,7 @@ export default function Dashboard() {
       dates: [],
       contractorId: 0,
       orderIds: []
-    } as InvoiceData,
+    } as CreateInvoiceCommand,
     onSubmit: ({ value }) => {
       mutate({ data: value });
     }

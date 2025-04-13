@@ -4,17 +4,14 @@ import { useForm } from '@tanstack/react-form';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { z } from 'zod';
 
 import { useGetContractor, useUpdateContractor } from '@/lib/api/endpoints/contractors';
-import { updateContractorBody } from '@/lib/api/endpoints/contractors.zod';
+import { UpdateContractorCommand } from '@/lib/api/models';
 
-import FieldInfoWithTranslation from '@/components/FieldInfoWithTranslation';
+import FieldInfo from '@/components/FieldInfo';
 import FormButtons from '@/components/FormButtons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-export type updateContractorSchema = z.infer<typeof updateContractorBody>;
 
 export default function UpdateContractor({ params }: { params: { id: string } }) {
   const t = useTranslations('Contractor');
@@ -39,7 +36,7 @@ export default function UpdateContractor({ params }: { params: { id: string } })
       zipCode: data?.zipCode ?? '',
       street: data?.street ?? '',
       email: data?.email ?? ''
-    } as updateContractorSchema,
+    } as UpdateContractorCommand,
     onSubmit: (values) => {
       mutate({
         id: Number(params.id),
@@ -47,7 +44,17 @@ export default function UpdateContractor({ params }: { params: { id: string } })
       });
     },
     validators: {
-      onSubmit: updateContractorBody
+      onSubmit: ({ value }) => {
+        return {
+          fields: {
+            name: value.name.length === 0 ? 'Pole jest wymagane' : undefined,
+            city: value.city.length === 0 ? 'Pole jest wymagane' : undefined,
+            street: value.street.length === 0 ? 'Pole jest wymagane' : undefined,
+            nip: value.nip.length === 0 ? 'Pole jest wymagane' : undefined,
+            zipCode: value.zipCode.length === 0 ? 'Pole jest wymagane' : undefined
+          }
+        };
+      }
     }
   });
 
@@ -79,7 +86,7 @@ export default function UpdateContractor({ params }: { params: { id: string } })
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder={placeholders[fieldName]}
                   />
-                  <FieldInfoWithTranslation field={field} />
+                  <FieldInfo field={field} />
                 </>
               )}
             </form.Field>

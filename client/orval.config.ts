@@ -16,25 +16,5 @@ module.exports = {
         }
       }
     }
-  },
-  autodorZod: {
-    input: {
-      target: 'http://localhost:7000/swagger/v1/swagger.json'
-    },
-    output: {
-      mode: 'tags',
-      client: 'zod',
-      target: 'src/lib/api/endpoints',
-      schemas: 'src/lib/api/models',
-      fileExtension: '.zod.ts',
-      prettier: true,
-      override: {
-        zod: {
-          dateTimeOptions: {
-            offset: true
-          }
-        }
-      }
-    }
   }
 };
