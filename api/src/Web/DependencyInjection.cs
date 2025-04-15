@@ -29,16 +29,16 @@ public static class DependencyInjection
                 options.Authority = configuration["Auth0:Authority"];
                 options.Audience = configuration["Auth0:Audience"];
 
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = configuration["Auth0:Authority"],
-                    ValidAudience = configuration["Auth0:Audience"],
-                    //ValidateIssuer = true,
-                    //ValidateAudience = true,
-                    ValidateLifetime = true,
-                    //ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero
-                };
+                //options.TokenValidationParameters = new TokenValidationParameters
+                //{
+                //    ValidIssuer = configuration["Auth0:Authority"],
+                //    ValidAudience = configuration["Auth0:Audience"],
+                //    ValidateIssuer = true,
+                //    ValidateAudience = true,
+                //    ValidateLifetime = true,
+                //    ValidateIssuerSigningKey = true,
+                //    ClockSkew = TimeSpan.Zero
+                //};
             });
         services.AddAuthorization();
 
