@@ -33,10 +33,10 @@ public static class DependencyInjection
                 {
                     ValidIssuer = configuration["Auth0:Authority"],
                     ValidAudience = configuration["Auth0:Audience"],
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    //ValidateIssuer = true,
+                    //ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
+                    //ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero
                 };
             });
