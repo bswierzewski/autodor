@@ -25,7 +25,7 @@ export default function Guard({
                 <div className="text-2xl font-bold">Musisz być zalogowany by korzystać z tej strony</div>
                 <div className="mt-2">Kliknij poniżej by się zalogować</div>
                 <div className="mt-4">
-                  <Button variant={'outline'} onClick={() => signIn('auth0')}>
+                  <Button variant={'outline'} onClick={() => signIn('auth0', {}, { prompt: 'login' })}>
                     Zaloguj
                   </Button>
                 </div>

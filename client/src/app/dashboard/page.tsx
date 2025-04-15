@@ -3,8 +3,8 @@
 import { useContractorsStore } from '@/stores/contractor';
 import { useOrdersStore } from '@/stores/orders';
 import { useForm } from '@tanstack/react-form';
+import { format } from 'date-fns';
 import { BookPlus, Loader2 } from 'lucide-react';
-import moment from 'moment';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 
@@ -56,13 +56,14 @@ export default function Dashboard() {
   const form = useForm({
     defaultValues: {
       invoiceNumber: undefined,
-      saleDate: new Date().toISOString(),
-      issueDate: new Date().toISOString(),
+      saleDate: format(new Date(), 'yyyy-MM-dd'),
+      issueDate: format(new Date(), 'yyyy-MM-dd'),
       dates: [],
       contractorId: 0,
       orderIds: []
     } as CreateInvoiceCommand,
     onSubmit: ({ value }) => {
+      console.log(value);
       mutate({ data: value });
     }
   });
@@ -109,8 +110,8 @@ export default function Dashboard() {
             <form.Field name="issueDate">
               {(field) => (
                 <DatePicker
-                  date={moment(field.state.value).toDate()}
-                  onSelect={(date) => field.handleChange(date?.toString())}
+                  date={new Date(field.state.value ?? '')}
+                  onSelect={(date) => field.handleChange(format(date ?? '', 'yyyy-MM-dd'))}
                   label="Data faktury"
                 />
               )}
@@ -120,8 +121,8 @@ export default function Dashboard() {
             <form.Field name="saleDate">
               {(field) => (
                 <DatePicker
-                  date={moment(field.state.value).toDate()}
-                  onSelect={(date) => field.handleChange(date?.toString())}
+                  date={new Date(field.state.value ?? '')}
+                  onSelect={(date) => field.handleChange(format(date ?? '', 'yyyy-MM-dd'))}
                   label="Data sprzedaży"
                 />
               )}

@@ -1,7 +1,7 @@
 import { handleDownload } from '@/lib/utils';
 import { useOrdersStore } from '@/stores/orders';
+import { format } from 'date-fns';
 import { BookmarkCheck, BookmarkX, Printer, RotateCw } from 'lucide-react';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -122,7 +122,7 @@ export default function OrdersTable() {
                   />
                 </TableCell>
                 <TableCell className="text-right">{order.customerNumber}</TableCell>
-                <TableCell className="text-right">{moment(order.date).format('YYYY-MM-DD')}</TableCell>
+                <TableCell className="text-right">{format(order.date ?? '', 'yyyy-MM-dd')}</TableCell>
                 <TableCell className="text-right">{order.itemsCount}</TableCell>
                 <TableCell className="text-right">{order.person}</TableCell>
                 <TableCell className="text-right">{order.number}</TableCell>
