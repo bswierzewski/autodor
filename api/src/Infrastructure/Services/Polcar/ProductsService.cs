@@ -1,41 +1,56 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Consts;
+using Application.Common.Interfaces;
 using Application.Common.Options;
 using Infrastructure.Extensions;
 using Infrastructure.Models;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PolcarProductsClient;
 
 namespace Infrastructure.Services.Polcar;
 
-public class ProductsService(ILogger<ProductsService> logger, IOptions<PolcarOptions> polcarOptions) : IProductsService
+public class ProductsService(
+    ILogger<ProductsService> logger,
+    IOptions<PolcarOptions> polcarOptions,
+    IMemoryCache cache) : IProductsService
 {
-    private readonly ProductsSoapClient _client = new(ProductsSoapClient.EndpointConfiguration.ProductsSoap12);
+    private readonly ProductsSoapClient _soapClient = new(ProductsSoapClient.EndpointConfiguration.ProductsSoap12);
 
     public async Task<IDictionary<string, Domain.Entities.Product>> GetProductsAsync()
     {
+        if (cache.TryGetValue(CacheConsts.PolcarProducts, out IDictionary<string, Domain.Entities.Product> cachedProducts))
+            return cachedProducts;
+
+        var productsDictionary = new Dictionary<string, Domain.Entities.Product>();
+
         try
         {
-            var response = await _client.GetEAN13ListAsync(
-                        polcarOptions.Value.Login,
-                        polcarOptions.Value.Password,
-                        1,
-                        1);
+            var response = await _soapClient.GetEAN13ListAsync(
+                Login: polcarOptions.Value.Login,
+                Password: polcarOptions.Value.Password,
+                LanguageID: 1,
+                FormatID: 1);
 
-            var products = response.Body.GetEAN13ListResult.Deserialize<ProductRoot>();
+            var deserialized = response.Body.GetEAN13ListResult.Deserialize<ProductRoot>();
 
-            return products.Items.Select(x => new Domain.Entities.Product
+            var products = deserialized.Items.Select(product => new Domain.Entities.Product
             {
-                EAN13Code = x.EAN13Code,
-                Name = x.PartName,
-                Number = x.Number
-            }).ToDictionary(x => x.Number);
+                EAN13Code = product.EAN13Code,
+                Name = product.PartName,
+                Number = product.Number
+            });
+
+            foreach (var product in products)
+                productsDictionary[product.Number] = product;
+
+            cache.Set(CacheConsts.PolcarProducts, productsDictionary, TimeSpan.FromHours(1));
         }
         catch (Exception ex)
         {
-            logger.LogInformation(ex.Message);
-
-            return new Dictionary<string, Domain.Entities.Product>();
+            logger.LogError(ex, "Failed to retrieve products from Polcar.");
         }
+
+        return productsDictionary;
     }
 }

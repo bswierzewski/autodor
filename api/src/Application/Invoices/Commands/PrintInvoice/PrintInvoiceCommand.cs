@@ -1,5 +1,4 @@
-﻿using Application.Common.Consts;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Application.Interfaces;
 using Application.Invoices.Commands.DTOs;
 using Domain.Entities;
@@ -17,7 +16,6 @@ public class PrintInvoiceCommandHandler(
     IDistributorsSalesService distributorsSalesService,
     IApplicationDbContext context,
     IProductsService productsService,
-    ICacheService cacheService,
     IHtmlGeneratorService htmlTemplateGenerator) : IRequestHandler<PrintInvoiceCommand, FileInvoiceResponseDto>
 {
     public async Task<FileInvoiceResponseDto> Handle(PrintInvoiceCommand request, CancellationToken cancellationToken)
@@ -45,10 +43,7 @@ public class PrintInvoiceCommandHandler(
 
     private async Task<IDictionary<string, Product>> GetProductsAsync()
     {
-        return await cacheService.GetOrCreateAsync(
-            CacheConsts.Products,
-            productsService.GetProductsAsync,
-            TimeSpan.FromHours(1));
+        return await productsService.GetProductsAsync();
     }
 
     private async Task<Contractor> GetContractorAsync(string customerNumber)
