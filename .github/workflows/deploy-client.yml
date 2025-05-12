@@ -7,6 +7,10 @@ on:
     paths:
       - "client/**"
 
+env:
+  # Definiujemy ścieżkę do pliku wersji wewnątrz kontekstu klienta
+  VERSION_FILE_PATH: ./client/src/lib/appVersion.ts
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -14,6 +18,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Potrzebne do pobrania pełnej historii Git dla tagów/SHA
+
+      - name: Get current date
+        id: date
+        run: echo "BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
+      - name: Determine App Version (Tag or Short SHA)
+        id: version_info
+        run: |
+          # Spróbuj pobrać najnowszy tag. Jeśli nie ma tagów, użyj krótkiego SHA.
+          GIT_TAG=$(git describe --tags --abbrev=0 --exact-match 2>/dev/null || echo "")
+          if [ -n "$GIT_TAG" ]; then
+            echo "APP_VERSION=$GIT_TAG" >> $GITHUB_ENV
+            echo "Resolved version to Git tag: $GIT_TAG"
+          else
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            echo "APP_VERSION=$SHORT_SHA" >> $GITHUB_ENV
+            echo "No exact Git tag found, resolved version to short SHA: $SHORT_SHA"
+          fi
+
+      - name: Create version file
+        run: |
+          echo "Creating version file at ${{ env.VERSION_FILE_PATH }}"
+          # Upewnij się, że folder lib istnieje w client
+          mkdir -p ./client/src/lib
+          echo "export const APP_VERSION = '${{ env.APP_VERSION }}';" > ${{ env.VERSION_FILE_PATH }}
+          echo "export const BUILD_DATE = '${{ env.BUILD_DATE }}';" >> ${{ env.VERSION_FILE_PATH }}
+          echo "Version file content:"
+          cat ${{ env.VERSION_FILE_PATH }}
+        # Ważne: Ustawienie zmiennych środowiskowych dla build-args musi być zrobione inaczej
+        # lub przekazane bezpośrednio do Dockerfile, jeśli plik wersji jest częścią obrazu.
+        # Na razie plik wersji jest tworzony w systemie plików runnera GitHub Actions.
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
