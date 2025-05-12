@@ -1,5 +1,6 @@
 import Guard from './Guard';
 import { Providers } from './providers';
+import { APP_VERSION, BUILD_DATE } from '@/lib/appVersion';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
@@ -22,6 +23,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  const buildDateFormatted = BUILD_DATE
+    ? new Date(BUILD_DATE).toLocaleString('pl-PL', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    : 'Nieznana';
 
   return (
     <html suppressHydrationWarning lang={locale}>
@@ -35,10 +45,7 @@ export default async function RootLayout({
                 <div className="flex flex-col flex-1">
                   <main className="p-10 flex-1">{children}</main>
                   <footer className="flex items-center justify-center py-3">
-                    <span className="text-default-600">
-                      Powered by <strong className="text-primary">{siteConfig.company}</strong> {siteConfig.version} -{' '}
-                      {process.env.ENVIRONMENT}
-                    </span>
+                    <span className="text-default-600">{`${buildDateFormatted} - ${process.env.ENVIRONMENT} - ${APP_VERSION}`}</span>
                   </footer>
                 </div>
               </div>
