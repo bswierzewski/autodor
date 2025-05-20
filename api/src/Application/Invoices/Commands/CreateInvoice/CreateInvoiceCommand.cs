@@ -50,7 +50,7 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
         var ordersPerDate = await Task.WhenAll(tasks).ConfigureAwait(false);
         return ordersPerDate.SelectMany(x => x).ToArray();
     }
-    
+
     private static Order[] FilterOrdersByIds(IEnumerable<Order> orders, IEnumerable<string> ids)
         => orders.Where(o => ids.Distinct().Contains(o.Id)).ToArray();
 
@@ -61,15 +61,15 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
             .Where(item => item.TotalPrice > 0)
             .Select(item =>
             {
-                var partNumber = item.PartNumber ?? "";
-                var hasProduct = products.TryGetValue(partNumber, out var product);
+                var existsName = products.ContainsKey(item?.PartNumber ?? "");
+                var name = existsName ? $"{products[item.PartNumber].Name} ({item.PartNumber})" : item.PartNumber;
 
                 return new Pozycje
                 {
                     Ilosc = item.Quantity,
                     CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
                     Jednostka = "sztuk",
-                    NazwaPelna = hasProduct ? $"{product.Name} ({partNumber})" : partNumber,
+                    NazwaPelna = name,
                     StawkaVat = 0.23M,
                     TypStawkiVat = "PRC"
                 };
