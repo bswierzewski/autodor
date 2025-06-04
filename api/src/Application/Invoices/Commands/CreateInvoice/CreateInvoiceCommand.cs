@@ -46,41 +46,47 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
 
     private async Task<Order[]> FetchOrdersAsync(IEnumerable<DateTime> dates)
     {
-        var tasks = dates.Distinct().Select(distributorsSalesService.GetOrdersAsync);
-        var ordersPerDate = await Task.WhenAll(tasks).ConfigureAwait(false);
-        return ordersPerDate.SelectMany(x => x).ToArray();
+        var uniqueDates = dates.Select(d => d.Date).Distinct();
+        var fetchTasks = uniqueDates.Select(distributorsSalesService.GetOrdersAsync);
+
+        var ordersPerDate = await Task.WhenAll(fetchTasks).ConfigureAwait(false);
+        return [.. ordersPerDate.SelectMany(x => x)];
     }
 
     private static Order[] FilterOrdersByIds(IEnumerable<Order> orders, IEnumerable<string> ids)
-        => orders.Where(o => ids.Distinct().Contains(o.Id)).ToArray();
+    {
+        var idSet = new HashSet<string>(ids);
+        return [.. orders.Where(o => idSet.Contains(o.Id))];
+    }
 
     private List<Pozycje> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products)
     {
-        return orders
+        return [.. orders
             .SelectMany(order => order.Items)
-            .Where(item => item.TotalPrice > 0)
+            .Where(item => item != null && item.TotalPrice > 0)
             .Select(item =>
             {
-                var existsName = products.ContainsKey(item?.PartNumber ?? "");
-                var name = existsName ? $"{products[item.PartNumber].Name} ({item.PartNumber})" : item.PartNumber;
+                var partNumber = item.PartNumber ?? string.Empty;
+                var productName = products.TryGetValue(partNumber, out var product)
+                    ? $"{product.Name} ({partNumber})"
+                    : partNumber;
 
                 return new Pozycje
                 {
                     Ilosc = item.Quantity,
                     CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
                     Jednostka = "sztuk",
-                    NazwaPelna = name,
+                    NazwaPelna = productName,
                     StawkaVat = 0.23M,
                     TypStawkiVat = "PRC"
                 };
-            })
-            .ToList();
+            })];
     }
 
     private async Task<InvoiceDto> CreateInvoiceDtoAsync(CreateInvoiceCommand request, List<Pozycje> pozycje)
     {
         var contractor = await context.Contractors.FindAsync(request.ContractorId)
-            ?? throw new Exception("Contractor not found");
+            ?? throw new Exception($"Contractor with ID {request.ContractorId} not found");
 
         var invoice = InvoiceExtensions.CreateDefaultInvoiceDto(pozycje);
         invoice.Numer = request.InvoiceNumber;
