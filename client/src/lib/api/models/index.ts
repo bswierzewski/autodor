@@ -5,7 +5,9 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './applicationInfoDto';
 export * from './baseEvent';
+export * from './buildInformation';
 export * from './contractor';
 export * from './createContractorCommand';
 export * from './createInvoiceCommand';

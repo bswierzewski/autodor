@@ -4,6 +4,7 @@ import { APP_VERSION, BUILD_DATE } from '@/lib/appVersion';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
+import Link from 'next/link';
 
 import { siteConfig } from '@/config/site';
 
@@ -45,7 +46,11 @@ export default async function RootLayout({
                 <div className="flex flex-col flex-1">
                   <main className="p-10 flex-1">{children}</main>
                   <footer className="flex items-center justify-center py-3">
-                    <span className="text-default-600">{`${buildDateFormatted} - ${process.env.ENVIRONMENT} - ${APP_VERSION}`}</span>
+                    <span className="text-default-600">
+                      <a>
+                        <Link href={'/about'}>Informacje o aplikacji</Link>
+                      </a>
+                    </span>
                   </footer>
                 </div>
               </div>

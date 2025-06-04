@@ -14,6 +14,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Git Commit SHA
+        id: git_sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Get Build Timestamp
+        id: build_timestamp
+        # ISO 8601 UTC timestamp
+        run: echo "timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -28,3 +39,14 @@ jobs:
           file: api/src/Web/Dockerfile
           tags: ninjatechfun/autodor_api:latest
           push: true
+          build-args: | # Pass build arguments to Docker
+            APP_VERSION_SHA_ARG=${{ steps.git_sha.outputs.sha }}
+            APP_BUILD_TIMESTAMP_ARG=${{ steps.build_timestamp.outputs.timestamp }}
+          cache-from: type=gha # Enable build cache from GitHub Actions
+          cache-to: type=gha,mode=max # Enable build cache to GitHub Actions
+
+      - name: Image Digest (optional output)
+        if: always() # Run even if previous steps fail, to see what was attempted
+        run: |
+          echo "Git SHA used: ${{ steps.git_sha.outputs.sha }}"
+          echo "Build Timestamp used: ${{ steps.build_timestamp.outputs.timestamp }}"
