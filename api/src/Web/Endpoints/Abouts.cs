@@ -12,10 +12,6 @@ public class Abouts : EndpointGroupBase
             .MapGet(GetApplicationInformation);
     }
 
-    private static async Task<IResult> GetApplicationInformation(ISender sender, CancellationToken ct)
-    {
-        var query = new GetApplicationInfoQuery();
-        var result = await sender.Send(query, ct);
-        return TypedResults.Ok(result);
-    }
+    private static async Task<ApplicationInfoDto> GetApplicationInformation(ISender sender, CancellationToken ct)
+        => await sender.Send(new GetApplicationInfoQuery(), ct);
 }
