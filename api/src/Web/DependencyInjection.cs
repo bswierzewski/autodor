@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Infrastructure.Services;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +58,8 @@ public static class DependencyInjection
         }
 
         // DI services
+        services.AddSingleton<IBuildInfoService, BuildInfoService>();
+
         services.AddScoped<IUser, CurrentUser>();
 
         return services;
