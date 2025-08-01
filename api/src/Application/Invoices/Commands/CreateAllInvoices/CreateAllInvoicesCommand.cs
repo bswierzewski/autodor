@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Options;
@@ -8,8 +10,6 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text;
-using System.Text.Json;
 
 namespace Application.Invoices.Commands.CreateAllInvoices;
 
@@ -138,30 +138,47 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
     private string FormatResponses(List<InvoiceResponseDto> responses)
     {
         if (responses.Count == 0)
-            return "Brak faktur do wystawienia";
+            return "<h3>Brak faktur do wystawienia w podanym zakresie dat.</h3>";
 
         var sb = new StringBuilder();
+        sb.AppendLine("<html><head><style>");
+        sb.AppendLine("body { font-family: Arial, sans-serif; }");
+        sb.AppendLine("table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }");
+        sb.AppendLine("th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }");
+        sb.AppendLine("th { background-color: #f2f2f2; }");
+        sb.AppendLine("h2 { color: #333333; }");
+        sb.AppendLine(".success { color: green; }");
+        sb.AppendLine(".error { color: red; }");
+        sb.AppendLine("</style></head><body>");
 
         var correctResponses = responses.Where(x => x.Response.Kod == 0).ToList();
         var errorResponses = responses.Where(x => x.Response.Kod > 0).ToList();
 
-        sb.AppendLine("<pre>");
-
         if (correctResponses.Count > 0)
         {
-            sb.AppendLine("<strong>Poprawinie wystawiono faktury dla:</strong>");
+            sb.AppendLine("<h2><span class='success'>✔</span> Poprawnie wystawione faktury</h2>");
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr><th>Numer Klienta</th><th>Kod</th><th>Informacja</th></tr>");
             foreach (var response in correctResponses)
-                sb.AppendLine($"    {response}");
+            {
+                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>{response.Response.Kod}</td><td>{response.Response.Informacja}</td></tr>");
+            }
+            sb.AppendLine("</table>");
         }
 
         if (errorResponses.Count > 0)
         {
-            sb.AppendLine("<strong>Wykryto błąd dla:</strong>");
+            sb.AppendLine("<h2><span class='error'>✖</span> Wykryte błędy</h2>");
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr><th>Numer Klienta</th><th>Kod</th><th>Informacja</th></tr>");
             foreach (var response in errorResponses)
-                sb.AppendLine($"    {response}");
+            {
+                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>{response.Response.Kod}</td><td>{response.Response.Informacja}</td></tr>");
+            }
+            sb.AppendLine("</table>");
         }
 
-        sb.AppendLine("</pre>");
+        sb.AppendLine("</body></html>");
 
         return sb.ToString();
     }
