@@ -43,7 +43,7 @@ catch (Exception e)
 {
     Log.Logger.Error(e, e.Message);
 
-    await services.GetRequiredService<ISendGridService>().SendEmail(["swierzewski.bartosz@gmail.com"], "Error", e.Message);
+    await services.GetRequiredService<INotificationService>().Send(["swierzewski.bartosz@gmail.com"], "Error", e.Message);
 }
 
 IHostBuilder CreateHostBuilder()

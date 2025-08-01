@@ -2,7 +2,7 @@
   "profiles": {
     "Console": {
       "commandName": "Project",
-      "commandLineArgs": "-f 2024-08-15 -t 2024-08-31"
+      "commandLineArgs": "-f 2025-07-28 -t 2025-07-28"
     }
   }
 }

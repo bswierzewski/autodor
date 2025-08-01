@@ -1,4 +1,4 @@
-﻿using Application.Common.Extensions;
+using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Options;
 using Application.Interfaces;
@@ -24,8 +24,8 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
     IFirmaService firmaService,
     IDistributorsSalesService distributorsSalesService,
     IProductsService productsService,
-    ISendGridService sendGridService,
-    IOptions<SendGridOptions> sendgridOptions,
+    INotificationService notificationService,
+    IOptions<EmailOptions> emailOptions,
     IOptions<PolcarOptions> polcarOptions,
     ILogger<CreateAllInvoicesCommandHandler> logger) : IRequestHandler<CreateAllInvoicesCommand, Unit>
 {
@@ -33,7 +33,7 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
     {
         var orders = new List<Order>();
         var responses = new List<InvoiceResponseDto>();
-        
+
         // Fetch products and contractors concurrently
         var productsTask = productsService.GetProductsAsync();
         var contractorsTask = context.Contractors.ToListAsync();
@@ -116,7 +116,7 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
             }
         }
 
-        await sendGridService.SendEmail(sendgridOptions.Value.To, $"Automat {polcarOptions.Value.DistributorCode} | {DateTime.Now}", FormatResponses(responses));
+        await notificationService.Send(emailOptions.Value.To, $"Automat {polcarOptions.Value.DistributorCode} | {DateTime.Now}", FormatResponses(responses));
 
         return await Task.FromResult(Unit.Value);
     }

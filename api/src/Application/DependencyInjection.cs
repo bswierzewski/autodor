@@ -26,7 +26,7 @@ public static class DependencyInjection
         //Options
         services.Configure<PolcarOptions>(configuration.GetSection("Credentials:Polcar"));
         services.Configure<IFirmaOptions>(configuration.GetSection("Credentials:IFirma"));
-        services.Configure<SendGridOptions>(configuration.GetSection("SendGrid"));
+        services.Configure<EmailOptions>(configuration.GetSection("Email"));
 
         return services;
     }

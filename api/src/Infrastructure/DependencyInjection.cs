@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Application.Common.Interfaces;
 using Application.Interfaces;
 using Infrastructure.Data;
@@ -9,7 +9,7 @@ using Infrastructure.Services.Cache;
 using Infrastructure.Services.Generator;
 using Infrastructure.Services.iText;
 using Infrastructure.Services.Polcar;
-using Infrastructure.Services.SendGrid;
+using Infrastructure.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +41,7 @@ public static class DependencyInjection
         services.AddScoped<IDistributorsSalesService, DistributorsSalesService>();
         services.AddScoped<IProductsService, ProductsService>();
         services.AddScoped<IFirmaService, FirmaService>();
-        services.AddScoped<ISendGridService, SendGridService>();
+        services.AddScoped<INotificationService, EmailService>();
         services.AddScoped<IHtmlGeneratorService, HtmlGeneratorService>();
 
         services.AddMemoryCache();
