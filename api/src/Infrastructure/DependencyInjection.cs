@@ -10,6 +10,7 @@ using Infrastructure.Services.Generator;
 using Infrastructure.Services.iText;
 using Infrastructure.Services.Polcar;
 using Infrastructure.Services.Email;
+using Infrastructure.Services.InFakt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -40,7 +41,21 @@ public static class DependencyInjection
 
         services.AddScoped<IDistributorsSalesService, DistributorsSalesService>();
         services.AddScoped<IProductsService, ProductsService>();
-        services.AddScoped<IFirmaService, FirmaService>();
+
+        // Register all invoice services
+        services.AddScoped<FirmaService>();
+        services.AddScoped<InFaktService>();
+        services.AddHttpClient();
+
+        // Register factory and main service
+        services.AddScoped<IInvoiceProviderFactory, InvoiceProviderFactory>();
+        // IInvoiceService returns FirmaService or InFaktService based on configuration
+        services.AddScoped(provider =>
+        {
+            var factory = provider.GetRequiredService<IInvoiceProviderFactory>();
+            return factory.CreateInvoiceProvider();
+        });
+
         services.AddScoped<INotificationService, EmailService>();
         services.AddScoped<IHtmlGeneratorService, HtmlGeneratorService>();
 

@@ -19,5 +19,6 @@ export * from './orderDto';
 export * from './orderItem';
 export * from './printInvoiceCommand';
 export * from './responseDto';
+export * from './stringResult';
 export * from './updateContractorCommand';
 export * from './void';

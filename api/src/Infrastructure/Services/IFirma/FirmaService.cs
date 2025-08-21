@@ -1,22 +1,25 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Options;
-using Application.Invoices.Commands.DTOs;
-using Infrastructure.Extensions;
-using Microsoft.Extensions.Options;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
+using Application.Common;
+using Application.Common.Interfaces;
+using Application.Common.Options;
+using Domain.Entities;
+using Infrastructure.Extensions;
+using Infrastructure.Services.IFirma.DTOs;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services;
 
-public class FirmaService : IFirmaService
+public class FirmaService : IInvoiceService
 {
     private readonly IFirmaOptions _options;
-
+    private readonly HttpClient _httpClient;
     private readonly IDictionary<string, string> _apiKeys;
 
-    public FirmaService(IOptions<IFirmaOptions> config)
+    public FirmaService(IOptions<IFirmaOptions> config, HttpClient httpClient)
     {
         _options = config.Value;
+        _httpClient = httpClient;
         _apiKeys = new Dictionary<string, string>()
             {
                 {"faktura", _options.Faktura },
@@ -26,44 +29,86 @@ public class FirmaService : IFirmaService
             };
     }
 
-    public async Task<HttpResponseMessage> AddInvoice(InvoiceDto invoice)
+    public async Task<Result<string>> AddInvoice(Invoice invoice)
     {
-        string keyName = "faktura";
-        string key = _apiKeys[keyName];
+        try
+        {
+            string keyName = "faktura";
+            string key = _apiKeys[keyName];
 
-        return await Post("https://www.ifirma.pl/iapi/fakturakraj.json", keyName, key, invoice);
+            var invoiceDto = MapToInvoiceDto(invoice);
+            var response = await Post("https://www.ifirma.pl/iapi/fakturakraj.json", keyName, key, invoiceDto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Result<string>.Success(invoice.Contractor.NIP);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return Result<string>.Failure($"Błąd HTTP {response.StatusCode}: {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"Błąd: {ex.Message}");
+        }
     }
 
-    private async Task<HttpResponseMessage> Get(string url, string keyName, string key)
+    private IFirmaInvoiceDto MapToInvoiceDto(Invoice invoice)
     {
-        using (var client = CreateClient(url, keyName, key))
+        return new IFirmaInvoiceDto
         {
-            return await client.GetAsync(url);
-        }
+            Numer = invoice.Number,
+            DataWystawienia = invoice.IssueDate.ToString("yyyy-MM-dd"),
+            DataSprzedazy = invoice.SaleDate.ToString("yyyy-MM-dd"),
+            MiejsceWystawienia = invoice.PlaceOfIssue,
+            TerminPlatnosci = (invoice.PaymentDue - invoice.IssueDate).Days,
+            SposobZaplaty = invoice.PaymentMethod,
+            Uwagi = invoice.Notes,
+            Kontrahent = new IFirmaKontrahent
+            {
+                Nazwa = invoice.Contractor.Name,
+                NIP = invoice.Contractor.NIP,
+                Ulica = invoice.Contractor.Street,
+                KodPocztowy = invoice.Contractor.ZipCode,
+                Miejscowosc = invoice.Contractor.City,
+                Kraj = "PL", // Default to Poland
+                Email = invoice.Contractor.Email,
+                Telefon = "" // Not available in current Contractor model
+            },
+            Pozycje = invoice.Items.Select(item => new IFirmaPozycje
+            {
+                NazwaPelna = item.Name,
+                Jednostka = item.Unit,
+                Ilosc = item.Quantity,
+                CenaJednostkowa = (float)item.UnitPrice,
+                StawkaVat = item.VatRate,
+                TypStawkiVat = item.VatType,
+                Rabat = (int)item.Discount,
+                PKWiU = item.PKWiU,
+                GTU = item.GTU
+            }).ToArray()
+        };
     }
 
     private async Task<HttpResponseMessage> Post(string url, string keyName, string key, object content)
     {
         var json = JsonSerializer.Serialize(content);
-
-        using (var client = CreateClient(url, keyName, key, json))
-        {
-            return await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
-        }
+        SetAuthenticationHeader(url, keyName, key, json);
+        
+        var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        return await _httpClient.PostAsync(url, httpContent);
     }
 
-    private HttpClient CreateClient(string url, string keyName, string key, string content = "")
+    private void SetAuthenticationHeader(string url, string keyName, string key, string content = "")
     {
-        var client = new HttpClient();
-
+        _httpClient.DefaultRequestHeaders.Clear();
+        
         url = url.Split('?')[0];
-
         string hmac = $"{url}{_options.User}{keyName}{content}";
-
         string sha1 = hmac.HmacSHA1(key);
 
-        client.DefaultRequestHeaders.Add("Authentication", $"IAPIS user={_options.User}, hmac-sha1={sha1}");
-
-        return client;
+        _httpClient.DefaultRequestHeaders.Add("Authentication", $"IAPIS user={_options.User}, hmac-sha1={sha1}");
     }
 }

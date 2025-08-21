@@ -1,6 +1,6 @@
-﻿namespace Application.Invoices.Commands.DTOs;
+﻿namespace Infrastructure.Services.IFirma.DTOs;
 
-public class InvoiceDto
+public class IFirmaInvoiceDto
 {
     public int Zaplacono { get; set; }
     public int ZaplaconoNaDokumencie { get; set; }
@@ -25,11 +25,11 @@ public class InvoiceDto
     public string IdentyfikatorKontrahenta { get; set; }
     public string PrefiksUEKontrahenta { get; set; }
     public string NIPKontrahenta { get; set; }
-    public Pozycje[] Pozycje { get; set; }
-    public Kontrahent Kontrahent { get; set; }
+    public IFirmaPozycje[] Pozycje { get; set; }
+    public IFirmaKontrahent Kontrahent { get; set; }
 }
 
-public class Kontrahent
+public class IFirmaKontrahent
 {
     public string Nazwa { get; set; }
     public string Nazwa2 { get; set; }
@@ -49,7 +49,7 @@ public class Kontrahent
     public bool PodmiotPowiazany { get; set; }
 }
 
-public class Pozycje
+public class IFirmaPozycje
 {
     public decimal StawkaVat { get; set; }
     public int Ilosc { get; set; }

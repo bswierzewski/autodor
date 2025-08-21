@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import type { MutationFunction, QueryClient, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
 
 import { customInstance } from '../axios';
-import type { CreateInvoiceCommand, InvoiceResponseDto, PrintInvoiceCommand } from '../models';
+import type { CreateInvoiceCommand, PrintInvoiceCommand, StringResult } from '../models';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -82,7 +82,7 @@ export const createInvoice = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal
 ) => {
-  return customInstance<InvoiceResponseDto>(
+  return customInstance<StringResult>(
     {
       url: `/api/Invoices`,
       method: 'POST',

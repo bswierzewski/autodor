@@ -1,7 +1,7 @@
-﻿using Application.Common.Behaviours;
+﻿using System.Reflection;
+using Application.Common.Behaviours;
 using Application.Common.Options;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +26,8 @@ public static class DependencyInjection
         //Options
         services.Configure<PolcarOptions>(configuration.GetSection("Credentials:Polcar"));
         services.Configure<IFirmaOptions>(configuration.GetSection("Credentials:IFirma"));
+        services.Configure<InFaktOptions>(configuration.GetSection("Credentials:InFakt"));
+        services.Configure<InvoiceProviderOptions>(configuration.GetSection("InvoiceProvider"));
         services.Configure<EmailOptions>(configuration.GetSection("Email"));
 
         return services;

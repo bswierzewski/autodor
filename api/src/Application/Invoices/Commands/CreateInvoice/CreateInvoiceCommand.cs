@@ -1,13 +1,10 @@
-﻿using System.Text.Json;
+﻿using Application.Common;
 using Application.Common.Interfaces;
-using Application.Invoices.Commands.DTOs;
-using Application.Invoices.Extensions;
-using AutoMapper;
 using Domain.Entities;
 
 namespace Application.Invoices.Commands.CreateInvoice;
 
-public class CreateInvoiceCommand : IRequest<InvoiceResponseDto>
+public class CreateInvoiceCommand : IRequest<Result<string>>
 {
     public int? InvoiceNumber { get; set; }
     public DateTime SaleDate { get; set; }
@@ -17,13 +14,13 @@ public class CreateInvoiceCommand : IRequest<InvoiceResponseDto>
     public int ContractorId { get; set; }
 }
 
-public class CreateInvoiceCommandHandler(IMapper mapper,
-    IFirmaService firmaService,
+public class CreateInvoiceCommandHandler(
+    IInvoiceService invoiceService,
     IDistributorsSalesService distributorsSalesService,
     IProductsService productsService,
-    IApplicationDbContext context) : IRequestHandler<CreateInvoiceCommand, InvoiceResponseDto>
+    IApplicationDbContext context) : IRequestHandler<CreateInvoiceCommand, Result<string>>
 {
-    public async Task<InvoiceResponseDto> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         // Start both tasks in parallel
         var ordersTask = FetchOrdersAsync(request.Dates);
@@ -36,12 +33,9 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
 
         var filteredOrders = FilterOrdersByIds(allOrders, request.OrderIds);
         var items = MapInvoiceItems(filteredOrders, products);
-        var invoice = await CreateInvoiceDtoAsync(request, items).ConfigureAwait(false);
+        var invoice = await CreateInvoiceAsync(request, items).ConfigureAwait(false);
 
-        var response = await firmaService.AddInvoice(invoice).ConfigureAwait(false);
-        var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-        return JsonSerializer.Deserialize<InvoiceResponseDto>(responseText);
+        return await invoiceService.AddInvoice(invoice).ConfigureAwait(false);
     }
 
     private async Task<Order[]> FetchOrdersAsync(IEnumerable<DateTime> dates)
@@ -59,7 +53,7 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
         return [.. orders.Where(o => idSet.Contains(o.Id))];
     }
 
-    private List<Pozycje> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products)
+    private List<InvoiceItem> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products)
     {
         return [.. orders
             .SelectMany(order => order.Items)
@@ -71,29 +65,32 @@ public class CreateInvoiceCommandHandler(IMapper mapper,
                     ? $"{product.Name} ({partNumber})"
                     : partNumber;
 
-                return new Pozycje
+                return new InvoiceItem
                 {
-                    Ilosc = item.Quantity,
-                    CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
-                    Jednostka = "sztuk",
-                    NazwaPelna = productName,
-                    StawkaVat = 0.23M,
-                    TypStawkiVat = "PRC"
+                    Name = productName,
+                    Unit = "sztuk",
+                    Quantity = item.Quantity,
+                    UnitPrice = Math.Round(item.TotalPrice * 1.23M, 2),
+                    VatRate = 0.23M,
+                    VatType = "PRC"
                 };
             })];
     }
 
-    private async Task<InvoiceDto> CreateInvoiceDtoAsync(CreateInvoiceCommand request, List<Pozycje> pozycje)
+    private async Task<Invoice> CreateInvoiceAsync(CreateInvoiceCommand request, List<InvoiceItem> items)
     {
         var contractor = await context.Contractors.FindAsync(request.ContractorId)
             ?? throw new Exception($"Contractor with ID {request.ContractorId} not found");
 
-        var invoice = InvoiceExtensions.CreateDefaultInvoiceDto(pozycje);
-        invoice.Numer = request.InvoiceNumber;
-        invoice.DataWystawienia = request.IssueDate.ToString("yyyy-MM-dd");
-        invoice.DataSprzedazy = request.SaleDate.ToString("yyyy-MM-dd");
-        invoice.Kontrahent = mapper.Map<Kontrahent>(contractor);
-
-        return invoice;
+        return new Invoice
+        {
+            Number = request.InvoiceNumber,
+            IssueDate = request.IssueDate,
+            SaleDate = request.SaleDate,
+            PaymentDue = request.IssueDate.AddDays(30), // Default 30 days
+            ContractorId = request.ContractorId,
+            Contractor = contractor,
+            Items = items
+        };
     }
 }

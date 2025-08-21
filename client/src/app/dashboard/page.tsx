@@ -27,8 +27,11 @@ export default function Dashboard() {
   const { mutate, isPending } = useCreateInvoice({
     mutation: {
       onSuccess(data) {
-        if (data.response?.kod === 0) toast.success(data.response?.informacja ?? 'Pusta odpowiedź');
-        else toast.error(`${data.response?.kod} - ${data.response?.informacja}`);
+        if (data.isSuccess) {
+          toast.success(`Pomyślnie wystawiono fakturę dla klienta: ${data.value}`);
+        } else {
+          toast.error(data.error ?? 'Nieznany błąd');
+        }
       }
     }
   });
