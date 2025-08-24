@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "Bash(dotnet build)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln add:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet ef database update:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet remove:*)",
+      "Read(/D:\\d\\repos\\autodor/**)",
+      "Read(/D:\\d\\repos\\autodor/**)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "D:\\d\\repos\\autodor"
+    ]
+  }
+}
