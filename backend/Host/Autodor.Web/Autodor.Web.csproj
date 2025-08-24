@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\Modules\Contractors\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Products\Autodor.Modules.Products.Application\Autodor.Modules.Products.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Contractors\Autodor.Modules.Contractors.Infrastructure\Autodor.Modules.Contractors.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders.Infrastructure\Autodor.Modules.Orders.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
