@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="9.0.8" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.*" />
     <PackageReference Include="System.ServiceModel.Federation" Version="6.0.*" />
     <PackageReference Include="System.ServiceModel.Http" Version="6.0.*" />
