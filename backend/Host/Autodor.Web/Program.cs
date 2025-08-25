@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
+using Autodor.Modules.Users.Infrastructure;
 using Autodor.Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
-// Rejestracja modułów
+// Rejestracja modułów (USERS FIRST!)
+builder.Services.AddUsersForWeb();                // Users Module FIRST!
+
 builder.Services.AddContractors(builder.Configuration);  // z DbContext
 builder.Services.AddProducts(builder.Configuration);     // bez DbContext (SOAP only)
 builder.Services.AddOrders(builder.Configuration);       // z DbContext (ExcludedOrders)

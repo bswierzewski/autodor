@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
+using Autodor.Modules.Users.Infrastructure;
 using CommandLine;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +50,9 @@ IHostBuilder CreateHostBuilder()
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
-        // Rejestracja modułów
+        // Rejestracja modułów (USERS FIRST!)
+        services.AddUsersForConsole();     // Users Module FIRST!
+
         services.AddContractors(configuration);  // z DbContext
         services.AddProducts(configuration);     // bez DbContext (SOAP only)
         services.AddOrders(configuration);       // z DbContext (ExcludedOrders)
