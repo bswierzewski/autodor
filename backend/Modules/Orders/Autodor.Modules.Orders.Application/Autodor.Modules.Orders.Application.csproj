@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Orders.Domain\Autodor.Modules.Orders.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Application\Autodor.Shared.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

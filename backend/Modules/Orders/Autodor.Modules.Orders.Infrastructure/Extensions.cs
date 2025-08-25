@@ -1,6 +1,7 @@
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.Interceptors;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
+using Autodor.Shared.Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,9 @@ public static class Extensions
 {
     public static IServiceCollection AddOrders(this IServiceCollection services, IConfiguration configuration)
     {
+        // Rejestracja shared behaviors
+        services.AddSharedApplicationBehaviors(Autodor.Modules.Orders.Application.AssemblyReference.Assembly);
+
         // Rejestracja interceptorów - EF Core automatycznie je wykryje
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<DispatchDomainEventsInterceptor>();

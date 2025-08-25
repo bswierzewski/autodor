@@ -1,8 +1,8 @@
 using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Infrastructure.Factories;
 using Autodor.Modules.Invoicing.Infrastructure.Services;
+using Autodor.Shared.Application.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Autodor.Modules.Invoicing.Infrastructure;
 
@@ -10,11 +10,8 @@ public static class Extensions
 {
     public static IServiceCollection AddInvoicingModule(this IServiceCollection services)
     {
-        // Rejestracja MediatR dla Application layer
-        services.AddMediatR(cfg => 
-        {
-            cfg.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly);
-        });
+        // Rejestracja shared behaviors
+        services.AddSharedApplicationBehaviors(Autodor.Modules.Invoicing.Application.AssemblyReference.Assembly);
 
         // Rejestracja serwisów Infrastructure
         services.AddScoped<MockInvoiceService>();

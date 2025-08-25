@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Products.Application\Autodor.Modules.Products.Application.csproj" />
+    <ProjectReference Include="..\..\Shared\Autodor.Shared.Application\Autodor.Shared.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
