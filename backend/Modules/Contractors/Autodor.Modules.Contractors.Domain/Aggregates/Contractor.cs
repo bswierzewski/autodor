@@ -1,4 +1,4 @@
-using Autodor.Modules.Contractors.Domain.Common;
+using Autodor.Shared.Domain.Common;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 
 namespace Autodor.Modules.Contractors.Domain.Aggregates;

@@ -1,4 +1,4 @@
-using Autodor.Modules.Orders.Domain.Common;
+using Autodor.Shared.Domain.Common;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 

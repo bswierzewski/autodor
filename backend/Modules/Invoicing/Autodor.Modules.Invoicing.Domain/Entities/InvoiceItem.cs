@@ -1,4 +1,4 @@
-using Autodor.Modules.Invoicing.Domain.Common;
+using Autodor.Shared.Domain.Common;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 
 namespace Autodor.Modules.Invoicing.Domain.Entities;

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Domain\Autodor.Shared.Domain.csproj" />
   </ItemGroup>
 
 </Project>

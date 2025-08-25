@@ -10,4 +10,8 @@
     <PackageReference Include="MediatR.Contracts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Domain\Autodor.Shared.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

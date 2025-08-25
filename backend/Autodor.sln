@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Shared.Application", "Shared\Autodor.Shared.Application\Autodor.Shared.Application.csproj", "{4A5E0011-3D4E-4990-8F9E-2D1F65F9CE02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Shared.Domain", "Shared\Autodor.Shared.Domain\Autodor.Shared.Domain.csproj", "{71393308-7CC3-403D-84CD-D7B5DB95DEE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +253,18 @@ Global
 		{4A5E0011-3D4E-4990-8F9E-2D1F65F9CE02}.Release|x64.Build.0 = Release|Any CPU
 		{4A5E0011-3D4E-4990-8F9E-2D1F65F9CE02}.Release|x86.ActiveCfg = Release|Any CPU
 		{4A5E0011-3D4E-4990-8F9E-2D1F65F9CE02}.Release|x86.Build.0 = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|x64.Build.0 = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Debug|x86.Build.0 = Debug|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|x64.ActiveCfg = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|x64.Build.0 = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|x86.ActiveCfg = Release|Any CPU
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -276,5 +290,6 @@ Global
 		{D60E7E37-57D1-4CC4-B52C-D42A33BB61CC} = {04E5667B-C87E-DB85-360C-E1DBE2C6BCF1}
 		{31DF535D-160D-429C-B76E-81CD52A4AD0C} = {04E5667B-C87E-DB85-360C-E1DBE2C6BCF1}
 		{4A5E0011-3D4E-4990-8F9E-2D1F65F9CE02} = {4F52FD11-658E-A102-6CD3-7D7C16FFA15B}
+		{71393308-7CC3-403D-84CD-D7B5DB95DEE0} = {4F52FD11-658E-A102-6CD3-7D7C16FFA15B}
 	EndGlobalSection
 EndGlobal

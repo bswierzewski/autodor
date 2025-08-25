@@ -1,4 +1,4 @@
-using Autodor.Modules.Contractors.Domain.Common;
+using Autodor.Shared.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;

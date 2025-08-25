@@ -1,4 +1,4 @@
-using Autodor.Modules.Orders.Domain.Common;
+using Autodor.Shared.Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
