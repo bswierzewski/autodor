@@ -9,7 +9,7 @@ public class Invoice : AggregateRoot<InvoiceId>
 {
     private readonly List<InvoiceItem> _items = new();
 
-    public string InvoiceNumber { get; private set; }
+    public string InvoiceNumber { get; private set; } = null!;
     public DateTime InvoiceDate { get; private set; }
     public InvoiceStatus Status { get; private set; }
     public Guid ContractorId { get; private set; }
@@ -39,7 +39,7 @@ public class Invoice : AggregateRoot<InvoiceId>
     public void RemoveItem(InvoiceItemId itemId)
     {
         var item = _items.FirstOrDefault(i => i.Id == itemId);
-        if (item != null)
+        if (item is not null)
         {
             _items.Remove(item);
             SetModifiedDate();

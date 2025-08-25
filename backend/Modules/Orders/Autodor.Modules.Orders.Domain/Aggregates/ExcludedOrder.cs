@@ -4,8 +4,8 @@ namespace Autodor.Modules.Orders.Domain.Aggregates;
 
 public class ExcludedOrder : AggregateRoot<Guid>
 {
-    public string OrderNumber { get; private set; }
-    public string Reason { get; private set; }
+    public string OrderNumber { get; private set; } = null!;
+    public string Reason { get; private set; } = null!;
     public DateTime ExcludedDate { get; private set; }
 
     private ExcludedOrder() : base(Guid.Empty) { } // EF Constructor

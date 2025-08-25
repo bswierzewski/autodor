@@ -5,7 +5,8 @@ using PolcarDistributorsSalesService;
 
 namespace Autodor.Modules.Orders.Infrastructure.Services;
 
-public class PolcarDistributorsSalesService(ILogger<PolcarDistributorsSalesService> logger) : IPolcarDistributorsSalesService
+#pragma warning disable CS9113
+public class PolcarDistributorsSalesService(ILogger<PolcarDistributorsSalesService> _logger) : IPolcarDistributorsSalesService
 {
     private readonly DistributorsSalesServiceSoapClient _client = new(endpointConfiguration: DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap12);
 

@@ -8,6 +8,6 @@ public static class XmlHelper
     {
         var serializer = new XmlSerializer(typeof(T));
         using var reader = new StringReader(xml);
-        return (T)serializer.Deserialize(reader);
+        return (T)serializer.Deserialize(reader)!;
     }
 }

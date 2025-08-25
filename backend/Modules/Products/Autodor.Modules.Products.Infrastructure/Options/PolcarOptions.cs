@@ -2,9 +2,9 @@ namespace Autodor.Modules.Products.Infrastructure.Options;
 
 public class PolcarOptions
 {
-    public string Login { get; set; }
-    public string Password { get; set; }
-    public string DistributorCode { get; set; }
+    public string Login { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string DistributorCode { get; set; } = null!;
     public int BranchId { get; set; }
     public int LanguageId { get; set; }
     public RetryPolicyOptions RetryPolicy { get; set; } = new();

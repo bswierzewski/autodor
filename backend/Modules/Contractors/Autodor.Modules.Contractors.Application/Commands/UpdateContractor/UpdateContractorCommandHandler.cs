@@ -22,7 +22,7 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
     {
         var contractor = await _repository.GetByIdAsync(new ContractorId(request.Id));
 
-        if (contractor == null)
+        if (contractor is null)
             throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
 
         contractor.UpdateDetails(

@@ -5,8 +5,8 @@ namespace Autodor.Modules.Invoicing.Domain.Entities;
 
 public class InvoiceItem : Entity<InvoiceItemId>
 {
-    public string PartNumber { get; private set; }
-    public string ProductName { get; private set; }
+    public string PartNumber { get; private set; } = null!;
+    public string ProductName { get; private set; } = null!;
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public decimal TotalPrice { get; private set; }

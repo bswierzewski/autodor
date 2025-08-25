@@ -38,7 +38,7 @@ public class PolcarProductsService(
     public async Task<Domain.ValueObjects.Product> GetProductAsync(string partNumber)
     {
         var products = await GetAllProductsAsync();
-        return products.FirstOrDefault(p => p.PartNumber == partNumber);
+        return products.FirstOrDefault(p => p.PartNumber == partNumber) ?? throw new InvalidOperationException($"Product with part number {partNumber} not found");
     }
 
     public async Task<IEnumerable<Domain.ValueObjects.Product>> GetProductsAsync(IEnumerable<string> partNumbers)
@@ -50,8 +50,8 @@ public class PolcarProductsService(
 
     private async Task<IEnumerable<Domain.ValueObjects.Product>> GetAllProductsAsync()
     {
-        if (cache.TryGetValue(CacheKey, out IEnumerable<Domain.ValueObjects.Product> cachedProducts))
-            return cachedProducts;
+        if (cache.TryGetValue(CacheKey, out IEnumerable<Domain.ValueObjects.Product>? cachedProducts))
+            return cachedProducts!;
 
         try
         {

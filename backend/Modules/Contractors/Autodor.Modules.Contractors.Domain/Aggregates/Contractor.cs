@@ -5,10 +5,10 @@ namespace Autodor.Modules.Contractors.Domain.Aggregates;
 
 public class Contractor : AggregateRoot<ContractorId>
 {
-    public TaxId NIP { get; private set; }
-    public string Name { get; private set; }
-    public Address Address { get; private set; }
-    public Email Email { get; private set; }
+    public TaxId NIP { get; private set; } = null!;
+    public string Name { get; private set; } = null!;
+    public Address Address { get; private set; } = null!;
+    public Email Email { get; private set; } = null!;
 
     private Contractor() : base(new ContractorId(Guid.Empty)) { } // EF Constructor
 

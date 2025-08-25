@@ -22,7 +22,7 @@ public class DeleteContractorCommandHandler : IRequestHandler<DeleteContractorCo
     {
         var contractor = await _repository.GetByIdAsync(new ContractorId(request.Id));
 
-        if (contractor == null)
+        if (contractor is null)
             throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
 
         _repository.Delete(contractor);

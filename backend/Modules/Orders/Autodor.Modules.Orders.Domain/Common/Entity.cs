@@ -2,7 +2,7 @@ namespace Autodor.Modules.Orders.Domain.Common;
 
 public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
 {
-    public TId Id { get; protected set; }
+    public TId Id { get; protected set; } = default!;
     public DateTime CreatedDate { get; protected set; } = DateTime.UtcNow;
     public DateTime? ModifiedDate { get; protected set; }
 

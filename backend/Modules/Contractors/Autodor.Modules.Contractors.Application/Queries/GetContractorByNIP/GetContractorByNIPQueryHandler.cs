@@ -18,7 +18,7 @@ public class GetContractorByNIPQueryHandler : IRequestHandler<GetContractorByNIP
     {
         var contractor = await _repository.GetByNIPAsync(new TaxId(request.NIP));
 
-        if (contractor == null)
+        if (contractor is null)
             throw new InvalidOperationException($"Contractor with NIP {request.NIP} not found");
 
         return new GetContractorByNIPDto(
