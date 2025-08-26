@@ -3,6 +3,7 @@ using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Shared.Contracts.Contractors.Commands;
 using MediatR;
+using SharedKernel.Domain.Interfaces;
 
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
@@ -30,7 +31,7 @@ public class CreateContractorCommandHandler : IRequestHandler<CreateContractorCo
             new Email(request.Email)
         );
 
-        _repository.Add(contractor);
+        await _repository.AddAsync(contractor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return contractorId.Value;

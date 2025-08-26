@@ -3,11 +3,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Invoicing.Domain\Autodor.Modules.Invoicing.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Application\Autodor.Shared.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="SharedKernel.Application" />
   </ItemGroup>
 
   <ItemGroup>

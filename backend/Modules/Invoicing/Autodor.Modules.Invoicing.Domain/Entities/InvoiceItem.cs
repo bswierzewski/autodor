@@ -1,5 +1,5 @@
-using Autodor.Shared.Domain.Common;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
+using SharedKernel;
 
 namespace Autodor.Modules.Invoicing.Domain.Entities;
 
@@ -11,14 +11,14 @@ public class InvoiceItem : Entity<InvoiceItemId>
     public decimal UnitPrice { get; private set; }
     public decimal TotalPrice { get; private set; }
 
-    private InvoiceItem() : base(new InvoiceItemId(Guid.Empty)) { } // EF Constructor
+    private InvoiceItem() { } // EF Constructor
 
     public InvoiceItem(
         InvoiceItemId id,
         string partNumber,
         string productName,
         int quantity,
-        decimal unitPrice) : base(id)
+        decimal unitPrice)
     {
         PartNumber = partNumber ?? throw new ArgumentNullException(nameof(partNumber));
         ProductName = productName ?? throw new ArgumentNullException(nameof(productName));

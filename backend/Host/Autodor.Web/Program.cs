@@ -1,17 +1,16 @@
 using Autodor.Modules.Contractors.Infrastructure;
-using Autodor.Modules.Products.Infrastructure;
-using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
-using Autodor.Modules.Users.Infrastructure;
-using Autodor.Shared.Application;
+using Autodor.Modules.Orders.Infrastructure;
+using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
+using SharedKernel.Application;
+using SharedKernel.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// First to ensure user services are available for other modules
-builder.Services.AddUsersForWeb(); 
+builder.Services.AddSharedKernelApplication();
+builder.Services.AddSharedKernelInfrastructure();
 
-builder.Services.AddShared();
 builder.Services.AddContractors(builder.Configuration);
 builder.Services.AddProducts(builder.Configuration);
 builder.Services.AddOrders(builder.Configuration);

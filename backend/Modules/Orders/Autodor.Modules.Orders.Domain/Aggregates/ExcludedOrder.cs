@@ -1,4 +1,4 @@
-using Autodor.Shared.Domain.Common;
+using SharedKernel;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 
@@ -8,9 +8,9 @@ public class ExcludedOrder : AggregateRoot<Guid>
     public string Reason { get; private set; } = null!;
     public DateTime ExcludedDate { get; private set; }
 
-    private ExcludedOrder() : base(Guid.Empty) { } // EF Constructor
+    private ExcludedOrder() { } // EF Constructor
 
-    public ExcludedOrder(string orderNumber, string reason, DateTime excludedDate) : base(Guid.NewGuid())
+    public ExcludedOrder(string orderNumber, string reason, DateTime excludedDate)
     {
         OrderNumber = orderNumber ?? throw new ArgumentNullException(nameof(orderNumber));
         Reason = reason ?? throw new ArgumentNullException(nameof(reason));

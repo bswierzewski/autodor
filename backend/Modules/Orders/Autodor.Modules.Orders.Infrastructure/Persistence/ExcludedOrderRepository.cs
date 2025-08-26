@@ -1,14 +1,15 @@
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
+using SharedKernel.Infrastructure.Repositories;
 
 namespace Autodor.Modules.Orders.Infrastructure.Persistence;
 
-public class ExcludedOrderRepository : IExcludedOrderRepository
+public class ExcludedOrderRepository : BaseRepository<ExcludedOrder>, IExcludedOrderRepository
 {
     private readonly OrdersDbContext _context;
 
-    public ExcludedOrderRepository(OrdersDbContext context)
+    public ExcludedOrderRepository(OrdersDbContext context) : base(context)
     {
         _context = context;
     }
@@ -18,10 +19,5 @@ public class ExcludedOrderRepository : IExcludedOrderRepository
         return await _context.ExcludedOrders
             .Select(x => x.OrderNumber)
             .ToListAsync();
-    }
-
-    public void Add(ExcludedOrder excludedOrder)
-    {
-        _context.ExcludedOrders.Add(excludedOrder);
     }
 }

@@ -1,5 +1,4 @@
 using Autodor.Modules.Users.Application.Services;
-using Autodor.Shared.Application.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Users.Infrastructure;

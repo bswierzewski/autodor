@@ -3,6 +3,7 @@ using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Shared.Contracts.Invoicing.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SharedKernel.Domain.Interfaces;
 
 namespace Autodor.Modules.Orders.Application.EventHandlers;
 
@@ -35,7 +36,7 @@ public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEve
                 notification.CreatedDate
             );
 
-            _repository.Add(excludedOrder);
+            await _repository.AddAsync(excludedOrder);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

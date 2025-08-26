@@ -10,7 +10,6 @@
     <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders.Infrastructure\Autodor.Modules.Orders.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Modules\Users\Autodor.Modules.Users.Infrastructure\Autodor.Modules.Users.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +23,7 @@
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="SharedKernel.Application" />
   </ItemGroup>
 
   <PropertyGroup>

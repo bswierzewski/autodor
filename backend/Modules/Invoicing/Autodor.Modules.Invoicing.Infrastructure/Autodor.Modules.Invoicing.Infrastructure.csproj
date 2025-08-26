@@ -2,12 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
-    <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Application\Autodor.Shared.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="SharedKernel.Infrastructure" />
   </ItemGroup>
 
   <PropertyGroup>

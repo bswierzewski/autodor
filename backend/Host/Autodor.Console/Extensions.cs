@@ -2,13 +2,13 @@ using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
-using Autodor.Modules.Users.Infrastructure;
-using Autodor.Shared.Application;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using SharedKernel.Application;
+using SharedKernel.Infrastructure;
 
 namespace Autodor.Console;
 
@@ -30,9 +30,10 @@ public static class Extensions
             .ConfigureServices(services =>
             {
                 // First to ensure user services are available for other modules
-                services.AddUsersForConsole();
 
-                services.AddShared();
+                services.AddSharedKernelApplication();
+                services.AddSharedKernelInfrastructure();
+
                 services.AddContractors(configuration);
                 services.AddProducts(configuration);
                 services.AddOrders(configuration);

@@ -1,5 +1,5 @@
-using Autodor.Shared.Domain.Common;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
+using SharedKernel;
 
 namespace Autodor.Modules.Contractors.Domain.Aggregates;
 
@@ -10,9 +10,9 @@ public class Contractor : AggregateRoot<ContractorId>
     public Address Address { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
 
-    private Contractor() : base(new ContractorId(Guid.Empty)) { } // EF Constructor
+    private Contractor() { } // EF Constructor
 
-    public Contractor(ContractorId id, TaxId nip, string name, Address address, Email email) : base(id)
+    public Contractor(ContractorId id, TaxId nip, string name, Address address, Email email)
     {
         NIP = nip;
         Name = name;

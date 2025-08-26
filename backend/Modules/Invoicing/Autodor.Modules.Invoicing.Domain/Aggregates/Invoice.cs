@@ -1,7 +1,7 @@
-using Autodor.Shared.Domain.Common;
 using Autodor.Modules.Invoicing.Domain.Entities;
 using Autodor.Modules.Invoicing.Domain.Enums;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
+using SharedKernel;
 
 namespace Autodor.Modules.Invoicing.Domain.Aggregates;
 
@@ -16,13 +16,12 @@ public class Invoice : AggregateRoot<InvoiceId>
     public IReadOnlyList<InvoiceItem> Items => _items.AsReadOnly();
     public decimal TotalAmount => _items.Sum(i => i.TotalPrice);
 
-    private Invoice() : base(new InvoiceId(Guid.Empty)) { } // EF Constructor
+    private Invoice() { } // EF Constructor
 
     public Invoice(
-        InvoiceId id,
         string invoiceNumber,
         DateTime invoiceDate,
-        Guid contractorId) : base(id)
+        Guid contractorId)
     {
         InvoiceNumber = invoiceNumber ?? throw new ArgumentNullException(nameof(invoiceNumber));
         InvoiceDate = invoiceDate;

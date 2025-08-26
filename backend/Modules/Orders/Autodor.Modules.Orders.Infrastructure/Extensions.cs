@@ -1,31 +1,31 @@
 using System.Reflection;
 using Autodor.Modules.Orders.Domain.Abstractions;
-using Autodor.Modules.Orders.Infrastructure.Interceptors;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharedKernel.Infrastructure;
 
 namespace Autodor.Modules.Orders.Infrastructure;
 
 public static class Extensions
 {
     public static IServiceCollection AddOrders(this IServiceCollection services, IConfiguration configuration)
-    {
-        // Rejestracja MediatR
+    {        
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        // Rejestracja interceptorów - EF Core automatycznie je wykryje
-        services.AddSingleton(TimeProvider.System);
-        services.AddScoped<DispatchDomainEventsInterceptor>();
-        services.AddScoped<AuditableEntityInterceptor>();
+        services.AddDbContext<OrdersDbContext>((serviceProvider, options) =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString("OrdersConnection"));
 
-        services.AddDbContext<OrdersDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("OrdersConnection")));
+            // This adds AuditableEntityInterceptor and DispatchDomainEventsInterceptor
+            options.AddInterceptors(serviceProvider);
+        });
 
-        // Rejestracja Repository + UnitOfWork
+        // 3. Register repositories and UnitOfWork
+        services.AddRepositories<OrdersDbContext>();
+
         services.AddScoped<IExcludedOrderRepository, ExcludedOrderRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPolcarDistributorsSalesService, Services.PolcarDistributorsSalesService>();
 
         return services;

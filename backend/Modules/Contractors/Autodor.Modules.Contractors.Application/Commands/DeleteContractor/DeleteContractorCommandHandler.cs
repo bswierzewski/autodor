@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Domain.Abstractions;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Shared.Contracts.Contractors.Commands;
 using MediatR;
+using SharedKernel.Domain.Interfaces;
 
 namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
@@ -25,7 +26,7 @@ public class DeleteContractorCommandHandler : IRequestHandler<DeleteContractorCo
         if (contractor is null)
             throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
 
-        _repository.Delete(contractor);
+        _repository.Remove(contractor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

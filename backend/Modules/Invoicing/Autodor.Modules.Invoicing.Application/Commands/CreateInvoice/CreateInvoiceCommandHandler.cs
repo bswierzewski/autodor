@@ -52,9 +52,8 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
         var productDict = products.ToDictionary(p => p.PartNumber);
 
         // Tworzenie faktury
-        var invoiceId = new InvoiceId(Guid.NewGuid());
         var invoiceNumber = GenerateInvoiceNumber();
-        var invoice = new Invoice(invoiceId, invoiceNumber, DateTime.Now, request.ContractorId);
+        var invoice = new Invoice(invoiceNumber, DateTime.Now, request.ContractorId);
 
         // Dodawanie pozycji faktury na podstawie zamówień
         foreach (var order in orders)
