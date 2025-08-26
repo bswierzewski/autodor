@@ -31,13 +31,11 @@ public class InvoiceItem : Entity<InvoiceItemId>
     {
         Quantity = newQuantity;
         TotalPrice = Quantity * UnitPrice;
-        SetModifiedDate();
     }
 
     public void UpdatePrice(decimal newUnitPrice)
     {
         UnitPrice = newUnitPrice;
         TotalPrice = Quantity * UnitPrice;
-        SetModifiedDate();
     }
 }

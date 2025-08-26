@@ -20,6 +20,5 @@ public class ExcludedOrder : AggregateRoot<Guid>
     public void UpdateReason(string newReason)
     {
         Reason = newReason ?? throw new ArgumentNullException(nameof(newReason));
-        SetModifiedDate();
     }
 }

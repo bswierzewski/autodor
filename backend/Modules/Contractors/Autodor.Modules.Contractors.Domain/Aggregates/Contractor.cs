@@ -25,6 +25,5 @@ public class Contractor : AggregateRoot<ContractorId>
         Name = name;
         Address = address;
         Email = email;
-        SetModifiedDate();
     }
 }

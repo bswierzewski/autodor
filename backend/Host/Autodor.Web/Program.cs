@@ -3,21 +3,19 @@ using Autodor.Modules.Products.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Users.Infrastructure;
+using Autodor.Shared.Application;
 using Autodor.Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Rejestracja MediatR dla wszystkich assembly
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+// First to ensure user services are available for other modules
+builder.Services.AddUsersForWeb(); 
 
-// Rejestracja modułów (USERS FIRST!)
-builder.Services.AddUsersForWeb();                // Users Module FIRST!
-
-builder.Services.AddContractors(builder.Configuration);  // z DbContext
-builder.Services.AddProducts(builder.Configuration);     // bez DbContext (SOAP only)
-builder.Services.AddOrders(builder.Configuration);       // z DbContext (ExcludedOrders)
-builder.Services.AddInvoicingModule();                   // bez DbContext
+builder.Services.AddShared();
+builder.Services.AddContractors(builder.Configuration);
+builder.Services.AddProducts(builder.Configuration);
+builder.Services.AddOrders(builder.Configuration);
+builder.Services.AddInvoicing();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

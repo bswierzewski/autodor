@@ -33,7 +33,6 @@ public class Invoice : AggregateRoot<InvoiceId>
     public void AddItem(InvoiceItem item)
     {
         _items.Add(item ?? throw new ArgumentNullException(nameof(item)));
-        SetModifiedDate();
     }
 
     public void RemoveItem(InvoiceItemId itemId)
@@ -42,45 +41,6 @@ public class Invoice : AggregateRoot<InvoiceId>
         if (item is not null)
         {
             _items.Remove(item);
-            SetModifiedDate();
         }
-    }
-
-    public void ChangeStatus(InvoiceStatus newStatus)
-    {
-        if (Status == newStatus) return;
-
-        Status = newStatus;
-        SetModifiedDate();
-    }
-
-    public void Send()
-    {
-        if (Status != InvoiceStatus.Draft)
-            throw new InvalidOperationException("Only draft invoices can be sent");
-
-        if (!_items.Any())
-            throw new InvalidOperationException("Cannot send invoice without items");
-
-        Status = InvoiceStatus.Sent;
-        SetModifiedDate();
-    }
-
-    public void MarkAsPaid()
-    {
-        if (Status != InvoiceStatus.Sent)
-            throw new InvalidOperationException("Only sent invoices can be marked as paid");
-
-        Status = InvoiceStatus.Paid;
-        SetModifiedDate();
-    }
-
-    public void Cancel()
-    {
-        if (Status == InvoiceStatus.Paid)
-            throw new InvalidOperationException("Cannot cancel paid invoices");
-
-        Status = InvoiceStatus.Cancelled;
-        SetModifiedDate();
     }
 }
