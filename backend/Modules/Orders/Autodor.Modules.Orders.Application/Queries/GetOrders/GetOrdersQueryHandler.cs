@@ -7,14 +7,10 @@ namespace Autodor.Modules.Orders.Application.Queries.GetOrders;
 public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, IEnumerable<GetOrdersDto>>
 {
     private readonly IPolcarDistributorsSalesService _soapService;
-    private readonly IExcludedOrderRepository _excludedRepository;
 
-    public GetOrdersQueryHandler(
-        IPolcarDistributorsSalesService soapService,
-        IExcludedOrderRepository excludedRepository)
+    public GetOrdersQueryHandler(IPolcarDistributorsSalesService soapService)
     {
         _soapService = soapService;
-        _excludedRepository = excludedRepository;
     }
 
     public Task<IEnumerable<GetOrdersDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)

@@ -1,4 +1,3 @@
-using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Shared.Contracts.Orders.Commands;
 using MediatR;
@@ -8,11 +7,11 @@ namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
 public class ExcludeOrderCommandHandler : IRequestHandler<ExcludeOrderCommand, bool>
 {
-    private readonly IExcludedOrderRepository _repository;
+    private readonly IRepository<ExcludedOrder> _repository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ExcludeOrderCommandHandler(
-        IExcludedOrderRepository repository,
+        IRepository<ExcludedOrder> repository,
         IUnitOfWork unitOfWork)
     {
         _repository = repository;

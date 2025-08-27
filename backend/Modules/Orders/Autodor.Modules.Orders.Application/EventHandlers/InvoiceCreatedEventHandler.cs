@@ -9,12 +9,12 @@ namespace Autodor.Modules.Orders.Application.EventHandlers;
 
 public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEvent>
 {
-    private readonly IExcludedOrderRepository _repository;
+    private readonly IRepository<ExcludedOrder> _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InvoiceCreatedEventHandler> _logger;
 
     public InvoiceCreatedEventHandler(
-        IExcludedOrderRepository repository,
+        IRepository<ExcludedOrder> repository,
         IUnitOfWork unitOfWork,
         ILogger<InvoiceCreatedEventHandler> logger)
     {

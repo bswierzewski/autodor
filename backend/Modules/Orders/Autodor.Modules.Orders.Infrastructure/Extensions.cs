@@ -26,7 +26,6 @@ public static class Extensions
         // 3. Register repositories and UnitOfWork
         services.AddRepositories<OrdersDbContext>();
 
-        services.AddScoped<IExcludedOrderRepository, ExcludedOrderRepository>();
         services.AddScoped<IPolcarDistributorsSalesService, Services.PolcarDistributorsSalesService>();
 
         // Rejestracja serwisu do uruchamiania migracji
