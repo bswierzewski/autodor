@@ -1,4 +1,4 @@
-using SharedKernel;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 

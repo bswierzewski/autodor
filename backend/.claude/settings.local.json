@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/D:\\repos\\sharedKernel/**)",
+      "Read(/D:\\repos\\sharedKernel/**)",
+      "Read(/D:\\repos\\sharedKernel/**)",
+      "Read(/D:\\repos\\sharedKernel\\src\\SharedKernel.Domain/**)",
+      "Read(/D:\\repos\\sharedKernel\\src\\SharedKernel.Domain/**)",
+      "Bash(find:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

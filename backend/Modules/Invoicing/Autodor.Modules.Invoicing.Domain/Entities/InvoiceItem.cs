@@ -1,5 +1,5 @@
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using SharedKernel;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Invoicing.Domain.Entities;
 

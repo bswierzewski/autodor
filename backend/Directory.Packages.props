@@ -25,9 +25,9 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 	<!-- SharedKernel -->  
-    <PackageVersion Include="SharedKernel.Domain" Version="0.0.0" />
-    <PackageVersion Include="SharedKernel.Application" Version="0.0.0" />
-    <PackageVersion Include="SharedKernel.Infrastructure" Version="0.0.0" />
+    <PackageVersion Include="SharedKernel.Domain" Version="1.0.0-preview-6" />
+    <PackageVersion Include="SharedKernel.Application" Version="1.0.0-preview-6" />
+    <PackageVersion Include="SharedKernel.Infrastructure" Version="1.0.0-preview-6" />
     <!-- MediatR -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
