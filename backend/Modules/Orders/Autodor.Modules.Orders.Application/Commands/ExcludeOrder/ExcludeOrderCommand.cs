@@ -1,5 +1,5 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Orders.Commands;
+namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
 public record ExcludeOrderCommand(string OrderNumber, string Reason) : IRequest<bool>;

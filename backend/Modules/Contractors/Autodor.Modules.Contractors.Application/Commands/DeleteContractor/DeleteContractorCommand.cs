@@ -1,5 +1,5 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Contractors.Commands;
+namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
 public record DeleteContractorCommand(Guid Id) : IRequest;

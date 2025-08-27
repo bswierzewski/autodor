@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Contractors.Commands;
+namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
 public record CreateContractorCommand(
     string Name,

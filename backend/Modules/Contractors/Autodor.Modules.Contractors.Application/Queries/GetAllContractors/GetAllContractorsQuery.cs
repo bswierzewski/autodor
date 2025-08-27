@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Contractors.Queries;
+namespace Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
 
 public record GetAllContractorsDto(
     Guid Id,

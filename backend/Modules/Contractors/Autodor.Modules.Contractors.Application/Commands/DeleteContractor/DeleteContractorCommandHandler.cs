@@ -1,6 +1,5 @@
 using Autodor.Modules.Contractors.Domain.Abstractions;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using Autodor.Shared.Contracts.Contractors.Commands;
 using MediatR;
 using SharedKernel.Domain.Interfaces;
 

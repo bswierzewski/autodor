@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Orders.Queries;
+namespace Autodor.Modules.Orders.Application.Queries.GetOrders;
 
 public record GetOrdersDto(
     string OrderNumber,

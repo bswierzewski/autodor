@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Invoicing.Commands;
+namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 
 public record CreateInvoiceCommand(
     Guid ContractorId,

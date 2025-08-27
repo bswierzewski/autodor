@@ -1,5 +1,4 @@
 using Autodor.Modules.Orders.Domain.Abstractions;
-using Autodor.Shared.Contracts.Orders.Queries;
 using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByIds;

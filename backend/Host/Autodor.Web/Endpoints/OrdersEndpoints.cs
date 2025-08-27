@@ -1,5 +1,7 @@
-using Autodor.Shared.Contracts.Orders.Commands;
-using Autodor.Shared.Contracts.Orders.Queries;
+using Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
+using Autodor.Modules.Orders.Application.Queries.GetOrders;
+using Autodor.Modules.Orders.Application.Queries.GetOrdersByContractorAndPeriod;
+using Autodor.Modules.Orders.Application.Queries.GetOrdersByIds;
 using MediatR;
 
 namespace Autodor.Web.Endpoints;

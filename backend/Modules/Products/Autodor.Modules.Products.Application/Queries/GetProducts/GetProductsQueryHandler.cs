@@ -1,5 +1,4 @@
 using Autodor.Modules.Products.Domain.Abstractions;
-using Autodor.Shared.Contracts.Products.Queries;
 using MediatR;
 
 namespace Autodor.Modules.Products.Application.Queries.GetProducts;

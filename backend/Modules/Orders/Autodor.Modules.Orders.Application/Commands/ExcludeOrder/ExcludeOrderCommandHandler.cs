@@ -1,5 +1,4 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
-using Autodor.Shared.Contracts.Orders.Commands;
 using MediatR;
 using SharedKernel.Domain.Interfaces;
 

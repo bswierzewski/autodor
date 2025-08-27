@@ -1,5 +1,6 @@
-using Autodor.Shared.Contracts.Contractors.Commands;
-using Autodor.Shared.Contracts.Contractors.Queries;
+using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
+using Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
+using Autodor.Modules.Contractors.Application.Queries.GetContractor;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Invoicing.Commands;
+namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 
 public record CreateBulkInvoicesCommand(
     DateTime DateFrom,

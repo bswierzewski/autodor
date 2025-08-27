@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Contracts" />
+    <Compile Remove="Invoicing\Queries\**" />
+    <EmbeddedResource Remove="Invoicing\Queries\**" />
+    <None Remove="Invoicing\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Invoicing\Queries\" />
+    <PackageReference Include="MediatR.Contracts" />
   </ItemGroup>
 
 </Project>

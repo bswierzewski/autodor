@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Shared.Contracts.Products.Queries;
+namespace Autodor.Modules.Products.Application.Queries.GetProduct;
 
 public record GetProductDto(
     string PartNumber,

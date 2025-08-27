@@ -1,4 +1,4 @@
-using Autodor.Shared.Contracts.Products.Queries;
+using Autodor.Modules.Products.Application.Queries.GetProducts;
 using MediatR;
 
 namespace Autodor.Web.Endpoints;

@@ -1,6 +1,5 @@
 using Autodor.Modules.Contractors.Domain.Abstractions;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using Autodor.Shared.Contracts.Contractors.Queries;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractor;
