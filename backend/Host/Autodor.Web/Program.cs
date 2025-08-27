@@ -3,13 +3,18 @@ using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
+using Autodor.Web.Services;
 using SharedKernel.Application;
+using SharedKernel.Application.Interfaces;
 using SharedKernel.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSharedKernelApplication();
 builder.Services.AddSharedKernelInfrastructure();
+
+// Rejestracja IUser serwisu
+builder.Services.AddScoped<IUser, StaticUserService>();
 
 builder.Services.AddContractors(builder.Configuration);
 builder.Services.AddProducts(builder.Configuration);
