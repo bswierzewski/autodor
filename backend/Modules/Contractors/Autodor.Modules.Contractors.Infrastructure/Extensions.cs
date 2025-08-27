@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autodor.Modules.Contractors.Domain.Abstractions;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using Autodor.Modules.Contractors.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,9 @@ public static class Extensions
 
         // Rejestracja Repository + UnitOfWork
         services.AddScoped<IContractorRepository, ContractorRepository>();
+
+        // Rejestracja serwisu do uruchamiania migracji
+        services.AddHostedService<ContractorsMigrationService>();
 
         return services;
     }

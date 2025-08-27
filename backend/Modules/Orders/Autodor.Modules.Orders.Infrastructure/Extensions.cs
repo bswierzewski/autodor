@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
+using Autodor.Modules.Orders.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,9 @@ public static class Extensions
 
         services.AddScoped<IExcludedOrderRepository, ExcludedOrderRepository>();
         services.AddScoped<IPolcarDistributorsSalesService, Services.PolcarDistributorsSalesService>();
+
+        // Rejestracja serwisu do uruchamiania migracji
+        services.AddHostedService<OrdersMigrationService>();
 
         return services;
     }
