@@ -5,9 +5,9 @@ namespace Autodor.Modules.Orders.Application.Queries.GetOrders;
 
 public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, IEnumerable<GetOrdersDto>>
 {
-    private readonly IPolcarDistributorsSalesService _soapService;
+    private readonly IPolcarOrdersService _soapService;
 
-    public GetOrdersQueryHandler(IPolcarDistributorsSalesService soapService)
+    public GetOrdersQueryHandler(IPolcarOrdersService soapService)
     {
         _soapService = soapService;
     }

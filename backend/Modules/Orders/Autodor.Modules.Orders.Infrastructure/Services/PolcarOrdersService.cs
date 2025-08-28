@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
 using Polly;
 using Polly.Retry;
 using Autodor.Modules.Orders.Domain.Abstractions;
@@ -13,7 +12,6 @@ namespace Autodor.Modules.Orders.Infrastructure.Services;
 public class PolcarOrdersService : IPolcarOrdersService
 {
     private readonly PolcarSalesOptions _options;
-    private readonly IMapper _mapper;
     private readonly ILogger<PolcarOrdersService> _logger;
     private readonly DistributorsSalesServiceSoapClient _soapClient;
 
@@ -21,12 +19,10 @@ public class PolcarOrdersService : IPolcarOrdersService
 
     public PolcarOrdersService(
         IOptions<PolcarSalesOptions> options,
-        IMapper mapper,
         ILogger<PolcarOrdersService> logger,
         DistributorsSalesServiceSoapClient soapClient)
     {
         _options = options.Value;
-        _mapper = mapper;
         _logger = logger;
         _soapClient = soapClient;
 
@@ -63,8 +59,8 @@ public class PolcarOrdersService : IPolcarOrdersService
             if (responseBody.ErrorCode != "0")
                 throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
 
-            if (responseBody.ListOfOrders?.Count > 0)
-                return _mapper.Map<IEnumerable<Order>>(responseBody.ListOfOrders);
+            if (responseBody.ListOfOrders?.Length > 0)
+                return MapDistributorOrdersToOrders(responseBody.ListOfOrders!);
 
             return new List<Order>();
         });
@@ -108,9 +104,66 @@ public class PolcarOrdersService : IPolcarOrdersService
                 throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
 
             if (responseBody != null)
-                return _mapper.Map<Order>(responseBody);
+                return MapToOrder(responseBody);
 
             return new Order();
+        });
+    }
+
+    private IEnumerable<Order> MapDistributorOrdersToOrders(DistributorSalesOrderResponse[] salesOrders)
+    {
+        return salesOrders.Select(so => MapToOrder(so));
+    }
+
+    private Order MapToOrder(SalesOrderResponse salesOrder)
+    {
+        return new Order
+        {
+            Id = salesOrder.OrderID ?? string.Empty,
+            Number = salesOrder.PolcarOrderNumber ?? string.Empty,
+            Date = salesOrder.ShipmentDate,
+            Person = salesOrder.OrderingPerson ?? string.Empty,
+            CustomerNumber = salesOrder.CustomerNumber ?? string.Empty,
+            Items = MapToOrderItems(salesOrder.OrderedItemsResponse)
+        };
+    }
+
+    private Order MapToOrder(DistributorSalesOrderResponse salesOrder)
+    {
+        return new Order
+        {
+            Id = salesOrder.OrderID ?? string.Empty,
+            Number = salesOrder.PolcarOrderNumber ?? string.Empty,
+            Date = salesOrder.ShipmentDate,
+            Person = salesOrder.OrderingPerson ?? string.Empty,
+            CustomerNumber = salesOrder.CustomerNumber ?? string.Empty,
+            Items = MapToOrderItems(salesOrder.OrderedItemsResponse)
+        };
+    }
+
+    private IEnumerable<OrderItem> MapToOrderItems(SalesOrderItemResponse[]? items)
+    {
+        if (items == null) return Enumerable.Empty<OrderItem>();
+
+        return items.Select(item => new OrderItem
+        {
+            PartNumber = item.PolcarPartNumber ?? string.Empty,
+            PartName = item.CustomerPartNumber ?? string.Empty,
+            Quantity = item.QuantityOrdered,
+            TotalPrice = item.CustomerPrice
+        });
+    }
+
+    private IEnumerable<OrderItem> MapToOrderItems(DistributorSalesOrderItemResponse[]? items)
+    {
+        if (items == null) return Enumerable.Empty<OrderItem>();
+
+        return items.Select(item => new OrderItem
+        {
+            PartNumber = item.PartNumber ?? string.Empty,
+            PartName = item.PartNumber ?? string.Empty, // Using PartNumber as name since no separate name field exists
+            Quantity = item.QuantityOrdered,
+            TotalPrice = item.Price
         });
     }
 }

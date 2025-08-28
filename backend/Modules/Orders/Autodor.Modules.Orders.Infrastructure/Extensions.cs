@@ -28,8 +28,6 @@ public static class Extensions
         // 3. Register repositories and UnitOfWork
         services.AddRepositories<OrdersDbContext>();
 
-        services.AddScoped<IPolcarDistributorsSalesService, Services.PolcarDistributorsSalesService>();
-
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<OrdersMigrationService>();
         
@@ -38,9 +36,6 @@ public static class Extensions
         
         // Register SOAP client
         services.AddScoped<DistributorsSalesServiceSoapClient>();
-        
-        // Register AutoMapper
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
         // Register Polcar service
         services.AddScoped<IPolcarOrdersService, PolcarOrdersService>();

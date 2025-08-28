@@ -1,12 +1,11 @@
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Autodor.Modules.Products.Domain.Abstractions;
-using Autodor.Modules.Products.Domain.ValueObjects;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.Helpers;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Products.Infrastructure.Services;
 
@@ -30,7 +29,7 @@ public class PolcarProductsService : IPolcarProductsService
         _logger = logger;
     }
 
-    public async Task<Product> GetProductAsync(string partNumber)
+    public async Task<Domain.ValueObjects.Product> GetProductAsync(string partNumber)
     {
         var allProducts = await GetAllProductsAsync();
         return allProducts.TryGetValue(partNumber, out var product) 
@@ -38,7 +37,7 @@ public class PolcarProductsService : IPolcarProductsService
             : throw new InvalidOperationException($"Product with part number '{partNumber}' not found");
     }
 
-    public async Task<IEnumerable<Product>> GetProductsAsync(IEnumerable<string> partNumbers)
+    public async Task<IEnumerable<Domain.ValueObjects.Product>> GetProductsAsync(IEnumerable<string> partNumbers)
     {
         var allProducts = await GetAllProductsAsync();
         return partNumbers
@@ -47,12 +46,12 @@ public class PolcarProductsService : IPolcarProductsService
             .ToList();
     }
 
-    private async Task<IDictionary<string, Product>> GetAllProductsAsync()
+    private async Task<IDictionary<string, Domain.ValueObjects.Product>> GetAllProductsAsync()
     {
-        if (_cache.TryGetValue(CACHE_KEY_PRODUCTS, out IDictionary<string, Product> cachedProducts))
+        if (_cache.TryGetValue(CACHE_KEY_PRODUCTS, out IDictionary<string, Domain.ValueObjects.Product> cachedProducts))
             return cachedProducts;
 
-        var productsDictionary = new Dictionary<string, Product>();
+        var productsDictionary = new Dictionary<string, Domain.ValueObjects.Product>();
 
         try
         {
@@ -62,9 +61,9 @@ public class PolcarProductsService : IPolcarProductsService
                 LanguageID: _options.LanguageId,
                 FormatID: 1);
 
-            var deserialized = response.Body.GetEAN13ListResult.Deserialize<ProductRoot>();
+            var deserialized = response.Body.GetEAN13ListResult.InnerXml.DeserializeXml<ProductRoot>();
 
-            var products = deserialized.Items.Select(item => new Product(
+            var products = deserialized.Items.Select(item => new Domain.ValueObjects.Product(
                 Name: item.PartName,
                 PartNumber: item.Number
             ));

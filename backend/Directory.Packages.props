@@ -46,10 +46,7 @@
     <PackageVersion Include="System.ServiceModel.Http" Version="6.0.0" />
     <PackageVersion Include="System.ServiceModel.NetTcp" Version="6.0.0" />
     <PackageVersion Include="System.ServiceModel.Security" Version="6.0.0" />
-    <!-- AutoMapper -->
-    <PackageVersion Include="AutoMapper" Version="13.0.1" />
-    <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <!-- Polly -->
-    <PackageVersion Include="Polly" Version="8.4.2" />
+    <PackageVersion Include="Polly" Version="8.6.3" />
   </ItemGroup>
 </Project>

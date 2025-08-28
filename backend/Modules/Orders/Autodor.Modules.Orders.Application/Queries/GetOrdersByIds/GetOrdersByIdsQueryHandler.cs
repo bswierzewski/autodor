@@ -5,11 +5,11 @@ namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByIds;
 
 public class GetOrdersByIdsQueryHandler : IRequestHandler<GetOrdersByIdsQuery, IEnumerable<GetOrdersByIdsDto>>
 {
-    private readonly IPolcarDistributorsSalesService _soapService;
+    private readonly IPolcarOrdersService _ordersService;
 
-    public GetOrdersByIdsQueryHandler(IPolcarDistributorsSalesService soapService)
+    public GetOrdersByIdsQueryHandler(IPolcarOrdersService ordersService)
     {
-        _soapService = soapService;
+        _ordersService = ordersService;
     }
 
     public Task<IEnumerable<GetOrdersByIdsDto>> Handle(GetOrdersByIdsQuery request, CancellationToken cancellationToken)

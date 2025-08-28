@@ -26,11 +26,11 @@ public static class Extensions
         // 3. Register repositories and UnitOfWork
         services.AddRepositories<ContractorsDbContext>();
 
-        // Rejestracja Repository + UnitOfWork
-        services.AddScoped<IContractorRepository, ContractorRepository>();
-
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<ContractorsMigrationService>();
+
+        // Rejestracja Repository + UnitOfWork
+        services.AddScoped<IContractorRepository, ContractorRepository>();
 
         return services;
     }
