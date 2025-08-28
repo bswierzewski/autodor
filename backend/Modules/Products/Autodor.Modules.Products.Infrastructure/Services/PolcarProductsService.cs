@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Autodor.Modules.Products.Domain.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
@@ -13,46 +14,69 @@ public class PolcarProductsService : IPolcarProductsService
 {
     private readonly PolcarProductsOptions _options;
     private readonly ProductsSoapClient _soapClient;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<PolcarProductsService> _logger;
-    private const string CACHE_KEY_PRODUCTS = "PolcarProducts";
+    private readonly IMemoryCache _cache;
+    private const string CacheKey = "products:polcar:all";
 
     public PolcarProductsService(
         IOptions<PolcarProductsOptions> options, 
         ProductsSoapClient soapClient,
-        IMemoryCache cache,
-        ILogger<PolcarProductsService> logger)
+        ILogger<PolcarProductsService> logger,
+        IMemoryCache cache)
     {
         _options = options.Value;
         _soapClient = soapClient;
-        _cache = cache;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<Domain.ValueObjects.Product> GetProductAsync(string partNumber)
     {
-        var allProducts = await GetAllProductsAsync();
-        return allProducts.TryGetValue(partNumber, out var product) 
-            ? product 
-            : throw new InvalidOperationException($"Product with part number '{partNumber}' not found");
+        var productsDictionary = await GetProductDictionaryAsync();
+        
+        if (productsDictionary.TryGetValue(partNumber, out var product))
+        {
+            return product;
+        }
+
+        throw new InvalidOperationException($"Product with part number '{partNumber}' not found");
     }
 
     public async Task<IEnumerable<Domain.ValueObjects.Product>> GetProductsAsync(IEnumerable<string> partNumbers)
     {
-        var allProducts = await GetAllProductsAsync();
-        return partNumbers
-            .Where(partNumber => allProducts.ContainsKey(partNumber))
-            .Select(partNumber => allProducts[partNumber])
-            .ToList();
+        var allProducts = await GetProductDictionaryAsync();
+        
+        var result = new List<Domain.ValueObjects.Product>();
+        foreach (var partNumber in partNumbers)
+        {
+            if (allProducts.TryGetValue(partNumber, out var product))
+            {
+                result.Add(product);
+            }
+        }
+        return result;
     }
 
-    private async Task<IDictionary<string, Domain.ValueObjects.Product>> GetAllProductsAsync()
+    private async Task<ConcurrentDictionary<string, Domain.ValueObjects.Product>> GetProductDictionaryAsync()
     {
-        if (_cache.TryGetValue(CACHE_KEY_PRODUCTS, out IDictionary<string, Domain.ValueObjects.Product> cachedProducts))
-            return cachedProducts;
+        return await _cache.GetOrCreateAsync(CacheKey, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+            _logger.LogInformation("Ładowanie produktów z Polcar i tworzenie słownika dla cache");
 
-        var productsDictionary = new Dictionary<string, Domain.ValueObjects.Product>();
+            var productList = await LoadProductsFromExternalServiceAsync();
 
+            var productDictionary = new ConcurrentDictionary<string, Domain.ValueObjects.Product>(
+                productList.ToDictionary(p => p.PartNumber, p => p)
+            );
+
+            _logger.LogInformation("Stworzono słownik z {Count} produktami dla cache.", productDictionary.Count);
+            return productDictionary;
+        }) ?? new ConcurrentDictionary<string, Domain.ValueObjects.Product>();
+    }
+
+    private async Task<IEnumerable<Domain.ValueObjects.Product>> LoadProductsFromExternalServiceAsync()
+    {
         try
         {
             var response = await _soapClient.GetEAN13ListAsync(
@@ -66,18 +90,15 @@ public class PolcarProductsService : IPolcarProductsService
             var products = deserialized.Items.Select(item => new Domain.ValueObjects.Product(
                 Name: item.PartName,
                 PartNumber: item.Number
-            ));
+            )).ToList();
 
-            foreach (var product in products)
-                productsDictionary[product.PartNumber] = product;
-
-            _cache.Set(CACHE_KEY_PRODUCTS, productsDictionary, TimeSpan.FromHours(1));
+            _logger.LogInformation("Załadowano {Count} produktów z Polcar", products.Count);
+            return products;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to retrieve products from Polcar.");
+            _logger.LogError(ex, "Błąd podczas ładowania produktów z Polcar");
+            throw;
         }
-
-        return productsDictionary;
     }
 }

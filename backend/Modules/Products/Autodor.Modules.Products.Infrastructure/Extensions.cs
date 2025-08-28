@@ -15,16 +15,16 @@ public static class Extensions
         // Rejestracja MediatR
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+        // Rejestracja cache
+        services.AddMemoryCache();
+
         // Rejestracja opcji konfiguracyjnych
         services.Configure<PolcarProductsOptions>(configuration.GetSection(PolcarProductsOptions.SectionName));
-
-        // Rejestracja cache'a
-        services.AddMemoryCache();
 
         // Register SOAP client
         services.AddScoped<ProductsSoapClient>();
         
-        // Rejestracja serwisów
+        // Rejestracja serwisu
         services.AddScoped<IPolcarProductsService, PolcarProductsService>();
 
         return services;
