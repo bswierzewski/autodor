@@ -16,6 +16,9 @@
     <PackageReference Include="System.ServiceModel.Http" />
     <PackageReference Include="System.ServiceModel.NetTcp" />
     <PackageReference Include="System.ServiceModel.Security" />
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <PackageReference Include="Polly" />
   </ItemGroup>
 
   <PropertyGroup>

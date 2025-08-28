@@ -2,6 +2,8 @@ using System.Reflection;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,18 @@ public static class Extensions
 
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<OrdersMigrationService>();
+        
+        // Configure Polcar options
+        services.Configure<PolcarSalesOptions>(configuration.GetSection(PolcarSalesOptions.SectionName));
+        
+        // Register SOAP client
+        services.AddScoped<DistributorsSalesServiceSoapClient>();
+        
+        // Register AutoMapper
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        
+        // Register Polcar service
+        services.AddScoped<IPolcarOrdersService, PolcarOrdersService>();
 
         return services;
     }
