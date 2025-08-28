@@ -1,0 +1,15 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "8.0.0",
+  "options": {
+    "inputs": [
+      "https://dedal.polcar.com/Dystrybutorzy/Products.asmx?wsdl"
+    ],
+    "namespaceMappings": [
+      "*, Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated"
+    ],
+    "outputFile": "PolcarProductsServiceClient.cs",
+    "targetFramework": "net9.0",
+    "typeReuseMode": "All"
+  }
+}
