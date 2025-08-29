@@ -4,7 +4,7 @@
 ## Get latest from `dotnet new gitignore`
 
 # NuGet.config
-NuGet.config
+nuget.config
 
 # Sqlite
 *.db
@@ -492,3 +492,9 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 /src/Web/appsettings.Development.json
+
+# LLM tools settings
+.cursor/
+.claude/
+.gemini/
+.windsurf/
