@@ -7,7 +7,7 @@ using Autodor.Modules.Orders.Domain.Entities;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
 
-namespace Autodor.Modules.Orders.Infrastructure.Services;
+namespace Autodor.Modules.Orders.Infrastructure.Repositories;
 
 public class PolcarOrderRepository : IOrderRepository
 {
