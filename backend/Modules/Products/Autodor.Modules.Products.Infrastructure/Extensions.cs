@@ -25,7 +25,7 @@ public static class Extensions
         services.AddScoped<ProductsSoapClient>();
 
         // Rejestracja serwisu
-        services.AddScoped<IProductsService, PolcarProductsService>();
+        services.AddScoped<IProductRepository, PolcarProductRepository>();
 
         return services;
     }

@@ -9,17 +9,17 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
 
 namespace Autodor.Modules.Orders.Infrastructure.Services;
 
-public class PolcarOrdersService : IPolcarOrdersService
+public class PolcarOrderRepository : IOrderRepository
 {
     private readonly PolcarSalesOptions _options;
-    private readonly ILogger<PolcarOrdersService> _logger;
+    private readonly ILogger<PolcarOrderRepository> _logger;
     private readonly DistributorsSalesServiceSoapClient _soapClient;
 
     private readonly AsyncRetryPolicy _retryPolicy;
 
-    public PolcarOrdersService(
+    public PolcarOrderRepository(
         IOptions<PolcarSalesOptions> options,
-        ILogger<PolcarOrdersService> logger,
+        ILogger<PolcarOrderRepository> logger,
         DistributorsSalesServiceSoapClient soapClient)
     {
         _options = options.Value;
@@ -33,7 +33,7 @@ public class PolcarOrdersService : IPolcarOrdersService
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                 onRetry: (exception, timeSpan, retryCount, context) =>
                 {
-                    _logger.LogError(exception, "Retry {RetryCount} encountered an error: {Message}. Waiting {TimeSpan} before next retry.", 
+                    _logger.LogError(exception, "Retry {RetryCount} encountered an error: {Message}. Waiting {TimeSpan} before next retry.",
                         retryCount, exception.Message, timeSpan);
                 });
     }

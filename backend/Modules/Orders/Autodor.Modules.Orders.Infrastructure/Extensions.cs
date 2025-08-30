@@ -14,7 +14,7 @@ namespace Autodor.Modules.Orders.Infrastructure;
 public static class Extensions
 {
     public static IServiceCollection AddOrders(this IServiceCollection services, IConfiguration configuration)
-    {        
+    {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         services.AddDbContext<OrdersDbContext>((serviceProvider, options) =>
@@ -30,15 +30,15 @@ public static class Extensions
 
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<OrdersMigrationService>();
-        
+
         // Configure Polcar options
         services.Configure<PolcarSalesOptions>(configuration.GetSection(PolcarSalesOptions.SectionName));
-        
+
         // Register SOAP client
         services.AddScoped<DistributorsSalesServiceSoapClient>();
-        
+
         // Register Polcar service
-        services.AddScoped<IPolcarOrdersService, PolcarOrdersService>();
+        services.AddScoped<IOrderRepository, PolcarOrderRepository>();
 
         return services;
     }

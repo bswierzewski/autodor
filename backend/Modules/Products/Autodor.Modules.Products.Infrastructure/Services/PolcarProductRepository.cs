@@ -10,18 +10,18 @@ using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Products.Infrastructure.Services;
 
-public class PolcarProductsService : IPolcarProductsService
+public class PolcarProductRepository : IProductRepository
 {
     private readonly PolcarProductsOptions _options;
     private readonly ProductsSoapClient _soapClient;
-    private readonly ILogger<PolcarProductsService> _logger;
+    private readonly ILogger<PolcarProductRepository> _logger;
     private readonly IMemoryCache _cache;
     private const string CacheKey = "products:polcar:all";
 
-    public PolcarProductsService(
-        IOptions<PolcarProductsOptions> options, 
+    public PolcarProductRepository(
+        IOptions<PolcarProductsOptions> options,
         ProductsSoapClient soapClient,
-        ILogger<PolcarProductsService> logger,
+        ILogger<PolcarProductRepository> logger,
         IMemoryCache cache)
     {
         _options = options.Value;
@@ -33,7 +33,7 @@ public class PolcarProductsService : IPolcarProductsService
     public async Task<Domain.ValueObjects.Product> GetProductAsync(string partNumber)
     {
         var productsDictionary = await GetProductDictionaryAsync();
-        
+
         if (productsDictionary.TryGetValue(partNumber, out var product))
         {
             return product;
@@ -45,7 +45,7 @@ public class PolcarProductsService : IPolcarProductsService
     public async Task<IEnumerable<Domain.ValueObjects.Product>> GetProductsAsync(IEnumerable<string> partNumbers)
     {
         var allProducts = await GetProductDictionaryAsync();
-        
+
         var result = new List<Domain.ValueObjects.Product>();
         foreach (var partNumber in partNumbers)
         {
