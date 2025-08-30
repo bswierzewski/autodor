@@ -1,8 +1,8 @@
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.Helpers;
+using Autodor.Modules.Products.Infrastructure.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -48,13 +48,14 @@ public class PolcarProductService : IPolcarProductService
                     Login: _options.Login,
                     Password: _options.Password,
                     LanguageID: _options.LanguageId,
-                    FormatID: 1);
-
-                var deserialized = response.Body.GetEAN13ListResult.InnerXml.DeserializeXml<ProductRoot>();
+                    FormatID: _options.FormatId);
+                
+                var deserialized = response.Body.GetEAN13ListResult.OuterXml.DeserializeXml<ProductRoot>();
 
                 var products = deserialized.Items.Select(item => new Domain.ValueObjects.Product(
                     Name: item.PartName,
-                    PartNumber: item.Number
+                    PartNumber: item.Number,
+                    Ean: item.EAN13Code
                 )).ToList();
 
                 _logger.LogInformation("Załadowano {Count} produktów z Polcar", products.Count);
@@ -63,7 +64,8 @@ public class PolcarProductService : IPolcarProductService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Błąd podczas ładowania produktów z Polcar");
-                throw;
+
+                return Enumerable.Empty<Domain.ValueObjects.Product>();
             }
         });
     }

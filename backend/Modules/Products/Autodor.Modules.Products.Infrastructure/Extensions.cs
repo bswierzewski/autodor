@@ -3,7 +3,7 @@ using Autodor.Modules.Products.Domain.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Configuration;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
+using Autodor.Modules.Products.Infrastructure.Options;
 using Autodor.Modules.Products.Infrastructure.Persistence;
 using Autodor.Modules.Products.Infrastructure.Repositories;
 using Autodor.Modules.Products.Infrastructure.Services;
@@ -35,7 +35,7 @@ public static class Extensions
         services.Configure<PolcarProductsOptions>(configuration.GetSection(PolcarProductsOptions.SectionName));
 
         // Register SOAP client
-        services.AddScoped<ProductsSoapClient>();
+        services.AddScoped(provider => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap));
 
         // Rejestracja serwisów
         services.AddScoped<IPolcarProductService, PolcarProductService>();

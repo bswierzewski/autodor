@@ -1,8 +1,8 @@
-namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
+namespace Autodor.Modules.Orders.Infrastructure.Options;
 
-public class PolcarProductsOptions
+public class PolcarSalesOptions
 {
-    public const string SectionName = "ExternalServices:Polcar:Products";
+    public const string SectionName = "ExternalServices:Polcar:Sales";
 
     public string Login { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;

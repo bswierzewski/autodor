@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Products.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20250830191907_InitialCreate")]
+    [Migration("20250830194606_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,6 +29,10 @@ namespace Autodor.Modules.Products.Infrastructure.Migrations
                     b.Property<string>("PartNumber")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Ean")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -4,8 +4,8 @@ using Polly;
 using Polly.Retry;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Entities;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
+using Autodor.Modules.Orders.Infrastructure.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure.Repositories;
 
