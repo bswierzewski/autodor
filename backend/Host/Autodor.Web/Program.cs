@@ -17,7 +17,10 @@ builder.Services.AddSharedKernelInfrastructure();
 builder.Services.AddScoped<IUser, StaticUserService>();
 
 builder.Services.AddContractors(builder.Configuration);
-builder.Services.AddProducts(builder.Configuration);
+builder.Services.AddProducts(builder.Configuration, options =>
+{
+    options.AddSynchronization();
+});
 builder.Services.AddOrders(builder.Configuration);
 builder.Services.AddInvoicing();
 

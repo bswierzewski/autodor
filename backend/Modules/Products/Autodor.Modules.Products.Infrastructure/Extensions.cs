@@ -1,7 +1,7 @@
 using System.Reflection;
 using Autodor.Modules.Products.Domain.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
-using Autodor.Modules.Products.Infrastructure.BackgroundServices;
+using Autodor.Modules.Products.Infrastructure.Configuration;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.Persistence;
@@ -12,11 +12,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Infrastructure;
 
-namespace Autodor.Modules.Products.Infrastructure;
-
 public static class Extensions
 {
-    public static IServiceCollection AddProducts(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddProducts(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Action<ProductsModuleConfigurator>? configure = null)
     {
         // Rejestracja MediatR
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
@@ -43,8 +44,12 @@ public static class Extensions
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<ProductsMigrationService>();
 
-        // Rejestracja BackgroundService
-        services.AddHostedService<ProductsSynchronizationService>();
+        // Konfiguracja opcjonalnych serwisów
+        if (configure is not null)
+        {
+            var configurator = new ProductsModuleConfigurator(services);
+            configure(configurator);
+        }
 
         return services;
     }
