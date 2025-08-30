@@ -1,10 +1,16 @@
 using System.Reflection;
 using Autodor.Modules.Products.Domain.Abstractions;
-using Autodor.Modules.Products.Infrastructure.Services;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
+using Autodor.Modules.Products.Infrastructure.Abstractions;
+using Autodor.Modules.Products.Infrastructure.BackgroundServices;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
+using Autodor.Modules.Products.Infrastructure.Persistence;
+using Autodor.Modules.Products.Infrastructure.Repositories;
+using Autodor.Modules.Products.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharedKernel.Infrastructure;
 
 namespace Autodor.Modules.Products.Infrastructure;
 
@@ -15,8 +21,14 @@ public static class Extensions
         // Rejestracja MediatR
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        // Rejestracja cache
-        services.AddMemoryCache();
+        // Rejestracja DbContext
+        services.AddDbContext<ProductsDbContext>((serviceProvider, options) =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString("ProductsConnection"));
+
+            // This adds AuditableEntityInterceptor and DispatchDomainEventsInterceptor
+            options.AddInterceptors(serviceProvider);
+        });
 
         // Rejestracja opcji konfiguracyjnych
         services.Configure<PolcarProductsOptions>(configuration.GetSection(PolcarProductsOptions.SectionName));
@@ -24,8 +36,15 @@ public static class Extensions
         // Register SOAP client
         services.AddScoped<ProductsSoapClient>();
 
-        // Rejestracja serwisu
-        services.AddScoped<IProductRepository, PolcarProductRepository>();
+        // Rejestracja serwisów
+        services.AddScoped<IPolcarProductService, PolcarProductService>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+
+        // Rejestracja serwisu do uruchamiania migracji
+        services.AddHostedService<ProductsMigrationService>();
+
+        // Rejestracja BackgroundService
+        services.AddHostedService<ProductsSynchronizationService>();
 
         return services;
     }
