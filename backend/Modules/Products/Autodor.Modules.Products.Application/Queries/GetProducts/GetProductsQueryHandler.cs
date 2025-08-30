@@ -5,9 +5,9 @@ namespace Autodor.Modules.Products.Application.Queries.GetProducts;
 
 public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, IEnumerable<GetProductsDto>>
 {
-    private readonly IPolcarProductsService _productsService;
+    private readonly IProductsService _productsService;
 
-    public GetProductsQueryHandler(IPolcarProductsService productsService)
+    public GetProductsQueryHandler(IProductsService productsService)
     {
         _productsService = productsService;
     }
