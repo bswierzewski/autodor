@@ -16,7 +16,7 @@ namespace Autodor.Modules.Products.Infrastructure.Migrations
                 {
                     PartNumber = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Name = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    Ean = table.Column<string>(type: "text", nullable: false)
+                    Ean = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {

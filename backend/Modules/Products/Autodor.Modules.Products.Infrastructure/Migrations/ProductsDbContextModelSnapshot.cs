@@ -29,7 +29,8 @@ namespace Autodor.Modules.Products.Infrastructure.Migrations
 
                     b.Property<string>("Ean")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()

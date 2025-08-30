@@ -56,27 +56,46 @@ public class ProductsSynchronizationService : BackgroundService
             _logger.LogInformation("Starting products synchronization from Polcar...");
 
             // Pobierz nowe produkty z SOAP
-            var newProducts = await soapService.GetProductsAsync();
-            var productsList = newProducts.ToList();
+            var newProducts = (await soapService.GetProductsAsync()).ToList();
 
-            if (!productsList.Any())
+            if (!newProducts.Any())
             {
                 _logger.LogWarning("No products received from Polcar, keeping existing data.");
                 return;
             }
 
-            // Usuń wszystkie istniejące produkty i dodaj nowe w jednej transakcji
+            // Porównanie na podstawie PartNumber i synchronizacja zmian
             using var transaction = await context.Database.BeginTransactionAsync();
 
             try
             {
-                await context.Products.ExecuteDeleteAsync();
-                await context.Products.AddRangeAsync(productsList);
-                await context.SaveChangesAsync();
+                _logger.LogInformation("Loading existing PartNumbers for comparison...");
+                
+                // Pobierz tylko PartNumbers z bazy (minimalizuj transfer danych)
+                var existingPartNumbers = await context.Products
+                    .Select(p => p.PartNumber)
+                    .ToHashSetAsync();
+                
+                _logger.LogInformation("Found {Count} existing products in database", existingPartNumbers.Count);
+
+                var newPartNumbers = newProducts
+                    .Select(p => p.PartNumber)
+                    .ToHashSet();
+
+                _logger.LogInformation("Comparing {NewCount} new products with {ExistingCount} existing PartNumbers...", 
+                    newPartNumbers.Count, existingPartNumbers.Count);
+
+                await DeleteProductsAsync(context, existingPartNumbers, newPartNumbers);
+                await AddProductsAsync(context, newProducts, existingPartNumbers);
 
                 await transaction.CommitAsync();
 
-                _logger.LogInformation("Successfully synchronized {Count} products from Polcar.", productsList.Count);
+                var addedCount = newProducts.Count(p => !existingPartNumbers.Contains(p.PartNumber));
+                var deletedCount = existingPartNumbers.Except(newPartNumbers).Count();
+                var unchangedCount = existingPartNumbers.Count - deletedCount;
+                
+                _logger.LogInformation("Successfully synchronized products: {Added} added, {Deleted} deleted, {Unchanged} unchanged",
+                addedCount, deletedCount, unchangedCount);
             }
             catch (Exception ex)
             {
@@ -89,5 +108,35 @@ public class ProductsSynchronizationService : BackgroundService
         {
             _logger.LogError(ex, "Failed to synchronize products from Polcar. Keeping existing data.");
         }
+    }
+
+    private async Task DeleteProductsAsync(ProductsDbContext context, HashSet<string> existingPartNumbers, HashSet<string> newPartNumbers)
+    {
+        // Produkty do usunięcia (PartNumbers które już nie istnieją w nowych danych)
+        var partNumbersToDelete = existingPartNumbers.Except(newPartNumbers).ToHashSet();
+        
+        if (!partNumbersToDelete.Any())
+            return;
+
+        await context.Products
+            .Where(p => partNumbersToDelete.Contains(p.PartNumber))
+            .ExecuteDeleteAsync();
+        
+        _logger.LogInformation("Deleted {Count} products", partNumbersToDelete.Count);
+    }
+
+    private async Task AddProductsAsync(ProductsDbContext context, List<Domain.ValueObjects.Product> newProducts, HashSet<string> existingPartNumbers)
+    {
+        // Produkty do dodania (nowe PartNumbers)
+        var productsToAdd = newProducts
+            .Where(p => !existingPartNumbers.Contains(p.PartNumber))
+            .ToList();
+        
+        if (!productsToAdd.Any())
+            return;
+
+        await context.Products.AddRangeAsync(productsToAdd);
+        await context.SaveChangesAsync();
+        _logger.LogInformation("Added {Count} new products", productsToAdd.Count);
     }
 }

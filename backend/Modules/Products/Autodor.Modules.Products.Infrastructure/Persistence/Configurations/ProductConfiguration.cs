@@ -17,5 +17,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.PartNumber)
             .IsRequired()
             .HasMaxLength(100);
+
+        builder.Property(x => x.Ean)
+            .IsRequired()
+            .HasMaxLength(20);
     }
 }
