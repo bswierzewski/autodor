@@ -1,7 +1,6 @@
 using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
-using Autodor.Modules.Products.Infrastructure;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

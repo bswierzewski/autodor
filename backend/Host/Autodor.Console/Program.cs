@@ -5,11 +5,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
 
-var configuration = Extensions.CreateConfiguration();
+var configuration = Autodor.Console.Extensions.CreateConfiguration();
 
 using IHost host = configuration.CreateHostBuilder().Build();
 
-Extensions.ConfigureLogging();
+Autodor.Console.Extensions.ConfigureLogging();
 
 using var scope = host.Services.CreateScope();
 var services = scope.ServiceProvider;

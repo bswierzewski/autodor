@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Infrastructure;
+using Autodor.Modules.Orders.Infrastructure.Repositories;
 
 namespace Autodor.Modules.Orders.Infrastructure;
 
