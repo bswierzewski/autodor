@@ -1,6 +1,7 @@
 using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
+using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
 using Autodor.Web.Services;
 using SharedKernel.Application;
