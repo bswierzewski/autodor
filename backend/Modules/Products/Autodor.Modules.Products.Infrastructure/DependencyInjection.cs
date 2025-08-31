@@ -1,4 +1,5 @@
 using System.Reflection;
+using Autodor.Modules.Products.Application;
 using Autodor.Modules.Products.Domain.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Configuration;
@@ -12,9 +13,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Infrastructure;
 
-public static class Extensions
+namespace Autodor.Modules.Products.Infrastructure;
+
+public static class DependencyInjection
 {
     public static IServiceCollection AddProducts(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Action<ProductsModuleConfigurator>? configure = null)
+    {
+        services.AddApplication();
+        services.AddInfrastructure(configuration, configure);
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)

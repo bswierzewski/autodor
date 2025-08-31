@@ -1,4 +1,5 @@
 using System.Reflection;
+using Autodor.Modules.Orders.Application;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services;
@@ -12,9 +13,17 @@ using Autodor.Modules.Orders.Infrastructure.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure;
 
-public static class Extensions
+public static class DependencyInjection
 {
     public static IServiceCollection AddOrders(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddApplication();
+        services.AddInfrastructure(configuration);
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 

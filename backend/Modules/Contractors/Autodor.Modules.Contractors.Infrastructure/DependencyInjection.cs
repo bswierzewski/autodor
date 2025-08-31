@@ -1,4 +1,5 @@
 using System.Reflection;
+using Autodor.Modules.Contractors.Application;
 using Autodor.Modules.Contractors.Domain.Abstractions;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Contractors.Infrastructure.Services;
@@ -9,9 +10,17 @@ using SharedKernel.Infrastructure;
 
 namespace Autodor.Modules.Contractors.Infrastructure;
 
-public static class Extensions
+public static class DependencyInjection
 {
     public static IServiceCollection AddContractors(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddApplication();
+        services.AddInfrastructure(configuration);
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));        
 
