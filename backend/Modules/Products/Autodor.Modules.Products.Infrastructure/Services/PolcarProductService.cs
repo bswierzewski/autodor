@@ -38,7 +38,7 @@ public class PolcarProductService : IPolcarProductService
                 });
     }
 
-    public async Task<IEnumerable<Domain.ValueObjects.Product>> GetProductsAsync()
+    public async Task<IEnumerable<Domain.Aggregates.Product>> GetProductsAsync()
     {
         return await _retryPolicy.ExecuteAsync(async () =>
         {
@@ -52,11 +52,12 @@ public class PolcarProductService : IPolcarProductService
                 
                 var deserialized = response.Body.GetEAN13ListResult.OuterXml.DeserializeXml<ProductRoot>();
 
-                var products = deserialized.Items.Select(item => new Domain.ValueObjects.Product(
-                    Name: item.PartName,
-                    PartNumber: item.Number,
-                    Ean: item.EAN13Code
-                )).ToList();
+                var products = deserialized.Items.Select(item => new Domain.Aggregates.Product
+                {
+                    Name = item.PartName,
+                    PartNumber = item.Number,
+                    Ean = item.EAN13Code
+                }).ToList();
 
                 _logger.LogInformation("Załadowano {Count} produktów z Polcar", products.Count);
                 return products;
@@ -65,7 +66,7 @@ public class PolcarProductService : IPolcarProductService
             {
                 _logger.LogError(ex, "Błąd podczas ładowania produktów z Polcar");
 
-                return Enumerable.Empty<Domain.ValueObjects.Product>();
+                return Enumerable.Empty<Domain.Aggregates.Product>();
             }
         });
     }

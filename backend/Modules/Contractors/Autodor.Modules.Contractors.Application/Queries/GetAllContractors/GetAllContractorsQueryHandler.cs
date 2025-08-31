@@ -1,13 +1,14 @@
-using Autodor.Modules.Contractors.Domain.Abstractions;
+using Autodor.Modules.Contractors.Domain.Aggregates;
 using MediatR;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
 
 public class GetAllContractorsQueryHandler : IRequestHandler<GetAllContractorsQuery, IEnumerable<GetAllContractorsDto>>
 {
-    private readonly IContractorRepository _repository;
+    private readonly IRepository<Contractor> _repository;
 
-    public GetAllContractorsQueryHandler(IContractorRepository repository)
+    public GetAllContractorsQueryHandler(IRepository<Contractor> repository)
     {
         _repository = repository;
     }

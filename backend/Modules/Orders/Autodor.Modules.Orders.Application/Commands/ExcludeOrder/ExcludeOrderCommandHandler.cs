@@ -1,6 +1,6 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using MediatR;
-using SharedKernel.Domain.Interfaces;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 

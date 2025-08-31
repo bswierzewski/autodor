@@ -1,15 +1,15 @@
 using System.Reflection;
 using Autodor.Modules.Orders.Application;
 using Autodor.Modules.Orders.Domain.Abstractions;
-using Autodor.Modules.Orders.Infrastructure.Persistence;
-using Autodor.Modules.Orders.Infrastructure.Services;
+using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
+using Autodor.Modules.Orders.Infrastructure.Options;
+using Autodor.Modules.Orders.Infrastructure.Persistence;
+using Autodor.Modules.Orders.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharedKernel.Infrastructure;
-using Autodor.Modules.Orders.Infrastructure.Repositories;
-using Autodor.Modules.Orders.Infrastructure.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure;
 
@@ -35,11 +35,11 @@ public static class DependencyInjection
             options.AddInterceptors(serviceProvider);
         });
 
-        // 3. Register repositories and UnitOfWork
-        services.AddRepositories<OrdersDbContext>();
-
-        // Rejestracja serwisu do uruchamiania migracji
-        services.AddHostedService<OrdersMigrationService>();
+        services.AddModuleContext<OrdersDbContext>(module =>
+        {
+            module.AddMigrations();
+            module.AddRepository<ExcludedOrder>();
+        });
 
         // Configure Polcar options
         services.Configure<PolcarSalesOptions>(configuration.GetSection(PolcarSalesOptions.SectionName));

@@ -1,13 +1,11 @@
 using System.Reflection;
 using Autodor.Modules.Products.Application;
-using Autodor.Modules.Products.Domain.Abstractions;
+using Autodor.Modules.Products.Domain.Aggregates;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Api;
 using Autodor.Modules.Products.Infrastructure.Configuration;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.Options;
 using Autodor.Modules.Products.Infrastructure.Persistence;
-using Autodor.Modules.Products.Infrastructure.Repositories;
 using Autodor.Modules.Products.Infrastructure.Services;
 using Autodor.Shared.Contracts.Products;
 using Microsoft.EntityFrameworkCore;
@@ -26,10 +24,10 @@ public static class DependencyInjection
     {
         services.AddApplication();
         services.AddInfrastructure(configuration, configure);
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -47,21 +45,24 @@ public static class DependencyInjection
             options.AddInterceptors(serviceProvider);
         });
 
+        services.AddModuleContext<ProductsDbContext>(module =>
+        {
+            module.AddMigrations();
+            module.AddRepository<Product>();
+        });
+
         // Rejestracja opcji konfiguracyjnych
         services.Configure<PolcarProductsOptions>(configuration.GetSection(PolcarProductsOptions.SectionName));
 
         // Register SOAP client
-        services.AddScoped(provider => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap));
+        services.AddScoped(provider => new ExternalServices.Polcar.Generated.ProductsSoapClient(ExternalServices.Polcar.Generated.ProductsSoapClient.EndpointConfiguration.ProductsSoap));
 
         // Rejestracja serwisów
         services.AddScoped<IPolcarProductService, PolcarProductService>();
-        services.AddScoped<IProductRepository, ProductRepository>();
 
         // Rejestracja publicznego API dla innych modułów
         services.AddScoped<IProductsApi, ProductsApi>();
 
-        // Rejestracja serwisu do uruchamiania migracji
-        services.AddHostedService<ProductsMigrationService>();
 
         // Konfiguracja opcjonalnych serwisów
         if (configure is not null)

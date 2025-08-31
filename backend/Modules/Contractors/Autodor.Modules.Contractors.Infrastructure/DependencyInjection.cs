@@ -1,8 +1,7 @@
 using System.Reflection;
 using Autodor.Modules.Contractors.Application;
-using Autodor.Modules.Contractors.Domain.Abstractions;
+using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
-using Autodor.Modules.Contractors.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,14 +31,12 @@ public static class DependencyInjection
             options.AddInterceptors(serviceProvider);
         });
 
-        // 3. Register repositories and UnitOfWork
-        services.AddRepositories<ContractorsDbContext>();
-
-        // Rejestracja serwisu do uruchamiania migracji
-        services.AddHostedService<ContractorsMigrationService>();
-
-        // Rejestracja Repository + UnitOfWork
-        services.AddScoped<IContractorRepository, ContractorRepository>();
+        // DbContext
+        services.AddModuleContext<ContractorsDbContext>(module =>
+        {
+            module.AddMigrations();
+            module.AddRepository<Contractor>();
+        });
 
         return services;
     }

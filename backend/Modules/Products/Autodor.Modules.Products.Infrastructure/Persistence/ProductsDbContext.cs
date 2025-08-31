@@ -1,4 +1,4 @@
-using Autodor.Modules.Products.Domain.ValueObjects;
+using Autodor.Modules.Products.Domain.Aggregates;
 using Autodor.Modules.Products.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 

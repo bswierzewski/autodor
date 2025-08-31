@@ -1,9 +1,8 @@
-using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Shared.Contracts.Invoicing.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Domain.Interfaces;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Orders.Application.EventHandlers;
 

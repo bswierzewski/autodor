@@ -1,17 +1,17 @@
-using Autodor.Modules.Contractors.Domain.Abstractions;
+using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using MediatR;
-using SharedKernel.Domain.Interfaces;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
 public class DeleteContractorCommandHandler : IRequestHandler<DeleteContractorCommand>
 {
-    private readonly IContractorRepository _repository;
+    private readonly IRepository<Contractor> _repository;
     private readonly IUnitOfWork _unitOfWork;
 
     public DeleteContractorCommandHandler(
-        IContractorRepository repository,
+        IRepository<Contractor> repository,
         IUnitOfWork unitOfWork)
     {
         _repository = repository;

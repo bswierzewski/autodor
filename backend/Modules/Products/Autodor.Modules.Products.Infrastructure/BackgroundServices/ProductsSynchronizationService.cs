@@ -1,3 +1,4 @@
+using Autodor.Modules.Products.Domain.Aggregates;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -125,7 +126,7 @@ public class ProductsSynchronizationService : BackgroundService
         _logger.LogInformation("Deleted {Count} products", partNumbersToDelete.Count);
     }
 
-    private async Task AddProductsAsync(ProductsDbContext context, List<Domain.ValueObjects.Product> newProducts, HashSet<string> existingPartNumbers)
+    private async Task AddProductsAsync(ProductsDbContext context, List<Product> newProducts, HashSet<string> existingPartNumbers)
     {
         // Produkty do dodania (nowe PartNumbers)
         var productsToAdd = newProducts

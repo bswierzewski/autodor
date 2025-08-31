@@ -1,20 +1,16 @@
-using Autodor.Modules.Products.Domain.Abstractions;
+using Autodor.Modules.Products.Domain.Aggregates;
 using MediatR;
+using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Products.Application.Queries.GetProducts;
 
-public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, IEnumerable<GetProductsDto>>
+public class GetProductsQueryHandler(IRepository<Product> repository) 
+    : IRequestHandler<GetProductsQuery, IEnumerable<GetProductsDto>>
 {
-    private readonly IProductRepository _productsService;
-
-    public GetProductsQueryHandler(IProductRepository productsService)
-    {
-        _productsService = productsService;
-    }
-
     public async Task<IEnumerable<GetProductsDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await _productsService.GetProductsAsync(request.PartNumbers);
+        var products = await repository.FindAsync(x => request.PartNumbers.Contains(x.PartNumber));
+
         return products.Select(p => new GetProductsDto(p.PartNumber, p.Name, p.Ean));
     }
 }

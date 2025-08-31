@@ -1,3 +1,4 @@
+using Autodor.Modules.Products.Application.Queries.GetProduct;
 using Autodor.Modules.Products.Application.Queries.GetProducts;
 using MediatR;
 
@@ -17,34 +18,15 @@ public static class ProductsEndpoints
         .WithName("GetProducts")
         .WithSummary("Get products by part numbers");
 
-        group.MapGet("/search", async (IMediator mediator, string? searchTerm = null, int page = 1, int pageSize = 20) =>
+
+        group.MapGet("/{partNumber}", async (string partNumber, IMediator mediator) =>
         {
-            // Dla uproszczenia używamy tego samego query - w rzeczywistej implementacji byłby osobny SearchProductsQuery
-            var allProducts = await mediator.Send(new GetProductsQuery(Array.Empty<string>()));
-            
-            var filteredProducts = allProducts.AsEnumerable();
-            
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                filteredProducts = filteredProducts.Where(p => 
-                    p.PartNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var pagedResults = filteredProducts
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
-
-            return Results.Ok(new 
-            { 
-                Products = pagedResults,
-                Page = page,
-                PageSize = pageSize,
-                Total = filteredProducts.Count()
-            });
+            var product = await mediator.Send(new GetProductQuery(partNumber));
+            // Rozważenie obsługi przypadku, gdy produkt nie zostanie znaleziony
+            return product is not null ? Results.Ok(product) : Results.NotFound();
         })
-        .WithName("SearchProducts")
-        .WithSummary("Search products with pagination");
+        .WithName("GetProduct") // Zmieniono nazwę na unikalną
+        .WithSummary("Get product by part number"); // Zaktualizowano podsumowanie
 
         return app;
     }

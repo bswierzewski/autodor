@@ -1,4 +1,4 @@
-using Autodor.Modules.Products.Domain.ValueObjects;
+using Autodor.Modules.Products.Domain.Aggregates;
 
 namespace Autodor.Modules.Products.Infrastructure.Abstractions;
 
