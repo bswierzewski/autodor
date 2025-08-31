@@ -38,10 +38,10 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
         
         if (productDetails != null)
         {
-            _logger.LogInformation("Found product: {Name} (Part: {PartNumber}) - Price: {Price:C}", 
+            _logger.LogInformation("Found product: {Name} (Part: {PartNumber}, Ean: {Ean})", 
                 productDetails.Name, 
                 productDetails.PartNumber, 
-                productDetails.Price);
+                productDetails.Ean);
         }
         else
         {

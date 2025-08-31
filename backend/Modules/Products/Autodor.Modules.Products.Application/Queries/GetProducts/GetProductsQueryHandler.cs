@@ -15,6 +15,6 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, IEnumer
     public async Task<IEnumerable<GetProductsDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var products = await _productsService.GetProductsAsync(request.PartNumbers);
-        return products.Select(p => new GetProductsDto(p.PartNumber, p.Name));
+        return products.Select(p => new GetProductsDto(p.PartNumber, p.Name, p.Ean));
     }
 }

@@ -19,6 +19,6 @@ public class GetProductQueryHandler : IRequestHandler<GetProductQuery, GetProduc
         if (product == null || string.IsNullOrEmpty(product.Name))
             return null;
 
-        return new GetProductDto(product.PartNumber, product.Name);
+        return new GetProductDto(product.PartNumber, product.Name, product.Ean);
     }
 }
