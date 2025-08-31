@@ -1,0 +1,14 @@
+{
+  "tool_config": {
+    "PostToolUse": {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "command": "dotnet format \"$CLAUDE_TOOL_INPUT_FILE_PATH\"",
+          "description": "Auto-formats C# files after they are written or edited by Claude.",
+          "show_output": false
+        }
+      ]
+    }
+  }
+}
