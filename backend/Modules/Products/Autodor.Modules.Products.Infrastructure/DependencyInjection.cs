@@ -2,12 +2,14 @@ using System.Reflection;
 using Autodor.Modules.Products.Application;
 using Autodor.Modules.Products.Domain.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Abstractions;
+using Autodor.Modules.Products.Infrastructure.Api;
 using Autodor.Modules.Products.Infrastructure.Configuration;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.Options;
 using Autodor.Modules.Products.Infrastructure.Persistence;
 using Autodor.Modules.Products.Infrastructure.Repositories;
 using Autodor.Modules.Products.Infrastructure.Services;
+using Autodor.Shared.Contracts.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +56,9 @@ public static class DependencyInjection
         // Rejestracja serwisów
         services.AddScoped<IPolcarProductService, PolcarProductService>();
         services.AddScoped<IProductRepository, ProductRepository>();
+
+        // Rejestracja publicznego API dla innych modułów
+        services.AddScoped<IProductsApi, ProductsApi>();
 
         // Rejestracja serwisu do uruchamiania migracji
         services.AddHostedService<ProductsMigrationService>();

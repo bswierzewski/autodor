@@ -2,6 +2,7 @@ using Autodor.Modules.Invoicing.Domain.Aggregates;
 using Autodor.Modules.Invoicing.Domain.Entities;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Shared.Contracts.Invoicing.Events;
+using Autodor.Shared.Contracts.Products;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,18 +12,51 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
 {
     private readonly IMediator _mediator;
     private readonly ILogger<CreateInvoiceCommandHandler> _logger;
+    private readonly IProductsApi _productsApi;
 
-    public CreateInvoiceCommandHandler(IMediator mediator, ILogger<CreateInvoiceCommandHandler> logger)
+    public CreateInvoiceCommandHandler(
+        IMediator mediator, 
+        ILogger<CreateInvoiceCommandHandler> logger,
+        IProductsApi productsApi)
     {
         _mediator = mediator;
         _logger = logger;
+        _productsApi = productsApi;
     }
 
     public async Task<Guid> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException("Invoice creation is not implemented yet.");
-        //_logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders", 
-        //    request.ContractorId, request.OrderNumbers.Count());
+        _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders", 
+            request.ContractorId, request.OrderNumbers.Count());
+
+        // PRZYKŁAD UŻYCIA API: Pobieranie konkretnego produktu
+        const string specificPartNumber = "007935016720";
+        
+        _logger.LogInformation("Fetching product details for part number: {PartNumber}", specificPartNumber);
+        
+        var productDetails = await _productsApi.GetProductByPartNumberAsync(specificPartNumber, cancellationToken);
+        
+        if (productDetails != null)
+        {
+            _logger.LogInformation("Found product: {Name} (Part: {PartNumber}) - Price: {Price:C}", 
+                productDetails.Name, 
+                productDetails.PartNumber, 
+                productDetails.Price);
+        }
+        else
+        {
+            _logger.LogWarning("Product {PartNumber} not found in Products module", specificPartNumber);
+        }
+
+        // Tymczasowo zwracamy nowy GUID, docelowo będzie to ID utworzonej faktury
+        var invoiceId = Guid.NewGuid();
+        
+        _logger.LogInformation("Invoice created with ID: {InvoiceId}", invoiceId);
+        
+        return invoiceId;
+        
+        // TODO: Pełna implementacja tworzenia faktury
+        // throw new NotImplementedException("Full invoice creation is not implemented yet.");
 
         //// Pobierz dane kontrahenta z modułu Contractors
         //var contractor = await _mediator.Send(new GetContractorQuery(request.ContractorId), cancellationToken);
