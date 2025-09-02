@@ -1,12 +1,8 @@
 using System.Text;
-using System.Text.Json;
 using Application.Common.Extensions;
 using Application.Common.Interfaces;
 using Application.Common.Options;
 using Application.Interfaces;
-using Application.Invoices.Commands.DTOs;
-using Application.Invoices.Extensions;
-using AutoMapper;
 using Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,9 +15,9 @@ public class CreateAllInvoicesCommand : IRequest<Unit>
     public DateTime DateTo { get; set; }
 }
 
-public class CreateAllInvoicesCommandHandler(IMapper mapper,
+public class CreateAllInvoicesCommandHandler(
     IApplicationDbContext context,
-    IFirmaService firmaService,
+    IInvoiceService invoiceService,
     IDistributorsSalesService distributorsSalesService,
     IProductsService productsService,
     INotificationService notificationService,
@@ -32,7 +28,7 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
     public async Task<Unit> Handle(CreateAllInvoicesCommand request, CancellationToken cancellationToken)
     {
         var orders = new List<Order>();
-        var responses = new List<InvoiceResponseDto>();
+        var responses = new List<(string CustomerNumber, bool IsSuccess, string ErrorMessage)>();
 
         // Fetch products and contractors concurrently
         var productsTask = productsService.GetProductsAsync();
@@ -64,7 +60,7 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
         {
             try
             {
-                var pozycje = new List<Pozycje>();
+                var invoiceItems = new List<InvoiceItem>();
 
                 var items = groupedOrder.Value.SelectMany(x => x.Items);
 
@@ -74,43 +70,32 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
                         continue;
 
                     var existsName = products.ContainsKey(item?.PartNumber ?? "");
+                    var productName = existsName ? products[item.PartNumber].Name : item.PartNumber;
+                    var fullName = existsName ? $"{productName} ({item.PartNumber})" : item.PartNumber;
 
-                    pozycje.Add(new Pozycje
+                    invoiceItems.Add(new InvoiceItem
                     {
-                        Ilosc = item.Quantity,
-                        CenaJednostkowa = (float)Math.Round(item.TotalPrice * 1.23M, 2),
-                        Jednostka = "sztuk",
-                        NazwaPelna = $"{(existsName ? products[item.PartNumber].Name : item.PartNumber)}{(existsName ? $" ({item.PartNumber})" : "")}",
-                        StawkaVat = 0.23M,
-                        TypStawkiVat = "PRC",
+                        Name = fullName,
+                        Unit = "sztuk",
+                        Quantity = item.Quantity,
+                        UnitPrice = Math.Round(item.TotalPrice, 2),
+                        VatRate = 0.23M,
+                        VatType = "PRC"
                     });
                 }
 
                 var contractor = contractors.FirstOrDefault(x => groupedOrder.Key.Contains(x.NIP))
                     ?? throw new Exception($"Podany CustomerNumber nie pasuje do żadnego kontrahenta. Zweryfikuj poprawność danych.");
 
-                var invoice = CreateInvoiceDto(contractor, pozycje);
+                var invoice = CreateInvoice(contractor, invoiceItems);
 
-                var response = await firmaService.AddInvoice(invoice);
+                var result = await invoiceService.AddInvoice(invoice);
 
-                var responseText = await response.Content.ReadAsStringAsync();
-
-                var result = JsonSerializer.Deserialize<InvoiceResponseDto>(responseText);
-                result.CustomerNumber = groupedOrder.Key;
-
-                responses.Add(result);
+                responses.Add((result.IsSuccess ? result.Value : groupedOrder.Key, result.IsSuccess, result.Error));
             }
             catch (Exception ex)
             {
-                responses.Add(new InvoiceResponseDto
-                {
-                    CustomerNumber = groupedOrder.Key,
-                    Response = new ResponseDto
-                    {
-                        Kod = 500,
-                        Informacja = ex.Message
-                    }
-                });
+                responses.Add((groupedOrder.Key, false, ex.Message));
 
                 logger.LogError(ex, ex.Message);
             }
@@ -121,21 +106,21 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
         return await Task.FromResult(Unit.Value);
     }
 
-    private InvoiceDto CreateInvoiceDto(Contractor contractor, List<Pozycje> pozycje)
+    private Invoice CreateInvoice(Contractor contractor, List<InvoiceItem> items)
     {
-        var invoice = InvoiceExtensions.CreateDefaultInvoiceDto(pozycje);
-
-        var kontrahent = mapper.Map<Kontrahent>(contractor);
-
-        invoice.Numer = null;
-        invoice.DataWystawienia = DateTime.Now.ToString("yyyy-MM-dd");
-        invoice.DataSprzedazy = DateTime.Now.ToString("yyyy-MM-dd");
-        invoice.Kontrahent = kontrahent;
-
-        return invoice;
+        return new Invoice
+        {
+            Number = null, // Auto-generated
+            IssueDate = DateTime.Now,
+            SaleDate = DateTime.Now,
+            PaymentDue = DateTime.Now.AddDays(30),
+            ContractorId = contractor.Id,
+            Contractor = contractor,
+            Items = items
+        };
     }
 
-    private string FormatResponses(List<InvoiceResponseDto> responses)
+    private string FormatResponses(List<(string CustomerNumber, bool IsSuccess, string ErrorMessage)> responses)
     {
         if (responses.Count == 0)
             return "<h3>Brak faktur do wystawienia w podanym zakresie dat.</h3>";
@@ -151,17 +136,17 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
         sb.AppendLine(".error { color: red; }");
         sb.AppendLine("</style></head><body>");
 
-        var correctResponses = responses.Where(x => x.Response.Kod == 0).ToList();
-        var errorResponses = responses.Where(x => x.Response.Kod > 0).ToList();
+        var correctResponses = responses.Where(x => x.IsSuccess).ToList();
+        var errorResponses = responses.Where(x => !x.IsSuccess).ToList();
 
         if (correctResponses.Count > 0)
         {
             sb.AppendLine("<h2><span class='success'>✔</span> Poprawnie wystawione faktury</h2>");
             sb.AppendLine("<table>");
-            sb.AppendLine("<tr><th>Numer Klienta</th><th>Kod</th><th>Informacja</th></tr>");
+            sb.AppendLine("<tr><th>Numer Klienta</th><th>Status</th></tr>");
             foreach (var response in correctResponses)
             {
-                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>{response.Response.Kod}</td><td>{response.Response.Informacja}</td></tr>");
+                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>Sukces</td></tr>");
             }
             sb.AppendLine("</table>");
         }
@@ -170,10 +155,10 @@ public class CreateAllInvoicesCommandHandler(IMapper mapper,
         {
             sb.AppendLine("<h2><span class='error'>✖</span> Wykryte błędy</h2>");
             sb.AppendLine("<table>");
-            sb.AppendLine("<tr><th>Numer Klienta</th><th>Kod</th><th>Informacja</th></tr>");
+            sb.AppendLine("<tr><th>Numer Klienta</th><th>Błąd</th></tr>");
             foreach (var response in errorResponses)
             {
-                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>{response.Response.Kod}</td><td>{response.Response.Informacja}</td></tr>");
+                sb.AppendLine($"<tr><td>{response.CustomerNumber}</td><td>{response.ErrorMessage}</td></tr>");
             }
             sb.AppendLine("</table>");
         }

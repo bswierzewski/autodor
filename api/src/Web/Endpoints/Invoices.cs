@@ -1,5 +1,5 @@
 ﻿using Application.Invoices.Commands.CreateInvoice;
-using Application.Invoices.Commands.DTOs;
+using Application.Common;
 using Application.Invoices.Commands.PrintInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ namespace Web.Endpoints
                 .MapPost(CreateInvoice);
         }
 
-        public async Task<InvoiceResponseDto> CreateInvoice(ISender sender, CreateInvoiceCommand command)
+        public async Task<Result<string>> CreateInvoice(ISender sender, CreateInvoiceCommand command)
         {
             return await sender.Send(command);
         }
