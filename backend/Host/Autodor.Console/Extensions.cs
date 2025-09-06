@@ -7,8 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using SharedKernel.Application;
-using SharedKernel.Infrastructure;
+using BuildingBlocks.Application;
+using BuildingBlocks.Infrastructure;
 
 namespace Autodor.Console;
 
@@ -31,8 +31,8 @@ public static class Extensions
             {
                 // First to ensure user services are available for other modules
 
-                services.AddSharedKernelApplication();
-                services.AddSharedKernelInfrastructure();
+                services.AddSingleton(TimeProvider.System);
+                // Dodanie serwisu IUser
 
                 services.AddContractors(configuration);
                 services.AddProducts(configuration);

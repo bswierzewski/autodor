@@ -1,20 +1,16 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
+using Autodor.Modules.Orders.Application.Interfaces;
 using MediatR;
-using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
 public class ExcludeOrderCommandHandler : IRequestHandler<ExcludeOrderCommand, bool>
 {
-    private readonly IRepository<ExcludedOrder> _repository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IOrdersWriteDbContext _writeDbContext;
 
-    public ExcludeOrderCommandHandler(
-        IRepository<ExcludedOrder> repository,
-        IUnitOfWork unitOfWork)
+    public ExcludeOrderCommandHandler(IOrdersWriteDbContext writeDbContext)
     {
-        _repository = repository;
-        _unitOfWork = unitOfWork;
+        _writeDbContext = writeDbContext;
     }
 
     public async Task<bool> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
@@ -24,8 +20,8 @@ public class ExcludeOrderCommandHandler : IRequestHandler<ExcludeOrderCommand, b
             request.Reason,
             DateTime.UtcNow);
 
-        await _repository.AddAsync(excludedOrder);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _writeDbContext.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }

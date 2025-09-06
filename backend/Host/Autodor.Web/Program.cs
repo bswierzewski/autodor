@@ -4,16 +4,12 @@ using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
 using Autodor.Web.Services;
-using SharedKernel.Application;
-using SharedKernel.Application.Interfaces;
-using SharedKernel.Infrastructure;
+using BuildingBlocks.Application.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSharedKernelApplication();
-builder.Services.AddSharedKernelInfrastructure();
-
 // Rejestracja IUser serwisu
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IUser, StaticUserService>();
 
 builder.Services.AddContractors(builder.Configuration);

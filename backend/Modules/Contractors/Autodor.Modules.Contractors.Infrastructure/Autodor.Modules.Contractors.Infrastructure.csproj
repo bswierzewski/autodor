@@ -9,7 +9,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="SharedKernel.Infrastructure" />
+    <PackageReference Include="BuildingBlocks.Infrastructure" />
   </ItemGroup>
 
   <PropertyGroup>

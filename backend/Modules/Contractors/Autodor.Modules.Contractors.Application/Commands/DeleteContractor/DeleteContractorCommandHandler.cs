@@ -1,31 +1,29 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
+using Autodor.Modules.Contractors.Application.Interfaces;
 using MediatR;
-using SharedKernel.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
 public class DeleteContractorCommandHandler : IRequestHandler<DeleteContractorCommand>
 {
-    private readonly IRepository<Contractor> _repository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IContractorsWriteDbContext _writeDbContext;
 
-    public DeleteContractorCommandHandler(
-        IRepository<Contractor> repository,
-        IUnitOfWork unitOfWork)
+    public DeleteContractorCommandHandler(IContractorsWriteDbContext writeDbContext)
     {
-        _repository = repository;
-        _unitOfWork = unitOfWork;
+        _writeDbContext = writeDbContext;
     }
 
     public async Task Handle(DeleteContractorCommand request, CancellationToken cancellationToken)
     {
-        var contractor = await _repository.GetByIdAsync(new ContractorId(request.Id));
+        var contractor = await _writeDbContext.Contractors
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
             throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
 
-        _repository.Remove(contractor);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        _writeDbContext.Contractors.Remove(contractor);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
     }
 }

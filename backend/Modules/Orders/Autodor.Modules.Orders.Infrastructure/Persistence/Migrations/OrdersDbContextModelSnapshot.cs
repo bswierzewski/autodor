@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Autodor.Modules.Orders.Infrastructure.Migrations
+namespace Autodor.Modules.Orders.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrdersDbContext))]
     partial class OrdersDbContextModelSnapshot : ModelSnapshot

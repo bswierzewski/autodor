@@ -1,7 +1,7 @@
 using Autodor.Modules.Invoicing.Domain.Entities;
 using Autodor.Modules.Invoicing.Domain.Enums;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using SharedKernel.Domain.Abstractions;
+using BuildingBlocks.Domain.Primitives;
 
 namespace Autodor.Modules.Invoicing.Domain.Aggregates;
 

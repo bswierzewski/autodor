@@ -1,24 +1,21 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
+using Autodor.Modules.Orders.Application.Interfaces;
 using Autodor.Shared.Contracts.Invoicing.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Orders.Application.EventHandlers;
 
 public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEvent>
 {
-    private readonly IRepository<ExcludedOrder> _repository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IOrdersWriteDbContext _writeDbContext;
     private readonly ILogger<InvoiceCreatedEventHandler> _logger;
 
     public InvoiceCreatedEventHandler(
-        IRepository<ExcludedOrder> repository,
-        IUnitOfWork unitOfWork,
+        IOrdersWriteDbContext writeDbContext,
         ILogger<InvoiceCreatedEventHandler> logger)
     {
-        _repository = repository;
-        _unitOfWork = unitOfWork;
+        _writeDbContext = writeDbContext;
         _logger = logger;
     }
 
@@ -35,10 +32,10 @@ public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEve
                 notification.CreatedDate
             );
 
-            await _repository.AddAsync(excludedOrder);
+            await _writeDbContext.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
         }
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Successfully excluded {OrderCount} orders after invoice creation",
             notification.OrderNumbers.Count());

@@ -1,22 +1,24 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
+using Autodor.Modules.Contractors.Application.Interfaces;
 using MediatR;
-using SharedKernel.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 
 public class GetContractorByNIPQueryHandler : IRequestHandler<GetContractorByNIPQuery, GetContractorByNIPDto>
 {
-    private readonly IRepository<Contractor> _repository;
+    private readonly IContractorsReadDbContext _readDbContext;
 
-    public GetContractorByNIPQueryHandler(IRepository<Contractor> repository)
+    public GetContractorByNIPQueryHandler(IContractorsReadDbContext readDbContext)
     {
-        _repository = repository;
+        _readDbContext = readDbContext;
     }
 
     public async Task<GetContractorByNIPDto> Handle(GetContractorByNIPQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await _repository.FirstOrDefaultAsync(x => x.NIP == new TaxId(request.NIP));
+        var contractor = await _readDbContext.Contractors
+            .FirstOrDefaultAsync(x => x.NIP == new TaxId(request.NIP), cancellationToken);
 
         if (contractor is null)
             throw new InvalidOperationException($"Contractor with NIP {request.NIP} not found");

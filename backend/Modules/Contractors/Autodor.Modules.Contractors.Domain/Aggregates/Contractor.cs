@@ -1,5 +1,5 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using SharedKernel.Domain.Abstractions;
+using BuildingBlocks.Domain.Primitives;
 
 namespace Autodor.Modules.Contractors.Domain.Aggregates;
 

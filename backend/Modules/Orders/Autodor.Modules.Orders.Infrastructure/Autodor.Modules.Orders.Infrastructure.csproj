@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="SharedKernel.Infrastructure" />
+    <PackageReference Include="BuildingBlocks.Infrastructure" />
     <PackageReference Include="System.ServiceModel.Duplex" />
     <PackageReference Include="System.ServiceModel.Federation" />
     <PackageReference Include="System.ServiceModel.Http" />

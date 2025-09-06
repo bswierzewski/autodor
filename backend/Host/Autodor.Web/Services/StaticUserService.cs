@@ -1,26 +1,26 @@
-using SharedKernel.Application.Interfaces;
+using BuildingBlocks.Application.Abstractions;
 
 namespace Autodor.Web.Services;
 
 public class StaticUserService : IUser
 {
-    public string ExternalId => "static-user-001";
-    
-    public int Id => 1;
-    
+    public string Id => "static-user-id";
+
+    public string? Email => "";
+
     public bool IsAuthenticated => true;
 
-    public Task<bool> HasPermissionAsync(string permission)
+    public IEnumerable<string> Claims => [];
+
+    public IEnumerable<string> Roles => [];
+
+    public bool HasClaim(string claimType, string? claimValue = null)
     {
-        // Na początek zwracamy true dla wszystkich uprawnień
-        // Później zostanie uzupełnione o prawdziwą logikę
-        return Task.FromResult(true);
+        return true;
     }
 
-    public Task<bool> IsInRoleAsync(string role)
+    public bool IsInRole(string role)
     {
-        // Na początek zwracamy true dla roli "Admin"
-        // Później zostanie uzupełnione o prawdziwą logikę
-        return Task.FromResult(role.Equals("Admin", StringComparison.OrdinalIgnoreCase));
+        return true;
     }
 }

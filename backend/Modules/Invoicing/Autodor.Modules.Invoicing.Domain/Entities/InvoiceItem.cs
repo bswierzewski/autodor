@@ -1,9 +1,9 @@
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using SharedKernel.Domain.Abstractions;
+using BuildingBlocks.Domain.Primitives;
 
 namespace Autodor.Modules.Invoicing.Domain.Entities;
 
-public class InvoiceItem : Entity<InvoiceItemId>
+public class InvoiceItem : AuditableEntity<InvoiceItemId>
 {
     public string PartNumber { get; private set; } = null!;
     public string ProductName { get; private set; } = null!;

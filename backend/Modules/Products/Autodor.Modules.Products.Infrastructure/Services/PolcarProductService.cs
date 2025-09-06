@@ -1,8 +1,8 @@
 using Autodor.Modules.Products.Infrastructure.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
-using Autodor.Modules.Products.Infrastructure.Helpers;
 using Autodor.Modules.Products.Infrastructure.Options;
+using BuildingBlocks.Application.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -49,8 +49,8 @@ public class PolcarProductService : IPolcarProductService
                     Password: _options.Password,
                     LanguageID: _options.LanguageId,
                     FormatID: _options.FormatId);
-                
-                var deserialized = response.Body.GetEAN13ListResult.OuterXml.DeserializeXml<ProductRoot>();
+
+                var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
 
                 var products = deserialized.Items.Select(item => new Domain.Aggregates.Product
                 {

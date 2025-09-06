@@ -1,21 +1,22 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
+using Autodor.Modules.Contractors.Application.Interfaces;
 using MediatR;
-using SharedKernel.Domain.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
 
 public class GetAllContractorsQueryHandler : IRequestHandler<GetAllContractorsQuery, IEnumerable<GetAllContractorsDto>>
 {
-    private readonly IRepository<Contractor> _repository;
+    private readonly IContractorsReadDbContext _readDbContext;
 
-    public GetAllContractorsQueryHandler(IRepository<Contractor> repository)
+    public GetAllContractorsQueryHandler(IContractorsReadDbContext readDbContext)
     {
-        _repository = repository;
+        _readDbContext = readDbContext;
     }
 
     public async Task<IEnumerable<GetAllContractorsDto>> Handle(GetAllContractorsQuery request, CancellationToken cancellationToken)
     {
-        var contractors = await _repository.GetAllAsync();
+        var contractors = await _readDbContext.Contractors.ToListAsync(cancellationToken);
 
         return contractors.Select(contractor => new GetAllContractorsDto(
             contractor.Id.Value,

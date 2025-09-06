@@ -1,21 +1,17 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
+using Autodor.Modules.Contractors.Application.Interfaces;
 using MediatR;
-using SharedKernel.Domain.Abstractions;
 
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
 public class CreateContractorCommandHandler : IRequestHandler<CreateContractorCommand, Guid>
 {
-    private readonly IRepository<Contractor> _repository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IContractorsWriteDbContext _writeDbContext;
 
-    public CreateContractorCommandHandler(
-        IRepository<Contractor> repository,
-        IUnitOfWork unitOfWork)
+    public CreateContractorCommandHandler(IContractorsWriteDbContext writeDbContext)
     {
-        _repository = repository;
-        _unitOfWork = unitOfWork;
+        _writeDbContext = writeDbContext;
     }
 
     public async Task<Guid> Handle(CreateContractorCommand request, CancellationToken cancellationToken)
@@ -29,8 +25,8 @@ public class CreateContractorCommandHandler : IRequestHandler<CreateContractorCo
             new Email(request.Email)
         );
 
-        await _repository.AddAsync(contractor);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _writeDbContext.Contractors.AddAsync(contractor, cancellationToken);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
 
         return contractorId.Value;
     }

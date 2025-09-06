@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR.Contracts" />
-    <PackageReference Include="SharedKernel.Domain" />
+    <PackageReference Include="BuildingBlocks.Domain" />
   </ItemGroup>
 
 </Project>
