@@ -26,7 +26,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddInfrastructure(
+    private static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)

@@ -1,7 +1,3 @@
-using Autodor.Modules.Invoicing.Domain.Aggregates;
-using Autodor.Modules.Invoicing.Domain.Entities;
-using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using Autodor.Shared.Contracts.Invoicing.Events;
 using Autodor.Shared.Contracts.Products;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,7 +11,7 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
     private readonly IProductsAPI _productsApi;
 
     public CreateInvoiceCommandHandler(
-        IMediator mediator, 
+        IMediator mediator,
         ILogger<CreateInvoiceCommandHandler> logger,
         IProductsAPI productsApi)
     {
@@ -26,21 +22,21 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
 
     public async Task<Guid> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders", 
+        _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders",
             request.ContractorId, request.OrderNumbers.Count());
 
         // PRZYKŁAD UŻYCIA API: Pobieranie konkretnego produktu
         const string specificPartNumber = "007935016720";
-        
+
         _logger.LogInformation("Fetching product details for part number: {PartNumber}", specificPartNumber);
-        
+
         var productDetails = await _productsApi.GetProductByNumberAsync(specificPartNumber, cancellationToken);
-        
+
         if (productDetails != null)
         {
-            _logger.LogInformation("Found product: {Name} (Number: {Number}, EAN13: {EAN13})", 
-                productDetails.Name, 
-                productDetails.Number, 
+            _logger.LogInformation("Found product: {Name} (Number: {Number}, EAN13: {EAN13})",
+                productDetails.Name,
+                productDetails.Number,
                 productDetails.EAN13);
         }
         else
@@ -50,11 +46,11 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
 
         // Tymczasowo zwracamy nowy GUID, docelowo będzie to ID utworzonej faktury
         var invoiceId = Guid.NewGuid();
-        
+
         _logger.LogInformation("Invoice created with ID: {InvoiceId}", invoiceId);
-        
+
         return invoiceId;
-        
+
         // TODO: Pełna implementacja tworzenia faktury
         // throw new NotImplementedException("Full invoice creation is not implemented yet.");
 

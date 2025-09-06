@@ -1,4 +1,3 @@
-using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using MediatR;
