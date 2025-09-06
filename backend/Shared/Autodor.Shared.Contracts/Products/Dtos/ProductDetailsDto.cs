@@ -1,7 +1,7 @@
 namespace Autodor.Shared.Contracts.Products.Dtos;
 
 public record ProductDetailsDto(
-    string PartNumber,
+    string Number,
     string Name,
-    string Ean
+    string EAN13
 );

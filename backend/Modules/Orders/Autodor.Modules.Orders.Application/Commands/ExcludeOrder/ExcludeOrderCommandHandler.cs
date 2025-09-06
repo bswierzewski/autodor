@@ -1,5 +1,5 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
-using Autodor.Modules.Orders.Application.Interfaces;
+using Autodor.Modules.Orders.Application.Abstractions;
 using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;

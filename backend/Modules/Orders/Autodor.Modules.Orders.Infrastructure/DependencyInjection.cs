@@ -1,6 +1,6 @@
 using System.Reflection;
 using Autodor.Modules.Orders.Application;
-using Autodor.Modules.Orders.Application.Interfaces;
+using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;

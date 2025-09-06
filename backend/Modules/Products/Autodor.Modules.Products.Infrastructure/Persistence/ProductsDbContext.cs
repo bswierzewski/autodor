@@ -1,5 +1,5 @@
 using Autodor.Modules.Products.Domain.Aggregates;
-using Autodor.Modules.Products.Application.Interfaces;
+using Autodor.Modules.Products.Application.Abstractions;
 using Autodor.Modules.Products.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 

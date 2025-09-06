@@ -1,4 +1,4 @@
-using Autodor.Modules.Products.Infrastructure.BackgroundServices;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.BackgroundServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Products.Infrastructure.Configuration;

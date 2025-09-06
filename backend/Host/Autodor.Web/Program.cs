@@ -37,7 +37,6 @@ app.UseAuthorization();
 // Mapowanie endpoints
 app.MapContractorsEndpoints();
 app.MapOrdersEndpoints();
-app.MapProductsEndpoints();
 app.MapInvoicingEndpoints();
 
 app.Run();

@@ -1,4 +1,4 @@
-namespace Autodor.Modules.Products.Infrastructure.Options;
+namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 
 public class PolcarProductsOptions
 {

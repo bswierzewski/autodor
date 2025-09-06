@@ -14,11 +14,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired()
             .HasMaxLength(500);
 
-        builder.Property(x => x.PartNumber)
+        builder.Property(x => x.Number)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(x => x.Ean)
+        builder.Property(x => x.EAN13)
             .IsRequired()
             .HasMaxLength(20);
     }

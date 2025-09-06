@@ -12,12 +12,12 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
 {
     private readonly IMediator _mediator;
     private readonly ILogger<CreateInvoiceCommandHandler> _logger;
-    private readonly IProductsApi _productsApi;
+    private readonly IProductsAPI _productsApi;
 
     public CreateInvoiceCommandHandler(
         IMediator mediator, 
         ILogger<CreateInvoiceCommandHandler> logger,
-        IProductsApi productsApi)
+        IProductsAPI productsApi)
     {
         _mediator = mediator;
         _logger = logger;
@@ -34,14 +34,14 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
         
         _logger.LogInformation("Fetching product details for part number: {PartNumber}", specificPartNumber);
         
-        var productDetails = await _productsApi.GetProductByPartNumberAsync(specificPartNumber, cancellationToken);
+        var productDetails = await _productsApi.GetProductByNumberAsync(specificPartNumber, cancellationToken);
         
         if (productDetails != null)
         {
-            _logger.LogInformation("Found product: {Name} (Part: {PartNumber}, Ean: {Ean})", 
+            _logger.LogInformation("Found product: {Name} (Number: {Number}, EAN13: {EAN13})", 
                 productDetails.Name, 
-                productDetails.PartNumber, 
-                productDetails.Ean);
+                productDetails.Number, 
+                productDetails.EAN13);
         }
         else
         {

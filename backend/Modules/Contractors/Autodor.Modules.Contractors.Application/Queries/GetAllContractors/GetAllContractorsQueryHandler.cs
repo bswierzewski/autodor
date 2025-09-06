@@ -1,5 +1,5 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
-using Autodor.Modules.Contractors.Application.Interfaces;
+using Autodor.Modules.Contractors.Application.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

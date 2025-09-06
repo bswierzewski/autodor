@@ -1,5 +1,5 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
-using Autodor.Modules.Orders.Application.Interfaces;
+using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Shared.Contracts.Invoicing.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;

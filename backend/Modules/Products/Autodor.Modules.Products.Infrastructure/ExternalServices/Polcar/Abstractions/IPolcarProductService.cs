@@ -1,6 +1,6 @@
 using Autodor.Modules.Products.Domain.Aggregates;
 
-namespace Autodor.Modules.Products.Infrastructure.Abstractions;
+namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 
 public interface IPolcarProductService
 {

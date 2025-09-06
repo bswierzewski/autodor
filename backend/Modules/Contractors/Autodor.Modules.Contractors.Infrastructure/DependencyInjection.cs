@@ -1,6 +1,6 @@
 using System.Reflection;
 using Autodor.Modules.Contractors.Application;
-using Autodor.Modules.Contractors.Application.Interfaces;
+using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
