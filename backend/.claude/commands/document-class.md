@@ -4,8 +4,9 @@ argument-hint: [path/to/file.cs]
 ---
 
 <task>
-Analyze the file referenced below and add comprehensive XML documentation in English.
-Ensure that every public method and property is fully documented, and the <remarks> section contains deep business context.
+Analyze the file referenced below and add XML documentation with summary and parameters.
+Additionally, add valuable inline comments within methods to explain their operation and business logic.
+If any Polish comments are found, replace them with English equivalents.
 </task>
 
 <detailed_rules_context>
@@ -13,14 +14,14 @@ Ensure that every public method and property is fully documented, and the <remar
 
 ### 🎯 RULE: Comprehensive XML Documentation
 
-**Rule:** All public classes, methods, and properties MUST have detailed XML documentation in English.
-**Required Elements:** `<summary>`, `<param>`, `<returns>`, `<exception>`, `<remarks>`, `<example>`.
+**Rule:** All public classes, methods, and properties MUST have XML documentation in English.
+**Required Elements:** `<summary>` and `<param>` for parameters. Additionally, add inline comments within method bodies to explain business logic and operation flow.
 </rule>
 <rule name="Business Context First">
 
 ### 🎯 RULE: Document the "Why", Not Just the "What"
 
-**Rule:** Documentation, especially in the `<remarks>` section, must explain the business context, not just repeat the technical description.
+**Rule:** Inline comments within methods must explain the business context and reasoning behind the implementation, not just repeat what the code does.
 </rule>
 </detailed_rules_context>
 
