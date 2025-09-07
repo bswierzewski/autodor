@@ -1,5 +1,5 @@
 using System.Reflection;
-using Autodor.Modules.Orders.Application;
+using Autodor.Modules.Orders.Application.Module;
 using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
@@ -11,18 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BuildingBlocks.Infrastructure;
 
-namespace Autodor.Modules.Orders.Infrastructure;
+namespace Autodor.Modules.Orders.Infrastructure.Module;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddOrders(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddApplication();
-        services.AddInfrastructure(configuration);
-
-        return services;
-    }
-
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

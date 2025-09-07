@@ -1,7 +1,7 @@
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.BackgroundServices;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Autodor.Modules.Products.Infrastructure.Configuration;
+namespace Autodor.Modules.Products.Infrastructure.Module;
 
 public class ProductsModuleConfigurator
 {

@@ -1,5 +1,5 @@
 using System.Reflection;
-using Autodor.Modules.Contractors.Application;
+using Autodor.Modules.Contractors.Application.Module;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -7,18 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BuildingBlocks.Infrastructure;
 
-namespace Autodor.Modules.Contractors.Infrastructure;
+namespace Autodor.Modules.Contractors.Infrastructure.Module;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddContractors(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddApplication();
-        services.AddInfrastructure(configuration);
-
-        return services;
-    }
-
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

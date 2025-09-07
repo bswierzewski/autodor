@@ -1,7 +1,7 @@
 using System.Reflection;
-using Autodor.Modules.Products.Application;
+using Autodor.Modules.Products.Application.Module;
 using Autodor.Modules.Products.Application.Abstractions;
-using Autodor.Modules.Products.Infrastructure.Configuration;
+using Autodor.Modules.Products.Infrastructure.Module;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
@@ -11,22 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Autodor.Modules.Products.Infrastructure;
+namespace Autodor.Modules.Products.Infrastructure.Module;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddProducts(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        Action<ProductsModuleConfigurator>? configure = null)
-    {
-        services.AddApplication();
-        services.AddInfrastructure(configuration, configure);
-
-        return services;
-    }
-
-    private static IServiceCollection AddInfrastructure(
+    public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)

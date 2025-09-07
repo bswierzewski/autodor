@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Autodor.Modules.Orders.Application;
+namespace Autodor.Modules.Contractors.Application.Module;
 
 public static class DependencyInjection
 {
