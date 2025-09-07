@@ -3,7 +3,7 @@ description: Generates comprehensive unit tests for a given C# class using xUnit
 argument-hint: [path/to/class.cs]
 ---
 
-<zadanie>
+<task>
 Your task is to create a comprehensive set of unit tests for the C# class provided below.
 
 **Technical Requirements:**
@@ -22,8 +22,8 @@ Generate tests that cover the following categories:
 
 - Follow the `MethodName_Scenario_ExpectedBehavior` naming convention for all test methods.
 - Use the Arrange-Act-Assert pattern clearly within each test.
-  </zadanie>
+</task>
 
-<class_do_przetestowania>
-@$1
-</class_do_przetestowania>
+<class_to_test>
+$ARGUMENTS
+</class_to_test>
