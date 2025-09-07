@@ -10,17 +10,13 @@ public class ExcludedOrderConfiguration : IEntityTypeConfiguration<ExcludedOrder
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.OrderNumber)
+        builder.Property(x => x.Number)
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(x => x.Reason)
-            .IsRequired()
-            .HasMaxLength(500);
-
-        builder.Property(x => x.ExcludedDate)
+        builder.Property(x => x.DateTime)
             .IsRequired();
 
-        builder.HasIndex(x => x.OrderNumber).IsUnique();
+        builder.HasIndex(x => x.Number).IsUnique();
     }
 }

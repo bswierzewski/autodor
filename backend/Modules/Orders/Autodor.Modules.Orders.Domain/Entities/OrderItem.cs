@@ -2,8 +2,8 @@
 
 public class OrderItem
 {
-    public string PartNumber { get; set; } = null!;
-    public string PartName { get; set; } = null!;
+    public string Number { get; set; } = null!;
+    public string Name { get; set; } = null!;
     public int Quantity { get; set; }
-    public decimal TotalPrice { get; set; }
+    public decimal Price { get; set; }
 }

@@ -8,7 +8,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Persistence;
 public class OrdersDbContext : DbContext, IOrdersWriteDbContext, IOrdersReadDbContext
 {
     public DbSet<ExcludedOrder> ExcludedOrders { get; set; } = null!;
-    
+
     IQueryable<ExcludedOrder> IOrdersReadDbContext.ExcludedOrders => ExcludedOrders.AsNoTracking();
 
     public OrdersDbContext(DbContextOptions<OrdersDbContext> options) : base(options)

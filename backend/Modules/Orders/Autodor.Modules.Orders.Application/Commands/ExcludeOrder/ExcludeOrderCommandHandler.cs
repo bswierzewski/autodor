@@ -4,20 +4,15 @@ using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
-public class ExcludeOrderCommandHandler : IRequestHandler<ExcludeOrderCommand, bool>
+public class ExcludeOrderCommandHandler(IOrdersWriteDbContext writeDbContext)
+    : IRequestHandler<ExcludeOrderCommand, bool>
 {
-    private readonly IOrdersWriteDbContext _writeDbContext;
-
-    public ExcludeOrderCommandHandler(IOrdersWriteDbContext writeDbContext)
-    {
-        _writeDbContext = writeDbContext;
-    }
+    private readonly IOrdersWriteDbContext _writeDbContext = writeDbContext;
 
     public async Task<bool> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
     {
         var excludedOrder = new ExcludedOrder(
-            request.OrderNumber,
-            request.Reason,
+            request.Number,
             DateTime.UtcNow);
 
         await _writeDbContext.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);

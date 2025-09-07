@@ -1,15 +1,13 @@
 using System.Reflection;
-using Autodor.Modules.Orders.Application.Module;
 using Autodor.Modules.Orders.Application.Abstractions;
-using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Orders.Infrastructure.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BuildingBlocks.Infrastructure;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure.Module;
 
@@ -37,7 +35,7 @@ public static class DependencyInjection
         services.AddScoped(provider => new DistributorsSalesServiceSoapClient(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap));
 
         // Register Polcar service
-        services.AddScoped<IOrderRepository, PolcarOrderRepository>();
+        services.AddScoped<IOrdersRepository, PolcarOrderRepository>();
 
         return services;
     }

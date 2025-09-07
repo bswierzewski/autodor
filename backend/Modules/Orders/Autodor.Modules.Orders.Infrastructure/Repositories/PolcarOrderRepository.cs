@@ -2,14 +2,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using Autodor.Modules.Orders.Domain.Abstractions;
 using Autodor.Modules.Orders.Domain.Entities;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Orders.Infrastructure.Options;
+using Autodor.Modules.Orders.Application.Abstractions;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure.Repositories;
 
-public class PolcarOrderRepository : IOrderRepository
+public class PolcarOrderRepository : IOrdersRepository
 {
     private readonly PolcarSalesOptions _options;
     private readonly ILogger<PolcarOrderRepository> _logger;
@@ -25,29 +25,62 @@ public class PolcarOrderRepository : IOrderRepository
         _options = options.Value;
         _logger = logger;
         _soapClient = soapClient;
-
         _retryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
                 retryCount: 3,
-                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                onRetry: (exception, timeSpan, retryCount, context) =>
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5),
+                onRetry: (outcome, duration, retryCount, context) =>
                 {
-                    _logger.LogError(exception, "Retry {RetryCount} encountered an error: {Message}. Waiting {TimeSpan} before next retry.",
-                        retryCount, exception.Message, timeSpan);
+                    _logger.LogWarning("Retry {RetryCount}/3 for SOAP call after {Duration}s delay", retryCount, duration.TotalSeconds);
                 });
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo, Guid contractorId)
+    public async Task<IEnumerable<Order>> GetOrdersByDateAsync(DateTime date)
+    {
+        return await GetOrdersByDateRangeAsync(date.Date, date.Date);
+    }
+
+    public async Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime dateFrom, DateTime dateTo)
+    {
+        try
+        {
+            _logger.LogInformation("Fetching orders from {DateFrom} to {DateTo}", dateFrom.Date, dateTo.Date);
+
+            var dates = Enumerable.Range(0, (dateFrom - dateTo).Days + 1)
+                     .Select(offset => dateTo.AddDays(offset))
+                     .ToList();
+
+            _logger.LogInformation("Split date range into {DateCount} days for parallel processing", dates.Count);
+
+            var tasks = dates.Select(FetchOrdersForSingleDateAsync);
+            var results = await Task.WhenAll(tasks);
+
+            var allOrders = results.SelectMany(orders => orders);
+
+            _logger.LogInformation("Successfully retrieved orders from all dates in range {DateFrom} to {DateTo}", dateFrom.Date, dateTo.Date);
+
+            return allOrders;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while fetching orders from {DateFrom} to {DateTo}", dateFrom.Date, dateTo.Date);
+            throw;
+        }
+    }
+
+    private async Task<IEnumerable<Order>> FetchOrdersForSingleDateAsync(DateTime date)
     {
         return await _retryPolicy.ExecuteAsync(async () =>
         {
+            _logger.LogInformation("Fetching orders for date {Date}", date.Date);
+
             var response = await _soapClient.GetListOfOrdersV3Async(
                 distributorCode: _options.DistributorCode,
                 getOpenOrdersOnly: false,
                 branchId: _options.BranchId,
-                dateFrom: dateFrom.Date,
-                dateTo: dateTo.Date,
+                dateFrom: date.Date,
+                dateTo: date.Date,
                 getOrdersHeadersOnly: false,
                 login: _options.Login,
                 password: _options.Password,
@@ -56,114 +89,35 @@ public class PolcarOrderRepository : IOrderRepository
 
             var responseBody = response.Body.GetListOfOrdersV3Result;
 
-            if (responseBody.ErrorCode != "0")
-                throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
+            _logger.LogInformation("Successfully retrieved orders for date {Date}", date.Date);
 
-            if (responseBody.ListOfOrders?.Length > 0)
-                return MapDistributorOrdersToOrders(responseBody.ListOfOrders!);
-
-            return new List<Order>();
+            return responseBody?.ListOfOrders?.Length > 0
+                ? responseBody.ListOfOrders.Select(MapToOrder)
+                : [];
         });
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByIdsAsync(IEnumerable<string> orderNumbers)
-    {
-        var orders = new List<Order>();
-
-        foreach (var orderNumber in orderNumbers)
-        {
-            try
-            {
-                var order = await GetOrderByIdAsync(orderNumber);
-                orders.Add(order);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to retrieve order {OrderNumber}", orderNumber);
-            }
-        }
-
-        return orders;
-    }
-
-    private async Task<Order> GetOrderByIdAsync(string orderNumber)
-    {
-        return await _retryPolicy.ExecuteAsync(async () =>
-        {
-            var response = await _soapClient.GetOrderDetailsAsync(
-                DistributorCode: _options.DistributorCode,
-                OrderID: orderNumber,
-                Login: _options.Login,
-                Password: _options.Password,
-                LanguageID: _options.LanguageId
-            );
-
-            var responseBody = response.Body.GetOrderDetailsResult;
-
-            if (responseBody.ErrorCode != "0")
-                throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
-
-            if (responseBody != null)
-                return MapToOrder(responseBody);
-
-            return new Order();
-        });
-    }
-
-    private IEnumerable<Order> MapDistributorOrdersToOrders(DistributorSalesOrderResponse[] salesOrders)
-    {
-        return salesOrders.Select(so => MapToOrder(so));
-    }
-
-    private Order MapToOrder(SalesOrderResponse salesOrder)
+    private static Order MapToOrder(DistributorSalesOrderResponse response)
     {
         return new Order
         {
-            Id = salesOrder.OrderID ?? string.Empty,
-            Number = salesOrder.PolcarOrderNumber ?? string.Empty,
-            Date = salesOrder.ShipmentDate,
-            Person = salesOrder.OrderingPerson ?? string.Empty,
-            CustomerNumber = salesOrder.CustomerNumber ?? string.Empty,
-            Items = MapToOrderItems(salesOrder.OrderedItemsResponse)
+            Date = response.EntryDate,
+            Id = response.OrderID,
+            Number = response.PolcarOrderNumber,
+            Contractor = response.CustomerNumber,
+            Items = response.OrderedItemsResponse?.Select(MapToOrderItem) ?? Enumerable.Empty<OrderItem>()
         };
     }
 
-    private Order MapToOrder(DistributorSalesOrderResponse salesOrder)
+    private static OrderItem MapToOrderItem(DistributorSalesOrderItemResponse response)
     {
-        return new Order
+        return new OrderItem
         {
-            Id = salesOrder.OrderID ?? string.Empty,
-            Number = salesOrder.PolcarOrderNumber ?? string.Empty,
-            Date = salesOrder.ShipmentDate,
-            Person = salesOrder.OrderingPerson ?? string.Empty,
-            CustomerNumber = salesOrder.CustomerNumber ?? string.Empty,
-            Items = MapToOrderItems(salesOrder.OrderedItemsResponse)
+            Number = response.PartNumber,
+            Name = response.PartNumber,
+            Quantity = response.QuantityOrdered,
+            Price = response.Price
         };
     }
 
-    private IEnumerable<OrderItem> MapToOrderItems(SalesOrderItemResponse[]? items)
-    {
-        if (items == null) return Enumerable.Empty<OrderItem>();
-
-        return items.Select(item => new OrderItem
-        {
-            PartNumber = item.PolcarPartNumber ?? string.Empty,
-            PartName = item.CustomerPartNumber ?? string.Empty,
-            Quantity = item.QuantityOrdered,
-            TotalPrice = item.CustomerPrice
-        });
-    }
-
-    private IEnumerable<OrderItem> MapToOrderItems(DistributorSalesOrderItemResponse[]? items)
-    {
-        if (items == null) return Enumerable.Empty<OrderItem>();
-
-        return items.Select(item => new OrderItem
-        {
-            PartNumber = item.PartNumber ?? string.Empty,
-            PartName = item.PartNumber ?? string.Empty, // Using PartNumber as name since no separate name field exists
-            Quantity = item.QuantityOrdered,
-            TotalPrice = item.Price
-        });
-    }
 }

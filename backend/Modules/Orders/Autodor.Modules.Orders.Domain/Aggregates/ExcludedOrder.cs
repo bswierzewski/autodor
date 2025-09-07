@@ -4,21 +4,14 @@ namespace Autodor.Modules.Orders.Domain.Aggregates;
 
 public class ExcludedOrder : AggregateRoot<Guid>
 {
-    public string OrderNumber { get; private set; } = null!;
-    public string Reason { get; private set; } = null!;
-    public DateTime ExcludedDate { get; private set; }
+    public string Number { get; private set; } = null!;
+    public DateTime DateTime { get; private set; }
 
     private ExcludedOrder() { } // EF Constructor
 
-    public ExcludedOrder(string orderNumber, string reason, DateTime excludedDate)
+    public ExcludedOrder(string number, DateTime dateTime)
     {
-        OrderNumber = orderNumber ?? throw new ArgumentNullException(nameof(orderNumber));
-        Reason = reason ?? throw new ArgumentNullException(nameof(reason));
-        ExcludedDate = excludedDate;
-    }
-
-    public void UpdateReason(string newReason)
-    {
-        Reason = newReason ?? throw new ArgumentNullException(nameof(newReason));
+        Number = number ?? throw new ArgumentNullException(nameof(number));
+        DateTime = dateTime;
     }
 }
