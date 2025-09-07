@@ -8,19 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.BackgroundServices;
 
-public class ProductsSynchronizationService : BackgroundService
+public class ProductsSynchronizationService(
+    IServiceProvider serviceProvider,
+    ILogger<ProductsSynchronizationService> logger) : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<ProductsSynchronizationService> _logger;
     private readonly TimeSpan _syncInterval = TimeSpan.FromHours(24);
-
-    public ProductsSynchronizationService(
-        IServiceProvider serviceProvider,
-        ILogger<ProductsSynchronizationService> logger)
-    {
-        _serviceProvider = serviceProvider;
-        _logger = logger;
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -36,12 +28,12 @@ public class ProductsSynchronizationService : BackgroundService
             }
             catch (OperationCanceledException)
             {
-                _logger.LogInformation("Products synchronization service is stopping.");
+                logger.LogInformation("Products synchronization service is stopping.");
                 break;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error in products synchronization service.");
+                logger.LogError(ex, "Unexpected error in products synchronization service.");
             }
         }
     }
@@ -50,18 +42,18 @@ public class ProductsSynchronizationService : BackgroundService
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ProductsDbContext>();
             var soapService = scope.ServiceProvider.GetRequiredService<IPolcarProductService>();
 
-            _logger.LogInformation("Starting products synchronization from Polcar...");
+            logger.LogInformation("Starting products synchronization from Polcar...");
 
             // Pobierz nowe produkty z SOAP
             var newProducts = (await soapService.GetProductsAsync()).ToList();
 
             if (!newProducts.Any())
             {
-                _logger.LogWarning("No products received from Polcar, keeping existing data.");
+                logger.LogWarning("No products received from Polcar, keeping existing data.");
                 return;
             }
 
@@ -70,20 +62,20 @@ public class ProductsSynchronizationService : BackgroundService
 
             try
             {
-                _logger.LogInformation("Loading existing PartNumbers for comparison...");
+                logger.LogInformation("Loading existing PartNumbers for comparison...");
                 
                 // Pobierz tylko PartNumbers z bazy (minimalizuj transfer danych)
                 var existingPartNumbers = await context.Products
                     .Select(p => p.Number)
                     .ToHashSetAsync();
                 
-                _logger.LogInformation("Found {Count} existing products in database", existingPartNumbers.Count);
+                logger.LogInformation("Found {Count} existing products in database", existingPartNumbers.Count);
 
                 var newPartNumbers = newProducts
                     .Select(p => p.Number)
                     .ToHashSet();
 
-                _logger.LogInformation("Comparing {NewCount} new products with {ExistingCount} existing PartNumbers...", 
+                logger.LogInformation("Comparing {NewCount} new products with {ExistingCount} existing PartNumbers...", 
                     newPartNumbers.Count, existingPartNumbers.Count);
 
                 await DeleteProductsAsync(context, existingPartNumbers, newPartNumbers);
@@ -95,19 +87,19 @@ public class ProductsSynchronizationService : BackgroundService
                 var deletedCount = existingPartNumbers.Except(newPartNumbers).Count();
                 var unchangedCount = existingPartNumbers.Count - deletedCount;
                 
-                _logger.LogInformation("Successfully synchronized products: {Added} added, {Deleted} deleted, {Unchanged} unchanged",
+                logger.LogInformation("Successfully synchronized products: {Added} added, {Deleted} deleted, {Unchanged} unchanged",
                 addedCount, deletedCount, unchangedCount);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                _logger.LogError(ex, "Failed to update products in database, rolling back transaction.");
+                logger.LogError(ex, "Failed to update products in database, rolling back transaction.");
                 throw;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to synchronize products from Polcar. Keeping existing data.");
+            logger.LogError(ex, "Failed to synchronize products from Polcar. Keeping existing data.");
         }
     }
 
@@ -123,7 +115,7 @@ public class ProductsSynchronizationService : BackgroundService
             .Where(p => partNumbersToDelete.Contains(p.Number))
             .ExecuteDeleteAsync();
         
-        _logger.LogInformation("Deleted {Count} products", partNumbersToDelete.Count);
+        logger.LogInformation("Deleted {Count} products", partNumbersToDelete.Count);
     }
 
     private async Task AddProductsAsync(ProductsDbContext context, List<Product> newProducts, HashSet<string> existingPartNumbers)
@@ -138,6 +130,6 @@ public class ProductsSynchronizationService : BackgroundService
 
         await context.Products.AddRangeAsync(productsToAdd);
         await context.SaveChangesAsync();
-        _logger.LogInformation("Added {Count} new products", productsToAdd.Count);
+        logger.LogInformation("Added {Count} new products", productsToAdd.Count);
     }
 }
