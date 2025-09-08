@@ -1,49 +1,57 @@
 using Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
-using Autodor.Modules.Orders.Application.Queries.GetOrders;
-using Autodor.Modules.Orders.Application.Queries.GetOrdersByContractorAndPeriod;
-using Autodor.Modules.Orders.Application.Queries.GetOrdersByIds;
+using Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
+using Autodor.Modules.Orders.Application.Queries.GetOrdersByDateRange;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Autodor.Web.Endpoints;
 
 public static class OrdersEndpoints
 {
-    public static IEndpointRouteBuilder MapOrdersEndpoints(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapOrdersEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = app.MapGroup("/api/orders").WithTags("Orders");
+        var group = endpoints.MapGroup("/api/orders")
+            .WithTags("Orders");
 
-        group.MapGet("/", async (DateTime dateFrom, DateTime dateTo, Guid contractorId, IMediator mediator) =>
-        {
-            var orders = await mediator.Send(new GetOrdersQuery(dateFrom, dateTo, contractorId));
-            return Results.Ok(orders);
-        })
-        .WithName("GetOrders")
-        .WithSummary("Get orders for contractor in date range");
+        group.MapPost("/exclude", ExcludeOrder)
+            .WithName("ExcludeOrder")
+            .WithOpenApi();
 
-        group.MapGet("/by-ids", async (string[] orderNumbers, IMediator mediator) =>
-        {
-            var orders = await mediator.Send(new GetOrdersByIdsQuery(orderNumbers));
-            return Results.Ok(orders);
-        })
-        .WithName("GetOrdersByIds")
-        .WithSummary("Get orders by order numbers");
+        group.MapGet("/by-date", GetOrdersByDate)
+            .WithName("GetOrdersByDate")
+            .WithOpenApi();
 
-        group.MapGet("/by-contractor-and-period", async (Guid contractorId, DateTime dateFrom, DateTime dateTo, IMediator mediator) =>
-        {
-            var orders = await mediator.Send(new GetOrdersByContractorAndPeriodQuery(contractorId, dateFrom, dateTo));
-            return Results.Ok(orders);
-        })
-        .WithName("GetOrdersByContractorAndPeriod")
-        .WithSummary("Get orders for contractor in specified period");
+        group.MapGet("/by-date-range", GetOrdersByDateRange)
+            .WithName("GetOrdersByDateRange")
+            .WithOpenApi();
 
-        group.MapPost("/exclude", async (ExcludeOrderCommand command, IMediator mediator) =>
-        {
-            var result = await mediator.Send(command);
-            return Results.Ok(new { Success = result });
-        })
-        .WithName("ExcludeOrder")
-        .WithSummary("Exclude order from processing");
+        return endpoints;
+    }
 
-        return app;
+    private static async Task<IResult> ExcludeOrder(
+        [FromBody] ExcludeOrderCommand command,
+        IMediator mediator)
+    {
+        var result = await mediator.Send(command);
+        return Results.Ok(new { Success = result });
+    }
+
+    private static async Task<IResult> GetOrdersByDate(
+        DateTime date,
+        IMediator mediator)
+    {
+        var query = new GetOrdersByDateQuery(date);
+        var result = await mediator.Send(query);
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> GetOrdersByDateRange(
+        DateTime dateFrom,
+        DateTime dateTo,
+        IMediator mediator)
+    {
+        var query = new GetOrdersByDateRangeQuery(dateFrom, dateTo);
+        var result = await mediator.Send(query);
+        return Results.Ok(result);
     }
 }

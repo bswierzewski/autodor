@@ -5,6 +5,6 @@ namespace Autodor.Shared.Contracts.Invoicing.Events;
 public record InvoiceCreatedEvent(
     Guid InvoiceId,
     string InvoiceNumber,
-    IEnumerable<string> OrderNumbers,
+    IEnumerable<string> OrderIds,
     DateTime CreatedDate
 ) : INotification;

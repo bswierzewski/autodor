@@ -10,7 +10,6 @@ namespace Web.Endpoints
         public override void Map(WebApplication app)
         {
             app.MapGroup(this)
-                .RequireAuthorization()
                 .MapGet(GetOrders)
                 .MapPost(ExcludeOrder);    
         }
