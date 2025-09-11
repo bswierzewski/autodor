@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build)",
+      "Bash(find:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Read(//d/repos/building_blocks/**)",
+      "Bash(tree:*)",
+      "Bash(dotnet sln add:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
