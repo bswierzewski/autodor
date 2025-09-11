@@ -1,4 +1,5 @@
 using System.Reflection;
+using BuildingBlocks.Application;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Contractors.Application.Module;
@@ -21,11 +22,22 @@ public static class DependencyInjection
     /// <returns>The service collection with registered application services for method chaining</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        // Add FluentValidation validators from the current assembly
+        services.AddValidators();
+
         // Register MediatR with automatic service discovery from the current assembly
         // This enables CQRS pattern by registering all IRequestHandler implementations
         // including command handlers, query handlers, and notification handlers
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-        
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddLoggingBehavior();
+            cfg.AddUnhandledExceptionBehavior();
+            cfg.AddAuthorizationBehavior();
+            cfg.AddValidationBehavior();
+            cfg.AddPerformanceMonitoringBehavior();
+        });
+
         // Return services for fluent configuration chaining
         // Allows additional configuration to be chained after application registration
         return services;

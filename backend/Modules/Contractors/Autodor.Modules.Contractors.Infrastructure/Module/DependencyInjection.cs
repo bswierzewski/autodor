@@ -5,7 +5,9 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BuildingBlocks.Application;
 using BuildingBlocks.Infrastructure;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Module;
 
@@ -31,22 +33,23 @@ public static class DependencyInjection
         // This enables infrastructure event handling and cross-cutting concerns
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+        // Register Entity Framework interceptors for auditing and domain event dispatching
+        services.AddAuditableEntityInterceptor();
+        services.AddDomainEventDispatchInterceptor();
+
         // Configure and register the Entity Framework database context
         // Uses PostgreSQL as the database provider with connection string from configuration
-        services.AddModule<ContractorsDbContext>(
-            configureDbContext: (serviceProvider, options) =>
-            {
-                // Configure PostgreSQL connection for contractor data persistence
-                // The connection string should be specified in application configuration
-                options.UseNpgsql(configuration.GetConnectionString("ContractorsConnection"));
-            }
-        );
+        services.AddDbContext<ContractorsDbContext>((sp, options) =>
+        {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+            options.UseNpgsql(configuration.GetConnectionString("ContractorsConnection"));
+        });
 
         // Register CQRS database context interfaces
         // These provide separated concerns for read and write operations while using the same context
         // Write context: Enables change tracking, transactions, and entity modifications
         services.AddScoped<IContractorsWriteDbContext>(provider => provider.GetRequiredService<ContractorsDbContext>());
-        
+
         // Read context: Provides no-tracking queries for optimal read performance
         services.AddScoped<IContractorsReadDbContext>(provider => provider.GetRequiredService<ContractorsDbContext>());
 

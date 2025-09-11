@@ -6,6 +6,7 @@ using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractio
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
 using Autodor.Modules.Products.Infrastructure.Persistence;
+using BuildingBlocks.Application;
 using BuildingBlocks.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,14 +33,17 @@ public static class DependencyInjection
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)
     {
-        // Configure Entity Framework database context for Products module
-        // Uses PostgreSQL database with connection string from configuration
-        services.AddModule<ProductsDbContext>(
-            configureDbContext: (serviceProvider, options) =>
-            {
-                options.UseNpgsql(configuration.GetConnectionString("ProductsConnection"));
-            }
-        );
+        // Register Entity Framework interceptors for auditing and domain event dispatching
+        services.AddAuditableEntityInterceptor();
+        services.AddDomainEventDispatchInterceptor();
+
+        // Configure and register the Entity Framework database context
+        // Uses PostgreSQL as the database provider with connection string from configuration
+        services.AddDbContext<ProductsDbContext>((sp, options) =>
+        {
+            options.AddInterceptors(sp.GetServices<Microsoft.EntityFrameworkCore.Diagnostics.ISaveChangesInterceptor>());
+            options.UseNpgsql(configuration.GetConnectionString("ProductsConnection"));
+        });
 
         // Register DbContext interfaces to support CQRS pattern separation
         // Both read and write operations use the same context but with different interfaces

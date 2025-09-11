@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="BuildingBlocks.Infrastructure" />
+    <PackageReference Include="BuildingBlocks.Extensions" />
     <PackageReference Include="System.ServiceModel.Duplex" />
     <PackageReference Include="System.ServiceModel.Federation" />
     <PackageReference Include="System.ServiceModel.Http" />

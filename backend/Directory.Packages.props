@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>    
+    <BuildingBlocksVersion>0.0.2-preview-14</BuildingBlocksVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Extensions -->
@@ -25,9 +26,10 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 	  <!-- BuildingBlocks -->  
-    <PackageVersion Include="BuildingBlocks.Domain" Version="0.0.0-preview-10" />
-    <PackageVersion Include="BuildingBlocks.Application" Version="0.0.0-preview-10" />
-    <PackageVersion Include="BuildingBlocks.Infrastructure" Version="0.0.0-preview-10" />
+    <PackageVersion Include="BuildingBlocks.Domain" Version="$(BuildingBlocksVersion)" />
+    <PackageVersion Include="BuildingBlocks.Application" Version="$(BuildingBlocksVersion)" />
+    <PackageVersion Include="BuildingBlocks.Infrastructure" Version="$(BuildingBlocksVersion)" />
+    <PackageVersion Include="BuildingBlocks.Extensions" Version="$(BuildingBlocksVersion)" />
     <!-- MediatR -->
     <PackageVersion Include="MediatR" Version="12.5.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />

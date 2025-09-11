@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autodor.Modules.Products.Application.API;
 using Autodor.Shared.Contracts.Products;
+using BuildingBlocks.Application;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Products.Application.Module;
@@ -19,9 +20,19 @@ public static class DependencyInjection
     /// <returns>The service collection for method chaining</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddValidators();
+
         // Register MediatR for command/query pattern implementation
         // Scans current assembly for handlers, behaviors, and processors
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddLoggingBehavior();
+            cfg.AddUnhandledExceptionBehavior();
+            cfg.AddAuthorizationBehavior();
+            cfg.AddValidationBehavior();
+            cfg.AddPerformanceMonitoringBehavior();
+        });
         
         // Register Products API for inter-module communication
         // Allows other modules to query product information through defined contracts

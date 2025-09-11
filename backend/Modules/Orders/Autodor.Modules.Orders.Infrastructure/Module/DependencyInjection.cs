@@ -6,6 +6,7 @@ using Autodor.Modules.Orders.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BuildingBlocks.Application;
 using BuildingBlocks.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 
@@ -31,16 +32,17 @@ public static class DependencyInjection
         // This enables infrastructure-level event processing and notification handling
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-        // Configure the Orders database context with PostgreSQL provider
-        // This establishes the primary data persistence mechanism for the Orders module
-        services.AddModule<OrdersDbContext>(
-            configureDbContext: (serviceProvider, options) =>
-            {
-                // Use PostgreSQL as the database provider for Orders module data persistence
-                // Connection string is environment-specific and configured through appsettings
-                options.UseNpgsql(configuration.GetConnectionString("OrdersConnection"));
-            }
-        );
+        // Register Entity Framework interceptors for auditing and domain event dispatching
+        services.AddAuditableEntityInterceptor();
+        services.AddDomainEventDispatchInterceptor();
+
+        // Configure and register the Entity Framework database context
+        // Uses PostgreSQL as the database provider with connection string from configuration
+        services.AddDbContext<OrdersDbContext>((sp, options) =>
+        {
+            options.AddInterceptors(sp.GetServices<Microsoft.EntityFrameworkCore.Diagnostics.ISaveChangesInterceptor>());
+            options.UseNpgsql(configuration.GetConnectionString("OrdersConnection"));
+        });
 
         // Register CQRS-specific database context interfaces
         // This enables separation of read and write operations for better performance and maintainability

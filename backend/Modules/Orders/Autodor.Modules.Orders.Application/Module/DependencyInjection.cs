@@ -1,4 +1,5 @@
 using System.Reflection;
+using BuildingBlocks.Application;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Orders.Application.Module;
@@ -18,9 +19,19 @@ public static class DependencyInjection
     /// <returns>The service collection with registered Orders application services</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddValidators();
+
         // Register MediatR services for command/query/event handling
         // This enables the CQRS pattern and decoupled communication within the module
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddLoggingBehavior();
+            cfg.AddUnhandledExceptionBehavior();
+            cfg.AddAuthorizationBehavior();
+            cfg.AddValidationBehavior();
+            cfg.AddPerformanceMonitoringBehavior();
+        });
         
         return services;
     }
