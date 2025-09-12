@@ -5,32 +5,27 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Modules.Orders.Application.Module;
 
 /// <summary>
-/// Provides dependency injection configuration for the Orders Application layer.
-/// This class registers all application services, handlers, and MediatR components
-/// required for the Orders module functionality.
+/// Configures dependency injection for the Orders application layer services.
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers all application layer services for the Orders module.
-    /// Configures MediatR for command and event handling within the module.
+    /// Registers application layer services including validators, MediatR with behaviors, and request handlers.
     /// </summary>
-    /// <param name="services">The service collection to add dependencies to</param>
-    /// <returns>The service collection with registered Orders application services</returns>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <returns>The configured service collection for method chaining.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidators();
-
-        // Register MediatR services for command/query/event handling
-        // This enables the CQRS pattern and decoupled communication within the module
+        
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddLoggingBehavior();
-            cfg.AddUnhandledExceptionBehavior();
-            cfg.AddAuthorizationBehavior();
-            cfg.AddValidationBehavior();
-            cfg.AddPerformanceMonitoringBehavior();
+            cfg.AddLoggingBehavior()
+               .AddUnhandledExceptionBehavior()
+               .AddValidationBehavior()
+               .AddAuthorizationBehavior()
+               .AddPerformanceMonitoringBehavior();
         });
         
         return services;

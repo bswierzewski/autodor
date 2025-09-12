@@ -7,35 +7,29 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Modules.Products.Application.Module;
 
 /// <summary>
-/// Dependency injection configuration for the Products module application layer.
-/// Registers business logic services, APIs, and command/query handlers.
+/// Configures dependency injection for the Products application layer services.
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers all application layer services for the Products module.
-    /// Includes MediatR handlers, domain services, and inter-module communication APIs.
+    /// Registers application layer services including validators, MediatR with behaviors, and module APIs.
     /// </summary>
-    /// <param name="services">The service collection to register dependencies in</param>
-    /// <returns>The service collection for method chaining</returns>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <returns>The configured service collection for method chaining.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidators();
-
-        // Register MediatR for command/query pattern implementation
-        // Scans current assembly for handlers, behaviors, and processors
+        
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddLoggingBehavior();
-            cfg.AddUnhandledExceptionBehavior();
-            cfg.AddAuthorizationBehavior();
-            cfg.AddValidationBehavior();
-            cfg.AddPerformanceMonitoringBehavior();
+            cfg.AddLoggingBehavior()
+               .AddUnhandledExceptionBehavior()
+               .AddValidationBehavior()
+               .AddAuthorizationBehavior()
+               .AddPerformanceMonitoringBehavior();
         });
         
-        // Register Products API for inter-module communication
-        // Allows other modules to query product information through defined contracts
         services.AddScoped<IProductsAPI, ProductsAPI>();
         
         return services;
