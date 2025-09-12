@@ -11,8 +11,7 @@ using Polly.Retry;
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
 
 /// <summary>
-/// Service responsible for integrating with the Polcar SOAP API to retrieve product information.
-/// Implements retry policies and error handling for reliable external service communication.
+/// Implementation of the Polcar product service that retrieves product data via SOAP API with retry logic.
 /// </summary>
 public class PolcarProductService : IPolcarProductService
 {
@@ -22,12 +21,11 @@ public class PolcarProductService : IPolcarProductService
     private readonly AsyncRetryPolicy _retryPolicy;
 
     /// <summary>
-    /// Initializes a new instance of the PolcarProductService with dependency injection.
-    /// Configures exponential backoff retry policy for handling transient failures.
+    /// Initializes a new instance of the PolcarProductService with SOAP client and retry policy configuration.
     /// </summary>
-    /// <param name="options">Configuration options for Polcar API integration including credentials and parameters</param>
-    /// <param name="soapClient">SOAP client for communicating with Polcar web services</param>
-    /// <param name="logger">Logger instance for tracking operations and errors</param>
+    /// <param name="options">Configuration options for Polcar authentication</param>
+    /// <param name="soapClient">SOAP client for Polcar API communication</param>
+    /// <param name="logger">Logger for service operations</param>
     public PolcarProductService(
         IOptions<PolcarProductsOptions> options,
         ProductsSoapClient soapClient,
@@ -37,8 +35,7 @@ public class PolcarProductService : IPolcarProductService
         _soapClient = soapClient;
         _logger = logger;
 
-        // Configure retry policy with exponential backoff to handle transient network issues
-        // Business rationale: External API calls may fail due to network issues or temporary service unavailability
+        // Configure exponential backoff retry policy for resilience
         _retryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
@@ -52,30 +49,24 @@ public class PolcarProductService : IPolcarProductService
     }
 
     /// <summary>
-    /// Retrieves all products from the Polcar external service via SOAP API.
-    /// This method fetches the complete product catalog including part numbers, names, and EAN codes.
+    /// Retrieves all products from the Polcar SOAP API with automatic retry on failures.
+    /// Deserializes XML response and maps to domain Product entities.
     /// </summary>
-    /// <returns>Collection of Product entities populated from external service data, or empty collection on failure</returns>
+    /// <returns>Collection of products from Polcar, or empty collection on failure</returns>
     public async Task<IEnumerable<Domain.Aggregates.Product>> GetProductsAsync()
     {
         return await _retryPolicy.ExecuteAsync(async () =>
         {
             try
             {
-                // Call Polcar SOAP service to retrieve EAN13 product list
-                // Using configured credentials and language/format preferences
                 var response = await _soapClient.GetEAN13ListAsync(
                     Login: _options.Login,
                     Password: _options.Password,
                     LanguageID: _options.LanguageId,
                     FormatID: _options.FormatId);
 
-                // Deserialize XML response to strongly-typed objects
-                // The response contains nested XML that needs parsing
                 var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
 
-                // Transform external API data model to internal domain entities
-                // Business rule: Map Polcar fields to our standardized product structure
                 var products = deserialized.Items.Select(item => new Domain.Aggregates.Product
                 {
                     Name = item.PartName,
@@ -90,8 +81,6 @@ public class PolcarProductService : IPolcarProductService
             {
                 _logger.LogError(ex, "Error occurred while loading products from Polcar");
 
-                // Return empty collection to prevent cascade failures in synchronization
-                // Business decision: Better to have no updates than corrupt data
                 return Enumerable.Empty<Domain.Aggregates.Product>();
             }
         });

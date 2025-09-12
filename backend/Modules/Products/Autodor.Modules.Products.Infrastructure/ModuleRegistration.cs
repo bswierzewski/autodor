@@ -6,29 +6,24 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Modules.Products.Infrastructure;
 
 /// <summary>
-/// Main entry point for registering the Products module with the dependency injection container.
-/// Provides a unified registration method that configures both application and infrastructure layers.
+/// Provides the main entry point for registering all Products module services.
 /// </summary>
 public static class ModuleRegistration
 {
     /// <summary>
-    /// Registers all Products module services with the dependency injection container.
-    /// Configures both application layer (business logic) and infrastructure layer (data access, external services).
+    /// Registers all Products module services including application and infrastructure layers.
     /// </summary>
-    /// <param name="services">The service collection to register dependencies in</param>
-    /// <param name="configuration">Application configuration containing connection strings and external service settings</param>
-    /// <param name="configure">Optional configurator action for enabling additional features like background synchronization</param>
-    /// <returns>The service collection for method chaining</returns>
+    /// <param name="services">The service collection to configure</param>
+    /// <param name="configuration">Application configuration for connection strings and settings</param>
+    /// <param name="configure">Optional configurator for module-specific features like synchronization</param>
+    /// <returns>The configured service collection for method chaining</returns>
     public static IServiceCollection AddProducts(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)
     {
-        // Register application layer dependencies (business logic, APIs, handlers)
         services.AddApplication();
         
-        // Register infrastructure layer dependencies (database, external services, background services)
-        // Pass through the configurator to allow optional feature activation
         services.AddInfrastructure(configuration, configure);
 
         return services;

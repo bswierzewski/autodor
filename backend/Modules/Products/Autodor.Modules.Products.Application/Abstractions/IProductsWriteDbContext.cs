@@ -4,21 +4,19 @@ using Microsoft.EntityFrameworkCore;
 namespace Autodor.Modules.Products.Application.Abstractions;
 
 /// <summary>
-/// Write-enabled database context interface for the Products module.
-/// Supports CQRS pattern by providing full entity manipulation capabilities with change tracking.
+/// Provides write access to the Products database context for modifying product data.
 /// </summary>
 public interface IProductsWriteDbContext
 {
     /// <summary>
-    /// Gets the Products DbSet for full entity operations including add, update, and delete.
-    /// Includes change tracking for write operations and transaction support.
+    /// Gets the DbSet for products to enable add, update, and delete operations.
     /// </summary>
     DbSet<Product> Products { get; }
 
     /// <summary>
-    /// Asynchronously saves all changes made in this context to the database.
+    /// Saves all pending changes to the database asynchronously.
     /// </summary>
-    /// <param name="cancellationToken">Token to cancel the save operation</param>
-    /// <returns>The number of state entries written to the database</returns>
+    /// <param name="cancellationToken">Token to cancel the operation</param>
+    /// <returns>The number of entities written to the database</returns>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

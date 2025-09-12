@@ -15,17 +15,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Modules.Products.Infrastructure.Module;
 
 /// <summary>
-/// Configures dependency injection for the Products infrastructure layer services.
+/// Provides dependency injection configuration for the Products infrastructure layer.
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers infrastructure services including Entity Framework DbContext, external service clients, and module configurator.
+    /// Registers infrastructure services including database context, external services, and audit interceptors.
     /// </summary>
-    /// <param name="services">The service collection to add services to.</param>
-    /// <param name="configuration">Configuration containing connection strings and external service settings.</param>
-    /// <param name="configure">Optional configurator for customizing module setup.</param>
-    /// <returns>The configured service collection for method chaining.</returns>
+    /// <param name="services">The service collection to configure</param>
+    /// <param name="configuration">Application configuration for connection strings and settings</param>
+    /// <param name="configure">Optional configurator for module-specific settings</param>
+    /// <returns>The configured service collection for method chaining</returns>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,

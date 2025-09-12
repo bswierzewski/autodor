@@ -3,14 +3,12 @@ using Autodor.Modules.Products.Domain.Aggregates;
 namespace Autodor.Modules.Products.Application.Abstractions;
 
 /// <summary>
-/// Read-only database context interface for the Products module.
-/// Supports CQRS pattern by providing optimized query access without change tracking.
+/// Provides read-only access to the Products database context for querying product data.
 /// </summary>
 public interface IProductsReadDbContext
 {
     /// <summary>
-    /// Gets the Products queryable collection optimized for read operations.
-    /// Should be implemented with change tracking disabled for better performance.
+    /// Gets the queryable collection of products for read operations.
     /// </summary>
     IQueryable<Product> Products { get; }
 }

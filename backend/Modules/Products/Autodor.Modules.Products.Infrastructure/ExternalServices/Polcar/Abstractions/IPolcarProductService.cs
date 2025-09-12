@@ -3,15 +3,13 @@ using Autodor.Modules.Products.Domain.Aggregates;
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 
 /// <summary>
-/// Service interface for retrieving product data from the Polcar external system.
-/// Abstracts the complexity of SOAP communication and provides a clean domain interface.
+/// Defines the contract for retrieving products from the Polcar external system.
 /// </summary>
 public interface IPolcarProductService
 {
     /// <summary>
-    /// Retrieves all available products from the Polcar external service.
-    /// This operation fetches the complete product catalog with part numbers, names, and EAN codes.
+    /// Retrieves all products from the Polcar external service.
     /// </summary>
-    /// <returns>Collection of Product entities representing the external catalog, or empty collection on failure</returns>
+    /// <returns>A collection of products from the external system</returns>
     Task<IEnumerable<Product>> GetProductsAsync();
 }

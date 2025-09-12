@@ -7,15 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Modules.Products.Application.Module;
 
 /// <summary>
-/// Configures dependency injection for the Products application layer services.
+/// Provides dependency injection configuration for the Products application layer.
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers application layer services including validators, MediatR with behaviors, and module APIs.
+    /// Registers application layer services including MediatR, validators, and the Products API.
     /// </summary>
-    /// <param name="services">The service collection to add services to.</param>
-    /// <returns>The configured service collection for method chaining.</returns>
+    /// <param name="services">The service collection to configure</param>
+    /// <returns>The configured service collection for method chaining</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidators();
