@@ -12,17 +12,8 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 
 namespace Autodor.Modules.Orders.Infrastructure.Module;
 
-/// <summary>
-/// Configures dependency injection for the Orders infrastructure layer services.
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Registers infrastructure services including Entity Framework DbContext, external service clients, and repositories.
-    /// </summary>
-    /// <param name="services">The service collection to add services to.</param>
-    /// <param name="configuration">Configuration containing connection strings and external service settings.</param>
-    /// <returns>The configured service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
