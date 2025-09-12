@@ -11,17 +11,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Module;
 
-/// <summary>
-/// Configures dependency injection for the Contractors infrastructure layer services.
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Registers infrastructure services including Entity Framework DbContext, interceptors, and database abstractions.
-    /// </summary>
-    /// <param name="services">The service collection to add services to.</param>
-    /// <param name="configuration">Configuration containing connection strings and settings.</param>
-    /// <returns>The configured service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

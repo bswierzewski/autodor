@@ -3,17 +3,14 @@ using MediatR;
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
 /// <summary>
-/// Command for creating a new contractor in the automotive parts distribution system.
-/// This command encapsulates all the business information required to establish a new business relationship
-/// with a contractor who will supply or purchase automotive parts. The command follows the CQRS pattern
-/// by representing a specific business intent to create a contractor entity.
+/// Command to create a new contractor with the provided details.
 /// </summary>
-/// <param name="Name">The business name of the contractor. Used for identification and legal documentation in business transactions.</param>
-/// <param name="NIP">The tax identification number (Polish NIP format) required for legal compliance and VAT calculations.</param>
-/// <param name="Street">The street address including building number and street name for delivery and correspondence purposes.</param>
-/// <param name="City">The city where the contractor is located, essential for regional business operations and logistics.</param>
-/// <param name="ZipCode">The postal code for accurate mail delivery and geographic region identification.</param>
-/// <param name="Email">The email address for electronic communication, order notifications, and business correspondence.</param>
+/// <param name="Name">Contractor name.</param>
+/// <param name="NIP">Tax identification number.</param>
+/// <param name="Street">Street address.</param>
+/// <param name="City">City name.</param>
+/// <param name="ZipCode">Postal code.</param>
+/// <param name="Email">Contact email address.</param>
 public record CreateContractorCommand(
     string Name,
     string NIP,
