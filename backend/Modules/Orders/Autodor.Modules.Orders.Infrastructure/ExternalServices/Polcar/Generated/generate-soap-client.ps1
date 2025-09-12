@@ -6,6 +6,9 @@ param(
     [string]$Namespace = "Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated"
 )
 
+# Disable telemetry
+$env:DOTNET_SVCUTIL_TELEMETRY_OPTOUT = "1"
+
 Write-Host "Generating SOAP client for Polcar Sales Service..." -ForegroundColor Green
 Write-Host "Output Path: $OutputPath" -ForegroundColor Yellow
 Write-Host "Namespace: $Namespace" -ForegroundColor Yellow
@@ -16,6 +19,13 @@ try {
     if (-not $svcutilCheck) {
         Write-Host "Installing dotnet-svcutil tool..." -ForegroundColor Yellow
         dotnet tool install --global dotnet-svcutil
+    }
+
+    # Remove existing file if it exists
+    $outputFile = "$OutputPath\PolcarOrdersServiceClient.cs"
+    if (Test-Path $outputFile) {
+        Write-Host "Removing existing file: $outputFile" -ForegroundColor Yellow
+        Remove-Item $outputFile -Force
     }
 
     # Generate SOAP client
