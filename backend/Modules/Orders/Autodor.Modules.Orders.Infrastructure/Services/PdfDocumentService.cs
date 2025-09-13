@@ -55,7 +55,7 @@ public class PdfDocumentService : IPdfDocumentService
             {
                 column.Item().Text("Wydanie Zewnętrzne")
                     .FontSize(24)
-                    .FontWeight(FontWeight.Bold)
+                    .Bold()
                     .AlignCenter();
             });
 
@@ -88,11 +88,11 @@ public class PdfDocumentService : IPdfDocumentService
 
             table.Header(header =>
             {
-                header.Cell().Element(CellStyle).Text("Nazwa").FontWeight(FontWeight.Bold);
-                header.Cell().Element(CellStyle).Text("Ilość").FontWeight(FontWeight.Bold);
-                header.Cell().Element(CellStyle).Text("Wartość netto").FontWeight(FontWeight.Bold);
-                header.Cell().Element(CellStyle).Text("Wartość VAT").FontWeight(FontWeight.Bold);
-                header.Cell().Element(CellStyle).Text("Wartość Brutto").FontWeight(FontWeight.Bold);
+                header.Cell().Element(CellStyle).Text("Nazwa").Bold();
+                header.Cell().Element(CellStyle).Text("Ilość").Bold();
+                header.Cell().Element(CellStyle).Text("Wartość netto").Bold();
+                header.Cell().Element(CellStyle).Text("Wartość VAT").Bold();
+                header.Cell().Element(CellStyle).Text("Wartość Brutto").Bold();
             });
 
             foreach (var item in items)
