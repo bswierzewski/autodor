@@ -1,5 +1,7 @@
 using System.Reflection;
 using BuildingBlocks.Application;
+using Autodor.Modules.Orders.Application.API;
+using Autodor.Shared.Contracts.Orders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Orders.Application.Module;
@@ -9,7 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddValidators();
-        
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
@@ -19,7 +21,10 @@ public static class DependencyInjection
                .AddAuthorizationBehavior()
                .AddPerformanceMonitoringBehavior();
         });
-        
+
+        // Register external API services
+        services.AddScoped<IOrdersAPI, OrdersAPI>();
+
         return services;
     }
 }

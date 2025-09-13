@@ -1,6 +1,8 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using BuildingBlocks.Infrastructure;
+using Autodor.Modules.Invoicing.Application.Abstractions;
+using Autodor.Modules.Invoicing.Infrastructure.Services;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Module;
 
@@ -17,10 +19,15 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-        
+
         services
             .AddAuditableEntityInterceptor()
             .AddDomainEventDispatchInterceptor();
+
+        // Register invoice services
+        services.AddScoped<InFaktInvoiceService>();
+        services.AddScoped<IFirmaInvoiceService>();
+        services.AddScoped<IInvoiceServiceFactory, InvoiceServiceFactory>();
 
         return services;
     }
