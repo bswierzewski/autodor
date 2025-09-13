@@ -92,6 +92,31 @@ public class PolcarOrderRepository : IOrdersRepository
     }
 
     /// <summary>
+    /// Retrieves a specific order by its ID and date from the Polcar system.
+    /// </summary>
+    /// <param name="orderId">The unique identifier of the order.</param>
+    /// <param name="date">The date when the order was processed.</param>
+    /// <returns>The order if found, otherwise null.</returns>
+    public async Task<Order?> GetOrderByIdAndDateAsync(string orderId, DateTime date)
+    {
+        _logger.LogInformation("Fetching order {OrderId} for date {Date}", orderId, date.Date);
+
+        var orders = await GetOrdersByDateAsync(date);
+        var order = orders.FirstOrDefault(o => o.Id == orderId);
+
+        if (order == null)
+        {
+            _logger.LogWarning("Order {OrderId} not found for date {Date}", orderId, date.Date);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully found order {OrderId} for date {Date}", orderId, date.Date);
+        }
+
+        return order;
+    }
+
+    /// <summary>
     /// Fetches orders for a single date from the Polcar SOAP service with retry policy.
     /// </summary>
     /// <param name="date">The specific date to fetch orders for.</param>
