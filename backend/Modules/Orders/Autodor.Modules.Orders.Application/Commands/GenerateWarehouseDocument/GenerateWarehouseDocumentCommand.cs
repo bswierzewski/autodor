@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Autodor.Modules.Invoicing.Application.Commands.GenerateWarehouseDocument;
+namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 
 /// <summary>
 /// Command for generating a warehouse document (Wydanie Zewnętrzne) as PDF.

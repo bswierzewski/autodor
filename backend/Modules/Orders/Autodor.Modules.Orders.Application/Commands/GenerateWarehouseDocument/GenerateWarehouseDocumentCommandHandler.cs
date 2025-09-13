@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Autodor.Modules.Invoicing.Application.Commands.GenerateWarehouseDocument;
+namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 
 /// <summary>
 /// Handler for generating warehouse document (Wydanie Zewnętrzne) PDF.
