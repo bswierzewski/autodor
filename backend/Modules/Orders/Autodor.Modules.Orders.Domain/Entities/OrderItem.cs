@@ -5,6 +5,8 @@
 /// </summary>
 public class OrderItem
 {
+    private const decimal DefaultVatRate = 0.23m;
+
     /// <summary>
     /// Gets or sets the identifier of the order this item belongs to.
     /// </summary>
@@ -24,4 +26,24 @@ public class OrderItem
     /// Gets or sets the unit price of this item.
     /// </summary>
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// Gets or sets the VAT rate for this item. Defaults to 23%.
+    /// </summary>
+    public decimal VatRate { get; set; } = DefaultVatRate;
+
+    /// <summary>
+    /// Gets the total net value (Price * Quantity).
+    /// </summary>
+    public decimal NetValue => Price * Quantity;
+
+    /// <summary>
+    /// Gets the total VAT value (NetValue * VatRate).
+    /// </summary>
+    public decimal VatValue => NetValue * VatRate;
+
+    /// <summary>
+    /// Gets the total gross value (NetValue + VatValue).
+    /// </summary>
+    public decimal GrossValue => NetValue + VatValue;
 }

@@ -18,6 +18,7 @@
     <PackageReference Include="System.ServiceModel.NetTcp" />
     <PackageReference Include="System.ServiceModel.Security" />
     <PackageReference Include="Polly" />
+    <PackageReference Include="QuestPDF" />
   </ItemGroup>
 
   <PropertyGroup>

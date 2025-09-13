@@ -21,4 +21,12 @@ public interface IOrdersRepository
     /// <param name="dateTo">The end date of the range (inclusive).</param>
     /// <returns>A collection of orders within the specified date range.</returns>
     Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime dateFrom, DateTime dateTo);
+    
+    /// <summary>
+    /// Retrieves a specific order by its ID and date.
+    /// </summary>
+    /// <param name="orderId">The unique identifier of the order.</param>
+    /// <param name="date">The date when the order was processed.</param>
+    /// <returns>The order if found, otherwise null.</returns>
+    Task<Order?> GetOrderByIdAndDateAsync(string orderId, DateTime date);
 }

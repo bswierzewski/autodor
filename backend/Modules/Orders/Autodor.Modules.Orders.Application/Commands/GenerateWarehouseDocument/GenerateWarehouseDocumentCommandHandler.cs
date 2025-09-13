@@ -1,3 +1,4 @@
+using Autodor.Modules.Orders.Application.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,11 +11,17 @@ namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 /// </summary>
 public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateWarehouseDocumentCommand, byte[]>
 {
+    private readonly IOrdersRepository _ordersRepository;
+    private readonly IPdfDocumentService _pdfDocumentService;
     private readonly ILogger<GenerateWarehouseDocumentCommandHandler> _logger;
 
     public GenerateWarehouseDocumentCommandHandler(
+        IOrdersRepository ordersRepository,
+        IPdfDocumentService pdfDocumentService,
         ILogger<GenerateWarehouseDocumentCommandHandler> logger)
     {
+        _ordersRepository = ordersRepository;
+        _pdfDocumentService = pdfDocumentService;
         _logger = logger;
     }
 
@@ -23,13 +30,18 @@ public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateW
         _logger.LogInformation("Generating warehouse document for order {OrderId} on date {Date}",
             request.OrderId, request.Date);
 
-        // TODO: Implement warehouse document generation
-        // 1. Fetch order details from Orders module
-        // 2. Fetch contractor information from Contractors module  
-        // 3. Fetch product details from Products module
-        // 4. Generate PDF using PDF generation service
-        // 5. Return PDF as byte array
+        var order = await _ordersRepository.GetOrderByIdAndDateAsync(request.OrderId, request.Date);
+        
+        if (order == null)
+        {
+            _logger.LogWarning("Order {OrderId} not found for date {Date}", request.OrderId, request.Date);
+            throw new InvalidOperationException($"Order {request.OrderId} not found for date {request.Date:yyyy-MM-dd}");
+        }
 
-        throw new NotImplementedException("Warehouse document generation is not implemented yet.");
+        var pdfBytes = await _pdfDocumentService.GenerateWarehouseDocumentAsync(order, request.Date, cancellationToken);
+        
+        _logger.LogInformation("Successfully generated warehouse document for order {OrderId}", request.OrderId);
+        
+        return pdfBytes;
     }
 }

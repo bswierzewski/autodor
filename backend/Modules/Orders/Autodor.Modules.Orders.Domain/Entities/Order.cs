@@ -29,5 +29,20 @@ public class Order
     /// Gets or sets the collection of items included in this order.
     /// </summary>
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+
+    /// <summary>
+    /// Gets the total net value of all items in the order.
+    /// </summary>
+    public decimal TotalNetValue => Items.Sum(item => item.NetValue);
+
+    /// <summary>
+    /// Gets the total VAT value of all items in the order.
+    /// </summary>
+    public decimal TotalVatValue => Items.Sum(item => item.VatValue);
+
+    /// <summary>
+    /// Gets the total gross value of all items in the order.
+    /// </summary>
+    public decimal TotalGrossValue => Items.Sum(item => item.GrossValue);
 }
 

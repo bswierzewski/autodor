@@ -50,5 +50,7 @@
     <PackageVersion Include="System.ServiceModel.Security" Version="6.0.0" />
     <!-- Polly -->
     <PackageVersion Include="Polly" Version="8.6.3" />
+    <!-- PDF Generation -->
+    <PackageVersion Include="QuestPDF" Version="2025.7.0" />
   </ItemGroup>
 </Project>

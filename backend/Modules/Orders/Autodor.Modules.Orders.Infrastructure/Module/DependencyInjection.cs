@@ -3,6 +3,7 @@ using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Repositories;
+using Autodor.Modules.Orders.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.Configure<PolcarSalesOptions>(configuration.GetSection(PolcarSalesOptions.SectionName));
         services.AddScoped(provider => new DistributorsSalesServiceSoapClient(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap));
         services.AddScoped<IOrdersRepository, PolcarOrderRepository>();
+        services.AddScoped<IPdfDocumentService, PdfDocumentService>();
 
         return services;
     }
