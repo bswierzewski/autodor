@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Autodor.Tests.E2E.Shared\Autodor.Tests.E2E.Shared.csproj" />
+    <ProjectReference Include="..\Autodor.Tests.E2E.Core\Autodor.Tests.E2E.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
