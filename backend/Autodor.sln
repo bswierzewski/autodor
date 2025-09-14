@@ -3,49 +3,53 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A9B5ECD-52EA-4B2B-9BDB-4EF2A9C5B1D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F7C4D1E2-8B6A-4F3D-9E2C-5A8B7D9F1E4C}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{7226ABEA-787E-1D09-10EA-A2ECF996D6A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Web", "Host\Autodor.Web\Autodor.Web.csproj", "{EECD3BF5-471E-4287-8E23-3B6CCF77BB6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Web", "src\Host\Autodor.Web\Autodor.Web.csproj", "{EECD3BF5-471E-4287-8E23-3B6CCF77BB6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Console", "Host\Autodor.Console\Autodor.Console.csproj", "{8AE1CFEA-1BB4-4E43-B750-1E7DCB5F30E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Console", "src\Host\Autodor.Console\Autodor.Console.csproj", "{8AE1CFEA-1BB4-4E43-B750-1E7DCB5F30E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4F52FD11-658E-A102-6CD3-7D7C16FFA15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Shared.Contracts", "Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj", "{8374AE9E-CE5C-4BDD-9CCD-0A409C50F768}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Shared.Contracts", "src\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj", "{8374AE9E-CE5C-4BDD-9CCD-0A409C50F768}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{CA253913-39DE-BFD0-C9A3-4B7EC6FBDF17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contractors", "Contractors", "{8E30684E-C214-F7FD-1C69-7C5B981E2D65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Domain", "Modules\Contractors\Autodor.Modules.Contractors.Domain\Autodor.Modules.Contractors.Domain.csproj", "{2B12BDB5-A435-4793-A60B-59398EAA32F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Domain", "src\Modules\Contractors\Autodor.Modules.Contractors.Domain\Autodor.Modules.Contractors.Domain.csproj", "{2B12BDB5-A435-4793-A60B-59398EAA32F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Application", "Modules\Contractors\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj", "{841CC902-B642-45E6-BCC1-85F0BD2BF6E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Application", "src\Modules\Contractors\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj", "{841CC902-B642-45E6-BCC1-85F0BD2BF6E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Infrastructure", "Modules\Contractors\Autodor.Modules.Contractors.Infrastructure\Autodor.Modules.Contractors.Infrastructure.csproj", "{E3368F7E-D814-4C19-BDF4-5A5EDB36D89B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Contractors.Infrastructure", "src\Modules\Contractors\Autodor.Modules.Contractors.Infrastructure\Autodor.Modules.Contractors.Infrastructure.csproj", "{E3368F7E-D814-4C19-BDF4-5A5EDB36D89B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orders", "Orders", "{E1ED5814-3279-5096-6E7D-B99B82AC87D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Domain", "Modules\Orders\Autodor.Modules.Orders.Domain\Autodor.Modules.Orders.Domain.csproj", "{7D6F06DC-DEAD-4525-A11E-DAF996E2FD95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Domain", "src\Modules\Orders\Autodor.Modules.Orders.Domain\Autodor.Modules.Orders.Domain.csproj", "{7D6F06DC-DEAD-4525-A11E-DAF996E2FD95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Application", "Modules\Orders\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj", "{0550B05F-91D1-467C-8897-8BED5BEFD0A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Application", "src\Modules\Orders\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj", "{0550B05F-91D1-467C-8897-8BED5BEFD0A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Infrastructure", "Modules\Orders\Autodor.Modules.Orders.Infrastructure\Autodor.Modules.Orders.Infrastructure.csproj", "{842A9A3D-12A8-4310-998B-C740B4A68745}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Orders.Infrastructure", "src\Modules\Orders\Autodor.Modules.Orders.Infrastructure\Autodor.Modules.Orders.Infrastructure.csproj", "{842A9A3D-12A8-4310-998B-C740B4A68745}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Products", "Products", "{32AB9031-46EF-EB64-39E9-1163C7E8B46C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Domain", "Modules\Products\Autodor.Modules.Products.Domain\Autodor.Modules.Products.Domain.csproj", "{98EA0405-C1D1-48FC-9A45-B047C6C4CA88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Domain", "src\Modules\Products\Autodor.Modules.Products.Domain\Autodor.Modules.Products.Domain.csproj", "{98EA0405-C1D1-48FC-9A45-B047C6C4CA88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Application", "Modules\Products\Autodor.Modules.Products.Application\Autodor.Modules.Products.Application.csproj", "{1450DE29-1280-4BB6-ADF2-865912CC9E11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Application", "src\Modules\Products\Autodor.Modules.Products.Application\Autodor.Modules.Products.Application.csproj", "{1450DE29-1280-4BB6-ADF2-865912CC9E11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Infrastructure", "Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj", "{FD5CE18C-B165-4FAE-AD99-AADC7905EF67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Products.Infrastructure", "src\Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj", "{FD5CE18C-B165-4FAE-AD99-AADC7905EF67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Invoicing", "Invoicing", "{04E5667B-C87E-DB85-360C-E1DBE2C6BCF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Domain", "Modules\Invoicing\Autodor.Modules.Invoicing.Domain\Autodor.Modules.Invoicing.Domain.csproj", "{778C3ED1-133D-48BD-9BD6-288E361EB9C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Domain", "src\Modules\Invoicing\Autodor.Modules.Invoicing.Domain\Autodor.Modules.Invoicing.Domain.csproj", "{778C3ED1-133D-48BD-9BD6-288E361EB9C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Application", "Modules\Invoicing\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj", "{D60E7E37-57D1-4CC4-B52C-D42A33BB61CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Application", "src\Modules\Invoicing\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj", "{D60E7E37-57D1-4CC4-B52C-D42A33BB61CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Infrastructure", "Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj", "{31DF535D-160D-429C-B76E-81CD52A4AD0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autodor.Modules.Invoicing.Infrastructure", "src\Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj", "{31DF535D-160D-429C-B76E-81CD52A4AD0C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
@@ -247,6 +251,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7226ABEA-787E-1D09-10EA-A2ECF996D6A6} = {8A9B5ECD-52EA-4B2B-9BDB-4EF2A9C5B1D3}
+		{4F52FD11-658E-A102-6CD3-7D7C16FFA15B} = {8A9B5ECD-52EA-4B2B-9BDB-4EF2A9C5B1D3}
+		{CA253913-39DE-BFD0-C9A3-4B7EC6FBDF17} = {8A9B5ECD-52EA-4B2B-9BDB-4EF2A9C5B1D3}
 		{EECD3BF5-471E-4287-8E23-3B6CCF77BB6B} = {7226ABEA-787E-1D09-10EA-A2ECF996D6A6}
 		{8AE1CFEA-1BB4-4E43-B750-1E7DCB5F30E6} = {7226ABEA-787E-1D09-10EA-A2ECF996D6A6}
 		{8374AE9E-CE5C-4BDD-9CCD-0A409C50F768} = {4F52FD11-658E-A102-6CD3-7D7C16FFA15B}
