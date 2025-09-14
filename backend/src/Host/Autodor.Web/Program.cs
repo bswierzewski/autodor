@@ -40,3 +40,6 @@ app.MapOrdersEndpoints();
 app.MapInvoicingEndpoints();
 
 app.Run();
+
+// Make the Program class accessible for integration tests
+public partial class Program { }
