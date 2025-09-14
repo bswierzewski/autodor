@@ -51,10 +51,27 @@ public class ProductsSynchronizationService(
     /// </summary>
     private async Task SynchronizeProductsAsync()
     {
+        var taskName = nameof(ProductsSynchronizationService);
+
         try
         {
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ProductsDbContext>();
+
+            var taskState = await context.BackgroundTaskStates
+                .FirstOrDefaultAsync(x => x.TaskName == taskName);
+
+            var shouldExecute = taskState == null ||
+                               DateTime.UtcNow - taskState.LastExecutedAt >= _syncInterval;
+
+            if (!shouldExecute)
+            {
+                logger.LogInformation("Products synchronization skipped. Last execution: {LastExecution}, Next execution in: {TimeRemaining}",
+                    taskState?.LastExecutedAt,
+                    taskState != null ? _syncInterval - (DateTime.UtcNow - taskState.LastExecutedAt) : TimeSpan.Zero);
+                return;
+            }
+
             var soapService = scope.ServiceProvider.GetRequiredService<IPolcarProductService>();
 
             logger.LogInformation("Starting products synchronization from Polcar...");
@@ -94,9 +111,26 @@ public class ProductsSynchronizationService(
                 var addedCount = newProducts.Count(p => !existingPartNumbers.Contains(p.Number));
                 var deletedCount = existingPartNumbers.Except(newPartNumbers).Count();
                 var unchangedCount = existingPartNumbers.Count - deletedCount;
-                
+
                 logger.LogInformation("Successfully synchronized products: {Added} added, {Deleted} deleted, {Unchanged} unchanged",
                 addedCount, deletedCount, unchangedCount);
+
+                if (taskState == null)
+                {
+                    taskState = new BackgroundTaskState
+                    {
+                        TaskName = taskName,
+                        LastExecutedAt = DateTime.UtcNow
+                    };
+                    await context.BackgroundTaskStates.AddAsync(taskState);
+                }
+                else
+                {
+                    taskState.LastExecutedAt = DateTime.UtcNow;
+                }
+
+                await context.SaveChangesAsync();
+                logger.LogInformation("Products synchronization completed and timestamp updated.");
             }
             catch (Exception ex)
             {

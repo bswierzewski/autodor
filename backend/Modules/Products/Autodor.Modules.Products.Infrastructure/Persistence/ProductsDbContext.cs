@@ -14,6 +14,11 @@ public class ProductsDbContext : DbContext, IProductsWriteDbContext, IProductsRe
     /// Gets or sets the Products DbSet for write operations.
     /// </summary>
     public DbSet<Product> Products { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the BackgroundTaskState DbSet for background task state management.
+    /// </summary>
+    public DbSet<BackgroundTaskState> BackgroundTaskStates { get; set; } = null!;
     
     /// <summary>
     /// Provides read-only access to products with change tracking disabled for performance.
@@ -35,6 +40,7 @@ public class ProductsDbContext : DbContext, IProductsWriteDbContext, IProductsRe
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new BackgroundTaskStateConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 }
