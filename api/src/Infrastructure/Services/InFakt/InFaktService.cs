@@ -25,6 +25,13 @@ public class InFaktService : IInvoiceService
     {
         try
         {
+            // First create or update the contractor
+            var contractorResult = await CreateOrUpdateContractor(invoice.Contractor);
+            if (!contractorResult.IsSuccess)
+            {
+                return Result<string>.Failure($"Błąd tworzenia/aktualizacji kontrahenta: {contractorResult.Error}");
+            }
+
             var invoiceDto = MapToInFaktFormat(invoice);
             var json = JsonSerializer.Serialize(invoiceDto);
 
@@ -58,6 +65,135 @@ public class InFaktService : IInvoiceService
         catch (Exception ex)
         {
             return Result<string>.Failure($"Błąd: {ex.Message}");
+        }
+    }
+
+    private async Task<InFaktContractorResponseDto> FindContractorByNIP(string nip)
+    {
+        try
+        {
+            var url = $"{_options.ApiUrl}/clients.json?q[clean_nip_eq]={nip}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var contractorList = JsonSerializer.Deserialize<InFaktContractorListResponseDto>(responseContent);
+
+                return contractorList?.Entities?.FirstOrDefault();
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<Result<string>> UpdateContractor(int contractorId, Contractor contractor)
+    {
+        try
+        {
+            var contractorDto = new InFaktContractorRequestDto
+            {
+                Client = new InFaktContractorDto
+                {
+                    CompanyName = contractor.Name,
+                    Street = contractor.Street,
+                    City = contractor.City,
+                    PostalCode = contractor.ZipCode,
+                    NIP = contractor.NIP,
+                    Country = "PL",
+                    Email = contractor.Email
+                }
+            };
+
+            var json = JsonSerializer.Serialize(contractorDto);
+            var url = $"{_options.ApiUrl}/clients/{contractorId}.json";
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Result<string>.Success("Kontrahent zaktualizowany");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var parsedError = ParseInFaktError(errorContent);
+                return Result<string>.Failure($"Błąd aktualizacji kontrahenta: {parsedError}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"Błąd aktualizacji kontrahenta: {ex.Message}");
+        }
+    }
+
+    private async Task<Result<string>> CreateOrUpdateContractor(Contractor contractor)
+    {
+        try
+        {
+            // First check if contractor already exists
+            var existingContractor = await FindContractorByNIP(contractor.NIP);
+
+            if (existingContractor != null)
+            {
+                // Update existing contractor
+                return await UpdateContractor(existingContractor.Id, contractor);
+            }
+            else
+            {
+                // Create new contractor
+                return await CreateNewContractor(contractor);
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"Błąd tworzenia/aktualizacji kontrahenta: {ex.Message}");
+        }
+    }
+
+    private async Task<Result<string>> CreateNewContractor(Contractor contractor)
+    {
+        try
+        {
+            var contractorDto = new InFaktContractorRequestDto
+            {
+                Client = new InFaktContractorDto
+                {
+                    CompanyName = contractor.Name,
+                    Street = contractor.Street,
+                    City = contractor.City,
+                    PostalCode = contractor.ZipCode,
+                    NIP = contractor.NIP,
+                    Country = "PL",
+                    Email = contractor.Email
+                }
+            };
+
+            var json = JsonSerializer.Serialize(contractorDto);
+            var url = $"{_options.ApiUrl}/clients.json";
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Result<string>.Success("Kontrahent utworzony");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var parsedError = ParseInFaktError(errorContent);
+                return Result<string>.Failure($"{parsedError}");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure($"Błąd tworzenia kontrahenta: {ex.Message}");
         }
     }
 
@@ -114,12 +250,7 @@ public class InFaktService : IInvoiceService
                 BankName = "PKO BANK POLSKI",
                 BankAccount = "56102030880000820200920322",
                 PaymentDate = invoice.PaymentDue.ToString("yyyy-MM-dd"),
-                ClientCompanyName = invoice.Contractor.Name,
-                ClientStreet = invoice.Contractor.Street,
-                ClientCity = invoice.Contractor.City,
-                ClientPostCode = invoice.Contractor.ZipCode,
                 ClientTaxCode = invoice.Contractor.NIP,
-                ClientCountry = "PL",
                 Services = invoice.Items.Select(item => new InFaktServiceDto
                 {
                     Name = item.Name,
