@@ -113,7 +113,7 @@ public class CreateAllInvoicesCommandHandler(
             Number = null, // Auto-generated
             IssueDate = DateTime.Now,
             SaleDate = DateTime.Now,
-            PaymentDue = DateTime.Now.AddDays(30),
+            PaymentDue = DateTime.Now.AddDays(14),
             ContractorId = contractor.Id,
             Contractor = contractor,
             Items = items

@@ -40,7 +40,7 @@ public class InFaktService : IInvoiceService
 
                 if (statusResponse?.InvoiceTaskReferenceNumber != null)
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(5000);
 
                     var finalStatus = await CheckInvoiceStatus(statusResponse.InvoiceTaskReferenceNumber);
                     return finalStatus;
