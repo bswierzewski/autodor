@@ -49,7 +49,7 @@ public class InFaktService : IInvoiceService
                 {
                     await Task.Delay(5000);
 
-                    var finalStatus = await CheckInvoiceStatus(statusResponse.InvoiceTaskReferenceNumber);
+                    var finalStatus = await CheckInvoiceStatus(statusResponse.InvoiceTaskReferenceNumber, invoice.Contractor.NIP);
                     return finalStatus;
                 }
 
@@ -197,7 +197,7 @@ public class InFaktService : IInvoiceService
         }
     }
 
-    private async Task<Result<string>> CheckInvoiceStatus(string taskReferenceNumber)
+    private async Task<Result<string>> CheckInvoiceStatus(string taskReferenceNumber, string nip)
     {
         try
         {
@@ -211,7 +211,7 @@ public class InFaktService : IInvoiceService
 
                 if (statusResponse.ProcessingCode == 201)
                 {
-                    return Result<string>.Success($"Faktura wystawiona");
+                    return Result<string>.Success($"{nip} - faktura wystawiona");
                 }
                 else if (statusResponse.ProcessingCode == 422)
                 {
@@ -220,23 +220,23 @@ public class InFaktService : IInvoiceService
                     {
                         errorMessage += $": {string.Join("; ", statusResponse.InvoiceErrors.Base)}";
                     }
-                    return Result<string>.Failure($"{errorMessage}");
+                    return Result<string>.Failure($"{nip} - {errorMessage}");
                 }
                 else
                 {
-                    return Result<string>.Failure($"Status przetwarzania: {statusResponse.ProcessingDescription} (kod: {statusResponse.ProcessingCode})");
+                    return Result<string>.Failure($"{nip} - status przetwarzania: {statusResponse.ProcessingDescription} (kod: {statusResponse.ProcessingCode})");
                 }
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 var parsedError = ParseInFaktError(errorContent);
-                return Result<string>.Failure($"Błąd sprawdzania statusu: {parsedError}");
+                return Result<string>.Failure($"{nip} - błąd sprawdzania statusu: {parsedError}");
             }
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure($"Błąd sprawdzania statusu: {ex.Message}");
+            return Result<string>.Failure($"{nip} - błąd sprawdzania statusu: {ex.Message}");
         }
     }
 
