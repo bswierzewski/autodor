@@ -5,6 +5,7 @@ using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Tests.E2E.Core;
+using Autodor.Tests.E2E.Core.Extensions;
 using Autodor.Tests.E2E.Core.Factories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -26,20 +27,10 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
     public async Task CreateContractor_WithValidData_ShouldCreateAndReturnContractor()
     {
         // Arrange
-        var command = new CreateContractorCommand(
-            "Test Company",
-            "1234567890",
-            "Test Street 123",
-            "Test City",
-            "12-345",
-            "test@example.com"
-        );
-
-        var json = JsonSerializer.Serialize(command);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var command = new CreateContractorCommand("Test Company", "1234567890", "Test Street 123", "Test City", "12-345", "test@example.com");
 
         // Act
-        var response = await Client.PostAsync("/api/contractors", content);
+        var response = await Client.PostJsonAsync("/api/contractors", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
