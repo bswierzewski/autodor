@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.E2E.Modules.Contractors;
 
+/// <summary>
+/// End-to-end tests for contractor management functionality including creation, retrieval, and deletion operations.
+/// </summary>
 public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(factory)
 {
     [Fact]

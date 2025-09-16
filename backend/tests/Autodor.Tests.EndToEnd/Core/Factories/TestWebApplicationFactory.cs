@@ -13,6 +13,10 @@ using Xunit;
 
 namespace Autodor.Tests.E2E.Core.Factories;
 
+/// <summary>
+/// Test web application factory that manages PostgreSQL test containers and database setup for E2E tests.
+/// Provides isolated test databases with automatic cleanup and reset capabilities.
+/// </summary>
 public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
@@ -56,6 +60,9 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
         await base.DisposeAsync();
     }
 
+    /// <summary>
+    /// Resets all test databases to a clean state by truncating tables while preserving schema.
+    /// </summary>
     public async Task ResetDatabasesAsync()
     {
         await _respawner.ResetAsync(_connection);
