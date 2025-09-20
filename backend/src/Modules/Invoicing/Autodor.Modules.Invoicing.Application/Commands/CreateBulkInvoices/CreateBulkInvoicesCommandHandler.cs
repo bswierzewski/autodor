@@ -152,6 +152,10 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
                     Items = invoiceItems.AsReadOnly()
                 };
 
+                // Execute pre-processing if required by the current provider
+                if (_invoiceServiceFactory.GetInvoicePreProcessor() is IInvoicePreProcessor preProcessor)
+                    await preProcessor.PrepareInvoiceAsync(invoice, cancellationToken);                
+
                 var invoiceService = _invoiceServiceFactory.GetInvoiceService();
                 var invoiceId = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 

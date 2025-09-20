@@ -13,7 +13,9 @@
       "Bash(dotnet new:*)",
       "Bash(dotnet test:*)",
       "Bash(docker:*)",
-      "Bash(dotnet sln remove:*)"
+      "Bash(dotnet sln remove:*)",
+      "Read(//d/repos/autodor/api/src/Application/Common/Options/**)",
+      "Read(//d/repos/autodor/api/**)"
     ],
     "deny": [],
     "ask": []

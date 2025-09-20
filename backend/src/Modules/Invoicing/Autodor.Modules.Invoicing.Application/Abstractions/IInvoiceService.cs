@@ -8,6 +8,12 @@ public interface IInvoiceServiceFactory
     /// Gets the appropriate invoice service implementation
     /// </summary>
     IInvoiceService GetInvoiceService();
+
+    /// <summary>
+    /// Gets the appropriate invoice pre-processor implementation
+    /// Returns null if the current provider doesn't require pre-processing
+    /// </summary>
+    IInvoicePreProcessor? GetInvoicePreProcessor();
 }
 
 public interface IInvoiceService
