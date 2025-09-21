@@ -26,7 +26,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
 
     // Shared test data
     private readonly Guid _defaultContractorId = Guid.NewGuid();
-    private readonly Guid _defaultInvoiceId = Guid.NewGuid();
+    private readonly string _defaultInvoiceNumber = "INV-001";
     private readonly DateTime _defaultDate = DateTime.Now.Date;
 
     private ContractorDto _defaultContractor = null!;
@@ -99,7 +99,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
 
         // Default successful invoice creation
         _mockInvoiceService.Setup(x => x.CreateInvoiceAsync(It.IsAny<Invoice>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(_defaultInvoiceId);
+                          .ReturnsAsync(_defaultInvoiceNumber);
     }
 
     private CreateInvoiceCommand CreateDefaultCommand(int? invoiceNumber = 123) =>

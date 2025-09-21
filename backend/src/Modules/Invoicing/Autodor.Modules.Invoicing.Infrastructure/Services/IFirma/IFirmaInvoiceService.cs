@@ -34,7 +34,7 @@ public class IFirmaInvoiceService : IInvoiceService
         };
     }
 
-    public async Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
+    public async Task<string> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -46,8 +46,20 @@ public class IFirmaInvoiceService : IInvoiceService
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Invoice created successfully for contractor: {ContractorName}", invoice.Contractor.Name);
-                return Guid.NewGuid(); // Return a new GUID representing the successful operation
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                var iFirmaResponse = JsonSerializer.Deserialize<IFirmaResponseDto>(responseContent);
+
+                if (iFirmaResponse?.Response?.Kod == 0 && !string.IsNullOrEmpty(iFirmaResponse.Response.Identyfikator))
+                {
+                    var invoiceId = iFirmaResponse.Response.Identyfikator;
+                    _logger.LogInformation("Invoice created successfully for contractor: {ContractorName} with ID: {InvoiceId}", invoice.Contractor.Name, invoiceId);
+                    return invoiceId; // Return the invoice ID from IFirma
+                }
+                else
+                {
+                    var errorMsg = iFirmaResponse?.Response?.Informacja ?? "Unknown error";
+                    throw new InvalidOperationException($"Failed to create invoice: {errorMsg}");
+                }
             }
             else
             {

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.DTOs;
 
 public class IFirmaInvoiceDto
@@ -60,4 +62,22 @@ public class IFirmaPozycje
     public string GTU { get; set; }
     public string TypStawkiVat { get; set; }
     public int Rabat { get; set; }
+}
+
+public class IFirmaResponseDto
+{
+    [JsonPropertyName("response")]
+    public IFirmaResponse Response { get; set; }
+}
+
+public class IFirmaResponse
+{
+    [JsonPropertyName("Kod")]
+    public int Kod { get; set; }
+
+    [JsonPropertyName("Informacja")]
+    public string Informacja { get; set; }
+
+    [JsonPropertyName("Identyfikator")]
+    public string Identyfikator { get; set; }
 }

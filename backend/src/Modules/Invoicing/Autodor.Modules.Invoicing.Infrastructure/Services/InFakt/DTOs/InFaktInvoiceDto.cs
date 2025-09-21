@@ -60,6 +60,27 @@ public class InFaktStatusResponseDto
 
     [JsonPropertyName("invoice_errors")]
     public InFaktInvoiceErrors InvoiceErrors { get; set; }
+
+    [JsonPropertyName("invoice")]
+    public InFaktInvoiceResponseDto Invoice { get; set; }
+}
+
+public class InFaktInvoiceResponseDto
+{
+    [JsonPropertyName("uuid")]
+    public string Uuid { get; set; }
+
+    [JsonPropertyName("number")]
+    public string Number { get; set; }
+
+    [JsonPropertyName("invoice_date")]
+    public string InvoiceDate { get; set; }
+
+    [JsonPropertyName("payment_date")]
+    public string PaymentDate { get; set; }
+
+    [JsonPropertyName("gross_price")]
+    public int GrossPrice { get; set; }
 }
 
 public class InFaktInvoiceErrors

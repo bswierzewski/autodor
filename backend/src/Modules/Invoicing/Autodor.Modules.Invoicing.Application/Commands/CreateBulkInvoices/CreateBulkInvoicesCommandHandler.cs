@@ -12,7 +12,7 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 /// Handles the creation of multiple invoices by processing orders within a date range,
 /// excluding specified orders, and grouping by contractor for batch invoice generation.
 /// </summary>
-public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoicesCommand, IEnumerable<Guid>>
+public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoicesCommand, IEnumerable<string>>
 {
     private readonly ILogger<CreateBulkInvoicesCommandHandler> _logger;
     private readonly IProductsAPI _productsApi;
@@ -42,7 +42,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
     /// <param name="cancellationToken">Cancellation token for async operations</param>
     /// <returns>Collection of unique identifiers for all created invoices</returns>
     /// <exception cref="InvalidOperationException">Thrown when no orders are found in the date range</exception>
-    public async Task<IEnumerable<Guid>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<string>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
@@ -93,7 +93,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
 
         _logger.LogInformation("Grouped orders into {ContractorCount} contractors", ordersByContractor.Count);
 
-        var invoiceIds = new List<Guid>();
+        var invoiceNumbers = new List<string>();
 
         foreach (var contractorGroup in ordersByContractor)
         {
@@ -157,12 +157,12 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
                     await preProcessor.PrepareInvoiceAsync(invoice, cancellationToken);                
 
                 var invoiceService = _invoiceServiceFactory.GetInvoiceService();
-                var invoiceId = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
+                var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-                invoiceIds.Add(invoiceId);
+                invoiceNumbers.Add(invoiceNumber);
 
-                _logger.LogInformation("Successfully created invoice {InvoiceId} for contractor {ContractorNIP}",
-                    invoiceId, contractorNIP);
+                _logger.LogInformation("Successfully created invoice {InvoiceNumber} for contractor {ContractorNIP}",
+                    invoiceNumber, contractorNIP);
             }
             catch (Exception ex)
             {
@@ -172,7 +172,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             }
         }
 
-        _logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceIds.Count);
-        return invoiceIds;
+        _logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceNumbers.Count);
+        return invoiceNumbers;
     }
 }

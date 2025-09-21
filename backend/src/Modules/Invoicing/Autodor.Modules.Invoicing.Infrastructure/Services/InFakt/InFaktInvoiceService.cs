@@ -29,7 +29,7 @@ public class InFaktInvoiceService : IInvoiceService
         _httpClient.DefaultRequestHeaders.Add("X-inFakt-ApiKey", _options.ApiKey);
     }
 
-    public async Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
+    public async Task<string> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -48,11 +48,11 @@ public class InFaktInvoiceService : IInvoiceService
 
                 if (statusResponse?.InvoiceTaskReferenceNumber != null)
                 {
-                    var finalStatus = await PollInvoiceStatusAsync(statusResponse.InvoiceTaskReferenceNumber, invoice.Contractor.NIP, cancellationToken);
-                    if (finalStatus)
+                    var invoiceNumber = await PollInvoiceStatusAsync(statusResponse.InvoiceTaskReferenceNumber, invoice.Contractor.NIP, cancellationToken);
+                    if (!string.IsNullOrEmpty(invoiceNumber))
                     {
-                        _logger.LogInformation("Invoice created successfully for contractor: {ContractorName}", invoice.Contractor.Name);
-                        return Guid.NewGuid();
+                        _logger.LogInformation("Invoice created successfully for contractor: {ContractorName} with number: {InvoiceNumber}", invoice.Contractor.Name, invoiceNumber);
+                        return invoiceNumber;
                     }
                     else
                     {
@@ -61,7 +61,7 @@ public class InFaktInvoiceService : IInvoiceService
                 }
 
                 _logger.LogInformation("Invoice created successfully for contractor: {ContractorName}", invoice.Contractor.Name);
-                return Guid.NewGuid();
+                return $"INFAKT-{statusResponse.InvoiceTaskReferenceNumber}"; // Return task reference as fallback
             }
             else
             {
@@ -79,14 +79,14 @@ public class InFaktInvoiceService : IInvoiceService
     }
 
 
-    private async Task<bool> PollInvoiceStatusAsync(string taskReferenceNumber, string nip, CancellationToken cancellationToken = default)
+    private async Task<string?> PollInvoiceStatusAsync(string taskReferenceNumber, string nip, CancellationToken cancellationToken = default)
     {
         for (int attempt = 0; attempt < _retryDelays.Length; attempt++)
         {
             try
             {
-                var status = await CheckInvoiceStatusAsync(taskReferenceNumber, nip, cancellationToken);
-                return status; // Success - invoice created
+                var invoiceNumber = await CheckInvoiceStatusAsync(taskReferenceNumber, nip, cancellationToken);
+                return invoiceNumber; // Success - invoice created
             }
             catch (TaskInProgressException ex)
             {
@@ -100,20 +100,20 @@ public class InFaktInvoiceService : IInvoiceService
                 else
                 {
                     _logger.LogError("Invoice polling timeout after {MaxAttempts} attempts for NIP: {NIP}", _retryDelays.Length, nip);
-                    return false; // Timeout
+                    return null; // Timeout
                 }
             }
             catch (Exception)
             {
                 // Permanent failure
-                return false;
+                return null;
             }
         }
 
-        return false; // Should never reach here
+        return null; // Should never reach here
     }
 
-    private async Task<bool> CheckInvoiceStatusAsync(string taskReferenceNumber, string nip, CancellationToken cancellationToken = default)
+    private async Task<string?> CheckInvoiceStatusAsync(string taskReferenceNumber, string nip, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -128,7 +128,7 @@ public class InFaktInvoiceService : IInvoiceService
                 return statusResponse.ProcessingCode switch
                 {
                     201 => // Faktura stworzona - SUCCESS
-                        true,
+                        statusResponse.Invoice?.Number ?? $"INFAKT-{statusResponse.InvoiceTaskReferenceNumber}",
                     422 => // Nie udało się stworzyć faktury - PERMANENT FAILURE
                         throw new InvalidOperationException(GetErrorMessage(statusResponse, nip)),
                     100 or 120 or 140 => // Zlecenie przyjęte/czeka/w trakcie - CONTINUE POLLING
@@ -142,13 +142,13 @@ public class InFaktInvoiceService : IInvoiceService
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var parsedError = ParseInFaktError(errorContent);
                 _logger.LogError("Error checking invoice status for NIP {NIP}: {Error}", nip, parsedError);
-                return false;
+                return null;
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error checking invoice status for NIP: {NIP}", nip);
-            return false;
+            return null;
         }
     }
 

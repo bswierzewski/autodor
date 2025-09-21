@@ -12,7 +12,7 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 /// Handles the creation of invoices by aggregating order data, enriching with product details,
 /// and sending to external invoicing systems.
 /// </summary>
-public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, Guid>
+public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, string>
 {
     private readonly ILogger<CreateInvoiceCommandHandler> _logger;
     private readonly IProductsAPI _productsApi;
@@ -41,7 +41,7 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
     /// <param name="cancellationToken">Cancellation token for async operations</param>
     /// <returns>Unique identifier of the created invoice from the external system</returns>
     /// <exception cref="InvalidOperationException">Thrown when no orders are found or contractor doesn't exist</exception>
-    public async Task<Guid> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
             request.ContractorId, request.OrderIds.Count(), request.Dates.Count());
@@ -120,10 +120,10 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
             await preProcessor.PrepareInvoiceAsync(invoice, cancellationToken);        
 
         var invoiceService = _invoiceServiceFactory.GetInvoiceService();
-        var invoiceId = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
+        var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-        _logger.LogInformation("Successfully created invoice with ID {InvoiceId}", invoiceId);
+        _logger.LogInformation("Successfully created invoice with number {InvoiceNumber}", invoiceNumber);
 
-        return invoiceId;
+        return invoiceNumber;
     }
 }

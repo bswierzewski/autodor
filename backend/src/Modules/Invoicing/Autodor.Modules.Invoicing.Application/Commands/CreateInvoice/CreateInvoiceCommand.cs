@@ -20,4 +20,4 @@ public record CreateInvoiceCommand(
     IEnumerable<DateTime> Dates,
     IEnumerable<string> OrderIds,
     Guid ContractorId
-) : IRequest<Guid>;
+) : IRequest<string>;

@@ -21,5 +21,5 @@ public interface IInvoiceService
     /// <summary>
     /// Creates an invoice in the external invoicing system
     /// </summary>
-    Task<Guid> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default);
+    Task<string> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default);
 }
