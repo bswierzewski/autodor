@@ -32,7 +32,7 @@ public class OrdersAPI : IOrdersAPI
         foreach (var date in dates)
         {
             var orders = await _ordersRepository.GetOrdersByDateAsync(date);
-            var orderDtos = orders.Select(MapToDto);
+            var orderDtos = orders.Select(o => o.ToDto());
             allOrders.AddRange(orderDtos);
         }
 
@@ -49,7 +49,7 @@ public class OrdersAPI : IOrdersAPI
     public async Task<IEnumerable<OrderDto>> GetOrdersByDateRangeAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default)
     {
         var orders = await _ordersRepository.GetOrdersByDateRangeAsync(dateFrom, dateTo);
-        return orders.Select(MapToDto);
+        return orders.Select(o => o.ToDto());
     }
 
     /// <summary>
@@ -64,32 +64,4 @@ public class OrdersAPI : IOrdersAPI
             .ToListAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Maps domain Order entity to OrderDto for external consumption.
-    /// </summary>
-    /// <param name="order">Domain order entity</param>
-    /// <returns>Order DTO</returns>
-    private static OrderDto MapToDto(Domain.Entities.Order order)
-    {
-        var contractorDto = new OrderContractorDto(
-            order.Contractor.Number,
-            order.Contractor.Name
-        );
-
-        var itemDtos = order.Items.Select(item => new OrderItemDto(
-            item.OrderId,
-            item.Number,
-            item.Quantity,
-            item.Price,
-            item.VatRate
-        ));
-
-        return new OrderDto(
-            order.Id,
-            order.Number,
-            order.EntryDate,
-            contractorDto,
-            itemDtos
-        );
-    }
 }

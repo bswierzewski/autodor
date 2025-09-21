@@ -1,4 +1,5 @@
 using Autodor.Modules.Contractors.Application.Abstractions;
+using Autodor.Modules.Contractors.Application.API;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,14 +27,6 @@ public class GetAllContractorsQueryHandler : IRequestHandler<GetAllContractorsQu
     {
         var contractors = await _readDbContext.Contractors.ToListAsync(cancellationToken);
 
-        return contractors.Select(contractor => new GetAllContractorsDto(
-            contractor.Id.Value,
-            contractor.Name,
-            contractor.NIP.Value,
-            contractor.Address.Street,
-            contractor.Address.City,
-            contractor.Address.ZipCode,
-            contractor.Email.Value
-        ));
+        return contractors.Select(c => c.ToGetAllContractorsDto());
     }
 }

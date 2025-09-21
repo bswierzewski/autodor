@@ -35,11 +35,7 @@ internal sealed class ProductsAPI : IProductsAPI
         if (product == null || string.IsNullOrEmpty(product.Name))
             return null;
 
-        return new ProductDetailsDto(
-            Number: product.Number,
-            Name: product.Name,
-            EAN13: product.EAN13
-        );
+        return product.ToDto();
     }
 
     /// <summary>
@@ -54,10 +50,6 @@ internal sealed class ProductsAPI : IProductsAPI
             .Where(x => numbers.Contains(x.Number))
             .ToListAsync(cancellationToken);
 
-        return products.Select(p => new ProductDetailsDto(
-            Number: p.Number,
-            Name: p.Name,
-            EAN13: p.EAN13
-        ));
+        return products.Select(p => p.ToDto());
     }
 }

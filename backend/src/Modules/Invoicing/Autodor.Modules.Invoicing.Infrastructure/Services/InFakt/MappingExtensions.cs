@@ -27,4 +27,21 @@ public static class MappingExtensions
             }
         };
     }
+
+    public static InFaktContractorRequestDto ToContractorDto(this Contractor contractor)
+    {
+        return new InFaktContractorRequestDto
+        {
+            Client = new InFaktContractorDto
+            {
+                CompanyName = contractor.Name,
+                Street = contractor.Street,
+                City = contractor.City,
+                PostalCode = contractor.ZipCode,
+                NIP = contractor.NIP,
+                Country = "PL",
+                Email = contractor.Email
+            }
+        };
+    }
 }

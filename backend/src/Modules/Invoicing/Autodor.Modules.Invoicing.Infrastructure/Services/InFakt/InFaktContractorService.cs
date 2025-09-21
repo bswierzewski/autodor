@@ -52,19 +52,7 @@ public class InFaktContractorService
     {
         try
         {
-            var contractorDto = new InFaktContractorRequestDto
-            {
-                Client = new InFaktContractorDto
-                {
-                    CompanyName = contractor.Name,
-                    Street = contractor.Street,
-                    City = contractor.City,
-                    PostalCode = contractor.ZipCode,
-                    NIP = contractor.NIP,
-                    Country = "PL",
-                    Email = contractor.Email
-                }
-            };
+            var contractorDto = contractor.ToContractorDto();
 
             var json = JsonSerializer.Serialize(contractorDto);
             var url = $"{_options.ApiUrl}/clients.json";
@@ -79,7 +67,7 @@ public class InFaktContractorService
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var parsedError = ParseInFaktError(errorContent);
+                var parsedError = InFaktErrorHandler.ParseError(errorContent);
                 _logger.LogError("Failed to create contractor: {Error}", parsedError);
                 return false;
             }
@@ -95,19 +83,7 @@ public class InFaktContractorService
     {
         try
         {
-            var contractorDto = new InFaktContractorRequestDto
-            {
-                Client = new InFaktContractorDto
-                {
-                    CompanyName = contractor.Name,
-                    Street = contractor.Street,
-                    City = contractor.City,
-                    PostalCode = contractor.ZipCode,
-                    NIP = contractor.NIP,
-                    Country = "PL",
-                    Email = contractor.Email
-                }
-            };
+            var contractorDto = contractor.ToContractorDto();
 
             var json = JsonSerializer.Serialize(contractorDto);
             var url = $"{_options.ApiUrl}/clients/{contractorId}.json";
@@ -122,7 +98,7 @@ public class InFaktContractorService
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var parsedError = ParseInFaktError(errorContent);
+                var parsedError = InFaktErrorHandler.ParseError(errorContent);
                 _logger.LogError("Failed to update contractor: {Error}", parsedError);
                 return false;
             }
@@ -135,33 +111,4 @@ public class InFaktContractorService
     }
 
 
-    private string ParseInFaktError(string errorContent)
-    {
-        try
-        {
-            var errorDto = JsonSerializer.Deserialize<InFaktErrorDto>(errorContent);
-
-            if (errorDto?.Errors == null && string.IsNullOrEmpty(errorDto?.Message))
-                return errorContent;
-
-            var errors = new List<string>();
-
-            if (!string.IsNullOrEmpty(errorDto.Message))
-                errors.Add(errorDto.Message);
-
-            if (errorDto.Errors != null)
-            {
-                foreach (var error in errorDto.Errors)
-                {
-                    errors.AddRange(error.Value.Where(e => !string.IsNullOrEmpty(e)));
-                }
-            }
-
-            return errors.Count > 0 ? string.Join("; ", errors) : errorContent;
-        }
-        catch
-        {
-            return errorContent;
-        }
-    }
 }

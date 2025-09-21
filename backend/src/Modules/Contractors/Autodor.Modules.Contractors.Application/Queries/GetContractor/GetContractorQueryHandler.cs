@@ -1,5 +1,6 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
+using Autodor.Modules.Contractors.Application.API;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,14 +23,6 @@ public class GetContractorQueryHandler : IRequestHandler<GetContractorQuery, Get
         if (contractor is null)
             throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
 
-        return new GetContractorDto(
-            contractor.Id.Value,
-            contractor.Name,
-            contractor.NIP.Value,
-            contractor.Address.Street,
-            contractor.Address.City,
-            contractor.Address.ZipCode,
-            contractor.Email.Value
-        );
+        return contractor.ToGetContractorDto();
     }
 }

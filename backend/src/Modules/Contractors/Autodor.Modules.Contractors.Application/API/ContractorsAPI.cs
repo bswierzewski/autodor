@@ -29,7 +29,7 @@ public class ContractorsAPI : IContractorsAPI
             .Where(c => c.Id.Value == contractorId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return contractor != null ? MapToDto(contractor) : null;
+        return contractor?.ToDto();
     }
 
     /// <summary>
@@ -46,24 +46,7 @@ public class ContractorsAPI : IContractorsAPI
             .Where(c => nipList.Contains(c.NIP.Value))
             .ToListAsync(cancellationToken);
 
-        return contractors.Select(MapToDto);
+        return contractors.Select(c => c.ToDto());
     }
 
-    /// <summary>
-    /// Maps domain Contractor entity to ContractorDto for external consumption.
-    /// </summary>
-    /// <param name="contractor">Domain contractor entity</param>
-    /// <returns>Contractor DTO</returns>
-    private static ContractorDto MapToDto(Domain.Aggregates.Contractor contractor)
-    {
-        return new ContractorDto(
-            contractor.Id.Value,
-            contractor.NIP.Value,
-            contractor.Name,
-            contractor.Address.Street,
-            contractor.Address.City,
-            contractor.Address.ZipCode,
-            contractor.Email.Value
-        );
-    }
 }
