@@ -23,9 +23,9 @@ public class InvoiceServiceFactory : IInvoiceServiceFactory
 
         return invoiceProvider.ToLower() switch
         {
-            "infakt" => _serviceProvider.GetRequiredService<InFaktInvoiceService>(),
-            "ifirma" => _serviceProvider.GetRequiredService<IFirmaInvoiceService>(),
-            _ => _serviceProvider.GetRequiredService<InFaktInvoiceService>() // Default to inFakt
+            "infakt" => _serviceProvider.GetRequiredService<InFakt.InvoiceService>(),
+            "ifirma" => _serviceProvider.GetRequiredService<IFirma.InvoiceService>(),
+            _ => _serviceProvider.GetRequiredService<InFakt.InvoiceService>() // Default to inFakt
         };
     }
 
@@ -35,9 +35,9 @@ public class InvoiceServiceFactory : IInvoiceServiceFactory
 
         return invoiceProvider.ToLower() switch
         {
-            "infakt" => _serviceProvider.GetRequiredService<InFaktPreProcessor>(),
+            "infakt" => _serviceProvider.GetRequiredService<InFakt.PreProcessor>(),
             "ifirma" => null, // IFirma doesn't need pre-processing
-            _ => _serviceProvider.GetRequiredService<InFaktPreProcessor>() // Default to inFakt
+            _ => _serviceProvider.GetRequiredService<InFakt.PreProcessor>() // Default to inFakt
         };
     }
 }

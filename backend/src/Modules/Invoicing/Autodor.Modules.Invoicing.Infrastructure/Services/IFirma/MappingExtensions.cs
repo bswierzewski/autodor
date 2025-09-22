@@ -5,39 +5,39 @@ namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma;
 
 public static class MappingExtensions
 {
-    public static IFirmaInvoiceDto ToInvoiceDto(this Invoice invoice)
+    public static InvoiceDto ToInvoiceDto(this Invoice invoice)
     {
-        return new IFirmaInvoiceDto
+        return new InvoiceDto
         {
-            Numer = invoice.Number,
-            DataWystawienia = invoice.IssueDate.ToString("yyyy-MM-dd"),
-            DataSprzedazy = invoice.SaleDate.ToString("yyyy-MM-dd"),
-            MiejsceWystawienia = invoice.PlaceOfIssue,
-            TerminPlatnosci = invoice.PaymentDue,
-            SposobZaplaty = invoice.PaymentMethod,
-            Uwagi = invoice.Notes,
-            Kontrahent = new IFirmaKontrahent
+            Number = invoice.Number,
+            IssueDate = invoice.IssueDate.ToString("yyyy-MM-dd"),
+            SaleDate = invoice.SaleDate.ToString("yyyy-MM-dd"),
+            PlaceOfIssue = invoice.PlaceOfIssue,
+            PaymentTerm = invoice.PaymentDue,
+            PaymentMethod = invoice.PaymentMethod,
+            Notes = invoice.Notes,
+            Contractor = new DTOs.Contractor
             {
-                Nazwa = invoice.Contractor.Name,
-                NIP = invoice.Contractor.NIP,
-                Ulica = invoice.Contractor.Street,
-                KodPocztowy = invoice.Contractor.ZipCode,
-                Miejscowosc = invoice.Contractor.City,
-                Kraj = "PL", // Default to Poland
+                Name = invoice.Contractor.Name,
+                Nip = invoice.Contractor.NIP,
+                Street = invoice.Contractor.Street,
+                PostalCode = invoice.Contractor.ZipCode,
+                City = invoice.Contractor.City,
+                Country = "PL", // Default to Poland
                 Email = invoice.Contractor.Email,
-                Telefon = "" // Not available in current Contractor model
+                Phone = "" // Not available in current Contractor model
             },
-            Pozycje = invoice.Items.Select(item => new IFirmaPozycje
+            Items = invoice.Items.Select(item => new DTOs.InvoiceItem
             {
-                NazwaPelna = item.Name,
-                Jednostka = item.Unit,
-                Ilosc = item.Quantity,
-                CenaJednostkowa = (float)item.UnitPrice,
-                StawkaVat = item.VatRate,
-                TypStawkiVat = item.VatType,
-                Rabat = (int)item.Discount,
-                PKWiU = item.PKWiU,
-                GTU = item.GTU
+                FullName = item.Name,
+                Unit = item.Unit,
+                Quantity = item.Quantity,
+                UnitPrice = (float)item.UnitPrice,
+                VatRate = item.VatRate,
+                VatRateType = item.VatType,
+                Discount = (int)item.Discount,
+                PkwiuCode = item.PKWiU,
+                GtuCode = item.GTU
             }).ToArray()
         };
     }

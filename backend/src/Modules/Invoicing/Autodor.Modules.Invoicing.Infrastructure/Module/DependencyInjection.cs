@@ -35,19 +35,19 @@ public static class DependencyInjection
             });
 
         // Register HttpClient for InFakt
-        services.AddHttpClient<InFaktInvoiceService>();
-        services.AddHttpClient<InFaktContractorService>();
+        services.AddHttpClient<Services.InFakt.InvoiceService>();
+        services.AddHttpClient<Services.InFakt.ContractorService>();
 
         // Register invoice services
         services.AddScoped<IInvoiceServiceFactory, InvoiceServiceFactory>();
 
         // Register iFirma service
-        services.AddScoped<IFirmaInvoiceService>();
+        services.AddScoped<Services.IFirma.InvoiceService>();
 
         // Register inFakt services
-        services.AddScoped<InFaktInvoiceService>();
-        services.AddScoped<InFaktContractorService>();
-        services.AddScoped<InFaktPreProcessor>();
+        services.AddScoped<Services.InFakt.InvoiceService>();
+        services.AddScoped<Services.InFakt.ContractorService>();
+        services.AddScoped<Services.InFakt.PreProcessor>();
 
         return services;
     }
