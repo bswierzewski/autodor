@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Contractors.Infrastructure.Migrations
 {
     [DbContext(typeof(ContractorsDbContext))]
-    [Migration("20250915184431_InitialCreate")]
+    [Migration("20251019100037_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,8 +34,8 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -45,8 +45,8 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("NIP")
                         .IsRequired()

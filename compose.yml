@@ -9,15 +9,15 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespw
-  api:
-    container_name: autodor_api
-    image: ninjatechfun/autodor_api:latest
-    build:
-      context: ./api
-      dockerfile: src/Web/Dockerfile
-    depends_on:
-      - db
-    ports:
-      - 7000:7000
-    env_file:
-      - path: ./deploy/envs/.local.env
+  # api:
+  #   container_name: autodor_api
+  #   image: ninjatechfun/autodor_api:latest
+  #   build:
+  #     context: ./api
+  #     dockerfile: src/Web/Dockerfile
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 7000:7000
+  #   env_file:
+  #     - path: ./deploy/envs/.local.env

@@ -2,7 +2,7 @@ using System.Reflection;
 using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodor.Modules.Invoicing.Infrastructure.Services;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
+using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +48,9 @@ public static class DependencyInjection
         services.AddScoped<Services.InFakt.InvoiceService>();
         services.AddScoped<Services.InFakt.ContractorService>();
         services.AddScoped<Services.InFakt.PreProcessor>();
+
+        // Rejestracja modułu dla systemu uprawnień
+        services.AddSingleton<IModule, InvoicingModule>();
 
         return services;
     }

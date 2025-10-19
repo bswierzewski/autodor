@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="BuildingBlocks.Application" />
     <PackageReference Include="BuildingBlocks.Infrastructure" />
     <PackageReference Include="BuildingBlocks.Extensions" />
     <PackageReference Include="System.ServiceModel.Duplex" />

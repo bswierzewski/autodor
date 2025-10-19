@@ -1,12 +1,10 @@
 using System.Reflection;
-using Autodor.Modules.Products.Application.Module;
 using Autodor.Modules.Products.Application.Abstractions;
-using Autodor.Modules.Products.Infrastructure.Module;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
 using Autodor.Modules.Products.Infrastructure.Persistence;
-using BuildingBlocks.Application;
+using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -56,6 +54,9 @@ public static class DependencyInjection
             var configurator = new ProductsModuleConfigurator(services);
             configure(configurator);
         }
+
+        // Rejestracja modułu dla systemu uprawnień
+        services.AddSingleton<IModule, ProductsModule>();
 
         return services;
     }

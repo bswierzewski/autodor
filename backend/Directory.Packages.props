@@ -4,14 +4,15 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
-    <BuildingBlocksVersion>0.0.2-preview-14</BuildingBlocksVersion>
-    <MicrosoftExtensionsVersion>9.0.8</MicrosoftExtensionsVersion>
+    <BuildingBlocksVersion>0.0.2-preview-21</BuildingBlocksVersion>
+    <MicrosoftExtensionsVersion>9.0.9</MicrosoftExtensionsVersion>
     <EntityFrameworkVersion>9.0.8</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>
-    <AspNetCoreVersion>9.0.8</AspNetCoreVersion>
+    <AspNetCoreVersion>9.0.9</AspNetCoreVersion>
     <FluentValidationVersion>12.0.0</FluentValidationVersion>
     <TestcontainersVersion>4.7.0</TestcontainersVersion>
-    <SwashbuckleVersion>9.0.3</SwashbuckleVersion>
+    <SwashbuckleVersion>6.10.2</SwashbuckleVersion>
+    <OpenApiVersion>9.0.9</OpenApiVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Extensions Framework -->
@@ -30,7 +31,7 @@
     <!-- ASP.NET Core Web Framework -->
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(SwashbuckleVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiVersion)" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleVersion)" />
 
     <!-- Entity Framework Core ORM -->
@@ -72,6 +73,7 @@
     <PackageVersion Include="BuildingBlocks.Domain" Version="$(BuildingBlocksVersion)" />
     <PackageVersion Include="BuildingBlocks.Extensions" Version="$(BuildingBlocksVersion)" />
     <PackageVersion Include="BuildingBlocks.Infrastructure" Version="$(BuildingBlocksVersion)" />
+    <PackageVersion Include="BuildingBlocks.Users" Version="$(BuildingBlocksVersion)" />
 
     <!-- ==================== TESTING PACKAGES ==================== -->
 

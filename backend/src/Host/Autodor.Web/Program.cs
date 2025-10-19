@@ -3,14 +3,25 @@ using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
-using Autodor.Web.Services;
-using BuildingBlocks.Application.Abstractions;
+using BuildingBlocks.Modules.Users.Infrastructure;
+using BuildingBlocks.Modules.Users.Infrastructure.Extensions;
+using BuildingBlocks.Modules.Users.Infrastructure.Module;
+using BuildingBlocks.Modules.Users.Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Rejestracja IUser serwisu
+// Rejestracja usług podstawowych
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddScoped<IUser, StaticUserService>();
+builder.Services.AddHttpContextAccessor();
+
+// Rejestracja modułu Users
+builder.Services.AddUsers(builder.Configuration);
+
+// Konfiguracja autentykacji z Clerk
+builder.Services.AddClerkOptions(builder.Configuration);
+builder.Services
+    .AddAuthentication()
+    .AddClerkJwtBearer();
 
 builder.Services.AddContractors(builder.Configuration);
 builder.Services.AddProducts(builder.Configuration, options =>
@@ -32,12 +43,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Mapowanie endpoints
 app.MapContractorsEndpoints();
 app.MapOrdersEndpoints();
 app.MapInvoicingEndpoints();
+app.MapUsersEndpoints();
 
 app.Run();
 

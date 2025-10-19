@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -21,5 +22,28 @@ public static class HttpClientExtensions
         var json = JsonSerializer.Serialize(data);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         return await client.PostAsync(endpoint, content);
+    }
+
+    /// <summary>
+    /// Adds a JWT Bearer token to the Authorization header of the HTTP client.
+    /// </summary>
+    /// <param name="client">The HTTP client instance.</param>
+    /// <param name="token">The JWT token to add.</param>
+    /// <returns>The HTTP client with the authorization header set.</returns>
+    public static HttpClient WithBearerToken(this HttpClient client, string token)
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return client;
+    }
+
+    /// <summary>
+    /// Removes the Authorization header from the HTTP client.
+    /// </summary>
+    /// <param name="client">The HTTP client instance.</param>
+    /// <returns>The HTTP client with the authorization header removed.</returns>
+    public static HttpClient WithoutAuthorization(this HttpClient client)
+    {
+        client.DefaultRequestHeaders.Authorization = null;
+        return client;
     }
 }

@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
+namespace Autodor.Modules.Products.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20250914043015_AddBackgroundTaskState")]
-    partial class AddBackgroundTaskState
+    [Migration("20251019100101_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,8 +40,8 @@ namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("LastExecutedAt")
                         .HasColumnType("timestamp with time zone");
@@ -49,8 +49,8 @@ namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
@@ -77,8 +77,8 @@ namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("EAN13")
                         .IsRequired()
@@ -88,8 +88,8 @@ namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()

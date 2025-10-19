@@ -33,8 +33,8 @@ namespace Autodor.Modules.Orders.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("DateTime")
                         .HasColumnType("timestamp with time zone");
@@ -42,8 +42,8 @@ namespace Autodor.Modules.Orders.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("OrderId")
                         .IsRequired()

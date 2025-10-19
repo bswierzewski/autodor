@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
+namespace Autodor.Modules.Orders.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -13,30 +13,35 @@ namespace Autodor.Modules.Products.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "ExcludedOrders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Name = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    EAN13 = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    OrderId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<string>(type: "text", nullable: true)
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_ExcludedOrders", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExcludedOrders_OrderId",
+                table: "ExcludedOrders",
+                column: "OrderId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ExcludedOrders");
         }
     }
 }

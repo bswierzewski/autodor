@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Products.Infrastructure.Persistence;
 using Autodor.Tests.E2E.Core.Extensions;
+using BuildingBlocks.Modules.Users.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
-using Xunit;
 
 namespace Autodor.Tests.E2E.Core.Factories;
 
@@ -42,6 +42,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
             await serviceProvider.GetRequiredService<ContractorsDbContext>().Database.MigrateAsync();
             await serviceProvider.GetRequiredService<OrdersDbContext>().Database.MigrateAsync();
             await serviceProvider.GetRequiredService<ProductsDbContext>().Database.MigrateAsync();
+            await serviceProvider.GetRequiredService<UsersDbContext>().Database.MigrateAsync();
         }
 
         _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
@@ -79,7 +80,8 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>, IAsyncL
             services
                 .ReplaceDbContext<ContractorsDbContext>(connectionString)
                 .ReplaceDbContext<OrdersDbContext>(connectionString)
-                .ReplaceDbContext<ProductsDbContext>(connectionString);
+                .ReplaceDbContext<ProductsDbContext>(connectionString)
+                .ReplaceDbContext<UsersDbContext>(connectionString);
         });
     }
 }
