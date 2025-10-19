@@ -5,7 +5,7 @@ using Autodor.Modules.Products.Infrastructure;
 using Autodor.Web.Endpoints;
 using BuildingBlocks.Modules.Users.Web;
 using BuildingBlocks.Modules.Users.Web.Extensions;
-using BuildingBlocks.Modules.Users.Web.Module;
+using BuildingBlocks.Modules.Users.Infrastructure.Extensions;
 using BuildingBlocks.Modules.Users.Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);

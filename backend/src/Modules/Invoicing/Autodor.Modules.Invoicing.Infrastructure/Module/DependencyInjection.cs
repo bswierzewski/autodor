@@ -50,7 +50,7 @@ public static class DependencyInjection
         services.AddScoped<Services.InFakt.PreProcessor>();
 
         // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, InvoicingModule>();
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }

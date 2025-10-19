@@ -56,7 +56,7 @@ public static class DependencyInjection
         }
 
         // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, ProductsModule>();
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }

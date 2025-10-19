@@ -39,7 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IPdfDocumentService, PdfDocumentService>();
 
         // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, OrdersModule>();
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }

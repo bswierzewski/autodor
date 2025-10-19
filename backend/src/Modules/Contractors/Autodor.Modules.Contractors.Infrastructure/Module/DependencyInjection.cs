@@ -31,7 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IContractorsReadDbContext>(provider => provider.GetRequiredService<ContractorsDbContext>());
 
         // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, ContractorsModule>();
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }
