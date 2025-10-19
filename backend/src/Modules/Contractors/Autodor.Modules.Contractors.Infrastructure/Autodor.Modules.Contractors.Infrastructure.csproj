@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj" />
@@ -9,8 +9,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="BuildingBlocks.Application" />
-    <PackageReference Include="BuildingBlocks.Infrastructure" />
+  </ItemGroup>
+
+  <!-- BuildingBlocks reference from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

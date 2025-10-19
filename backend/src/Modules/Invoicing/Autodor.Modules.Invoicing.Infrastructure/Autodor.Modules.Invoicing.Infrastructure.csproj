@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
@@ -8,9 +8,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="BuildingBlocks.Application" />
-    <PackageReference Include="BuildingBlocks.Infrastructure" />
     <PackageReference Include="Polly" />
+  </ItemGroup>
+
+  <!-- BuildingBlocks reference from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

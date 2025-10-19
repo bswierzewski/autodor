@@ -33,14 +33,9 @@
     <ProjectReference Include="..\..\src\Modules\Invoicing\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
   </ItemGroup>
 
-  <!-- BuildingBlocks references for tests: Debug=ProjectReference (local), Release=PackageReference (NuGet) -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\..\..\..\building_blocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Application\BuildingBlocks.Modules.Users.Application.csproj" />
-    <ProjectReference Include="..\..\..\..\building_blocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Infrastructure\BuildingBlocks.Modules.Users.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="BuildingBlocks.Users" />
+  <!-- BuildingBlocks Users module reference from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\BuildingBlocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Web\BuildingBlocks.Modules.Users.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

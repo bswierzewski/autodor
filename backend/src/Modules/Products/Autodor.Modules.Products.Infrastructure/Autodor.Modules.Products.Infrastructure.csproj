@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Products.Application\Autodor.Modules.Products.Application.csproj" />
@@ -15,14 +15,17 @@
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Polly" />
-    <PackageReference Include="BuildingBlocks.Application" />
-    <PackageReference Include="BuildingBlocks.Infrastructure" />
-    <PackageReference Include="BuildingBlocks.Extensions" />
     <PackageReference Include="System.ServiceModel.Duplex" />
     <PackageReference Include="System.ServiceModel.Federation" />
     <PackageReference Include="System.ServiceModel.Http" />
     <PackageReference Include="System.ServiceModel.NetTcp" />
     <PackageReference Include="System.ServiceModel.Security" />
+  </ItemGroup>
+
+  <!-- BuildingBlocks references from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Extensions\BuildingBlocks.Extensions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -17,18 +17,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
-  <!-- BuildingBlocks references: Debug=ProjectReference (local), Release=PackageReference (NuGet) -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\..\..\..\..\building_blocks\src\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\..\..\building_blocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\..\..\building_blocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Infrastructure\BuildingBlocks.Modules.Users.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\..\..\building_blocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Web\BuildingBlocks.Modules.Users.Web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="BuildingBlocks.Application" />
-    <PackageReference Include="BuildingBlocks.Infrastructure" />
-    <PackageReference Include="BuildingBlocks.Users" />
+  <!-- BuildingBlocks references from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Web\BuildingBlocks.Modules.Users.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
@@ -12,6 +12,11 @@
     <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj" />
   </ItemGroup>
 
+  <!-- BuildingBlocks reference from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="MediatR" />
@@ -23,7 +28,6 @@
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
-    <PackageReference Include="BuildingBlocks.Application" />
   </ItemGroup>
 
   <PropertyGroup>

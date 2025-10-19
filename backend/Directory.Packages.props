@@ -4,7 +4,6 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
-    <BuildingBlocksVersion>0.0.2-preview-21</BuildingBlocksVersion>
     <MicrosoftExtensionsVersion>9.0.9</MicrosoftExtensionsVersion>
     <EntityFrameworkVersion>9.0.8</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>
@@ -67,13 +66,6 @@
 
     <!-- Document Generation -->
     <PackageVersion Include="QuestPDF" Version="2025.7.0" />
-
-    <!-- Custom Building Blocks -->
-    <PackageVersion Include="BuildingBlocks.Application" Version="$(BuildingBlocksVersion)" />
-    <PackageVersion Include="BuildingBlocks.Domain" Version="$(BuildingBlocksVersion)" />
-    <PackageVersion Include="BuildingBlocks.Extensions" Version="$(BuildingBlocksVersion)" />
-    <PackageVersion Include="BuildingBlocks.Infrastructure" Version="$(BuildingBlocksVersion)" />
-    <PackageVersion Include="BuildingBlocks.Users" Version="$(BuildingBlocksVersion)" />
 
     <!-- ==================== TESTING PACKAGES ==================== -->
 

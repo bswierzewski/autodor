@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj" />
@@ -10,9 +10,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="BuildingBlocks.Application" />
-    <PackageReference Include="BuildingBlocks.Infrastructure" />
-    <PackageReference Include="BuildingBlocks.Extensions" />
     <PackageReference Include="System.ServiceModel.Duplex" />
     <PackageReference Include="System.ServiceModel.Federation" />
     <PackageReference Include="System.ServiceModel.Http" />
@@ -20,6 +17,12 @@
     <PackageReference Include="System.ServiceModel.Security" />
     <PackageReference Include="Polly" />
     <PackageReference Include="QuestPDF" />
+  </ItemGroup>
+
+  <!-- BuildingBlocks references from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Extensions\BuildingBlocks.Extensions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

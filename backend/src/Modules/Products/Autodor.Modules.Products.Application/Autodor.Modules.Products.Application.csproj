@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\Autodor.Modules.Products.Domain\Autodor.Modules.Products.Domain.csproj" />
@@ -7,7 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="BuildingBlocks.Application" />
+  </ItemGroup>
+
+  <!-- BuildingBlocks reference from git submodule -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
