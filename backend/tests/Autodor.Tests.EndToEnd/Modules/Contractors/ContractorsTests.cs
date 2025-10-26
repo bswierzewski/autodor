@@ -1,6 +1,4 @@
 using System.Net;
-using System.Text;
-using System.Text.Json;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
