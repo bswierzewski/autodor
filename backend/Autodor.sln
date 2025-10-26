@@ -80,6 +80,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Extensions", "libs\BuildingBlocks\src\BuildingBlocks.Extensions\BuildingBlocks.Extensions.csproj", "{C674C947-BB30-4E98-B8E6-CA1D11970598}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{B8E2791E-1399-483E-AA5C-B451B9DD6F97}"
+	ProjectSection(SolutionItems) = preProject
+		libs\BuildingBlocks\.editorconfig = libs\BuildingBlocks\.editorconfig
+		libs\BuildingBlocks\Directory.Build.props = libs\BuildingBlocks\Directory.Build.props
+		libs\BuildingBlocks\Directory.Packages.props = libs\BuildingBlocks\Directory.Packages.props
+		libs\BuildingBlocks\README.md = libs\BuildingBlocks\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -416,6 +424,7 @@ Global
 		{372C037D-6A9A-4D39-AF7C-98D38476D06A} = {C1C515BA-7A4E-2469-6688-6EC77CD84C5C}
 		{00597FF1-A205-476D-AF11-6E726E490643} = {C1C515BA-7A4E-2469-6688-6EC77CD84C5C}
 		{C674C947-BB30-4E98-B8E6-CA1D11970598} = {C1C515BA-7A4E-2469-6688-6EC77CD84C5C}
+		{B8E2791E-1399-483E-AA5C-B451B9DD6F97} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0FD7DE5E-8772-46F6-B799-D31672591956}

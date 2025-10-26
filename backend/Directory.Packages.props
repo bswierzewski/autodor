@@ -4,14 +4,13 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
-    <MicrosoftExtensionsVersion>9.0.9</MicrosoftExtensionsVersion>
-    <EntityFrameworkVersion>9.0.8</EntityFrameworkVersion>
+    <MicrosoftExtensionsVersion>9.0.10</MicrosoftExtensionsVersion>
+    <EntityFrameworkVersion>9.0.10</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>
-    <AspNetCoreVersion>9.0.9</AspNetCoreVersion>
+    <AspNetCoreVersion>9.0.10</AspNetCoreVersion>
     <FluentValidationVersion>12.0.0</FluentValidationVersion>
     <TestcontainersVersion>4.7.0</TestcontainersVersion>
-    <SwashbuckleVersion>6.10.2</SwashbuckleVersion>
-    <OpenApiVersion>9.0.9</OpenApiVersion>
+    <OpenApiVersion>9.0.10</OpenApiVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Extensions Framework -->
@@ -31,7 +30,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiVersion)" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleVersion)" />
 
     <!-- Entity Framework Core ORM -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkVersion)" />
