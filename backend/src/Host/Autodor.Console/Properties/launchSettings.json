@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Autodor.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"2025-10-10\" -t \"2025-10-12\" -o invoices"
+    }
+  }
+}

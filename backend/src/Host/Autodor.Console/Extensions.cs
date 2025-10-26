@@ -1,8 +1,9 @@
+using Autodor.Console.Services;
 using Autodor.Modules.Contractors.Infrastructure;
 using Autodor.Modules.Invoicing.Infrastructure;
 using Autodor.Modules.Orders.Infrastructure;
 using Autodor.Modules.Products.Infrastructure;
-using CommandLine;
+using BuildingBlocks.Application.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,23 +23,23 @@ public static class Extensions
             .Build();
     }
 
-    public static IHostBuilder CreateHostBuilder(this IConfiguration configuration)
+    public static IHostBuilder CreateHostBuilder(this IConfiguration configuration, Options options)
     {
         return Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                // First to ensure user services are available for other modules
+                // Register user service first to ensure it's available for other modules
+                services.AddScoped<IUser, ConsoleUser>();
 
                 services.AddSingleton(TimeProvider.System);
-                // Dodanie serwisu IUser
 
                 services.AddContractors(configuration);
                 services.AddProducts(configuration);
                 services.AddOrders(configuration);
                 services.AddInvoicing();
 
-                services.AddOptions<Options>()
-                    .Configure(opt => Parser.Default.ParseArguments(() => opt, Environment.GetCommandLineArgs()));
+                // Register parsed options as singleton
+                services.AddSingleton(options);
 
                 services.AddSerilog();
             });

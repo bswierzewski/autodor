@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\Modules\Contractors\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj" />
