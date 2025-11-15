@@ -1,13 +1,13 @@
 using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Domain.Entities;
 
-namespace Autodor.Modules.Contractors.Infrastructure.Module;
+namespace Autodor.Modules.Orders.Application.Module;
 
 public class Module : IModule
 {
-    public string ModuleName => "Contractors";
-    public string DisplayName => "Zarządzanie Kontrahentami";
-    public string? Description => "Moduł zarządzania kontrahentami i ich danymi";
+    public string ModuleName => "Orders";
+    public string DisplayName => "Zarządzanie Zamówieniami";
+    public string? Description => "Moduł zarządzania zamówieniami i dokumentami magazynowymi";
 
     public IEnumerable<Permission> GetPermissions()
     {

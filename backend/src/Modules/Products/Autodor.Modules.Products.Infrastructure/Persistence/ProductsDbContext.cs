@@ -1,6 +1,5 @@
-using Autodor.Modules.Products.Domain.Aggregates;
 using Autodor.Modules.Products.Application.Abstractions;
-using Autodor.Modules.Products.Infrastructure.Persistence.Configurations;
+using Autodor.Modules.Products.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Products.Infrastructure.Persistence;
@@ -39,8 +38,9 @@ public class ProductsDbContext : DbContext, IProductsWriteDbContext, IProductsRe
     /// <param name="modelBuilder">The model builder for entity configuration</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new ProductConfiguration());
-        modelBuilder.ApplyConfiguration(new BackgroundTaskStateConfiguration());
+        // Apply entity configurations from this assembly
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsDbContext).Assembly);
+
         base.OnModelCreating(modelBuilder);
     }
 }

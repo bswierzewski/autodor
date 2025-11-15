@@ -39,6 +39,7 @@ public static class ContractorsEndpoints
         // Create a route group for all contractor endpoints with consistent base path and tagging
         // This ensures API consistency and proper OpenAPI documentation grouping
         var group = endpoints.MapGroup("/api/contractors")
+            .RequireAuthorization()
             .WithTags("Contractors");
 
         // POST /api/contractors - Create new contractor (supplier, customer, or service provider)

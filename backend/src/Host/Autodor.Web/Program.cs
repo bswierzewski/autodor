@@ -10,19 +10,16 @@ using BuildingBlocks.Modules.Users.Web.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Rejestracja usług podstawowych
+// Register core services
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHttpContextAccessor();
 
-// Rejestracja modułu Users
+// OpenAPI for Orval client generation
+builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
+builder.Services.AddOpenApi();              // Generates OpenAPI document
+
+// Add Modules
 builder.Services.AddUsers(builder.Configuration);
-
-// Konfiguracja autentykacji z Clerk
-builder.Services.AddClerkOptions(builder.Configuration);
-builder.Services
-    .AddAuthentication()
-    .AddClerkJwtBearer();
-
 builder.Services.AddContractors(builder.Configuration);
 builder.Services.AddProducts(builder.Configuration, options =>
 {
@@ -31,8 +28,9 @@ builder.Services.AddProducts(builder.Configuration, options =>
 builder.Services.AddOrders(builder.Configuration);
 builder.Services.AddInvoicing();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+// Configure Clerk authentication
+builder.Services.AddClerkOptions(builder.Configuration);
+builder.Services.AddAuthentication().AddClerkJwtBearer();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -40,12 +38,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    // CORS only in Development (production runs in single Docker container)
+    app.UseCors(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+// Middleware pipeline order matters!
+app.UseAuthentication(); // 1. Authentication first
+app.UseAuthorization();  // 2. Authorization second
 
-// Mapowanie endpoints
+// Map endpoints from modules
 app.MapContractorsEndpoints();
 app.MapOrdersEndpoints();
 app.MapInvoicingEndpoints();

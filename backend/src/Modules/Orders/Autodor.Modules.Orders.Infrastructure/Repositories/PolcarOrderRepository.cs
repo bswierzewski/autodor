@@ -2,10 +2,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using Autodor.Modules.Orders.Application.Abstractions;
+using Autodor.Modules.Orders.Application.Options;
 using Autodor.Modules.Orders.Domain.Entities;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Orders.Application.Abstractions;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 using BuildingBlocks.Extensions;
 
 namespace Autodor.Modules.Orders.Infrastructure.Repositories;

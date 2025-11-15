@@ -1,6 +1,5 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Application.Abstractions;
-using Autodor.Modules.Orders.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Orders.Infrastructure.Persistence;
@@ -35,7 +34,7 @@ public class OrdersDbContext : DbContext, IOrdersWriteDbContext, IOrdersReadDbCo
     /// <param name="modelBuilder">The model builder used to configure the context.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new ExcludedOrderConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(OrdersDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }

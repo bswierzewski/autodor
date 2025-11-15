@@ -16,6 +16,12 @@ namespace Autodor.Tests.E2E.Modules.Contractors;
 /// </summary>
 public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(factory)
 {
+    protected override Task OnInitializeAsync()
+    {
+        Client.WithBearerToken(TestJwtTokens.Default);
+        return Task.CompletedTask;
+    }
+
     [Fact]
     public async Task GetContractors_ShouldReturnSuccess()
     {

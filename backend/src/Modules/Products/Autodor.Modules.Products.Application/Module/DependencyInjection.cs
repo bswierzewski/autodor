@@ -1,7 +1,8 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Autodor.Modules.Products.Application.API;
 using Autodor.Shared.Contracts.Products;
 using BuildingBlocks.Application;
+using BuildingBlocks.Application.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Products.Application.Module;
@@ -31,7 +32,10 @@ public static class DependencyInjection
         });
         
         services.AddScoped<IProductsAPI, ProductsAPI>();
-        
+
+        // Rejestracja modułu dla systemu uprawnień
+        services.AddSingleton<IModule, Module>();
+
         return services;
     }
 }

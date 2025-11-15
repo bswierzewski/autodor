@@ -1,11 +1,9 @@
-using System.Reflection;
 using Autodor.Modules.Orders.Application.Abstractions;
+using Autodor.Modules.Orders.Application.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Repositories;
 using Autodor.Modules.Orders.Infrastructure.Services;
-using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +15,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
         services
             .AddMigrationService<OrdersDbContext>()
             .AddAuditableEntityInterceptor()
@@ -37,9 +33,6 @@ public static class DependencyInjection
         services.AddScoped(provider => new DistributorsSalesServiceSoapClient(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap));
         services.AddScoped<IOrdersRepository, PolcarOrderRepository>();
         services.AddScoped<IPdfDocumentService, PdfDocumentService>();
-
-        // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, Module>();
 
         return services;
     }

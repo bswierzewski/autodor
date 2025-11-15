@@ -1,13 +1,13 @@
 using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Domain.Entities;
 
-namespace Autodor.Modules.Products.Infrastructure.Module;
+namespace Autodor.Modules.Invoicing.Application.Module;
 
 public class Module : IModule
 {
-    public string ModuleName => "Products";
-    public string DisplayName => "Zarządzanie Produktami";
-    public string? Description => "Moduł zarządzania produktami i synchronizacji z zewnętrznymi systemami";
+    public string ModuleName => "Invoicing";
+    public string DisplayName => "Zarządzanie Fakturowaniem";
+    public string? Description => "Moduł zarządzania fakturami i integracją z systemem Infakt";
 
     public IEnumerable<Permission> GetPermissions()
     {

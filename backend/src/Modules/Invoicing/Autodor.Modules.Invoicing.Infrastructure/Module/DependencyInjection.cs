@@ -1,8 +1,6 @@
-using System.Reflection;
 using Autodor.Modules.Invoicing.Application.Abstractions;
-using Autodor.Modules.Invoicing.Infrastructure.Options;
+using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Infrastructure.Services;
-using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +19,6 @@ public static class DependencyInjection
     /// <returns>The configured service collection for method chaining.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
         services
             .AddAuditableEntityInterceptor()
             .AddDomainEventDispatchInterceptor();
@@ -48,9 +44,6 @@ public static class DependencyInjection
         services.AddScoped<Services.InFakt.InvoiceService>();
         services.AddScoped<Services.InFakt.ContractorService>();
         services.AddScoped<Services.InFakt.PreProcessor>();
-
-        // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, Module>();
 
         return services;
     }

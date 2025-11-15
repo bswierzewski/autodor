@@ -1,6 +1,5 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Application.Abstractions;
-using Autodor.Modules.Contractors.Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence;
@@ -20,7 +19,7 @@ public class ContractorsDbContext : DbContext, IContractorsWriteDbContext, ICont
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new ContractorConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContractorsDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }

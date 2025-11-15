@@ -1,4 +1,4 @@
-namespace Autodor.Modules.Invoicing.Infrastructure.Options;
+namespace Autodor.Modules.Invoicing.Application.Options;
 
 public class IFirmaOptions
 {

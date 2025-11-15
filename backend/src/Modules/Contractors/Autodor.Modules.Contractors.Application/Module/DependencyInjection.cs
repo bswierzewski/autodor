@@ -1,5 +1,6 @@
 using System.Reflection;
 using BuildingBlocks.Application;
+using BuildingBlocks.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.API;
 using Autodor.Shared.Contracts.Contractors;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,9 @@ public static class DependencyInjection
 
         // Register external API services
         services.AddScoped<IContractorsAPI, ContractorsAPI>();
+
+        // Rejestracja modułu dla systemu uprawnień
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }

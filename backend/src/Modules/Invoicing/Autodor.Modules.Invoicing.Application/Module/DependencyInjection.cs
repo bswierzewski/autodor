@@ -1,5 +1,6 @@
 using System.Reflection;
 using BuildingBlocks.Application;
+using BuildingBlocks.Application.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Invoicing.Application.Module;
@@ -27,6 +28,9 @@ public static class DependencyInjection
                .AddAuthorizationBehavior()
                .AddPerformanceMonitoringBehavior();
         });
+
+        // Rejestracja modułu dla systemu uprawnień
+        services.AddSingleton<IModule, Module>();
 
         return services;
     }

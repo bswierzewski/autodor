@@ -1,7 +1,7 @@
+using Autodor.Modules.Products.Application.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using BuildingBlocks.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

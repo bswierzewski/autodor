@@ -1,10 +1,8 @@
-using System.Reflection;
 using Autodor.Modules.Products.Application.Abstractions;
+using Autodor.Modules.Products.Application.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
 using Autodor.Modules.Products.Infrastructure.Persistence;
-using BuildingBlocks.Application.Abstractions;
 using BuildingBlocks.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,12 +27,13 @@ public static class DependencyInjection
         IConfiguration configuration,
         Action<ProductsModuleConfigurator>? configure = null)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-        
+        // Register migration service for automatic database migrations
+        services.AddMigrationService<ProductsDbContext>();
+
+        // Register EF Core interceptors for cross-cutting concerns
         services
-            .AddMigrationService<ProductsDbContext>()
-            .AddAuditableEntityInterceptor()
-            .AddDomainEventDispatchInterceptor();
+            .AddAuditableEntityInterceptor()      // Automatically populates CreatedAt, ModifiedAt fields
+            .AddDomainEventDispatchInterceptor(); // Publishes domain events via MediatR
             
         services.AddDbContext<ProductsDbContext>((sp, options) =>
         {
@@ -54,9 +53,6 @@ public static class DependencyInjection
             var configurator = new ProductsModuleConfigurator(services);
             configure(configurator);
         }
-
-        // Rejestracja modułu dla systemu uprawnień
-        services.AddSingleton<IModule, Module>();
 
         return services;
     }
