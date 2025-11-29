@@ -1,2 +1,5 @@
+# Ignore AI files
+nul
+
 # Local configuration files
 /deploy
