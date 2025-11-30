@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Primitives;
+using Shared.Abstractions.Primitives;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 

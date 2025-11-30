@@ -2,11 +2,12 @@ using Autodor.Modules.Products.Application.Options;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
 using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Models;
-using BuildingBlocks.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Retry;
+using Shared.Abstractions.Extensions;
+using System.Xml.Serialization;
 
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
 

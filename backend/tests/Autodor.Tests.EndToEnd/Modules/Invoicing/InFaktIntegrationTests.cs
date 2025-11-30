@@ -6,16 +6,21 @@ using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
-using Autodor.Tests.E2E.Core;
-using Autodor.Tests.E2E.Core.Extensions;
-using Autodor.Tests.E2E.Core.Factories;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using Shared.Infrastructure.Tests.Authentication;
+using Shared.Infrastructure.Tests.Core;
+using Shared.Infrastructure.Tests.Extensions.Http;
 
-namespace Autodor.Tests.E2E.Modules.Invoicing;
+namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
-public class InFaktIntegrationTests(TestWebApplicationFactory factory) : TestBase(factory)
+[Collection("Autodor")]
+public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
 {
+    private readonly TestContext _context = fixture.Context;
+    private TestUserOptions _testUser = null!;
+
     private Mock<IContractorsAPI> _mockContractorsApi = null!;
     private Mock<IOrdersAPI> _mockOrdersApi = null!;
     private Mock<IProductsAPI> _mockProductsApi = null!;
@@ -28,16 +33,24 @@ public class InFaktIntegrationTests(TestWebApplicationFactory factory) : TestBas
     private List<OrderDto> _testOrders = null!;
     private List<ProductDetailsDto> _testProducts = null!;
 
-    protected override void OnConfigureServices(IServiceCollection services)
+    public async Task InitializeAsync()
     {
+        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
+        await _context.ResetDatabaseAsync();
+
         // Mock the external APIs but use real InFakt service
-        _mockContractorsApi = RegisterMock<IContractorsAPI>(services);
-        _mockOrdersApi = RegisterMock<IOrdersAPI>(services);
-        _mockProductsApi = RegisterMock<IProductsAPI>(services);
+        _mockContractorsApi = new Mock<IContractorsAPI>();
+        _mockOrdersApi = new Mock<IOrdersAPI>();
+        _mockProductsApi = new Mock<IProductsAPI>();
 
         InitializeTestData();
         SetupMockBehaviors();
+
+        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+        _context.Client.WithBearerToken(token);
     }
+
+    public Task DisposeAsync() => Task.CompletedTask;
 
     private void InitializeTestData()
     {
@@ -99,7 +112,7 @@ public class InFaktIntegrationTests(TestWebApplicationFactory factory) : TestBas
         );
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -136,7 +149,7 @@ public class InFaktIntegrationTests(TestWebApplicationFactory factory) : TestBas
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await Client.PostJsonAsync("/api/invoicing/create", command));
+            await _context.Client.PostJsonAsync("/api/invoicing/create", command));
 
         exception.Message.Should().Contain("Failed to create or update contractor in InFakt");
     }

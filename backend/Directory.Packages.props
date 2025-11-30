@@ -4,6 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
+    <SharedVersion>1.0.0-build.30</SharedVersion>
     <MicrosoftExtensionsVersion>9.0.10</MicrosoftExtensionsVersion>
     <EntityFrameworkVersion>9.0.10</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>
@@ -18,6 +19,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsVersion)" />
@@ -25,10 +27,11 @@
     <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsVersion)" />
 
     <!-- ASP.NET Core Web Framework -->
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiVersion)" />
 
     <!-- Entity Framework Core ORM -->
@@ -62,6 +65,12 @@
     <!-- Command Line Interface -->
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />
 
+    <!-- Environment Variables -->
+    <PackageVersion Include="DotNetEnv" Version="3.1.1" />
+
+    <!-- Authentication and Backend Services -->
+    <PackageVersion Include="Supabase" Version="1.0.0" />
+
     <!-- Document Generation -->
     <PackageVersion Include="QuestPDF" Version="2025.7.0" />
 
@@ -85,5 +94,13 @@
     <!-- Integration Testing with TestContainers -->
     <PackageVersion Include="Testcontainers" Version="$(TestcontainersVersion)" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="$(TestcontainersVersion)" />
+
+    <!-- Shared Packages -->
+    <PackageVersion Include="Shared.Abstractions" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Infrastructure" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Infrastructure.Tests" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Users.Domain" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Users.Application" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Users.Infrastructure" Version="$(SharedVersion)" />
   </ItemGroup>
 </Project>

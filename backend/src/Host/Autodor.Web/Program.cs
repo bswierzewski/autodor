@@ -1,12 +1,12 @@
-using Autodor.Modules.Contractors.Infrastructure;
-using Autodor.Modules.Invoicing.Infrastructure;
-using Autodor.Modules.Orders.Infrastructure;
-using Autodor.Modules.Products.Infrastructure;
-using Autodor.Web.Endpoints;
-using BuildingBlocks.Modules.Users.Web;
-using BuildingBlocks.Modules.Users.Web.Extensions;
-using BuildingBlocks.Modules.Users.Infrastructure.Extensions;
-using BuildingBlocks.Modules.Users.Web.Endpoints;
+using DotNetEnv;
+using Shared.Abstractions.Modules;
+using Shared.Infrastructure.Modules;
+using Shared.Users.Infrastructure.Extensions.Supabase;
+
+// Load environment variables from .env file BEFORE creating builder
+// clobberExistingVars: false ensures Docker/CI/CD environment variables take precedence
+if (File.Exists(".env"))
+    Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,19 +18,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
 builder.Services.AddOpenApi();              // Generates OpenAPI document
 
-// Add Modules
-builder.Services.AddUsers(builder.Configuration);
-builder.Services.AddContractors(builder.Configuration);
-builder.Services.AddProducts(builder.Configuration, options =>
-{
-    options.AddSynchronization();
-});
-builder.Services.AddOrders(builder.Configuration);
-builder.Services.AddInvoicing();
+// Load and register all modules
+// Auto-discovers IModule implementations from all loaded assemblies
+var modules = ModuleLoader.LoadModules();
 
-// Configure Clerk authentication
-builder.Services.AddClerkOptions(builder.Configuration);
-builder.Services.AddAuthentication().AddClerkJwtBearer();
+builder.Services.AddSingleton<IReadOnlyCollection<IModule>>(modules.AsReadOnly());
+
+builder.Services.RegisterModules(modules, builder.Configuration);
+
+builder.Services.AddAuthentication()
+    .AddSupabaseJwtBearer();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -50,13 +47,14 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication(); // 1. Authentication first
 app.UseAuthorization();  // 2. Authorization second
 
-// Map endpoints from modules
-app.MapContractorsEndpoints();
-app.MapOrdersEndpoints();
-app.MapInvoicingEndpoints();
-app.MapUsersEndpoints();
+// Configure modules middleware pipeline
+// Modules configure their own middleware and endpoints
+app.UseModules(modules, builder.Configuration);
 
-app.Run();
+// Initialize all modules (run migrations, seed data, etc.)
+await app.Services.InitializeModules(modules);
+
+await app.RunAsync();
 
 // Make the Program class accessible for integration tests
 public partial class Program { }

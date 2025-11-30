@@ -1,14 +1,17 @@
+using Shared.Abstractions.Options;
+using Autodor.Modules.Orders.Domain;
+
 namespace Autodor.Modules.Orders.Application.Options;
 
 /// <summary>
 /// Configuration options for connecting to the Polcar sales external service.
 /// </summary>
-public class PolcarSalesOptions
+public class PolcarSalesOptions : IOptions
 {
     /// <summary>
     /// The configuration section name for Polcar sales options.
     /// </summary>
-    public const string SectionName = "ExternalServices:Polcar:Sales";
+    public static string SectionName => $"Modules:{ModuleConstants.ModuleName}:Polcar:Sales";
 
     /// <summary>
     /// Gets or sets the login username for Polcar API authentication.

@@ -1,4 +1,4 @@
-using BuildingBlocks.Application.Abstractions;
+using Shared.Abstractions.Authorization;
 
 namespace Autodor.Console.Services;
 

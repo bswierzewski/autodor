@@ -1,43 +1,91 @@
 using Autodor.Console;
+using Autodor.Console.Services;
 using Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
-using CommandLine;
+using DotNetEnv;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Shared.Abstractions.Authorization;
+using Shared.Abstractions.Modules;
+using Shared.Infrastructure.Modules;
 using Serilog;
 
-var exitCode = await Parser.Default.ParseArguments<Options>(args)
-    .MapResult(
-        async (Options opts) => await RunApplicationAsync(opts),
-        errors => Task.FromResult(1)
-    );
+// Load environment variables from .env file BEFORE creating builder
+if (File.Exists(".env"))
+    Env.Load();
 
+var configuration = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
+    .AddCommandLine(args, new Dictionary<string, string>
+    {
+        { "-f", "from" },
+        { "--from", "from" },
+        { "-t", "to" },
+        { "--to", "to" },
+        { "-o", "operation" },
+        { "--operation", "operation" }
+    })
+    .Build();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: Path.Combine("Logs", "log.txt"),
+        rollingInterval: RollingInterval.Day
+    )
+    .CreateLogger();
+
+using IHost host = Host.CreateDefaultBuilder()
+    .ConfigureAppConfiguration(configBuilder => configBuilder.AddConfiguration(configuration))
+    .ConfigureServices(services =>
+    {
+        var modules = ModuleLoader.LoadModules();
+        services.AddSingleton<IReadOnlyCollection<IModule>>(modules.AsReadOnly());
+        services.RegisterModules(modules, configuration);
+
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<IUser, ConsoleUser>();
+
+        services.AddOptions<Options>()
+            .Configure(opts =>
+            {
+                opts.From = DateTime.Parse(configuration["from"] ?? throw new InvalidOperationException("Missing 'from' parameter"));
+                opts.To = DateTime.Parse(configuration["to"] ?? throw new InvalidOperationException("Missing 'to' parameter"));
+                opts.Operation = configuration["operation"] ?? "invoices";
+            });
+
+        services.AddSerilog();
+    })
+    .Build();
+
+var exitCode = await RunApplicationAsync();
 Environment.Exit(exitCode);
 
-async Task<int> RunApplicationAsync(Options options)
+async Task<int> RunApplicationAsync()
 {
-    var configuration = Extensions.CreateConfiguration();
-    using IHost host = configuration.CreateHostBuilder(options).Build();
-
-    Extensions.ConfigureLogging();
-
-    using var scope = host.Services.CreateScope();
-    var services = scope.ServiceProvider;
-
     try
     {
+        var modules = host.Services.GetRequiredService<IReadOnlyCollection<IModule>>();
+        await host.Services.InitializeModules(modules);
+
+        using var scope = host.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var options = services.GetRequiredService<IOptions<Options>>();
         var mediator = services.GetRequiredService<ISender>();
 
-        Log.Information("Console application started with operation: {Operation}", options.Operation);
-        Log.Information("Date range: {From} - {To}", options.From, options.To);
+        var opts = options.Value;
+        Log.Information("Console application started with operation: {Operation}", opts.Operation);
+        Log.Information("Date range: {From} - {To}", opts.From, opts.To);
 
-        switch (options.Operation.ToLowerInvariant())
+        switch (opts.Operation.ToLowerInvariant())
         {
             case "invoices":
-                await CreateBulkInvoicesAsync(mediator, options.From, options.To);
+                await CreateBulkInvoicesAsync(mediator, opts.From, opts.To);
                 break;
             default:
-                Log.Warning("Unknown operation: {Operation}", options.Operation);
+                Log.Warning("Unknown operation: {Operation}", opts.Operation);
                 break;
         }
 

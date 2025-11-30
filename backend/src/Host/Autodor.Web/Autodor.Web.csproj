@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Copy .env only if it exists (for local development) -->
+    <None Update=".env" Condition="Exists('.env')">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
@@ -16,11 +24,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- BuildingBlocks references from git submodule -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Modules\Users\BuildingBlocks.Modules.Users.Web\BuildingBlocks.Modules.Users.Web.csproj" />
+  <ItemGroup Label="NuGet Package References">
+    <PackageReference Include="Shared.Abstractions" />
+    <PackageReference Include="Shared.Infrastructure" />
+    <PackageReference Include="Shared.Users.Domain" />
+    <PackageReference Include="Shared.Users.Application" />
+    <PackageReference Include="Shared.Users.Infrastructure" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,5 +43,9 @@
     <ProjectReference Include="..\..\Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing.Infrastructure\Autodor.Modules.Invoicing.Infrastructure.csproj" />
   </ItemGroup>
+
+  <Target Name="GenerateEnvFile" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Exec Command="dotnet tool run shared env generate -p $(MSBuildProjectDirectory) -o $(MSBuildProjectDirectory)\.env.example -c $(Configuration) -f" />
+  </Target>
 
 </Project>

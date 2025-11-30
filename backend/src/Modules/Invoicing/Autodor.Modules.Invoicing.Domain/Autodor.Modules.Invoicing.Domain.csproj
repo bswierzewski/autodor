@@ -8,15 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR.Contracts" />
+    <PackageReference Include="Shared.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
-  </ItemGroup>
-
-  <!-- BuildingBlocks reference from git submodule -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\libs\BuildingBlocks\src\BuildingBlocks.Domain\BuildingBlocks.Domain.csproj" />
   </ItemGroup>
 
 </Project>

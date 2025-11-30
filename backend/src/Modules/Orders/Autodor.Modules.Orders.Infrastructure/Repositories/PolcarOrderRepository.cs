@@ -6,7 +6,7 @@ using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Application.Options;
 using Autodor.Modules.Orders.Domain.Entities;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using BuildingBlocks.Extensions;
+using Shared.Abstractions.Extensions;
 
 namespace Autodor.Modules.Orders.Infrastructure.Repositories;
 

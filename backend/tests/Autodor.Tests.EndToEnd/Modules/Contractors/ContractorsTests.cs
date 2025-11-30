@@ -2,30 +2,39 @@ using System.Net;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using Autodor.Tests.E2E.Core;
-using Autodor.Tests.E2E.Core.Extensions;
-using Autodor.Tests.E2E.Core.Factories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Shared.Infrastructure.Tests.Authentication;
+using Shared.Infrastructure.Tests.Core;
+using Shared.Infrastructure.Tests.Extensions.Http;
 
-namespace Autodor.Tests.E2E.Modules.Contractors;
+namespace Autodor.Tests.EndToEnd.Modules.Contractors;
 
 /// <summary>
 /// End-to-end tests for contractor management functionality including creation, retrieval, and deletion operations.
 /// </summary>
-public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(factory)
+[Collection("Autodor")]
+public class ContractorsTests(AutodorTestFixture fixture) : IAsyncLifetime
 {
-    protected override Task OnInitializeAsync()
+    private readonly TestContext _context = fixture.Context;
+    private TestUserOptions _testUser = null!;
+
+    public async Task InitializeAsync()
     {
-        Client.WithBearerToken(TestJwtTokens.Default);
-        return Task.CompletedTask;
+        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
+        await _context.ResetDatabaseAsync();
+        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+        _context.Client.WithBearerToken(token);
     }
+
+    public Task DisposeAsync() => Task.CompletedTask;
 
     [Fact]
     public async Task GetContractors_ShouldReturnSuccess()
     {
-        var response = await Client.GetAsync("/api/contractors");
+        var response = await _context.Client.GetAsync("/api/contractors");
 
         response.IsSuccessStatusCode.Should().BeTrue();
     }
@@ -37,13 +46,13 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
         var command = new CreateContractorCommand("Test Company", "1234567890", "Test Street 123", "Test City", "12-345", "test@example.com");
 
         // Act
-        var response = await Client.PostJsonAsync("/api/contractors", command);
+        var response = await _context.Client.PostJsonAsync("/api/contractors", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         // Verify in database using read context
-        var readContext = Services.GetRequiredService<IContractorsReadDbContext>();
+        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(1);
 
@@ -56,7 +65,7 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
     public async Task GetContractors_WithMultipleContractors_ShouldReturnCorrectCount()
     {
         // Arrange - Create multiple contractors
-        var mediator = Services.GetRequiredService<IMediator>();
+        var mediator = _context.GetRequiredService<IMediator>();
 
         var commands = new[]
         {
@@ -71,13 +80,13 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
         }
 
         // Act
-        var response = await Client.GetAsync("/api/contractors");
+        var response = await _context.Client.GetAsync("/api/contractors");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
         // Verify database count using read context
-        var readContext = Services.GetRequiredService<IContractorsReadDbContext>();
+        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(3);
     }
@@ -86,7 +95,7 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
     public async Task GetContractorById_WithExistingId_ShouldReturnContractor()
     {
         // Arrange
-        var mediator = Services.GetRequiredService<IMediator>();
+        var mediator = _context.GetRequiredService<IMediator>();
 
         var contractorId = await mediator.Send(new CreateContractorCommand(
             "Test Company",
@@ -98,13 +107,13 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
         ));
 
         // Act
-        var response = await Client.GetAsync($"/api/contractors/{contractorId}");
+        var response = await _context.Client.GetAsync($"/api/contractors/{contractorId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
         // Verify contractor exists in database using read context
-        var readContext = Services.GetRequiredService<IContractorsReadDbContext>();
+        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
         var contractor = await readContext.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(contractorId));
         contractor.Should().NotBeNull();
@@ -114,9 +123,9 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
     [Fact]
     public async Task DeleteContractor_WithExistingId_ShouldRemoveFromDatabase()
     {
-        // Arrange & Act & Assert - No scope test with direct Services access
-        var mediator = Services.GetRequiredService<IMediator>();
-        var readContext = Services.GetRequiredService<IContractorsReadDbContext>();
+        // Arrange
+        var mediator = _context.GetRequiredService<IMediator>();
+        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
 
         var contractorId = await mediator.Send(new CreateContractorCommand(
             "To Delete Company",
@@ -133,7 +142,7 @@ public class ContractorsTests(TestWebApplicationFactory factory) : TestBase(fact
         contractorBeforeDelete.Should().NotBeNull();
 
         // Act - Delete via HTTP
-        var response = await Client.DeleteAsync($"/api/contractors/{contractorId}");
+        var response = await _context.Client.DeleteAsync($"/api/contractors/{contractorId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);

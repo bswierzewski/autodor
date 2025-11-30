@@ -8,17 +8,22 @@ using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
-using Autodor.Tests.E2E.Core;
-using Autodor.Tests.E2E.Core.Extensions;
-using Autodor.Tests.E2E.Core.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using Shared.Infrastructure.Tests.Authentication;
+using Shared.Infrastructure.Tests.Core;
+using Shared.Infrastructure.Tests.Extensions.Http;
 
-namespace Autodor.Tests.E2E.Modules.Invoicing;
+namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
-public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factory)
+[Collection("Autodor")]
+public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
 {
+    private readonly TestContext _context = fixture.Context;
+    private TestUserOptions _testUser = null!;
+
     private Mock<IInvoiceService> _mockInvoiceService = null!;
     private Mock<IContractorsAPI> _mockContractorsApi = null!;
     private Mock<IOrdersAPI> _mockOrdersApi = null!;
@@ -33,20 +38,27 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
     private List<OrderDto> _defaultOrders = null!;
     private List<ProductDetailsDto> _defaultProducts = null!;
 
-    protected override void OnConfigureServices(IServiceCollection services)
+    public async Task InitializeAsync()
     {
-        _mockInvoiceService = RegisterMock<IInvoiceService>(services);
-        _mockContractorsApi = RegisterMock<IContractorsAPI>(services);
-        _mockOrdersApi = RegisterMock<IOrdersAPI>(services);
-        _mockProductsApi = RegisterMock<IProductsAPI>(services);
+        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
+        await _context.ResetDatabaseAsync();
 
-        var mockInvoiceServiceFactory = RegisterMock<IInvoiceServiceFactory>(services);
+        _mockInvoiceService = new Mock<IInvoiceService>();
+        _mockContractorsApi = new Mock<IContractorsAPI>();
+        _mockOrdersApi = new Mock<IOrdersAPI>();
+        _mockProductsApi = new Mock<IProductsAPI>();
+
+        var mockInvoiceServiceFactory = new Mock<IInvoiceServiceFactory>();
         mockInvoiceServiceFactory.Setup(x => x.GetInvoiceService()).Returns(_mockInvoiceService.Object);
 
         InitializeTestData();
-
         SetupDefaultMockBehaviors();
+
+        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+        _context.Client.WithBearerToken(token);
     }
+
+    public Task DisposeAsync() => Task.CompletedTask;
 
     private void InitializeTestData()
     {
@@ -124,7 +136,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await Client.PostJsonAsync("/api/invoicing/create", command));
+            await _context.Client.PostJsonAsync("/api/invoicing/create", command));
 
         exception.Message.Should().Contain($"Contractor with ID {contractorId} not found");
 
@@ -141,7 +153,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
                        .ReturnsAsync(new List<ProductDetailsDto>());
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -179,7 +191,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
                        .ReturnsAsync(partialProducts);
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -202,7 +214,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
         var command = CreateDefaultCommand(789);
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -225,7 +237,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
         var command = CreateDefaultCommand(999);
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -250,7 +262,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
         var command = CreateDefaultCommand(777);
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -272,7 +284,7 @@ public class InvoicingTests(TestWebApplicationFactory factory) : TestBase(factor
         );
 
         // Act
-        var response = await Client.PostJsonAsync("/api/invoicing/create", command);
+        var response = await _context.Client.PostJsonAsync("/api/invoicing/create", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
