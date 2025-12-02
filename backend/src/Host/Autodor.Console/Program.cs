@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Shared.Abstractions.Authorization;
 using Shared.Abstractions.Modules;
-using Shared.Infrastructure.Modules;
 using Serilog;
 
 // Load environment variables from .env file BEFORE creating builder
@@ -41,7 +40,7 @@ using IHost host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(configBuilder => configBuilder.AddConfiguration(configuration))
     .ConfigureServices(services =>
     {
-        var modules = ModuleLoader.LoadModules();
+        var modules = ModuleRegistry.GetModules();
         services.AddSingleton<IReadOnlyCollection<IModule>>(modules.AsReadOnly());
         services.RegisterModules(modules, configuration);
 
@@ -113,3 +112,7 @@ static async Task CreateBulkInvoicesAsync(ISender mediator, DateTime from, DateT
         Log.Information("Created invoice: {InvoiceNumber}", invoiceNumber);
     }
 }
+
+// [GenerateModuleRegistry] triggers source generator to create ModuleRegistry class
+[GenerateModuleRegistry]
+public partial class Program { }

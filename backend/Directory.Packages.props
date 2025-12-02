@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
-    <SharedVersion>1.0.0-build.30</SharedVersion>
+    <SharedVersion>1.0.0-build.38</SharedVersion>
     <MicrosoftExtensionsVersion>9.0.10</MicrosoftExtensionsVersion>
     <EntityFrameworkVersion>9.0.10</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>
@@ -98,6 +98,7 @@
     <!-- Shared Packages -->
     <PackageVersion Include="Shared.Abstractions" Version="$(SharedVersion)" />
     <PackageVersion Include="Shared.Infrastructure" Version="$(SharedVersion)" />
+    <PackageVersion Include="Shared.Infrastructure.Generators" Version="$(SharedVersion)" />
     <PackageVersion Include="Shared.Infrastructure.Tests" Version="$(SharedVersion)" />
     <PackageVersion Include="Shared.Users.Domain" Version="$(SharedVersion)" />
     <PackageVersion Include="Shared.Users.Application" Version="$(SharedVersion)" />

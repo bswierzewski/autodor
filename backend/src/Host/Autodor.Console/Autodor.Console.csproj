@@ -33,6 +33,9 @@
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Shared.Abstractions" />
+    <PackageReference Include="Shared.Infrastructure" />
+    <PackageReference Include="Shared.Infrastructure.Generators" />
   </ItemGroup>
 
   <PropertyGroup>

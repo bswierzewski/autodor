@@ -8,26 +8,28 @@ using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Moq;
-using Shared.Infrastructure.Tests.Authentication;
 using Shared.Infrastructure.Tests.Core;
 using Shared.Infrastructure.Tests.Extensions.Http;
+using Shared.Infrastructure.Tests.Extensions.Services;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
+/// <summary>
+/// Integration tests for Invoicing module with fully mocked dependencies.
+/// Tests invoice creation logic without calling real external services.
+/// </summary>
 [Collection("Autodor")]
-public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
+public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
 {
-    private readonly TestContext _context = fixture.Context;
-    private TestUserOptions _testUser = null!;
+    private TestContext _context = null!;
 
-    private Mock<IInvoiceService> _mockInvoiceService = null!;
-    private Mock<IContractorsAPI> _mockContractorsApi = null!;
-    private Mock<IOrdersAPI> _mockOrdersApi = null!;
-    private Mock<IProductsAPI> _mockProductsApi = null!;
+    // Mocks
+    private readonly Mock<IInvoiceService> _mockInvoiceService = new();
+    private readonly Mock<IInvoiceServiceFactory> _mockInvoiceServiceFactory = new();
+    private readonly Mock<IContractorsAPI> _mockContractorsApi = new();
+    private readonly Mock<IOrdersAPI> _mockOrdersApi = new();
+    private readonly Mock<IProductsAPI> _mockProductsApi = new();
 
     // Shared test data
     private readonly Guid _defaultContractorId = Guid.NewGuid();
@@ -40,25 +42,34 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
-        await _context.ResetDatabaseAsync();
-
-        _mockInvoiceService = new Mock<IInvoiceService>();
-        _mockContractorsApi = new Mock<IContractorsAPI>();
-        _mockOrdersApi = new Mock<IOrdersAPI>();
-        _mockProductsApi = new Mock<IProductsAPI>();
-
-        var mockInvoiceServiceFactory = new Mock<IInvoiceServiceFactory>();
-        mockInvoiceServiceFactory.Setup(x => x.GetInvoiceService()).Returns(_mockInvoiceService.Object);
-
         InitializeTestData();
         SetupDefaultMockBehaviors();
 
-        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+        // Create test context with all mocks injected
+        _context = await TestContext.CreateBuilder<Program>()
+            .WithContainer(shared.Container)
+            .WithServices((services, _) =>
+            {
+                // Replace all dependencies with mocks
+                services.ReplaceInstance(_mockInvoiceServiceFactory.Object);
+                services.ReplaceInstance(_mockContractorsApi.Object);
+                services.ReplaceInstance(_mockOrdersApi.Object);
+                services.ReplaceInstance(_mockProductsApi.Object);
+            })
+            .BuildAsync();
+
+        // Get token using shared provider (has built-in cache)
+        var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
         _context.Client.WithBearerToken(token);
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync()
+    {
+        if (_context != null)
+        {
+            await _context.DisposeAsync();
+        }
+    }
 
     private void InitializeTestData()
     {
@@ -72,8 +83,8 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
             Email: "test@example.com"
         );
 
-        _defaultOrders = new List<OrderDto>
-        {
+        _defaultOrders =
+        [
             new(
                 Id: "ORDER-001",
                 Number: "NUM-001",
@@ -85,18 +96,22 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
                     new OrderItemDto("ORDER-001", "PROD-003", 3, 150.0m, 0.23m)
                 ]
             )
-        };
+        ];
 
-        _defaultProducts = new List<ProductDetailsDto>
-        {
+        _defaultProducts =
+        [
             new("PROD-001", "Product One Name", "1234567890123"),
             new("PROD-002", "Product Two Name", "2345678901234"),
             new("PROD-003", "Product Three Name", "3456789012345")
-        };
+        ];
     }
 
     private void SetupDefaultMockBehaviors()
     {
+        // Setup factory to return mock service
+        _mockInvoiceServiceFactory.Setup(x => x.GetInvoiceService())
+            .Returns(_mockInvoiceService.Object);
+
         // Default successful contractor lookup
         _mockContractorsApi.Setup(x => x.GetContractorByIdAsync(_defaultContractorId, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(_defaultContractor);
@@ -127,10 +142,13 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
     [Fact]
     public async Task CreateInvoice_WhenContractorNotFound_ShouldReturnError()
     {
-        // Arrange - Override default to return null contractor
+        // Arrange
+        await _context.ResetDatabaseAsync();
+
         var contractorId = Guid.NewGuid();
         var command = CreateDefaultCommand() with { ContractorId = contractorId };
 
+        // Override default to return null contractor
         _mockContractorsApi.Setup(x => x.GetContractorByIdAsync(contractorId, It.IsAny<CancellationToken>()))
                           .ReturnsAsync((ContractorDto?)null);
 
@@ -146,9 +164,12 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
     [Fact]
     public async Task CreateInvoice_WhenProductsNotFound_ShouldCreateInvoiceWithPartNumbers()
     {
-        // Arrange - Override default to return no products
+        // Arrange
+        await _context.ResetDatabaseAsync();
+
         var command = CreateDefaultCommand();
 
+        // Override default to return no products
         _mockProductsApi.Setup(x => x.GetProductsByNumbersAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(new List<ProductDetailsDto>());
 
@@ -165,14 +186,14 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
                 i.Items.Any(item => item.Name == "PROD-002" && item.Quantity == 1 && item.UnitPrice == 200.0m) &&
                 i.Items.Any(item => item.Name == "PROD-003" && item.Quantity == 3 && item.UnitPrice == 150.0m)),
             It.IsAny<CancellationToken>()), Times.Once);
-
-        // Event should be published automatically by the system
     }
 
     [Fact]
     public async Task CreateInvoice_WithPartialProducts_ShouldEnrichFoundProductsOnly()
     {
-        // Arrange - Override default to return only 2 out of 3 products
+        // Arrange
+        await _context.ResetDatabaseAsync();
+
         var command = CreateDefaultCommand(456);
 
         var partialProducts = new List<ProductDetailsDto>
@@ -203,14 +224,14 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
                 i.Items.Any(item => item.Name == "PROD-002" && item.Quantity == 1 && item.UnitPrice == 200.0m) &&
                 i.Items.Any(item => item.Name == "Product Three Name (PROD-003)" && item.Quantity == 3 && item.UnitPrice == 150.0m)),
             It.IsAny<CancellationToken>()), Times.Once);
-
-        // Event should be published automatically by the system
     }
 
     [Fact]
     public async Task CreateInvoice_WithAllProductsFound_ShouldEnrichAllProducts()
     {
         // Arrange - Use default setup which already has all products found
+        await _context.ResetDatabaseAsync();
+
         var command = CreateDefaultCommand(789);
 
         // Act
@@ -226,14 +247,14 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
                 i.Items.Any(item => item.Name == "Product Two Name (PROD-002)" && item.Quantity == 1 && item.UnitPrice == 200.0m) &&
                 i.Items.Any(item => item.Name == "Product Three Name (PROD-003)" && item.Quantity == 3 && item.UnitPrice == 150.0m)),
             It.IsAny<CancellationToken>()), Times.Once);
-
-        // Event should be published automatically by the system
     }
 
     [Fact]
     public async Task CreateInvoice_WithValidData_ShouldCreateInvoiceSuccessfully()
     {
-        // Arrange - This test focuses on what Invoicing module controls
+        // Arrange
+        await _context.ResetDatabaseAsync();
+
         var command = CreateDefaultCommand(999);
 
         // Act
@@ -242,23 +263,20 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        // Verify the invoice was created with correct data
         _mockInvoiceService.Verify(x => x.CreateInvoiceAsync(
             It.Is<Invoice>(i =>
                 i.Number == 999 &&
                 i.Contractor.Name == _defaultContractor.Name &&
                 i.Items.Count == 3),
             It.IsAny<CancellationToken>()), Times.Once);
-
-        // Note: Integration events and cross-module side effects would be tested
-        // in separate integration tests or when modules become microservices.
-        // The Invoicing module's responsibility ends at publishing the event.
     }
 
     [Fact]
     public async Task CreateInvoice_ShouldPublishInvoiceCreatedEvent()
     {
         // Arrange
+        await _context.ResetDatabaseAsync();
+
         var command = CreateDefaultCommand(777);
 
         // Act
@@ -271,7 +289,9 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
     [Fact]
     public async Task CreateInvoice_ShouldPassCorrectInvoiceDataToService()
     {
-        // Arrange - Use default setup and verify all data is passed correctly
+        // Arrange
+        await _context.ResetDatabaseAsync();
+
         var saleDate = new DateTime(2024, 1, 15);
         var issueDate = new DateTime(2024, 1, 20);
         var command = new CreateInvoiceCommand(
@@ -305,4 +325,3 @@ public class InvoicingTests(AutodorTestFixture fixture) : IAsyncLifetime
             It.IsAny<CancellationToken>()), Times.Once);
     }
 }
-

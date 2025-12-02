@@ -6,24 +6,26 @@ using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Moq;
-using Shared.Infrastructure.Tests.Authentication;
 using Shared.Infrastructure.Tests.Core;
 using Shared.Infrastructure.Tests.Extensions.Http;
+using Shared.Infrastructure.Tests.Extensions.Services;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
+/// <summary>
+/// Integration tests for InFakt invoice creation with real InFakt API.
+/// Uses mocked module APIs (Contractors, Orders, Products) but real InFakt service.
+/// </summary>
 [Collection("Autodor")]
-public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
+public class InFaktIntegrationTests(AutodorSharedFixture shared) : IAsyncLifetime
 {
-    private readonly TestContext _context = fixture.Context;
-    private TestUserOptions _testUser = null!;
+    private TestContext _context = null!;
 
-    private Mock<IContractorsAPI> _mockContractorsApi = null!;
-    private Mock<IOrdersAPI> _mockOrdersApi = null!;
-    private Mock<IProductsAPI> _mockProductsApi = null!;
+    // Mocks for cross-module APIs
+    private readonly Mock<IContractorsAPI> _mockContractorsApi = new();
+    private readonly Mock<IOrdersAPI> _mockOrdersApi = new();
+    private readonly Mock<IProductsAPI> _mockProductsApi = new();
 
     // Test data
     private readonly Guid _testContractorId = Guid.NewGuid();
@@ -35,22 +37,33 @@ public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
-        await _context.ResetDatabaseAsync();
-
-        // Mock the external APIs but use real InFakt service
-        _mockContractorsApi = new Mock<IContractorsAPI>();
-        _mockOrdersApi = new Mock<IOrdersAPI>();
-        _mockProductsApi = new Mock<IProductsAPI>();
-
         InitializeTestData();
         SetupMockBehaviors();
 
-        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+        // Create test context with mocks injected
+        _context = await TestContext.CreateBuilder<Program>()
+            .WithContainer(shared.Container)
+            .WithServices((services, _) =>
+            {
+                // Replace cross-module APIs with mocks
+                services.ReplaceInstance(_mockContractorsApi.Object);
+                services.ReplaceInstance(_mockOrdersApi.Object);
+                services.ReplaceInstance(_mockProductsApi.Object);
+            })
+            .BuildAsync();
+
+        // Get token using shared provider (has built-in cache)
+        var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
         _context.Client.WithBearerToken(token);
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync()
+    {
+        if (_context != null)
+        {
+            await _context.DisposeAsync();
+        }
+    }
 
     private void InitializeTestData()
     {
@@ -102,6 +115,8 @@ public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
     public async Task CreateInvoice_WithRealInFaktAPI_ShouldCreateInvoiceSuccessfully()
     {
         // Arrange
+        await _context.ResetDatabaseAsync();
+
         var command = new CreateInvoiceCommand(
             InvoiceNumber: null, // Let InFakt auto-generate
             SaleDate: _testDate,
@@ -125,8 +140,11 @@ public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
     public async Task CreateInvoice_WithRealInFaktAPI_ShouldHandleErrorsGracefully()
     {
         // Arrange - Use invalid contractor data to trigger InFakt validation error
+        await _context.ResetDatabaseAsync();
+
+        var invalidContractorId = Guid.NewGuid();
         var invalidContractor = new ContractorDto(
-            Id: Guid.NewGuid(),
+            Id: invalidContractorId,
             NIP: "INVALID-NIP", // Invalid NIP format
             Name: "",           // Empty name
             Street: "",
@@ -135,7 +153,8 @@ public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
             Email: "invalid-email"
         );
 
-        _mockContractorsApi.Setup(x => x.GetContractorByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        // Override mock for this specific test
+        _mockContractorsApi.Setup(x => x.GetContractorByIdAsync(invalidContractorId, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(invalidContractor);
 
         var command = new CreateInvoiceCommand(
@@ -144,7 +163,7 @@ public class InFaktIntegrationTests(AutodorTestFixture fixture) : IAsyncLifetime
             IssueDate: _testDate,
             Dates: [_testDate],
             OrderIds: ["TEST-ORDER-001"],
-            ContractorId: Guid.NewGuid()
+            ContractorId: invalidContractorId
         );
 
         // Act & Assert

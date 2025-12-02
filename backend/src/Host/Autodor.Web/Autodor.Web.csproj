@@ -30,6 +30,7 @@
     <PackageReference Include="Shared.Users.Domain" />
     <PackageReference Include="Shared.Users.Application" />
     <PackageReference Include="Shared.Users.Infrastructure" />
+    <PackageReference Include="Shared.Infrastructure.Generators" />
   </ItemGroup>
 
   <ItemGroup>
