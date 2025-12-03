@@ -1,6 +1,4 @@
 using Autodor.Modules.Invoicing.Application.Abstractions;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,9 +33,9 @@ public class InvoiceServiceFactory : IInvoiceServiceFactory
 
         return invoiceProvider.ToLower() switch
         {
-            "infakt" => _serviceProvider.GetRequiredService<InFakt.PreProcessor>(),
+            "infakt" => _serviceProvider.GetRequiredService<InFakt.InfaktInvoicePreProcessor>(),
             "ifirma" => null, // IFirma doesn't need pre-processing
-            _ => _serviceProvider.GetRequiredService<InFakt.PreProcessor>() // Default to inFakt
+            _ => _serviceProvider.GetRequiredService<InFakt.InfaktInvoicePreProcessor>() // Default to inFakt
         };
     }
 }

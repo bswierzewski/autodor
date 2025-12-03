@@ -8,7 +8,7 @@ namespace Autodor.Modules.Products.Application.API;
 /// <summary>
 /// Implements the public API for the Products module, providing access to product information.
 /// </summary>
-internal sealed class ProductsAPI : IProductsAPI
+public sealed class ProductsAPI : IProductsAPI
 {
     private readonly IProductsReadDbContext _readDbContext;
 

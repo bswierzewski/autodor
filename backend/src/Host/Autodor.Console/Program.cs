@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Shared.Abstractions.Authorization;
 using Shared.Abstractions.Modules;
 using Serilog;
+using Shared.Infrastructure.Modules;
 
 // Load environment variables from .env file BEFORE creating builder
 if (File.Exists(".env"))

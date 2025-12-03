@@ -16,7 +16,13 @@
       "Bash(dotnet build:*)",
       "Bash(dotnet remove:*)",
       "Read(/D:\\d\\repos\\autodor/**)",
-      "Read(/D:\\d\\repos\\autodor/**)"
+      "Read(/D:\\d\\repos\\autodor/**)",
+      "Bash(dir:*)",
+      "Bash(find:*)",
+      "Bash(dotnet test:*)",
+      "Bash(cat:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": [],

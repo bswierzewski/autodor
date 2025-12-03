@@ -62,7 +62,7 @@ public class InvoicingModule : IModule
         // Register inFakt services
         services.AddScoped<Services.InFakt.InvoiceService>();
         services.AddScoped<Services.InFakt.ContractorService>();
-        services.AddScoped<Services.InFakt.PreProcessor>();
+        services.AddScoped<Services.InFakt.InfaktInvoicePreProcessor>();
     }
 
     /// <summary>

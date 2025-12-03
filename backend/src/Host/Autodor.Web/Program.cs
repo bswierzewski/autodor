@@ -1,5 +1,6 @@
 using DotNetEnv;
 using Shared.Abstractions.Modules;
+using Shared.Infrastructure.Modules;
 using Shared.Users.Infrastructure.Extensions.Supabase;
 
 // Load environment variables from .env file BEFORE creating builder

@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
 
-public class PreProcessor : IInvoicePreProcessor
+public class InfaktInvoicePreProcessor : IInvoicePreProcessor
 {
-    private readonly ILogger<PreProcessor> _logger;
+    private readonly ILogger<InfaktInvoicePreProcessor> _logger;
     private readonly ContractorService _contractorService;
 
-    public PreProcessor(
-        ILogger<PreProcessor> logger,
+    public InfaktInvoicePreProcessor(
+        ILogger<InfaktInvoicePreProcessor> logger,
         ContractorService contractorService)
     {
         _logger = logger;

@@ -58,6 +58,8 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
             })
             .BuildAsync();
 
+        await _context.ResetDatabaseAsync();
+
         // Get token using shared provider (has built-in cache)
         var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
         _context.Client.WithBearerToken(token);
@@ -143,8 +145,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_WhenContractorNotFound_ShouldReturnError()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var contractorId = Guid.NewGuid();
         var command = CreateDefaultCommand() with { ContractorId = contractorId };
 
@@ -165,8 +165,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_WhenProductsNotFound_ShouldCreateInvoiceWithPartNumbers()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var command = CreateDefaultCommand();
 
         // Override default to return no products
@@ -192,8 +190,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_WithPartialProducts_ShouldEnrichFoundProductsOnly()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var command = CreateDefaultCommand(456);
 
         var partialProducts = new List<ProductDetailsDto>
@@ -230,8 +226,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_WithAllProductsFound_ShouldEnrichAllProducts()
     {
         // Arrange - Use default setup which already has all products found
-        await _context.ResetDatabaseAsync();
-
         var command = CreateDefaultCommand(789);
 
         // Act
@@ -253,8 +247,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_WithValidData_ShouldCreateInvoiceSuccessfully()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var command = CreateDefaultCommand(999);
 
         // Act
@@ -275,8 +267,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_ShouldPublishInvoiceCreatedEvent()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var command = CreateDefaultCommand(777);
 
         // Act
@@ -290,8 +280,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoice_ShouldPassCorrectInvoiceDataToService()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var saleDate = new DateTime(2024, 1, 15);
         var issueDate = new DateTime(2024, 1, 20);
         var command = new CreateInvoiceCommand(

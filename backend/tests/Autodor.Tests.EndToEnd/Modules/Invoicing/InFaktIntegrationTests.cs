@@ -52,6 +52,8 @@ public class InFaktIntegrationTests(AutodorSharedFixture shared) : IAsyncLifetim
             })
             .BuildAsync();
 
+        await _context.ResetDatabaseAsync();
+
         // Get token using shared provider (has built-in cache)
         var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
         _context.Client.WithBearerToken(token);
@@ -115,8 +117,6 @@ public class InFaktIntegrationTests(AutodorSharedFixture shared) : IAsyncLifetim
     public async Task CreateInvoice_WithRealInFaktAPI_ShouldCreateInvoiceSuccessfully()
     {
         // Arrange
-        await _context.ResetDatabaseAsync();
-
         var command = new CreateInvoiceCommand(
             InvoiceNumber: null, // Let InFakt auto-generate
             SaleDate: _testDate,
@@ -140,8 +140,6 @@ public class InFaktIntegrationTests(AutodorSharedFixture shared) : IAsyncLifetim
     public async Task CreateInvoice_WithRealInFaktAPI_ShouldHandleErrorsGracefully()
     {
         // Arrange - Use invalid contractor data to trigger InFakt validation error
-        await _context.ResetDatabaseAsync();
-
         var invalidContractorId = Guid.NewGuid();
         var invalidContractor = new ContractorDto(
             Id: invalidContractorId,

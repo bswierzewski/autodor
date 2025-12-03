@@ -16,16 +16,23 @@ namespace Autodor.Tests.EndToEnd.Modules.Contractors;
 /// End-to-end tests for contractor management functionality including creation, retrieval, and deletion operations.
 /// </summary>
 [Collection("Autodor")]
-public class ContractorsTests(AutodorTestFixture fixture) : IAsyncLifetime
+public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
 {
-    private readonly TestContext _context = fixture.Context;
-    private TestUserOptions _testUser = null!;
+    private readonly AutodorSharedFixture _fixture = fixture;
+    private TestContext _context = null!;
 
     public async Task InitializeAsync()
     {
-        _testUser = _context.Services.GetRequiredService<IOptions<TestUserOptions>>().Value;
+        // Create test context for this test class
+        _context = await TestContext.CreateBuilder<Program>()
+            .WithContainer(_fixture.Container)
+            .WithoutModuleInitialization()
+            .BuildAsync();
+
         await _context.ResetDatabaseAsync();
-        var token = await _context.GetTokenAsync(_testUser.Email, _testUser.Password);
+
+        // Token is obtained from shared fixture's TokenProvider for better caching
+        var token = await _fixture.TokenProvider.GetTokenAsync(_fixture.TestUser.Email, _fixture.TestUser.Password);
         _context.Client.WithBearerToken(token);
     }
 

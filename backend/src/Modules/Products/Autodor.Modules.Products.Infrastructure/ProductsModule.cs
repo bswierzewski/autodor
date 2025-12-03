@@ -1,3 +1,14 @@
+using Autodor.Modules.Products.Application;
+using Autodor.Modules.Products.Application.Abstractions;
+using Autodor.Modules.Products.Application.API;
+using Autodor.Modules.Products.Application.Options;
+using Autodor.Modules.Products.Domain;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.BackgroundServices;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
+using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
+using Autodor.Modules.Products.Infrastructure.Persistence;
+using Autodor.Shared.Contracts.Products;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -8,16 +19,6 @@ using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Modules;
 using Shared.Infrastructure.Persistence.Migrations;
-using Autodor.Modules.Products.Application;
-using Autodor.Modules.Products.Application.Abstractions;
-using Autodor.Modules.Products.Domain;
-using Autodor.Modules.Products.Infrastructure.Persistence;
-using Autodor.Modules.Products.Application.Options;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Generated;
-using Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.BackgroundServices;
-using Autodor.Shared.Contracts.Products;
 
 namespace Autodor.Modules.Products.Infrastructure;
 
@@ -60,7 +61,7 @@ public class ProductsModule : IModule
 
         services.AddScoped(provider => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap));
         services.AddScoped<IPolcarProductService, PolcarProductService>();
-        services.AddScoped<IProductsAPI, IProductsAPI>();
+        services.AddScoped<IProductsAPI, ProductsAPI>();
 
         services.AddHostedService<ProductsSynchronizationService>();
     }
