@@ -18,12 +18,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
 builder.Services.AddOpenApi();              // Generates OpenAPI document
 
-// Load modules from auto-generated registry
-var modules = ModuleRegistry.GetModules();
-
-builder.Services.AddSingleton<IReadOnlyCollection<IModule>>(modules.AsReadOnly());
-
-builder.Services.RegisterModules(modules, builder.Configuration);
+// Register modules from auto-generated registry
+builder.Services.RegisterModules(builder.Configuration);
 
 builder.Services.AddAuthentication()
     .AddSupabaseJwtBearer();
@@ -48,10 +44,10 @@ app.UseAuthorization();  // 2. Authorization second
 
 // Configure modules middleware pipeline
 // Modules configure their own middleware and endpoints
-app.UseModules(modules, builder.Configuration);
+app.UseModules(builder.Configuration);
 
 // Initialize all modules (run migrations, seed data, etc.)
-await app.Services.InitializeModules(modules);
+await app.Services.InitModules();
 
 await app.RunAsync();
 
