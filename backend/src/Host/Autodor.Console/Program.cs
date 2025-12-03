@@ -40,9 +40,7 @@ using IHost host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(configBuilder => configBuilder.AddConfiguration(configuration))
     .ConfigureServices(services =>
     {
-        var modules = ModuleRegistry.GetModules();
-        services.AddSingleton<IReadOnlyCollection<IModule>>(modules.AsReadOnly());
-        services.RegisterModules(modules, configuration);
+        services.RegisterModules(configuration);
 
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<IUser, ConsoleUser>();
@@ -66,8 +64,7 @@ async Task<int> RunApplicationAsync()
 {
     try
     {
-        var modules = host.Services.GetRequiredService<IReadOnlyCollection<IModule>>();
-        await host.Services.InitializeModules(modules);
+        await host.Services.InitModules();
 
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
