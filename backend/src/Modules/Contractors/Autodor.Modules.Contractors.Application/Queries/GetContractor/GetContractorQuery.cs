@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractor;
 
@@ -6,7 +7,7 @@ namespace Autodor.Modules.Contractors.Application.Queries.GetContractor;
 /// Query to retrieve a specific contractor by their unique identifier.
 /// </summary>
 /// <param name="Id">Contractor unique identifier.</param>
-public record GetContractorQuery(Guid Id) : IRequest<GetContractorDto>;
+public record GetContractorQuery(Guid Id) : IRequest<Result<GetContractorDto>>;
 
 /// <summary>
 /// Data transfer object containing contractor information for a single contractor.

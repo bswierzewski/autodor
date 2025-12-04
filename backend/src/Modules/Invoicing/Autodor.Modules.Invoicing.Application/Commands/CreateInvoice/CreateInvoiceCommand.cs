@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 
@@ -20,4 +21,4 @@ public record CreateInvoiceCommand(
     IEnumerable<DateTime> Dates,
     IEnumerable<string> OrderIds,
     Guid ContractorId
-) : IRequest<string>;
+) : IRequest<Result<string>>;

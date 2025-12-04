@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 
@@ -13,4 +14,4 @@ namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 public record GenerateWarehouseDocumentCommand(
     string OrderId,
     DateTime Date
-) : IRequest<byte[]>; // Returns PDF as byte array
+) : IRequest<Result<byte[]>>; // Returns PDF as byte array

@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
@@ -20,4 +21,4 @@ public record UpdateContractorCommand(
     string City,
     string ZipCode,
     string Email
-) : IRequest;
+) : IRequest<Result<Unit>>;

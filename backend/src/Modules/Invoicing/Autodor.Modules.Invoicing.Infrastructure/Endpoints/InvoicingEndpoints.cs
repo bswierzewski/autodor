@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Endpoints;
 
@@ -73,11 +74,13 @@ public static class InvoicingEndpoints
     {
         // Execute invoice creation with comprehensive business validation and tax calculations
         // Includes regulatory compliance checks and integration with accounting systems
-        var invoiceNumber = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        // Return 201 Created with proper location header following REST conventions
-        // The location header enables immediate access to the newly created invoice resource
-        return Results.Created($"/api/invoicing/{invoiceNumber}", new { InvoiceNumber = invoiceNumber });
+        // Return 201 Created with invoice number or 400 Bad Request on validation failure
+        // The invoice number enables immediate access to the newly created invoice resource
+        return result.IsSuccess
+            ? Results.Created($"/api/invoicing/{result.Value}", new { InvoiceNumber = result.Value })
+            : Results.BadRequest(result.Errors);
     }
 
     /// <summary>
@@ -101,10 +104,12 @@ public static class InvoicingEndpoints
     {
         // Execute bulk invoice creation with optimized processing and comprehensive validation
         // Maintains individual invoice integrity while providing batch processing efficiency
-        var invoiceNumbers = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        // Return 200 OK with invoice numbers collection and count for batch verification
+        // Return 200 OK with invoice numbers collection or 400 Bad Request on validation failure
         // Enables clients to verify successful processing and handle any partial failures
-        return Results.Ok(new { InvoiceNumbers = invoiceNumbers, Count = invoiceNumbers.Count() });
+        return result.IsSuccess
+            ? Results.Ok(new { InvoiceNumbers = result.Value, Count = result.Value.Count() })
+            : Results.BadRequest(result.Errors);
     }
 }

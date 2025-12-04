@@ -2,10 +2,11 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
-public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand>
+public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand, Result<Unit>>
 {
     private readonly IContractorsWriteDbContext _writeDbContext;
 
@@ -14,13 +15,13 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
         _writeDbContext = writeDbContext;
     }
 
-    public async Task Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
     {
         var contractor = await _writeDbContext.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
-            throw new InvalidOperationException($"Contractor with ID {request.Id} not found");
+            return Result<Unit>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.Id} not found");
 
         contractor.UpdateDetails(
             request.Name,
@@ -30,7 +31,9 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
         );
 
         _writeDbContext.Contractors.Update(contractor);
-        
+
         await _writeDbContext.SaveChangesAsync(cancellationToken);
+
+        return Result<Unit>.Success(Unit.Value);
     }
 }

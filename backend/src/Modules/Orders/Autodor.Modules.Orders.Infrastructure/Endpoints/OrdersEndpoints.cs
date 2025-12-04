@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Infrastructure.Endpoints;
 
@@ -82,9 +83,11 @@ public static class OrdersEndpoints
         // This ensures all business rules and domain validations are applied
         var result = await mediator.Send(command);
 
-        // Return 200 OK with explicit success indicator for client-side processing
-        // The boolean result indicates whether the exclusion was successfully recorded
-        return Results.Ok(new { Success = result });
+        // Return 200 OK with success indicator or 400 Bad Request on validation failure
+        // The result indicates whether the exclusion was successfully recorded
+        return result.IsSuccess
+            ? Results.Ok(new { Success = result.Value })
+            : Results.BadRequest(result.Errors);
     }
 
     /// <summary>
@@ -109,9 +112,11 @@ public static class OrdersEndpoints
         var query = new GetOrdersByDateQuery(date);
         var result = await mediator.Send(query);
 
-        // Return 200 OK with order collection - standard pattern for successful data retrieval
+        // Return 200 OK with order collection or 400 Bad Request on validation failure
         // Empty collections are valid responses when no orders exist for the specified date
-        return Results.Ok(result);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.BadRequest(result.Errors);
     }
 
     /// <summary>
@@ -139,8 +144,10 @@ public static class OrdersEndpoints
         var query = new GetOrdersByDateRangeQuery(dateFrom, dateTo);
         var result = await mediator.Send(query);
 
-        // Return 200 OK with order collection - consistent with other query endpoints
+        // Return 200 OK with order collection or 400 Bad Request on validation failure
         // Results may be large for extended date ranges, consider implementing pagination
-        return Results.Ok(result);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.BadRequest(result.Errors);
     }
 }

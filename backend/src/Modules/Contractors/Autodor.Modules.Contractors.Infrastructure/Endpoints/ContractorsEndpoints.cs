@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Endpoints;
 
@@ -103,11 +104,13 @@ public static class ContractorsEndpoints
     {
         // Execute contractor creation command with full business validation
         // This includes tax ID validation, contact information verification, and business rule enforcement
-        var id = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        // Return 200 OK with the generated contractor ID
+        // Return 200 OK with the generated contractor ID or 400 Bad Request on validation failure
         // The ID is immediately usable for creating orders, invoices, and other business documents
-        return Results.Ok(id);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.BadRequest(result.Errors);
     }
 
     /// <summary>
@@ -129,11 +132,13 @@ public static class ContractorsEndpoints
     {
         // Execute query to retrieve detailed contractor information
         // Includes business validation to ensure data access permissions are respected
-        var contractor = await mediator.Send(new GetContractorQuery(id));
+        var result = await mediator.Send(new GetContractorQuery(id));
 
-        // Return 200 OK with contractor details, or appropriate error response if not found
+        // Return 200 OK with contractor details or 404 Not Found if contractor doesn't exist
         // The response includes all business-relevant contractor information
-        return Results.Ok(contractor);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.NotFound(result.Errors);
     }
 
     /// <summary>
@@ -154,11 +159,13 @@ public static class ContractorsEndpoints
     {
         // Execute query to retrieve all contractors with appropriate business filtering
         // May include summary data optimized for selection and listing scenarios
-        var contractors = await mediator.Send(new GetAllContractorsQuery());
+        var result = await mediator.Send(new GetAllContractorsQuery());
 
-        // Return 200 OK with contractor collection - empty collection is valid when no contractors exist
+        // Return 200 OK with contractor collection or 400 Bad Request on validation failure
         // Response is optimized for UI consumption and contractor selection workflows
-        return Results.Ok(contractors);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.BadRequest(result.Errors);
     }
 
     /// <summary>
@@ -189,11 +196,13 @@ public static class ContractorsEndpoints
 
         // Execute update command with full business validation and audit logging
         // May trigger additional business processes like tax validation or compliance checks
-        await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        // Return 204 No Content following REST conventions for successful updates
+        // Return 204 No Content on success or 404 Not Found if contractor doesn't exist
         // This indicates successful processing without returning updated data
-        return Results.NoContent();
+        return result.IsSuccess
+            ? Results.NoContent()
+            : Results.NotFound(result.Errors);
     }
 
     /// <summary>
@@ -216,11 +225,13 @@ public static class ContractorsEndpoints
     {
         // Execute deletion command with comprehensive business validation
         // Includes checks for active orders, pending invoices, and referential integrity constraints
-        await mediator.Send(new DeleteContractorCommand(id));
+        var result = await mediator.Send(new DeleteContractorCommand(id));
 
-        // Return 204 No Content following REST conventions for successful deletion
+        // Return 204 No Content on success or 404 Not Found if contractor doesn't exist
         // Indicates successful processing - the resource no longer exists
-        return Results.NoContent();
+        return result.IsSuccess
+            ? Results.NoContent()
+            : Results.NotFound(result.Errors);
     }
 
     /// <summary>
@@ -243,10 +254,12 @@ public static class ContractorsEndpoints
     {
         // Execute NIP-based contractor lookup with format validation and business rules
         // Critical for Polish tax compliance and regulatory reporting requirements
-        var contractor = await mediator.Send(new GetContractorByNIPQuery(nip));
+        var result = await mediator.Send(new GetContractorByNIPQuery(nip));
 
-        // Return 200 OK with contractor details, or appropriate error if no match found
+        // Return 200 OK with contractor details or 404 Not Found if no match found
         // Essential for tax document generation and regulatory compliance workflows
-        return Results.Ok(contractor);
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.NotFound(result.Errors);
     }
 }

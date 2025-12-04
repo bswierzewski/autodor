@@ -5,6 +5,7 @@ using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 
@@ -12,7 +13,7 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 /// Handles the creation of invoices by aggregating order data, enriching with product details,
 /// and sending to external invoicing systems.
 /// </summary>
-public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, string>
+public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, Result<string>>
 {
     private readonly ILogger<CreateInvoiceCommandHandler> _logger;
     private readonly IProductsAPI _productsApi;
@@ -40,8 +41,7 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
     /// <param name="request">Invoice creation parameters including dates, order IDs, and contractor information</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
     /// <returns>Unique identifier of the created invoice from the external system</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no orders are found or contractor doesn't exist</exception>
-    public async Task<string> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
             request.ContractorId, request.OrderIds.Count(), request.Dates.Count());
@@ -55,7 +55,7 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
         if (filteredOrders.Count == 0)
         {
             _logger.LogWarning("No orders found for the specified order IDs");
-            throw new InvalidOperationException("No orders found for the specified order IDs");
+            return Result<string>.Failure("NO_ORDERS_FOUND", "No orders found for the specified order IDs");
         }
 
         // Extract unique product numbers from all order items for bulk product lookup
@@ -73,7 +73,7 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
         if (contractor == null)
         {
             _logger.LogError("Contractor with ID {ContractorId} not found", request.ContractorId);
-            throw new InvalidOperationException($"Contractor with ID {request.ContractorId} not found");
+            return Result<string>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.ContractorId} not found");
         }
 
         // Map contractor DTO to domain value object
@@ -124,6 +124,6 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
 
         _logger.LogInformation("Successfully created invoice with number {InvoiceNumber}", invoiceNumber);
 
-        return invoiceNumber;
+        return Result<string>.Success(invoiceNumber);
     }
 }

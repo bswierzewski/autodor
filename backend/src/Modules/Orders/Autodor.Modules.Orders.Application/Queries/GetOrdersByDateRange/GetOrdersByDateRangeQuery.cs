@@ -1,5 +1,6 @@
 using Autodor.Modules.Orders.Domain.Entities;
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByDateRange;
 
@@ -8,4 +9,4 @@ namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByDateRange;
 /// </summary>
 /// <param name="DateFrom">The start date of the range (inclusive).</param>
 /// <param name="DateTo">The end date of the range (inclusive).</param>
-public record GetOrdersByDateRangeQuery(DateTime DateFrom, DateTime DateTo) : IRequest<IEnumerable<Order>>;
+public record GetOrdersByDateRangeQuery(DateTime DateFrom, DateTime DateTo) : IRequest<Result<IEnumerable<Order>>>;

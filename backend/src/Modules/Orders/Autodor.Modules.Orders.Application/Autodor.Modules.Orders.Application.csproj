@@ -13,6 +13,7 @@
 
   <ItemGroup Label="NuGet Package References">
     <PackageReference Include="Shared.Abstractions" />
+    <PackageReference Include="Shared.Infrastructure" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />

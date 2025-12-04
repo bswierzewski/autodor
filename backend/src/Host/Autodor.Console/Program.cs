@@ -100,9 +100,15 @@ static async Task CreateBulkInvoicesAsync(ISender mediator, DateTime from, DateT
     Log.Information("Creating bulk invoices for date range: {From} - {To}", from, to);
 
     var command = new CreateBulkInvoicesCommand(from, to);
-    var invoiceNumbers = await mediator.Send(command);
+    var result = await mediator.Send(command);
 
-    var invoicesList = invoiceNumbers.ToList();
+    if (!result.IsSuccess)
+    {
+        Log.Error("Failed to create bulk invoices: {Errors}", string.Join(", ", result.Errors.Select(e => e.Message)));
+        return;
+    }
+
+    var invoicesList = result.Value!.ToList();
     Log.Information("Successfully created {Count} invoices", invoicesList.Count);
 
     foreach (var invoiceNumber in invoicesList)

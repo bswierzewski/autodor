@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 
@@ -13,4 +14,4 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 public record CreateBulkInvoicesCommand(
     DateTime DateFrom,
     DateTime DateTo
-) : IRequest<IEnumerable<string>>;
+) : IRequest<Result<IEnumerable<string>>>;

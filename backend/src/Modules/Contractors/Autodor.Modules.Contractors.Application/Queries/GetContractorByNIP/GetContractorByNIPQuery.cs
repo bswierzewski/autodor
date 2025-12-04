@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 
@@ -6,7 +7,7 @@ namespace Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 /// Query to retrieve a contractor by their tax identification number (NIP).
 /// </summary>
 /// <param name="NIP">Tax identification number to search for.</param>
-public record GetContractorByNIPQuery(string NIP) : IRequest<GetContractorByNIPDto>;
+public record GetContractorByNIPQuery(string NIP) : IRequest<Result<GetContractorByNIPDto>>;
 
 /// <summary>
 /// Data transfer object containing contractor information retrieved by NIP.

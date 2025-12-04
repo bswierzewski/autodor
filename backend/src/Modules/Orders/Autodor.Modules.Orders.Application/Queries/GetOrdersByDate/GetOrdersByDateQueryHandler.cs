@@ -1,13 +1,14 @@
 using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Domain.Entities;
 using MediatR;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
 
 /// <summary>
 /// Handles queries for retrieving orders by a specific date.
 /// </summary>
-public sealed class GetOrdersByDateQueryHandler : IRequestHandler<GetOrdersByDateQuery, IEnumerable<Order>>
+public sealed class GetOrdersByDateQueryHandler : IRequestHandler<GetOrdersByDateQuery, Result<IEnumerable<Order>>>
 {
     private readonly IOrdersRepository _ordersRepository;
 
@@ -26,8 +27,9 @@ public sealed class GetOrdersByDateQueryHandler : IRequestHandler<GetOrdersByDat
     /// <param name="request">The query containing the date criteria.</param>
     /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     /// <returns>A collection of orders for the specified date.</returns>
-    public async Task<IEnumerable<Order>> Handle(GetOrdersByDateQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<Order>>> Handle(GetOrdersByDateQuery request, CancellationToken cancellationToken)
     {
-        return await _ordersRepository.GetOrdersByDateAsync(request.Date);
+        var orders = await _ordersRepository.GetOrdersByDateAsync(request.Date);
+        return Result<IEnumerable<Order>>.Success(orders);
     }
 }

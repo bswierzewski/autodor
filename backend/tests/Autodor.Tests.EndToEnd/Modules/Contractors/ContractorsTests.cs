@@ -104,7 +104,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         // Arrange
         var mediator = _context.GetRequiredService<IMediator>();
 
-        var contractorId = await mediator.Send(new CreateContractorCommand(
+        var result = await mediator.Send(new CreateContractorCommand(
             "Test Company",
             "5555555555",
             "Test Street 789",
@@ -112,6 +112,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
             "55-555",
             "testget@example.com"
         ));
+        var contractorId = result.Value;
 
         // Act
         var response = await _context.Client.GetAsync($"/api/contractors/{contractorId}");
@@ -134,7 +135,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         var mediator = _context.GetRequiredService<IMediator>();
         var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
 
-        var contractorId = await mediator.Send(new CreateContractorCommand(
+        var result = await mediator.Send(new CreateContractorCommand(
             "To Delete Company",
             "7777777777",
             "Delete Street 123",
@@ -142,6 +143,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
             "77-777",
             "delete@example.com"
         ));
+        var contractorId = result.Value;
 
         // Verify contractor exists before deletion using read context
         var contractorBeforeDelete = await readContext.Contractors

@@ -5,6 +5,7 @@ using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 
@@ -12,7 +13,7 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 /// Handles the creation of multiple invoices by processing orders within a date range,
 /// excluding specified orders, and grouping by contractor for batch invoice generation.
 /// </summary>
-public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoicesCommand, IEnumerable<string>>
+public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoicesCommand, Result<IEnumerable<string>>>
 {
     private readonly ILogger<CreateBulkInvoicesCommandHandler> _logger;
     private readonly IProductsAPI _productsApi;
@@ -41,8 +42,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
     /// <param name="request">Bulk invoice creation parameters including date range</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
     /// <returns>Collection of unique identifiers for all created invoices</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no orders are found in the date range</exception>
-    public async Task<IEnumerable<string>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<string>>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
@@ -61,7 +61,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
         {
             _logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
                 request.DateFrom, request.DateTo);
-            throw new InvalidOperationException("No valid orders found for bulk invoice creation");
+            return Result<IEnumerable<string>>.Failure("NO_VALID_ORDERS", "No valid orders found for bulk invoice creation");
         }
 
         _logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",
@@ -168,11 +168,12 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             {
                 _logger.LogError(ex, "Failed to create invoice for contractor {ContractorNIP}",
                     contractorNIP);
-                throw;
+                return Result<IEnumerable<string>>.Failure("INVOICE_CREATION_FAILED",
+                    $"Failed to create invoice for contractor {contractorNIP}: {ex.Message}");
             }
         }
 
         _logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceNumbers.Count);
-        return invoiceNumbers;
+        return Result<IEnumerable<string>>.Success(invoiceNumbers);
     }
 }

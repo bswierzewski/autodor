@@ -1,5 +1,6 @@
 using DotNetEnv;
 using Shared.Abstractions.Modules;
+using Shared.Infrastructure.Exceptions;
 using Shared.Infrastructure.Modules;
 using Shared.Users.Infrastructure.Extensions.Supabase;
 
@@ -13,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Register core services
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHttpContextAccessor();
+
+// Exception handling
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // OpenAPI for Orval client generation
 builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
@@ -37,6 +42,9 @@ if (app.Environment.IsDevelopment())
               .AllowAnyMethod()
               .AllowAnyHeader());
 }
+
+// Exception handling
+app.UseExceptionHandler(options => { });
 
 // Middleware pipeline order matters!
 app.UseAuthentication(); // 1. Authentication first
