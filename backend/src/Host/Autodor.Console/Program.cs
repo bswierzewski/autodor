@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Shared.Abstractions.Authorization;
 using Shared.Abstractions.Modules;
 using Serilog;
+using Shared.Infrastructure.Logging;
 using Shared.Infrastructure.Modules;
 
 // Load environment variables from .env file BEFORE creating builder
@@ -29,16 +30,9 @@ var configuration = new ConfigurationBuilder()
     })
     .Build();
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File(
-        path: Path.Combine("Logs", "log.txt"),
-        rollingInterval: RollingInterval.Day
-    )
-    .CreateLogger();
-
 using IHost host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(configBuilder => configBuilder.AddConfiguration(configuration))
+    .AddSerilog(configuration, "Autodor.Console")
     .ConfigureServices(services =>
     {
         services.RegisterModules(configuration);
@@ -53,8 +47,6 @@ using IHost host = Host.CreateDefaultBuilder()
                 opts.To = DateTime.Parse(configuration["to"] ?? throw new InvalidOperationException("Missing 'to' parameter"));
                 opts.Operation = configuration["operation"] ?? "invoices";
             });
-
-        services.AddSerilog();
     })
     .Build();
 
