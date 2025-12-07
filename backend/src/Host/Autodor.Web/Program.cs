@@ -1,8 +1,8 @@
 using DotNetEnv;
 using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Exceptions;
+using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Logging;
-using Shared.Infrastructure.Modules;
 using Shared.Users.Infrastructure.Extensions.Supabase;
 
 // Load environment variables from .env file BEFORE creating builder
@@ -25,7 +25,7 @@ builder.Services.AddProblemDetails();
 
 // OpenAPI for Orval client generation
 builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
-builder.Services.AddOpenApi();              // Generates OpenAPI document
+builder.Services.AddOpenApi(options => options.AddProblemDetailsSchemas()); // Generates OpenAPI document
 
 // Register modules from auto-generated registry
 builder.Services.RegisterModules(builder.Configuration);
