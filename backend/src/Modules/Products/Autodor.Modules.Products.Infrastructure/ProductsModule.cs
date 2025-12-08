@@ -13,12 +13,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Shared.Abstractions.Authorization;
 using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Modules;
-using Shared.Infrastructure.Persistence.Migrations;
 
 namespace Autodor.Modules.Products.Infrastructure;
 
@@ -26,14 +24,14 @@ namespace Autodor.Modules.Products.Infrastructure;
 /// Products module - provides product management with synchronization support.
 ///
 /// Features:
-/// - Create, read, update, delete products
-/// - Product data management
-/// - Product synchronization
+/// - Read product data from in-memory repository
+/// - Product synchronization from external Polcar API
+/// - Fast product lookups using ConcurrentDictionary
 ///
 /// Integration:
 /// 1. Module is auto-discovered and loaded in AddModules()
 /// 2. Endpoints are mapped in Program.cs via extension methods
-/// 3. Database migrations run automatically on initialization
+/// 3. Products are loaded from external API on startup and periodically refreshed
 /// </summary>
 public class ProductsModule : IModule
 {
@@ -43,7 +41,7 @@ public class ProductsModule : IModule
     public string Name => ModuleConstants.ModuleName;
 
     /// <summary>
-    /// Register Products module services, DbContext, and command/query handlers
+    /// Register Products module services and in-memory repository
     /// </summary>
     public void Register(IServiceCollection services, IConfiguration configuration)
     {
@@ -51,14 +49,12 @@ public class ProductsModule : IModule
         services.AddModule(configuration, Name)
             .AddOptions((svc, config) =>
             {
-                svc.ConfigureOptions<ProductsDatabaseOptions>(config);
                 svc.ConfigureOptions<PolcarProductsOptions>(config);
             })
-            .AddPostgres<ProductsDbContext, IProductsDbContext>(
-                provider => provider.GetRequiredService<IOptions<ProductsDatabaseOptions>>().Value.ConnectionString)
             .AddCQRS(typeof(ApplicationAssembly).Assembly, typeof(InfrastructureAssembly).Assembly)
             .Build();
 
+        services.AddSingleton<IProductsRepository, InMemoryProductsRepository>();
         services.AddScoped(provider => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap));
         services.AddScoped<IPolcarProductService, PolcarProductService>();
         services.AddScoped<IProductsAPI, ProductsAPI>();
@@ -71,18 +67,14 @@ public class ProductsModule : IModule
     /// </summary>
     public void Use(IApplicationBuilder app, IConfiguration configuration)
     {
-        var endpoints = (IEndpointRouteBuilder)app;
-
-        // Map Products module endpoints
-        // endpoints.MapProductsEndpoints();
     }
 
     /// <summary>
-    /// Initializes the Products module by running migrations
+    /// Initializes the Products module
     /// </summary>
-    public async Task Initialize(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
+    public Task Initialize(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
     {
-        await new MigrationService<ProductsDbContext>(serviceProvider).MigrateAsync(cancellationToken);
+        return Task.CompletedTask;
     }
 
     /// <summary>

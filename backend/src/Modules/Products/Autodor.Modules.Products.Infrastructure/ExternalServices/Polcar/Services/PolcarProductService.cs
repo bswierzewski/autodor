@@ -54,7 +54,7 @@ public class PolcarProductService : IPolcarProductService
     /// Deserializes XML response and maps to domain Product entities.
     /// </summary>
     /// <returns>Collection of products from Polcar, or empty collection on failure</returns>
-    public async Task<IEnumerable<Domain.Aggregates.Product>> GetProductsAsync()
+    public async Task<IEnumerable<Domain.Entities.Product>> GetProductsAsync()
     {
         return await _retryPolicy.ExecuteAsync(async () =>
         {
@@ -68,7 +68,7 @@ public class PolcarProductService : IPolcarProductService
 
                 var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
 
-                var products = deserialized.Items.Select(item => new Domain.Aggregates.Product
+                var products = deserialized.Items.Select(item => new Domain.Entities.Product
                 {
                     Name = item.PartName,
                     Number = item.Number,
@@ -82,7 +82,7 @@ public class PolcarProductService : IPolcarProductService
             {
                 _logger.LogError(ex, "Error occurred while loading products from Polcar");
 
-                return Enumerable.Empty<Domain.Aggregates.Product>();
+                return Enumerable.Empty<Domain.Entities.Product>();
             }
         });
     }

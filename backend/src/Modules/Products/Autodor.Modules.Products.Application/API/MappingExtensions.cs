@@ -4,7 +4,7 @@ namespace Autodor.Modules.Products.Application.API;
 
 public static class MappingExtensions
 {
-    public static ProductDetailsDto ToDto(this Domain.Aggregates.Product product)
+    public static ProductDetailsDto ToDto(this Domain.Entities.Product product)
     {
         return new ProductDetailsDto(
             Number: product.Number,

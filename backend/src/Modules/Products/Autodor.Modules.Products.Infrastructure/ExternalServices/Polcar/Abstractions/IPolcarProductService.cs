@@ -1,4 +1,4 @@
-using Autodor.Modules.Products.Domain.Aggregates;
+using Autodor.Modules.Products.Domain.Entities;
 
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Abstractions;
 
