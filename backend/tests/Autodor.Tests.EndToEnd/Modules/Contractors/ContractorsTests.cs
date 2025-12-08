@@ -58,8 +58,8 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        // Verify in database using read context
-        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
+        // Verify in database
+        var readContext = _context.GetRequiredService<IContractorsDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(1);
 
@@ -92,8 +92,8 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        // Verify database count using read context
-        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
+        // Verify database count
+        var readContext = _context.GetRequiredService<IContractorsDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(3);
     }
@@ -120,8 +120,8 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        // Verify contractor exists in database using read context
-        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
+        // Verify contractor exists in database
+        var readContext = _context.GetRequiredService<IContractorsDbContext>();
         var contractor = await readContext.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(contractorId));
         contractor.Should().NotBeNull();
@@ -133,7 +133,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
     {
         // Arrange
         var mediator = _context.GetRequiredService<IMediator>();
-        var readContext = _context.GetRequiredService<IContractorsReadDbContext>();
+        var readContext = _context.GetRequiredService<IContractorsDbContext>();
 
         var result = await mediator.Send(new CreateContractorCommand(
             "To Delete Company",
@@ -145,7 +145,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         ));
         var contractorId = result.Value;
 
-        // Verify contractor exists before deletion using read context
+        // Verify contractor exists before deletion
         var contractorBeforeDelete = await readContext.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(contractorId));
         contractorBeforeDelete.Should().NotBeNull();

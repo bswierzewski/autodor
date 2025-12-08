@@ -11,11 +11,11 @@ namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 /// </summary>
 public class CreateContractorCommandHandler : IRequestHandler<CreateContractorCommand, Result<Guid>>
 {
-    private readonly IContractorsWriteDbContext _writeDbContext;
+    private readonly IContractorsDbContext _context;
 
-    public CreateContractorCommandHandler(IContractorsWriteDbContext writeDbContext)
+    public CreateContractorCommandHandler(IContractorsDbContext context)
     {
-        _writeDbContext = writeDbContext;
+        _context = context;
     }
 
     /// <summary>
@@ -36,9 +36,9 @@ public class CreateContractorCommandHandler : IRequestHandler<CreateContractorCo
             new Email(request.Email)
         );
 
-        await _writeDbContext.Contractors.AddAsync(contractor, cancellationToken);
+        await _context.Contractors.AddAsync(contractor, cancellationToken);
 
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(contractorId.Value);
     }

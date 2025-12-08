@@ -8,24 +8,24 @@ namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
 public class DeleteContractorCommandHandler : IRequestHandler<DeleteContractorCommand, Result<Unit>>
 {
-    private readonly IContractorsWriteDbContext _writeDbContext;
+    private readonly IContractorsDbContext _context;
 
-    public DeleteContractorCommandHandler(IContractorsWriteDbContext writeDbContext)
+    public DeleteContractorCommandHandler(IContractorsDbContext context)
     {
-        _writeDbContext = writeDbContext;
+        _context = context;
     }
 
     public async Task<Result<Unit>> Handle(DeleteContractorCommand request, CancellationToken cancellationToken)
     {
-        var contractor = await _writeDbContext.Contractors
+        var contractor = await _context.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
             return Result<Unit>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.Id} not found");
 
-        _writeDbContext.Contractors.Remove(contractor);
+        _context.Contractors.Remove(contractor);
 
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return Result<Unit>.Success(Unit.Value);
     }

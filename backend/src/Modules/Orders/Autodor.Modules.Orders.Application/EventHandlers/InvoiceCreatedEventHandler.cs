@@ -11,19 +11,19 @@ namespace Autodor.Modules.Orders.Application.EventHandlers;
 /// </summary>
 public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEvent>
 {
-    private readonly IOrdersWriteDbContext _writeDbContext;
+    private readonly IOrdersDbContext _context;
     private readonly ILogger<InvoiceCreatedEventHandler> _logger;
 
     /// <summary>
     /// Initializes a new instance of the InvoiceCreatedEventHandler.
     /// </summary>
-    /// <param name="writeDbContext">The database context for write operations.</param>
+    /// <param name="context">The database context for write operations.</param>
     /// <param name="logger">The logger for recording event handling activities.</param>
     public InvoiceCreatedEventHandler(
-        IOrdersWriteDbContext writeDbContext,
+        IOrdersDbContext context,
         ILogger<InvoiceCreatedEventHandler> logger)
     {
-        _writeDbContext = writeDbContext;
+        _context = context;
         _logger = logger;
     }
 
@@ -45,10 +45,10 @@ public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEve
                 notification.CreatedDate
             );
 
-            await _writeDbContext.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
+            await _context.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
         }
 
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Successfully excluded {OrderCount} orders after invoice creation",
             notification.OrderIds.Count());

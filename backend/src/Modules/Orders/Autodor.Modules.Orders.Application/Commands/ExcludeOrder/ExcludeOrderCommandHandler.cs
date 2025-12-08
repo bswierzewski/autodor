@@ -8,10 +8,10 @@ namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 /// <summary>
 /// Handles the exclusion of orders by creating an excluded order record in the database.
 /// </summary>
-public class ExcludeOrderCommandHandler(IOrdersWriteDbContext writeDbContext, TimeProvider timeProvider)
+public class ExcludeOrderCommandHandler(IOrdersDbContext context, TimeProvider timeProvider)
     : IRequestHandler<ExcludeOrderCommand, Result<bool>>
 {
-    private readonly IOrdersWriteDbContext _writeDbContext = writeDbContext;
+    private readonly IOrdersDbContext _context = context;
 
     /// <summary>
     /// Processes the exclude order command by creating a new excluded order entry.
@@ -23,9 +23,9 @@ public class ExcludeOrderCommandHandler(IOrdersWriteDbContext writeDbContext, Ti
     {
         var excludedOrder = new ExcludedOrder(request.OrderId, timeProvider.GetUtcNow());
 
-        await _writeDbContext.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
+        await _context.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
 
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return Result<bool>.Success(true);
     }

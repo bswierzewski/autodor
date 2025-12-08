@@ -8,16 +8,16 @@ namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
 public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand, Result<Unit>>
 {
-    private readonly IContractorsWriteDbContext _writeDbContext;
+    private readonly IContractorsDbContext _context;
 
-    public UpdateContractorCommandHandler(IContractorsWriteDbContext writeDbContext)
+    public UpdateContractorCommandHandler(IContractorsDbContext context)
     {
-        _writeDbContext = writeDbContext;
+        _context = context;
     }
 
     public async Task<Result<Unit>> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
     {
-        var contractor = await _writeDbContext.Contractors
+        var contractor = await _context.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
@@ -30,9 +30,9 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
             new Email(request.Email)
         );
 
-        _writeDbContext.Contractors.Update(contractor);
+        _context.Contractors.Update(contractor);
 
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return Result<Unit>.Success(Unit.Value);
     }
