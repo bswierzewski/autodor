@@ -54,7 +54,7 @@ public class ProductsModule : IModule
                 svc.ConfigureOptions<ProductsDatabaseOptions>(config);
                 svc.ConfigureOptions<PolcarProductsOptions>(config);
             })
-            .AddPostgres<ProductsDbContext, IProductsReadDbContext, IProductsWriteDbContext>(
+            .AddPostgres<ProductsDbContext, IProductsDbContext>(
                 provider => provider.GetRequiredService<IOptions<ProductsDatabaseOptions>>().Value.ConnectionString)
             .AddCQRS(typeof(ApplicationAssembly).Assembly, typeof(InfrastructureAssembly).Assembly)
             .Build();

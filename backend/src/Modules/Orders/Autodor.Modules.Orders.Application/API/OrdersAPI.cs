@@ -11,12 +11,12 @@ namespace Autodor.Modules.Orders.Application.API;
 public class OrdersAPI : IOrdersAPI
 {
     private readonly IOrdersRepository _ordersRepository;
-    private readonly IOrdersReadDbContext _ordersReadDbContext;
+    private readonly IOrdersDbContext _dbContext;
 
-    public OrdersAPI(IOrdersRepository ordersRepository, IOrdersReadDbContext ordersReadDbContext)
+    public OrdersAPI(IOrdersRepository ordersRepository, IOrdersDbContext dbContext)
     {
         _ordersRepository = ordersRepository;
-        _ordersReadDbContext = ordersReadDbContext;
+        _dbContext = dbContext;
     }
 
     /// <summary>
@@ -59,7 +59,8 @@ public class OrdersAPI : IOrdersAPI
     /// <returns>Collection of excluded order IDs</returns>
     public async Task<IEnumerable<string>> GetExcludedOrderIdsAsync(CancellationToken cancellationToken = default)
     {
-        return await _ordersReadDbContext.ExcludedOrders
+        return await _dbContext.ExcludedOrders
+            .AsNoTracking()
             .Select(e => e.OrderId)
             .ToListAsync(cancellationToken);
     }

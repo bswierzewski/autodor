@@ -11,11 +11,11 @@ namespace Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
 /// </summary>
 public class GetAllContractorsQueryHandler : IRequestHandler<GetAllContractorsQuery, Result<IEnumerable<GetAllContractorsDto>>>
 {
-    private readonly IContractorsReadDbContext _readDbContext;
+    private readonly IContractorsDbContext _dbContext;
 
-    public GetAllContractorsQueryHandler(IContractorsReadDbContext readDbContext)
+    public GetAllContractorsQueryHandler(IContractorsDbContext dbContext)
     {
-        _readDbContext = readDbContext;
+        _dbContext = dbContext;
     }
 
     /// <summary>
@@ -26,7 +26,9 @@ public class GetAllContractorsQueryHandler : IRequestHandler<GetAllContractorsQu
     /// <returns>Collection of contractor DTOs.</returns>
     public async Task<Result<IEnumerable<GetAllContractorsDto>>> Handle(GetAllContractorsQuery request, CancellationToken cancellationToken)
     {
-        var contractors = await _readDbContext.Contractors.ToListAsync(cancellationToken);
+        var contractors = await _dbContext.Contractors
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
 
         return Result<IEnumerable<GetAllContractorsDto>>.Success(contractors.Select(c => c.ToGetAllContractorsDto()));
     }

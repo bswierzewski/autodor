@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Autodor.Modules.Products.Infrastructure.Persistence;
 
 /// <summary>
-/// Entity Framework database context for the Products module, providing both read and write access to product data.
+/// Entity Framework database context for the Products module.
 /// </summary>
-public class ProductsDbContext : DbContext, IProductsWriteDbContext, IProductsReadDbContext
+public class ProductsDbContext : DbContext, IProductsDbContext
 {
     /// <summary>
-    /// Gets or sets the Products DbSet for write operations.
+    /// Gets or sets the Products DbSet.
     /// </summary>
     public DbSet<Product> Products { get; set; } = null!;
 
@@ -18,11 +18,6 @@ public class ProductsDbContext : DbContext, IProductsWriteDbContext, IProductsRe
     /// Gets or sets the BackgroundTaskState DbSet for background task state management.
     /// </summary>
     public DbSet<BackgroundTaskState> BackgroundTaskStates { get; set; } = null!;
-    
-    /// <summary>
-    /// Provides read-only access to products with change tracking disabled for performance.
-    /// </summary>
-    IQueryable<Product> IProductsReadDbContext.Products => Products.AsNoTracking();
 
     /// <summary>
     /// Initializes a new instance of the ProductsDbContext class.

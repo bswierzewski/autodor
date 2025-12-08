@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Autodor.Modules.Orders.Application.Abstractions;
 
 /// <summary>
-/// Provides write access to the orders database context for data modifications.
+/// Provides access to the orders database context.
 /// </summary>
-public interface IOrdersWriteDbContext
+public interface IOrdersDbContext
 {
     /// <summary>
-    /// Gets the DbSet for excluded orders to perform write operations.
+    /// Gets the DbSet for excluded orders.
     /// </summary>
     DbSet<ExcludedOrder> ExcludedOrders { get; }
 

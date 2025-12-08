@@ -10,15 +10,15 @@ namespace Autodor.Modules.Products.Application.API;
 /// </summary>
 public sealed class ProductsAPI : IProductsAPI
 {
-    private readonly IProductsReadDbContext _readDbContext;
+    private readonly IProductsDbContext _dbContext;
 
     /// <summary>
     /// Initializes a new instance of the ProductsAPI class.
     /// </summary>
-    /// <param name="readDbContext">The read-only database context for products</param>
-    public ProductsAPI(IProductsReadDbContext readDbContext)
+    /// <param name="dbContext">The database context for products</param>
+    public ProductsAPI(IProductsDbContext dbContext)
     {
-        _readDbContext = readDbContext;
+        _dbContext = dbContext;
     }
 
     /// <summary>
@@ -29,7 +29,8 @@ public sealed class ProductsAPI : IProductsAPI
     /// <returns>The product details if found and has a name, otherwise null</returns>
     public async Task<ProductDetailsDto?> GetProductByNumberAsync(string number, CancellationToken cancellationToken = default)
     {
-        var product = await _readDbContext.Products
+        var product = await _dbContext.Products
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Number == number, cancellationToken);
 
         if (product == null || string.IsNullOrEmpty(product.Name))
@@ -46,7 +47,8 @@ public sealed class ProductsAPI : IProductsAPI
     /// <returns>Collection of product details for found products</returns>
     public async Task<IEnumerable<ProductDetailsDto>> GetProductsByNumbersAsync(IEnumerable<string> numbers, CancellationToken cancellationToken = default)
     {
-        var products = await _readDbContext.Products
+        var products = await _dbContext.Products
+            .AsNoTracking()
             .Where(x => numbers.Contains(x.Number))
             .ToListAsync(cancellationToken);
 

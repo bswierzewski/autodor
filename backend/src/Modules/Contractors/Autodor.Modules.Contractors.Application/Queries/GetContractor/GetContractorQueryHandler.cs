@@ -9,16 +9,17 @@ namespace Autodor.Modules.Contractors.Application.Queries.GetContractor;
 
 public class GetContractorQueryHandler : IRequestHandler<GetContractorQuery, Result<GetContractorDto>>
 {
-    private readonly IContractorsReadDbContext _readDbContext;
+    private readonly IContractorsDbContext _dbContext;
 
-    public GetContractorQueryHandler(IContractorsReadDbContext readDbContext)
+    public GetContractorQueryHandler(IContractorsDbContext dbContext)
     {
-        _readDbContext = readDbContext;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<GetContractorDto>> Handle(GetContractorQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await _readDbContext.Contractors
+        var contractor = await _dbContext.Contractors
+            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)

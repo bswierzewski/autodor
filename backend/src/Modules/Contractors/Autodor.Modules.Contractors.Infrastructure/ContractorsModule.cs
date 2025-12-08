@@ -49,7 +49,7 @@ public class ContractorsModule : IModule
             {
                 svc.ConfigureOptions<ContractorsDatabaseOptions>(config);
             })
-            .AddPostgres<ContractorsDbContext, IContractorsReadDbContext, IContractorsWriteDbContext>(
+            .AddPostgres<ContractorsDbContext, IContractorsDbContext>(
                 provider => provider.GetRequiredService<IOptions<ContractorsDatabaseOptions>>().Value.ConnectionString)
             .AddCQRS(typeof(ApplicationAssembly).Assembly, typeof(InfrastructureAssembly).Assembly)
             .Build();

@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Autodor.Modules.Products.Application.Abstractions;
 
 /// <summary>
-/// Provides write access to the Products database context for modifying product data.
+/// Provides access to the Products database context.
 /// </summary>
-public interface IProductsWriteDbContext
+public interface IProductsDbContext
 {
     /// <summary>
-    /// Gets the DbSet for products to enable add, update, and delete operations.
+    /// Gets the DbSet for products.
     /// </summary>
     DbSet<Product> Products { get; }
 

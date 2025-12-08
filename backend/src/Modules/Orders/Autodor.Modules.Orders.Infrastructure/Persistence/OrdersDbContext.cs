@@ -6,19 +6,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Persistence;
 
 /// <summary>
 /// Database context for the Orders module, providing access to order-related entities.
-/// Implements both read and write context interfaces for CQRS pattern support.
 /// </summary>
-public class OrdersDbContext : DbContext, IOrdersWriteDbContext, IOrdersReadDbContext
+public class OrdersDbContext : DbContext, IOrdersDbContext
 {
     /// <summary>
     /// Gets or sets the DbSet for excluded orders.
     /// </summary>
     public DbSet<ExcludedOrder> ExcludedOrders { get; set; } = null!;
-
-    /// <summary>
-    /// Provides read-only access to excluded orders with no tracking for performance optimization.
-    /// </summary>
-    IQueryable<ExcludedOrder> IOrdersReadDbContext.ExcludedOrders => ExcludedOrders.AsNoTracking();
 
     /// <summary>
     /// Initializes a new instance of the OrdersDbContext.

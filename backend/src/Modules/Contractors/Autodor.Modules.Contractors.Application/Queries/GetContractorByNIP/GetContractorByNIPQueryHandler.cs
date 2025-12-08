@@ -9,16 +9,17 @@ namespace Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 
 public class GetContractorByNIPQueryHandler : IRequestHandler<GetContractorByNIPQuery, Result<GetContractorByNIPDto>>
 {
-    private readonly IContractorsReadDbContext _readDbContext;
+    private readonly IContractorsDbContext _dbContext;
 
-    public GetContractorByNIPQueryHandler(IContractorsReadDbContext readDbContext)
+    public GetContractorByNIPQueryHandler(IContractorsDbContext dbContext)
     {
-        _readDbContext = readDbContext;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<GetContractorByNIPDto>> Handle(GetContractorByNIPQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await _readDbContext.Contractors
+        var contractor = await _dbContext.Contractors
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.NIP == new TaxId(request.NIP), cancellationToken);
 
         if (contractor is null)

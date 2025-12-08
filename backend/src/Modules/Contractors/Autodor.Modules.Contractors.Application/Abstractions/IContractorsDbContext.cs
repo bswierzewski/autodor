@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Autodor.Modules.Contractors.Application.Abstractions;
 
 /// <summary>
-/// Write database context abstraction for contractor modifications and persistence operations.
+/// Database context abstraction for contractor operations.
 /// </summary>
-public interface IContractorsWriteDbContext
+public interface IContractorsDbContext
 {
     /// <summary>
-    /// Provides access to the contractors collection for write operations.
+    /// Provides access to the contractors collection.
     /// </summary>
     DbSet<Contractor> Contractors { get; }
 
