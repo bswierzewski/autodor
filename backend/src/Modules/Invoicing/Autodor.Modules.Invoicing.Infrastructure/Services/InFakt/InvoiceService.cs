@@ -1,36 +1,23 @@
-using System.Net.Http.Json;
-using System.Text.Json;
 using Autodor.Modules.Invoicing.Application.Abstractions;
-using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.DTOs;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Exceptions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Polly;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
 
 public class InvoiceService : IInvoiceService
 {
     private readonly ILogger<InvoiceService> _logger;
-    private readonly InFaktOptions _options;
-    private readonly HttpClient _httpClient;
-    private readonly IAsyncPolicy _retryPolicy;
+    private readonly InFaktClient _client;
+    private readonly ContractorService _contractorService;
 
     public InvoiceService(
         ILogger<InvoiceService> logger,
-        IOptions<InFaktOptions> config,
-        HttpClient httpClient)
+        InFaktClient client,
+        ContractorService contractorService)
     {
         _logger = logger;
-        _options = config.Value;
-        _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Add("X-inFakt-ApiKey", _options.ApiKey);
-
-        _retryPolicy = Policy
-            .Handle<TaskInProgressException>()
-            .WaitAndRetryAsync(5, _ => TimeSpan.FromSeconds(2));
+        _client = client;
+        _contractorService = contractorService;
     }
 
     public async Task<string> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
@@ -38,63 +25,50 @@ public class InvoiceService : IInvoiceService
         _logger.LogInformation("Creating invoice for contractor {ContractorName} with NIP {NIP}",
             invoice.Contractor.Name, invoice.Contractor.NIP);
 
-        var invoiceRequest = invoice.ToInvoiceDto();
-        var response = await _httpClient.PostAsJsonAsync($"{_options.ApiUrl}/async/invoices.json", invoiceRequest, cancellationToken);
-        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        await UpsertContractorAsync(invoice.Contractor, cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Failed to create invoice. Status: {StatusCode}, Content: {Content}", response.StatusCode, responseContent);
-            throw new InvalidOperationException($"Failed to create invoice: {responseContent}");
-        }
-
-        var initialResponse = JsonSerializer.Deserialize<StatusResponseDto>(responseContent);
-        if (string.IsNullOrEmpty(initialResponse?.InvoiceTaskReferenceNumber))
-            throw new InvalidOperationException("Invoice creation failed - no reference number returned");
-
-        _logger.LogInformation("Invoice creation started with reference number {ReferenceNumber}", initialResponse.InvoiceTaskReferenceNumber);
-
-        string? invoiceNumber = null;
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            invoiceNumber = await CheckInvoiceStatusAsync(initialResponse.InvoiceTaskReferenceNumber, invoice.Contractor.NIP, cancellationToken);
-        });
-
-        if (invoiceNumber == null)
-            throw new InvalidOperationException("Invoice creation failed - no invoice number returned after retries");
+        var invoiceResponse = await CreateInvoiceInternalAsync(invoice, cancellationToken);
 
         _logger.LogInformation("Invoice created successfully for contractor {ContractorName} with number {InvoiceNumber}",
-            invoice.Contractor.Name, invoiceNumber);
+            invoice.Contractor.Name, invoiceResponse.Number);
 
-        return invoiceNumber;
+        return invoiceResponse.Number;
     }
 
-    private async Task<string?> CheckInvoiceStatusAsync(string taskReferenceNumber, string nip, CancellationToken cancellationToken)
+    private async Task UpsertContractorAsync(Contractor contractor, CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Checking invoice status for reference {ReferenceNumber}, NIP {NIP}", taskReferenceNumber, nip);
+        _logger.LogInformation("Preparing contractor: {ContractorName}", contractor.Name);
 
-        var statusResponse = await _httpClient.GetAsync($"{_options.ApiUrl}/async/invoices/status/{taskReferenceNumber}.json", cancellationToken);
-        var responseContent = await statusResponse.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!statusResponse.IsSuccessStatusCode)
+        try
         {
-            _logger.LogError("Error checking invoice status for NIP {NIP}. Status: {StatusCode}, Content: {Content}",
-                nip, statusResponse.StatusCode, responseContent);
-            throw new InvalidOperationException($"Failed to check invoice status: {responseContent}");
+            var existingContractor = await _contractorService.FindContractorByNIPAsync(contractor.NIP, cancellationToken);
+
+            bool contractorSuccess;
+            if (existingContractor != null)
+                contractorSuccess = await _contractorService.UpdateContractorAsync(existingContractor.Id, contractor, cancellationToken);
+            else
+                contractorSuccess = await _contractorService.CreateContractorAsync(contractor, cancellationToken);
+
+            if (!contractorSuccess)
+                throw new InvalidOperationException("Failed to create or update contractor in InFakt");
+
+            _logger.LogInformation("Contractor prepared successfully: {ContractorName}", contractor.Name);
         }
-
-        var status = JsonSerializer.Deserialize<StatusResponseDto>(responseContent)
-            ?? throw new InvalidOperationException("Failed to deserialize status response");
-
-        _logger.LogDebug("Invoice status for NIP {NIP}: ProcessingCode={ProcessingCode}, Description={Description}",
-            nip, status.ProcessingCode, status.ProcessingDescription);
-
-        return status.ProcessingCode switch
+        catch (Exception ex)
         {
-            201 => status.Invoice?.Number ?? $"INFAKT-{status.InvoiceTaskReferenceNumber}",
-            422 => throw new InvalidOperationException($"Invoice creation failed for NIP {nip}: {status.ProcessingDescription}"),
-            100 or 120 or 140 => throw new TaskInProgressException(status.ProcessingCode, status.ProcessingDescription ?? "Task in progress"),
-            _ => throw new InvalidOperationException($"Unknown processing status for NIP {nip}: {status.ProcessingDescription} (code: {status.ProcessingCode})")
-        };
+            _logger.LogError(ex, "Error creating or updating contractor: {ContractorName}", contractor.Name);
+            throw new InvalidOperationException("Failed to create or update contractor in InFakt", ex);
+        }
+    }
+
+    private async Task<Models.InvoiceResponseDto> CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
+    {
+        var invoiceRequest = invoice.ToInvoiceDto();
+        var invoiceResponse = await _client.CreateInvoiceAsync(invoiceRequest, cancellationToken);
+
+        if (string.IsNullOrEmpty(invoiceResponse.Number))
+            throw new InvalidOperationException("Invoice creation failed - no invoice number returned");
+
+        return invoiceResponse;
     }
 }

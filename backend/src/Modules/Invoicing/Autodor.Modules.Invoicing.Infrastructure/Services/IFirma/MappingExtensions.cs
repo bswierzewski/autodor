@@ -1,5 +1,5 @@
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.DTOs;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Models;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma;
 
@@ -16,7 +16,7 @@ public static class MappingExtensions
             PaymentTerm = invoice.PaymentDue,
             PaymentMethod = invoice.PaymentMethod,
             Notes = invoice.Notes,
-            Contractor = new DTOs.Contractor
+            Contractor = new Models.Contractor
             {
                 Name = invoice.Contractor.Name,
                 Nip = invoice.Contractor.NIP,
@@ -27,7 +27,7 @@ public static class MappingExtensions
                 Email = invoice.Contractor.Email,
                 Phone = "" // Not available in current Contractor model
             },
-            Items = invoice.Items.Select(item => new DTOs.InvoiceItem
+            Items = invoice.Items.Select(item => new Models.InvoiceItem
             {
                 FullName = item.Name,
                 Unit = item.Unit,

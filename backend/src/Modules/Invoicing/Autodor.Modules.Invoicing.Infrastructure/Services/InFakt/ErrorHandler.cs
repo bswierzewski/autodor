@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.DTOs;
+using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Models;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
 

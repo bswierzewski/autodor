@@ -1,46 +1,27 @@
-using System.Text;
-using System.Text.Json;
-using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.DTOs;
+using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
 
 public class ContractorService
 {
     private readonly ILogger<ContractorService> _logger;
-    private readonly InFaktOptions _options;
-    private readonly HttpClient _httpClient;
+    private readonly InFaktClient _client;
 
     public ContractorService(
         ILogger<ContractorService> logger,
-        IOptions<InFaktOptions> config,
-        HttpClient httpClient)
+        InFaktClient client)
     {
         _logger = logger;
-        _options = config.Value;
-        _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Add("X-inFakt-ApiKey", _options.ApiKey);
+        _client = client;
     }
 
     public async Task<ContractorResponseDto?> FindContractorByNIPAsync(string nip, CancellationToken cancellationToken = default)
     {
         try
         {
-            var url = $"{_options.ApiUrl}/clients.json?q[clean_nip_eq]={nip}";
-            var response = await _httpClient.GetAsync(url, cancellationToken);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                var contractorList = JsonSerializer.Deserialize<ContractorListResponseDto>(responseContent);
-
-                return contractorList?.Entities?.FirstOrDefault();
-            }
-
-            return null;
+            return await _client.FindContractorByNIPAsync(nip, cancellationToken);
         }
         catch
         {
@@ -53,12 +34,7 @@ public class ContractorService
         try
         {
             var contractorDto = contractor.ToContractorDto();
-
-            var json = JsonSerializer.Serialize(contractorDto);
-            var url = $"{_options.ApiUrl}/clients.json";
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            var response = await _client.CreateContractorAsync(contractorDto, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -84,12 +60,7 @@ public class ContractorService
         try
         {
             var contractorDto = contractor.ToContractorDto();
-
-            var json = JsonSerializer.Serialize(contractorDto);
-            var url = $"{_options.ApiUrl}/clients/{contractorId}.json";
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(url, content, cancellationToken);
+            var response = await _client.UpdateContractorAsync(contractorId, contractorDto, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -109,6 +80,4 @@ public class ContractorService
             return false;
         }
     }
-
-
 }

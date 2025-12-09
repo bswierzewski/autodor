@@ -50,19 +50,19 @@ public class InvoicingModule : IModule
             .Build();
 
         // Register HttpClient for InFakt
-        services.AddHttpClient<Services.InFakt.InvoiceService>();
-        services.AddHttpClient<Services.InFakt.ContractorService>();
+        services.AddHttpClient<Services.InFakt.InFaktClient>();
 
         // Register invoice services
         services.AddScoped<IInvoiceServiceFactory, InvoiceServiceFactory>();
 
-        // Register iFirma service
+        // Register iFirma services
+        services.AddScoped<Services.IFirma.IFirmaClient>();
         services.AddScoped<Services.IFirma.InvoiceService>();
 
         // Register inFakt services
-        services.AddScoped<Services.InFakt.InvoiceService>();
+        services.AddScoped<Services.InFakt.InFaktClient>();
         services.AddScoped<Services.InFakt.ContractorService>();
-        services.AddScoped<Services.InFakt.InfaktInvoicePreProcessor>();
+        services.AddScoped<Services.InFakt.InvoiceService>();
     }
 
     /// <summary>

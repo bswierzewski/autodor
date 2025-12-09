@@ -26,16 +26,4 @@ public class InvoiceServiceFactory : IInvoiceServiceFactory
             _ => _serviceProvider.GetRequiredService<InFakt.InvoiceService>() // Default to inFakt
         };
     }
-
-    public IInvoicePreProcessor? GetInvoicePreProcessor()
-    {
-        var invoiceProvider = _configuration.GetValue<string>("InvoiceProvider") ?? "inFakt";
-
-        return invoiceProvider.ToLower() switch
-        {
-            "infakt" => _serviceProvider.GetRequiredService<InFakt.InfaktInvoicePreProcessor>(),
-            "ifirma" => null, // IFirma doesn't need pre-processing
-            _ => _serviceProvider.GetRequiredService<InFakt.InfaktInvoicePreProcessor>() // Default to inFakt
-        };
-    }
 }

@@ -114,10 +114,6 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
             Contractor = invoiceContractor,
             Items = invoiceItems.AsReadOnly()
         };
-        
-        // Execute pre-processing if required by the current provider
-        if (_invoiceServiceFactory.GetInvoicePreProcessor() is IInvoicePreProcessor preProcessor)
-            await preProcessor.PrepareInvoiceAsync(invoice, cancellationToken);        
 
         var invoiceService = _invoiceServiceFactory.GetInvoiceService();
         var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);

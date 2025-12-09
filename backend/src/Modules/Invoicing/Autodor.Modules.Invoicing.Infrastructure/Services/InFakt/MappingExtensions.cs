@@ -1,5 +1,5 @@
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.DTOs;
+using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Models;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt;
 
