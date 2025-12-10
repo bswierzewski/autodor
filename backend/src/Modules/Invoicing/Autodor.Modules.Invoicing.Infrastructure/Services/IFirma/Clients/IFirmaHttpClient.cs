@@ -1,6 +1,4 @@
 using System.Net.Http.Json;
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 using Requests = Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
 using Responses = Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 
