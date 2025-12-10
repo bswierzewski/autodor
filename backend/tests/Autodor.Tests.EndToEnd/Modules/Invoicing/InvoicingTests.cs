@@ -1,6 +1,7 @@
 using System.Net;
 using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
+using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Shared.Contracts.Contractors;
 using Autodor.Shared.Contracts.Contractors.Dtos;
@@ -8,6 +9,7 @@ using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Shared.Infrastructure.Tests.Core;
 using Shared.Infrastructure.Tests.Extensions.Http;
@@ -26,7 +28,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
 
     // Mocks
     private readonly Mock<IInvoiceService> _mockInvoiceService = new();
-    private readonly Mock<IInvoiceServiceFactory> _mockInvoiceServiceFactory = new();
     private readonly Mock<IContractorsAPI> _mockContractorsApi = new();
     private readonly Mock<IOrdersAPI> _mockOrdersApi = new();
     private readonly Mock<IProductsAPI> _mockProductsApi = new();
@@ -50,8 +51,10 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
             .WithContainer(shared.Container)
             .WithServices((services, _) =>
             {
-                // Replace all dependencies with mocks
-                services.ReplaceInstance(_mockInvoiceServiceFactory.Object);
+                // Replace all invoice service implementations with mock for all providers
+                foreach (InvoiceProvider provider in Enum.GetValues<InvoiceProvider>())                
+                    services.AddKeyedScoped(provider, (sp, key) => _mockInvoiceService.Object);                
+
                 services.ReplaceInstance(_mockContractorsApi.Object);
                 services.ReplaceInstance(_mockOrdersApi.Object);
                 services.ReplaceInstance(_mockProductsApi.Object);
@@ -110,10 +113,6 @@ public class InvoicingTests(AutodorSharedFixture shared) : IAsyncLifetime
 
     private void SetupDefaultMockBehaviors()
     {
-        // Setup factory to return mock service
-        _mockInvoiceServiceFactory.Setup(x => x.GetInvoiceService())
-            .Returns(_mockInvoiceService.Object);
-
         // Default successful contractor lookup
         _mockContractorsApi.Setup(x => x.GetContractorByIdAsync(_defaultContractorId, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(_defaultContractor);

@@ -43,26 +43,16 @@ public class InvoicingModule : IModule
         services.AddModule(configuration, Name)
             .AddOptions((svc, config) =>
             {
+                svc.ConfigureOptions<InvoicingOptions>(config);
                 svc.ConfigureOptions<InFaktOptions>(config);
                 svc.ConfigureOptions<IFirmaOptions>(config);
             })
             .AddCQRS(typeof(ApplicationAssembly).Assembly, typeof(InfrastructureAssembly).Assembly)
             .Build();
 
-        // Register HttpClient for InFakt
-        services.AddHttpClient<Services.InFakt.InFaktClient>();
-
-        // Register invoice services
-        services.AddScoped<IInvoiceServiceFactory, InvoiceServiceFactory>();
-
-        // Register iFirma services
-        services.AddScoped<Services.IFirma.IFirmaClient>();
-        services.AddScoped<Services.IFirma.InvoiceService>();
-
-        // Register inFakt services
-        services.AddScoped<Services.InFakt.InFaktClient>();
-        services.AddScoped<Services.InFakt.ContractorService>();
-        services.AddScoped<Services.InFakt.InvoiceService>();
+        // Register invoice service implementations with keyed services
+        services.AddKeyedScoped<IInvoiceService, Services.InFakt.Services.InFaktInvoiceService>(InvoiceProvider.InFakt);
+        services.AddKeyedScoped<IInvoiceService, Services.IFirma.Services.IFirmaInvoiceService>(InvoiceProvider.IFirma);
     }
 
     /// <summary>

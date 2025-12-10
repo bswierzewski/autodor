@@ -2,14 +2,6 @@ using Autodor.Modules.Invoicing.Domain.ValueObjects;
 
 namespace Autodor.Modules.Invoicing.Application.Abstractions;
 
-public interface IInvoiceServiceFactory
-{
-    /// <summary>
-    /// Gets the appropriate invoice service implementation
-    /// </summary>
-    IInvoiceService GetInvoiceService();
-}
-
 public interface IInvoiceService
 {
     /// <summary>

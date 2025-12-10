@@ -2,9 +2,12 @@ using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Contractors;
 using Autodor.Modules.Invoicing.Application.Abstractions;
+using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
@@ -13,27 +16,14 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 /// Handles the creation of multiple invoices by processing orders within a date range,
 /// excluding specified orders, and grouping by contractor for batch invoice generation.
 /// </summary>
-public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoicesCommand, Result<IEnumerable<string>>>
+public class CreateBulkInvoicesCommandHandler(
+    ILogger<CreateBulkInvoicesCommandHandler> logger,
+    IProductsAPI productsApi,
+    IOrdersAPI ordersApi,
+    IContractorsAPI contractorsApi,
+    IServiceProvider serviceProvider,
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Result<IEnumerable<string>>>
 {
-    private readonly ILogger<CreateBulkInvoicesCommandHandler> _logger;
-    private readonly IProductsAPI _productsApi;
-    private readonly IOrdersAPI _ordersApi;
-    private readonly IContractorsAPI _contractorsApi;
-    private readonly IInvoiceServiceFactory _invoiceServiceFactory;
-
-    public CreateBulkInvoicesCommandHandler(
-        ILogger<CreateBulkInvoicesCommandHandler> logger,
-        IProductsAPI productsApi,
-        IOrdersAPI ordersApi,
-        IContractorsAPI contractorsApi,
-        IInvoiceServiceFactory invoiceServiceFactory)
-    {
-        _logger = logger;
-        _productsApi = productsApi;
-        _ordersApi = ordersApi;
-        _contractorsApi = contractorsApi;
-        _invoiceServiceFactory = invoiceServiceFactory;
-    }
 
     /// <summary>
     /// Creates multiple invoices by processing all orders in date range, excluding specified orders,
@@ -44,14 +34,14 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
     /// <returns>Collection of unique identifiers for all created invoices</returns>
     public async Task<Result<IEnumerable<string>>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
+        logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
 
         // Retrieve all orders within the specified date range
-        var orders = await _ordersApi.GetOrdersByDateRangeAsync(request.DateFrom, request.DateTo, cancellationToken);
+        var orders = await ordersApi.GetOrdersByDateRangeAsync(request.DateFrom, request.DateTo, cancellationToken);
 
         // Get excluded order IDs to filter them out
-        var excludedOrderIds = await _ordersApi.GetExcludedOrderIdsAsync(cancellationToken);
+        var excludedOrderIds = await ordersApi.GetExcludedOrderIdsAsync(cancellationToken);
         var excludedSet = excludedOrderIds.ToHashSet();
 
         // Filter out excluded orders
@@ -59,12 +49,12 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
 
         if (validOrders.Count == 0)
         {
-            _logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
+            logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
                 request.DateFrom, request.DateTo);
             return Result<IEnumerable<string>>.Failure("NO_VALID_ORDERS", "No valid orders found for bulk invoice creation");
         }
 
-        _logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",
+        logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",
             validOrders.Count, excludedOrderIds.Count());
 
         // Extract unique product numbers from all order items for bulk product lookup
@@ -74,7 +64,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             .Distinct()
             .ToList();
 
-        var products = await _productsApi.GetProductsByNumbersAsync(productNumbers, cancellationToken);
+        var products = await productsApi.GetProductsByNumbersAsync(productNumbers, cancellationToken);
         var productDict = products.ToDictionary(p => p.Number, p => p);
 
         // Get unique contractor NIPs from orders for bulk contractor lookup
@@ -83,7 +73,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             .Distinct()
             .ToList();
 
-        var contractors = await _contractorsApi.GetContractorsByNIPsAsync(contractorNIPs, cancellationToken);
+        var contractors = await contractorsApi.GetContractorsByNIPsAsync(contractorNIPs, cancellationToken);
         var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);
 
         // Group orders by contractor NIP for individual invoice creation
@@ -91,7 +81,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             .GroupBy(o => o.Contractor.Number) // Group by contractor number (which is NIP)
             .ToList();
 
-        _logger.LogInformation("Grouped orders into {ContractorCount} contractors", ordersByContractor.Count);
+        logger.LogInformation("Grouped orders into {ContractorCount} contractors", ordersByContractor.Count);
 
         var invoiceNumbers = new List<string>();
 
@@ -100,7 +90,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
             var contractorOrders = contractorGroup.ToList();
             var contractorNIP = contractorGroup.Key; // This is actually the NIP
 
-            _logger.LogInformation("Creating invoice for contractor NIP {ContractorNIP} with {OrderCount} orders",
+            logger.LogInformation("Creating invoice for contractor NIP {ContractorNIP} with {OrderCount} orders",
                 contractorNIP, contractorOrders.Count);
 
             try
@@ -108,7 +98,7 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
                 // Get contractor details from the pre-loaded dictionary
                 if (!contractorDict.TryGetValue(contractorNIP, out var contractorDto))
                 {
-                    _logger.LogWarning("Contractor with NIP {ContractorNIP} not found, skipping orders", contractorNIP);
+                    logger.LogWarning("Contractor with NIP {ContractorNIP} not found, skipping orders", contractorNIP);
                     continue;
                 }
 
@@ -152,24 +142,24 @@ public class CreateBulkInvoicesCommandHandler : IRequestHandler<CreateBulkInvoic
                     Items = invoiceItems.AsReadOnly()
                 };
 
-                var invoiceService = _invoiceServiceFactory.GetInvoiceService();
+                var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
                 var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
                 invoiceNumbers.Add(invoiceNumber);
 
-                _logger.LogInformation("Successfully created invoice {InvoiceNumber} for contractor {ContractorNIP}",
+                logger.LogInformation("Successfully created invoice {InvoiceNumber} for contractor {ContractorNIP}",
                     invoiceNumber, contractorNIP);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to create invoice for contractor {ContractorNIP}",
+                logger.LogError(ex, "Failed to create invoice for contractor {ContractorNIP}",
                     contractorNIP);
                 return Result<IEnumerable<string>>.Failure("INVOICE_CREATION_FAILED",
                     $"Failed to create invoice for contractor {contractorNIP}: {ex.Message}");
             }
         }
 
-        _logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceNumbers.Count);
+        logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceNumbers.Count);
         return Result<IEnumerable<string>>.Success(invoiceNumbers);
     }
 }

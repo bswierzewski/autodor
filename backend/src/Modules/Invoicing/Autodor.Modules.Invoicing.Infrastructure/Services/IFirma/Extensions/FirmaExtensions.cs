@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Autodor.Modules.Invoicing.Infrastructure.Extensions;
+namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Extensions;
 
 public static class FirmaExtensions
 {
@@ -10,7 +10,7 @@ public static class FirmaExtensions
         HMACSHA1 myhmacsha1 = new HMACSHA1(StringToByteArray(key));
         byte[] byteArray = Encoding.UTF8.GetBytes(input);
         MemoryStream stream = new MemoryStream(byteArray);
-        return myhmacsha1.ComputeHash(stream).Aggregate("", (s, e) => s + String.Format("{0:x2}", e), s => s);
+        return myhmacsha1.ComputeHash(stream).Aggregate("", (s, e) => s + string.Format("{0:x2}", e), s => s);
     }
 
     private static byte[] StringToByteArray(string hex)

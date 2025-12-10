@@ -1,10 +1,13 @@
-using Autodor.Shared.Contracts.Products;
-using Autodor.Shared.Contracts.Orders;
-using Autodor.Shared.Contracts.Contractors;
 using Autodor.Modules.Invoicing.Application.Abstractions;
+using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
+using Autodor.Shared.Contracts.Contractors;
+using Autodor.Shared.Contracts.Orders;
+using Autodor.Shared.Contracts.Products;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
@@ -13,27 +16,14 @@ namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 /// Handles the creation of invoices by aggregating order data, enriching with product details,
 /// and sending to external invoicing systems.
 /// </summary>
-public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand, Result<string>>
+public class CreateInvoiceCommandHandler(
+    ILogger<CreateInvoiceCommandHandler> logger,
+    IProductsAPI productsApi,
+    IOrdersAPI ordersApi,
+    IContractorsAPI contractorsApi,
+    IServiceProvider serviceProvider,
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Result<string>>
 {
-    private readonly ILogger<CreateInvoiceCommandHandler> _logger;
-    private readonly IProductsAPI _productsApi;
-    private readonly IOrdersAPI _ordersApi;
-    private readonly IContractorsAPI _contractorsApi;
-    private readonly IInvoiceServiceFactory _invoiceServiceFactory;
-
-    public CreateInvoiceCommandHandler(
-        ILogger<CreateInvoiceCommandHandler> logger,
-        IProductsAPI productsApi,
-        IOrdersAPI ordersApi,
-        IContractorsAPI contractorsApi,
-        IInvoiceServiceFactory invoiceServiceFactory)
-    {
-        _logger = logger;
-        _productsApi = productsApi;
-        _ordersApi = ordersApi;
-        _contractorsApi = contractorsApi;
-        _invoiceServiceFactory = invoiceServiceFactory;
-    }
 
     /// <summary>
     /// Creates an invoice by retrieving orders, enriching them with product data, and submitting to external invoicing system.
@@ -43,18 +33,18 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
     /// <returns>Unique identifier of the created invoice from the external system</returns>
     public async Task<Result<string>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
+        logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
             request.ContractorId, request.OrderIds.Count(), request.Dates.Count());
 
         // Retrieve all orders from specified dates
-        var orders = await _ordersApi.GetOrdersByDatesAsync(request.Dates, cancellationToken);
+        var orders = await ordersApi.GetOrdersByDatesAsync(request.Dates, cancellationToken);
 
         // Filter orders to include only those matching the provided order IDs
         var filteredOrders = orders.Where(o => request.OrderIds.Contains(o.Id)).ToList();
 
         if (filteredOrders.Count == 0)
         {
-            _logger.LogWarning("No orders found for the specified order IDs");
+            logger.LogWarning("No orders found for the specified order IDs");
             return Result<string>.Failure("NO_ORDERS_FOUND", "No orders found for the specified order IDs");
         }
 
@@ -65,14 +55,14 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
             .Distinct()
             .ToList();
 
-        var products = await _productsApi.GetProductsByNumbersAsync(productNumbers, cancellationToken);
+        var products = await productsApi.GetProductsByNumbersAsync(productNumbers, cancellationToken);
         var productDict = products.ToDictionary(p => p.Number, p => p);
 
         // Get contractor details for invoice generation
-        var contractor = await _contractorsApi.GetContractorByIdAsync(request.ContractorId, cancellationToken);
+        var contractor = await contractorsApi.GetContractorByIdAsync(request.ContractorId, cancellationToken);
         if (contractor == null)
         {
-            _logger.LogError("Contractor with ID {ContractorId} not found", request.ContractorId);
+            logger.LogError("Contractor with ID {ContractorId} not found", request.ContractorId);
             return Result<string>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.ContractorId} not found");
         }
 
@@ -115,10 +105,10 @@ public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand,
             Items = invoiceItems.AsReadOnly()
         };
 
-        var invoiceService = _invoiceServiceFactory.GetInvoiceService();
+        var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
         var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-        _logger.LogInformation("Successfully created invoice with number {InvoiceNumber}", invoiceNumber);
+        logger.LogInformation("Successfully created invoice with number {InvoiceNumber}", invoiceNumber);
 
         return Result<string>.Success(invoiceNumber);
     }
