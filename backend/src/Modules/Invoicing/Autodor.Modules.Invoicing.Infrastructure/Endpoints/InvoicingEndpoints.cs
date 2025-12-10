@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Endpoints;
 
@@ -109,7 +108,7 @@ public static class InvoicingEndpoints
         // Return 200 OK with invoice numbers collection or 400 Bad Request on validation failure
         // Enables clients to verify successful processing and handle any partial failures
         return result.IsSuccess
-            ? Results.Ok(new { InvoiceNumbers = result.Value, Count = result.Value.Count() })
+            ? Results.Ok(new { InvoiceNumbers = result.Value, Count = result.Value?.Count() ?? 0 })
             : Results.BadRequest(result.Errors);
     }
 }

@@ -1,10 +1,113 @@
-namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients
+using System.Net.Http.Json;
+using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
+using Requests = Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
+using Responses = Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Responses;
+
+namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients;
+
+/// <summary>
+/// HTTP client for InFakt API.
+/// </summary>
+public class InFaktHttpClient(HttpClient httpClient)
 {
+    private const string CreateInvoiceEndpoint = "/invoices.json";
+    private const string CreateClientEndpoint = "/clients.json";
+    private const string GetClientEndpoint = "/clients/{0}.json";
+    private const string ListClientsEndpoint = "/clients.json";
+
     /// <summary>
-    /// HTTP client for InFakt API
+    /// Creates an invoice in InFakt.
     /// </summary>
-    /// <param name="httpClient"></param>
-    public class InFaktHttpClient(HttpClient httpClient)
+    /// <param name="invoice">Invoice data to be created.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Response from InFakt API containing invoice details if successful.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when invoice is null.</exception>
+    /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+    public async Task<Responses.Invoice> CreateInvoiceAsync(
+        Requests.Invoice invoice,
+        CancellationToken cancellationToken = default)
     {
+        if (invoice == null)
+            throw new ArgumentNullException(nameof(invoice));
+
+        using var content = JsonContent.Create(invoice);
+        using var response = await httpClient.PostAsync(CreateInvoiceEndpoint, content, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var invoiceResponse = await response.Content.ReadFromJsonAsync<Responses.Invoice>(cancellationToken: cancellationToken);
+        return invoiceResponse ?? new Responses.Invoice { Id = null, CreatedAt = null };
+    }
+
+    /// <summary>
+    /// Creates a client in InFakt.
+    /// </summary>
+    /// <param name="client">Client data to be created.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Response from InFakt API containing client details if successful.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when client is null.</exception>
+    /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+    public async Task<Requests.Client> CreateClientAsync(
+        Requests.Client client,
+        CancellationToken cancellationToken = default)
+    {
+        if (client == null)
+            throw new ArgumentNullException(nameof(client));
+
+        using var content = JsonContent.Create(client);
+        using var response = await httpClient.PostAsync(CreateClientEndpoint, content, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var clientResponse = await response.Content.ReadFromJsonAsync<Requests.Client>(cancellationToken: cancellationToken);
+        return clientResponse ?? new Requests.Client { Country = client.Country };
+    }
+
+    /// <summary>
+    /// Retrieves a client from InFakt by ID.
+    /// </summary>
+    /// <param name="clientId">The ID of the client to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Response from InFakt API containing client details if found.</returns>
+    /// <exception cref="ArgumentException">Thrown when clientId is invalid.</exception>
+    /// <exception cref="HttpRequestException">Thrown when the HTTP request fails or client is not found (404).</exception>
+    public async Task<Requests.Client> GetClientAsync(
+        int clientId,
+        CancellationToken cancellationToken = default)
+    {
+        if (clientId <= 0)
+            throw new ArgumentException("Client ID must be greater than 0.", nameof(clientId));
+
+        var endpoint = string.Format(GetClientEndpoint, clientId);
+        using var response = await httpClient.GetAsync(endpoint, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var clientResponse = await response.Content.ReadFromJsonAsync<Requests.Client>(cancellationToken: cancellationToken);
+        return clientResponse ?? throw new InvalidOperationException("Empty response from InFakt API when retrieving client.");
+    }
+
+    /// <summary>
+    /// Retrieves a list of clients from InFakt with optional filtering.
+    /// </summary>
+    /// <param name="searchQuery">Search query with filter parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Response from InFakt API containing list of clients matching the filter.</returns>
+    /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+    public async Task<Responses.ClientList> GetClientsAsync(
+        ClientSearchQuery searchQuery,
+        CancellationToken cancellationToken = default)
+    {
+        using var content = JsonContent.Create(searchQuery);
+        using var request = new HttpRequestMessage(HttpMethod.Get, ListClientsEndpoint)
+        {
+            Content = content
+        };
+
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var clientListResponse = await response.Content.ReadFromJsonAsync<Responses.ClientList>(cancellationToken: cancellationToken);
+        return clientListResponse ?? new Responses.ClientList { Entities = new List<Requests.Client>() };
     }
 }
