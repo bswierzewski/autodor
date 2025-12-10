@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Shared Version Variables -->
-    <SharedVersion>1.0.0-build.47</SharedVersion>
+    <SharedVersion>1.0.0-build.49</SharedVersion>
     <MicrosoftExtensionsVersion>9.0.10</MicrosoftExtensionsVersion>
     <EntityFrameworkVersion>9.0.10</EntityFrameworkVersion>
     <SystemServiceModelVersion>6.0.0</SystemServiceModelVersion>

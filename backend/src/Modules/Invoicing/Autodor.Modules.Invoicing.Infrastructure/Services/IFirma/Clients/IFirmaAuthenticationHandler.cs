@@ -1,105 +1,86 @@
+using System.Collections.Frozen;
 using System.Security.Cryptography;
 using System.Text;
 using Autodor.Modules.Invoicing.Application.Options;
 using Microsoft.Extensions.Options;
 
-namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients
+namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
+
+/// <summary>
+/// A DelegatingHandler that automatically signs HTTP requests with iFirma specific HMAC-SHA1 headers.
+/// It uses a routing map to determine which API Key to use based on the request URL.
+/// </summary>
+public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : DelegatingHandler
 {
+    private readonly IFirmaOptions _config = options.Value;
+
     /// <summary>
-    /// DelegatingHandler that adds HMAC-SHA1 authentication to IFirma API requests.
-    /// Uses modern .NET approaches for hex conversion and pattern matching.
-    /// Automatically determines API key type based on URL route mapping.
+    /// High-performance read-only dictionary for routing.
+    /// Maps URL suffixes to specific configuration keys.
     /// </summary>
-    public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : DelegatingHandler
+    private static readonly FrozenDictionary<string, Func<IFirmaOptions, string?>> EndpointMap =
+        new Dictionary<string, Func<IFirmaOptions, string?>>
+        {
+            // Invoices (Faktura)
+            { "fakturakraj.json", opt => opt.Keys.Faktura },
+            { "fakturakraj/pobierz.json", opt => opt.Keys.Faktura },
+
+            // Contractors (Abonent)
+            { "abonent.json", opt => opt.Keys.Abonent },
+            { "abonent/szukaj.json", opt => opt.Keys.Abonent },
+
+            // Bills (Rachunek)
+            { "rachunek.json", opt => opt.Keys.Rachunek },
+
+            // CRM/Agenda
+            { "agenda.json", opt => opt.Keys.Agenda }
+        }.ToFrozenDictionary();
+
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
-        private readonly IFirmaOptions _options = options.Value;
+        // 1. Determine which key to use based on the Request URI
+        // We trim the local path to match the keys in our dictionary (e.g., "fakturakraj.json")
+        string path = request.RequestUri?.LocalPath.TrimStart('/').ToLower() ?? string.Empty;
 
-        /// <summary>
-        /// Route-to-API-key mapping. First matching route wins.
-        /// Routes are checked with StartsWith for flexibility.
-        /// </summary>
-        private static readonly Dictionary<string, IFirmaApiKeyType> RouteMapping = new()
+        // Find a matching endpoint in our map (checking if the URL ends with the defined key)
+        var keySelector = EndpointMap.FirstOrDefault(x => path.EndsWith(x.Key, StringComparison.OrdinalIgnoreCase));
+
+        // If no matching endpoint is found, proceed without signing
+        if (keySelector.Value is null)
         {
-            { "/iapi/faktura", IFirmaApiKeyType.Faktura },
-            { "/iapi/kontrahenci", IFirmaApiKeyType.Faktura },
-            { "/iapi/abonent", IFirmaApiKeyType.Abonent },
-            { "/iapi/rachunek", IFirmaApiKeyType.Rachunek },
-            { "/iapi/wydatek", IFirmaApiKeyType.Wydatek }
-        };
-
-        protected override async Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            // Determine API key type from URL path
-            var path = request.RequestUri?.AbsolutePath ?? string.Empty;
-            var keyType = GetApiKeyTypeFromRoute(path);
-
-            if (keyType == null)
-            {
-                // No matching route - proceed without authentication header
-                return await base.SendAsync(request, cancellationToken);
-            }
-
-            var (keyName, keySecret) = GetKeyConfig(keyType.Value);
-
-            // Read request content for HMAC calculation
-            string content = request.Content != null
-                ? await request.Content.ReadAsStringAsync(cancellationToken)
-                : string.Empty;
-
-            // Build HMAC signature: {url}{user}{keyName}{content}
-            var uri = request.RequestUri?.AbsoluteUri.Split('?')[0] ?? string.Empty;
-            string message = $"{uri}{_options.User}{keyName}{content}";
-            string hash = ComputeHmac(message, keySecret);
-
-            // Set IFirma custom Authentication header (not standard Authorization)
-            request.Headers.TryAddWithoutValidation(
-                "Authentication",
-                $"IAPIS user={_options.User}, hmac-sha1={hash}");
-
             return await base.SendAsync(request, cancellationToken);
         }
 
-        /// <summary>
-        /// Determines API key type from request path using route mapping.
-        /// Returns first matching route (checked with StartsWith).
-        /// </summary>
-        private static IFirmaApiKeyType? GetApiKeyTypeFromRoute(string path)
-        {
-            foreach (var (route, keyType) in RouteMapping)
-            {
-                if (path.StartsWith(route, StringComparison.OrdinalIgnoreCase))
-                    return keyType;
-            }
+        // 2. Retrieve the specific Hex Key from configuration
+        string? keyHex = keySelector.Value(_config);
 
-            return null;
+        if (string.IsNullOrEmpty(keyHex))
+        {
+            throw new InvalidOperationException($"API Key is missing in configuration for endpoint: {path}");
         }
 
-        /// <summary>
-        /// Maps API key type to its configuration (name and secret).
-        /// Uses pattern matching for clean, compile-time checked mapping.
-        /// </summary>
-        private (string Name, string Secret) GetKeyConfig(IFirmaApiKeyType type) => type switch
+        // 3. Prepare the request content for hashing
+        string requestContent = string.Empty;
+        if (request.Content != null)
         {
-            IFirmaApiKeyType.Faktura => ("faktura", _options.Faktura),
-            IFirmaApiKeyType.Abonent => ("abonent", _options.Abonent),
-            IFirmaApiKeyType.Rachunek => ("rachunek", _options.Rachunek),
-            IFirmaApiKeyType.Wydatek => ("wydatek", _options.Wydatek),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown API key type")
-        };
-
-        /// <summary>
-        /// Computes HMAC-SHA1 hash using modern .NET hex conversion methods.
-        /// Uses Convert.FromHexString (NET 5+) instead of manual byte array parsing.
-        /// </summary>
-        private static string ComputeHmac(string message, string hexKey)
-        {
-            byte[] keyBytes = Convert.FromHexString(hexKey);
-            using var hmac = new HMACSHA1(keyBytes);
-            byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(message));
-
-            return Convert.ToHexString(hashBytes).ToLowerInvariant();
+            requestContent = await request.Content.ReadAsStringAsync(cancellationToken);
         }
+
+        // 4. Compute HMAC-SHA1 Signature
+        byte[] keyBytes = Convert.FromHexString(keyHex);
+        using var hmac = new HMACSHA1(keyBytes);
+        byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(requestContent));
+
+        string hash = Convert.ToHexString(hashBytes).ToLowerInvariant();
+
+        // 5. Add the custom Authentication header
+        request.Headers.TryAddWithoutValidation(
+            "Authentication",
+            $"IAPIS user={_config.User}, hmac-sha1={hash}");
+
+        // 6. Send the request down the pipeline
+        return await base.SendAsync(request, cancellationToken);
     }
 }
