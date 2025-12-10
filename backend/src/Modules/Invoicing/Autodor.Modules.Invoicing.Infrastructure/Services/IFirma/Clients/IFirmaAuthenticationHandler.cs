@@ -1,86 +1,70 @@
-using System.Collections.Frozen;
-using System.Security.Cryptography;
-using System.Text;
 using Autodor.Modules.Invoicing.Application.Options;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 
 /// <summary>
 /// A DelegatingHandler that automatically signs HTTP requests with iFirma specific HMAC-SHA1 headers.
-/// It uses a routing map to determine which API Key to use based on the request URL.
+/// It uses a prefix-based routing map to determine which API Key to use based on the request URL path.
+/// Routes are matched in the order they are defined.
 /// </summary>
 public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : DelegatingHandler
 {
     private readonly IFirmaOptions _config = options.Value;
 
     /// <summary>
-    /// High-performance read-only dictionary for routing.
-    /// Maps URL suffixes to specific configuration keys.
+    /// Routes for iFirma API endpoints.
+    /// Each route maps a URL prefix to a configuration key selector.
+    /// Routes are checked in order, so more specific routes should be listed first.
     /// </summary>
-    private static readonly FrozenDictionary<string, Func<IFirmaOptions, string?>> EndpointMap =
-        new Dictionary<string, Func<IFirmaOptions, string?>>
-        {
+    private static readonly IReadOnlyList<(string prefix, Func<IFirmaOptions, string?> keySelector)> EndpointRoutes =
+        [
             // Invoices (Faktura)
-            { "fakturakraj.json", opt => opt.Keys.Faktura },
-            { "fakturakraj/pobierz.json", opt => opt.Keys.Faktura },
+            ("/iapi/fakturakraj", opt => opt.Keys.Faktura),
 
-            // Contractors (Abonent)
-            { "abonent.json", opt => opt.Keys.Abonent },
-            { "abonent/szukaj.json", opt => opt.Keys.Abonent },
+            //// Contractors (Abonent)
+            //("/iapi/abonent", opt => opt.Keys.Abonent),
 
-            // Bills (Rachunek)
-            { "rachunek.json", opt => opt.Keys.Rachunek },
-
-            // CRM/Agenda
-            { "agenda.json", opt => opt.Keys.Agenda }
-        }.ToFrozenDictionary();
+            //// Bills (Rachunek)
+            //("/iapi/rachunek", opt => opt.Keys.Rachunek),
+        ];
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        // 1. Determine which key to use based on the Request URI
-        // We trim the local path to match the keys in our dictionary (e.g., "fakturakraj.json")
-        string path = request.RequestUri?.LocalPath.TrimStart('/').ToLower() ?? string.Empty;
+        // 1. Extract and normalize the request path
+        string path = request.RequestUri?.LocalPath.ToLower() ?? string.Empty;
 
-        // Find a matching endpoint in our map (checking if the URL ends with the defined key)
-        var keySelector = EndpointMap.FirstOrDefault(x => path.EndsWith(x.Key, StringComparison.OrdinalIgnoreCase));
+        // 2. Find matching route based on URL prefix
+        // Routes are checked in order, so more specific routes should be listed first
+        var route = EndpointRoutes.FirstOrDefault(r => path.StartsWith(r.prefix, StringComparison.OrdinalIgnoreCase));
 
-        // If no matching endpoint is found, proceed without signing
-        if (keySelector.Value is null)
-        {
+        // If no matching route is found, proceed without signing
+        if (route == default)
             return await base.SendAsync(request, cancellationToken);
-        }
 
-        // 2. Retrieve the specific Hex Key from configuration
-        string? keyHex = keySelector.Value(_config);
+        // 3. Retrieve the specific Hex Key from configuration
+        string? keyHex = route.keySelector(_config);
 
         if (string.IsNullOrEmpty(keyHex))
-        {
-            throw new InvalidOperationException($"API Key is missing in configuration for endpoint: {path}");
-        }
+            throw new InvalidOperationException($"API Key is missing in configuration for endpoint: {route.prefix}");
 
-        // 3. Prepare the request content for hashing
+        // 4. Prepare the request content for hashing
         string requestContent = string.Empty;
         if (request.Content != null)
-        {
             requestContent = await request.Content.ReadAsStringAsync(cancellationToken);
-        }
 
-        // 4. Compute HMAC-SHA1 Signature
-        byte[] keyBytes = Convert.FromHexString(keyHex);
-        using var hmac = new HMACSHA1(keyBytes);
-        byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(requestContent));
+        // 5. Compute HMAC-SHA1 Signature using iFirma specification
+        // Message format: path + userName + keyName + requestContent
+        string message = $"{path}{_config.User}{route.prefix}{requestContent}";
+        string hash = HmacSha1.Compute(keyHex, message);
 
-        string hash = Convert.ToHexString(hashBytes).ToLowerInvariant();
+        // 6. Add the custom Authentication header
+        request.Headers.TryAddWithoutValidation("Authentication", $"IAPIS user={_config.User}, hmac-sha1={hash}");
 
-        // 5. Add the custom Authentication header
-        request.Headers.TryAddWithoutValidation(
-            "Authentication",
-            $"IAPIS user={_config.User}, hmac-sha1={hash}");
-
-        // 6. Send the request down the pipeline
+        // 7. Send the request down the pipeline
         return await base.SendAsync(request, cancellationToken);
     }
 }

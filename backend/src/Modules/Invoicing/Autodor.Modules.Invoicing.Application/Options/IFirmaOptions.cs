@@ -26,5 +26,5 @@ public class IFirmaKeys
     public string? Faktura { get; set; }
     public string? Abonent { get; set; }
     public string? Rachunek { get; set; }
-    public string? Agenda { get; set; }
+    public string? Wydatek { get; set; }
 }
