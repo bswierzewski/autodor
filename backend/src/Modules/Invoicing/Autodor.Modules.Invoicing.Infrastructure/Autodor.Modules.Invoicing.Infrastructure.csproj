@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup Label="Local Module References">
-    <ProjectReference Include="..\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
-  </ItemGroup>
+	<ItemGroup Label="Local Module References">
+		<ProjectReference Include="..\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Label="NuGet Package References">
-    <PackageReference Include="Shared.Abstractions" />
-    <PackageReference Include="Shared.Infrastructure" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="Polly" />
-  </ItemGroup>
+	<ItemGroup Label="NuGet Package References">
+		<PackageReference Include="Shared.Abstractions" />
+		<PackageReference Include="Shared.Infrastructure" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" />
+		<PackageReference Include="Polly" />
+	</ItemGroup>
 
 </Project>

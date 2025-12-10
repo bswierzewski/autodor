@@ -1,3 +1,10 @@
+using Autodor.Modules.Invoicing.Application;
+using Autodor.Modules.Invoicing.Application.Abstractions;
+using Autodor.Modules.Invoicing.Application.Options;
+using Autodor.Modules.Invoicing.Domain;
+using Autodor.Modules.Invoicing.Infrastructure.Endpoints;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Extensions;
+using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -6,12 +13,6 @@ using Shared.Abstractions.Authorization;
 using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Modules;
-using Autodor.Modules.Invoicing.Application;
-using Autodor.Modules.Invoicing.Application.Abstractions;
-using Autodor.Modules.Invoicing.Application.Options;
-using Autodor.Modules.Invoicing.Domain;
-using Autodor.Modules.Invoicing.Infrastructure.Endpoints;
-using Autodor.Modules.Invoicing.Infrastructure.Services;
 
 namespace Autodor.Modules.Invoicing.Infrastructure;
 
@@ -49,6 +50,10 @@ public class InvoicingModule : IModule
             })
             .AddCQRS(typeof(ApplicationAssembly).Assembly, typeof(InfrastructureAssembly).Assembly)
             .Build();
+
+        // Register HTTP clients for external invoicing services
+        services.AddIFirmaHttpClient();
+        services.AddInFaktHttpClient();
 
         // Register invoice service implementations with keyed services
         services.AddKeyedScoped<IInvoiceService, Services.InFakt.Services.InFaktInvoiceService>(InvoiceProvider.InFakt);
