@@ -36,7 +36,7 @@ public class InFaktHttpClient(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
 
         var invoiceResponse = await response.Content.ReadFromJsonAsync<Responses.Invoice>(cancellationToken: cancellationToken);
-        return invoiceResponse ?? new Responses.Invoice { Id = null, CreatedAt = null };
+        return invoiceResponse ?? throw new InvalidOperationException("Empty response from InFakt API when creating invoice.");
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class InFaktHttpClient(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
 
         var clientResponse = await response.Content.ReadFromJsonAsync<Requests.Client>(cancellationToken: cancellationToken);
-        return clientResponse ?? new Requests.Client { Country = client.Country };
+        return clientResponse ?? throw new InvalidOperationException("Empty response from InFakt API when creating client.");
     }
 
     /// <summary>
@@ -108,6 +108,6 @@ public class InFaktHttpClient(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
 
         var clientListResponse = await response.Content.ReadFromJsonAsync<Responses.ClientList>(cancellationToken: cancellationToken);
-        return clientListResponse ?? new Responses.ClientList { Entities = new List<Requests.Client>() };
+        return clientListResponse ?? throw new InvalidOperationException("Empty response from InFakt API when listing clients.");
     }
 }

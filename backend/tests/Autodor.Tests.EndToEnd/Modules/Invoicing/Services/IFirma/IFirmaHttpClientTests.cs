@@ -1,5 +1,6 @@
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 using Shared.Infrastructure.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
@@ -72,9 +73,9 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
 
         // Assert
         result.Should().NotBeNull();
-        result.StatusCode.Should().Be(0, "API should return success status");
-        result.InvoiceId.Should().NotBeNull();
-        result.FullInvoiceNumber.Should().NotBeNullOrEmpty();
+        result.Response.Should().NotBeNull();
+        result.Response!.StatusCode.Should().Be(0, "API should return success status");
+        result.Response.Result.Should().NotBeNullOrEmpty("API should return invoice result");
     }
 
     [Fact]
@@ -117,6 +118,7 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
 
         // Assert
         result.Should().NotBeNull();
-        result.StatusCode.Should().NotBe(0, "API should return error status for invalid contractor");
+        result.Response.Should().NotBeNull();
+        result.Response!.StatusCode.Should().NotBe(0, "API should return error status for invalid contractor");
     }
 }

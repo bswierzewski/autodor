@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
-using Requests = Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
-using Responses = Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 
@@ -19,8 +19,8 @@ public class IFirmaHttpClient(HttpClient httpClient)
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Response from iFirma API containing invoice details if successful.</returns>
     /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
-    public async Task<Responses.Response> CreateInvoiceAsync(
-        Requests.Invoice invoice,
+    public async Task<Envelope> CreateInvoiceAsync(
+        Invoice invoice,
         CancellationToken cancellationToken = default)
     {
         if (invoice == null)
@@ -31,7 +31,7 @@ public class IFirmaHttpClient(HttpClient httpClient)
 
         response.EnsureSuccessStatusCode();
 
-        var invoiceResponse = await response.Content.ReadFromJsonAsync<Responses.Response>(cancellationToken: cancellationToken);
-        return invoiceResponse ?? new Responses.Response { StatusCode = -1, Message = "Empty response from iFirma API" };
+        var invoiceResponse = await response.Content.ReadFromJsonAsync<Envelope>(cancellationToken: cancellationToken);
+        return invoiceResponse ?? throw new InvalidOperationException("Empty response from iFirma API when creating invoice.");
     }
 }

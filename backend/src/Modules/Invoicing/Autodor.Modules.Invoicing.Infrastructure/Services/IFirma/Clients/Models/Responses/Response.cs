@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 
 /// <summary>
-/// Base response model from iFirma API containing status information and result.
+/// Response model from iFirma API containing status information and result.
 /// </summary>
 public class Response
 {
