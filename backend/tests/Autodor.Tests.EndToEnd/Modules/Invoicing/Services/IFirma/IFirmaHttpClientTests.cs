@@ -1,6 +1,5 @@
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 using Shared.Infrastructure.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
