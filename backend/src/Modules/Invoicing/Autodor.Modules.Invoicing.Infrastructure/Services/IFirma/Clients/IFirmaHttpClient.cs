@@ -19,7 +19,7 @@ public class IFirmaHttpClient(HttpClient httpClient)
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Response from iFirma API containing invoice details if successful.</returns>
     /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
-    public async Task<Responses.Invoice> CreateInvoiceAsync(
+    public async Task<Responses.Response> CreateInvoiceAsync(
         Requests.Invoice invoice,
         CancellationToken cancellationToken = default)
     {
@@ -31,7 +31,7 @@ public class IFirmaHttpClient(HttpClient httpClient)
 
         response.EnsureSuccessStatusCode();
 
-        var invoiceResponse = await response.Content.ReadFromJsonAsync<Responses.Invoice>(cancellationToken: cancellationToken);
-        return invoiceResponse ?? new Responses.Invoice { StatusCode = -1, Message = "Empty response from iFirma API" };
+        var invoiceResponse = await response.Content.ReadFromJsonAsync<Responses.Response>(cancellationToken: cancellationToken);
+        return invoiceResponse ?? new Responses.Response { StatusCode = -1, Message = "Empty response from iFirma API" };
     }
 }
