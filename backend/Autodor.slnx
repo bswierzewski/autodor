@@ -1,0 +1,49 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/env-template-generator.ps1" />
+    <File Path="scripts/shared_env.txt" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Host/">
+    <Project Path="src/Host/Autodor.Console/Autodor.Console.csproj" />
+    <Project Path="src/Host/Autodor.Web/Autodor.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Contractors/">
+    <Project Path="src/Modules/Contractors/Autodor.Modules.Contractors.Application/Autodor.Modules.Contractors.Application.csproj" />
+    <Project Path="src/Modules/Contractors/Autodor.Modules.Contractors.Domain/Autodor.Modules.Contractors.Domain.csproj" />
+    <Project Path="src/Modules/Contractors/Autodor.Modules.Contractors.Infrastructure/Autodor.Modules.Contractors.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Invoicing/">
+    <Project Path="src/Modules/Invoicing/Autodor.Modules.Invoicing.Application/Autodor.Modules.Invoicing.Application.csproj" />
+    <Project Path="src/Modules/Invoicing/Autodor.Modules.Invoicing.Domain/Autodor.Modules.Invoicing.Domain.csproj" />
+    <Project Path="src/Modules/Invoicing/Autodor.Modules.Invoicing.Infrastructure/Autodor.Modules.Invoicing.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Orders/">
+    <Project Path="src/Modules/Orders/Autodor.Modules.Orders.Application/Autodor.Modules.Orders.Application.csproj" />
+    <Project Path="src/Modules/Orders/Autodor.Modules.Orders.Domain/Autodor.Modules.Orders.Domain.csproj" />
+    <Project Path="src/Modules/Orders/Autodor.Modules.Orders.Infrastructure/Autodor.Modules.Orders.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Products/">
+    <Project Path="src/Modules/Products/Autodor.Modules.Products.Application/Autodor.Modules.Products.Application.csproj" />
+    <Project Path="src/Modules/Products/Autodor.Modules.Products.Domain/Autodor.Modules.Products.Domain.csproj" />
+    <Project Path="src/Modules/Products/Autodor.Modules.Products.Infrastructure/Autodor.Modules.Products.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Autodor.Shared.Contracts/Autodor.Shared.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Autodor.Tests.EndToEnd/Autodor.Tests.EndToEnd.csproj" />
+    <Project Path="tests/Autodor.Tests.Unit/Autodor.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
