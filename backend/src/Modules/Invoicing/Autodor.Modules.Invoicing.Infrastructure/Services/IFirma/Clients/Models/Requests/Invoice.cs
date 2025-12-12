@@ -12,14 +12,14 @@ public class Invoice
     /// Required, >= 0.00 and <= gross invoice total, <= 10 digits, < 100000000.
     /// </summary>
     [JsonPropertyName("Zaplacono")]
-    public required decimal Paid { get; set; }
+    public decimal Paid { get; set; }
 
     /// <summary>
     /// Amount paid on the document.
     /// Required, >= 0.00 and <= gross invoice total, <= 10 digits, < 100000000.
     /// </summary>
     [JsonPropertyName("ZaplaconoNaDokumencie")]
-    public required decimal PaidOnDocument { get; set; }
+    public decimal PaidOnDocument { get; set; }
 
     /// <summary>
     /// Calculation method: NET (from net) or BRT (from gross).
@@ -70,7 +70,7 @@ public class Invoice
     /// Required.
     /// </summary>
     [JsonPropertyName("FormatDatySprzedazy")]
-    public required string SalesDateFormat { get; set; }
+    public string? SalesDateFormat { get; set; }
 
     /// <summary>
     /// Payment deadline.
@@ -105,7 +105,7 @@ public class Invoice
     /// Required. Valid values: OUP, UPO, BPO, BWO.
     /// </summary>
     [JsonPropertyName("RodzajPodpisuOdbiorcy")]
-    public required string RecipientSignatureType { get; set; }
+    public string? RecipientSignatureType { get; set; }
 
     /// <summary>
     /// Recipient signature.
@@ -133,7 +133,7 @@ public class Invoice
     /// Required. Can use WidocznyNumerGios or WidocznyNumerBdo.
     /// </summary>
     [JsonPropertyName("WidocznyNumerGios")]
-    public required bool VisibleGiosNumber { get; set; }
+    public bool VisibleGiosNumber { get; set; }
 
     /// <summary>
     /// Invoice number.

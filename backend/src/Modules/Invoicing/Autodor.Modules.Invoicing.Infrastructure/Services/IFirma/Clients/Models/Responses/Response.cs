@@ -21,13 +21,6 @@ public class Response
     public string? Message { get; set; }
 
     /// <summary>
-    /// Result value from the API operation.
-    /// The type and meaning depends on the specific endpoint.
-    /// </summary>
-    [JsonPropertyName("Wynik")]
-    public string? Result { get; set; }
-
-    /// <summary>
     /// Indicates if the operation was successful.
     /// </summary>
     [JsonIgnore]

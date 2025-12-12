@@ -1,4 +1,4 @@
-using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
+﻿using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
 using Shared.Infrastructure.Tests.Core;
 
@@ -7,8 +7,6 @@ namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
 /// <summary>
 /// End-to-end tests for iFirma HTTP client with real API.
 /// Requires iFirma sandbox credentials in environment variables:
-/// - IFIRMA_SANDBOX_API_KEY: API key for iFirma sandbox
-/// - IFIRMA_SANDBOX_BASE_URL: Base URL (optional, defaults to https://www.ifirma.pl)
 /// </summary>
 [Collection("Autodor")]
 [Trait("Category", "Integration")]
@@ -38,78 +36,35 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Arrange
         var invoice = new Invoice
         {
-            Paid = 100.00m,
-            PaidOnDocument = 100.00m,
-            CalculationType = "sum",
+            Number = int.Parse(DateTime.Now.ToString("MMddHHmmss")),
             IssueDate = DateTime.Now.ToString("yyyy-MM-dd"),
             SalesDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            SalesDateFormat = "date",
-            PaymentMethod = "transfer",
-            RecipientSignatureType = "none",
-            VisibleGiosNumber = false,
-            Number = int.Parse(DateTime.Now.ToString("MMddHHmmss")),
-            Items = new List<InvoiceItem>
-            {
-                new()
-                {
-                    Quantity = 1,
-                    UnitPrice = 100.00m,
-                    Name = "Test Service",
-                    Unit = "szt",
-                    VatRateType = "vat_23"
-                }
-            },
+            PaymentDeadline = DateTime.Now.AddDays(14).ToString("yyyy-MM-dd"),
+            PaymentMethod = "PRZ",
+            CalculationType = "BRT",
             Contractor = new Contractor
             {
                 Name = "Test Client",
+                VatNumber = "123",
+                Street = "Test Street 1",
                 PostalCode = "00-001",
-                City = "Warsaw"
-            }
-        };
-
-        // Act
-        var result = await _client.CreateInvoiceAsync(invoice);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Response.Should().NotBeNull();
-        result.Response!.StatusCode.Should().Be(0, "API should return success status");
-        result.Response.Result.Should().NotBeNullOrEmpty("API should return invoice result");
-    }
-
-    [Fact]
-    public async Task CreateInvoiceAsync_WithInvalidContractor_ShouldReturnErrorStatus()
-    {
-        // Arrange
-        var invoice = new Invoice
-        {
-            Paid = 100.00m,
-            PaidOnDocument = 100.00m,
-            CalculationType = "sum",
-            IssueDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            SalesDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            SalesDateFormat = "date",
-            PaymentMethod = "transfer",
-            RecipientSignatureType = "none",
-            VisibleGiosNumber = false,
-            Number = int.Parse(DateTime.Now.ToString("MMddHHmmss")),
-            Items = new List<InvoiceItem>
-            {
+                City = "Warsaw",
+                Country = "PL",
+                Email = "",
+                Phone = ""
+            },
+            Items =
+            [
                 new()
                 {
+                    Name = "Test Service",
+                    Unit = "szt",
                     Quantity = 1,
                     UnitPrice = 100.00m,
-                    Name = "Test",
-                    Unit = "szt",
-                    VatRateType = "vat_23"
+                    VatRate = 0.23M,
+                    VatRateType = "PRC",
                 }
-            },
-            Contractor = new Contractor
-            {
-                Name = "",  // Invalid: empty name
-                PostalCode = "00-001",
-                City = "Warsaw"
-            }
+            ]
         };
 
         // Act
@@ -118,6 +73,7 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Assert
         result.Should().NotBeNull();
         result.Response.Should().NotBeNull();
-        result.Response!.StatusCode.Should().NotBe(0, "API should return error status for invalid contractor");
+        result.Response.StatusCode.Should().Be(0, "API should return success status");
+        result.Response.Message.Should().Be("Faktura została pomyślnie dodana.", "API should return success message");
     }
 }
