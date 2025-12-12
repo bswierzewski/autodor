@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Enums;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
 
@@ -55,14 +56,16 @@ public class InvoiceItem
     /// Optional. Valid values: BRAK, 01-13.
     /// </summary>
     [JsonPropertyName("GTU")]
-    public string? GTU { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public GtuEnum? GTU { get; set; }
 
     /// <summary>
     /// Type of VAT rate.
     /// Required. Values: PRC (percentage), ZW (exempt).
     /// </summary>
     [JsonPropertyName("TypStawkiVat")]
-    public required string VatRateType { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required VatRateTypeEnum VatRateType { get; set; }
 
     /// <summary>
     /// Discount percentage.

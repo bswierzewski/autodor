@@ -1,4 +1,5 @@
 ﻿using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
 using Shared.Infrastructure.Tests.Core;
 
@@ -34,24 +35,29 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
     public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateAndReturnInvoice()
     {
         // Arrange
+        var today = DateOnly.FromDateTime(DateTime.Now);
         var invoice = new Invoice
         {
             Number = int.Parse(DateTime.Now.ToString("MMddHHmmss")),
-            IssueDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            SalesDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            PaymentDeadline = DateTime.Now.AddDays(14).ToString("yyyy-MM-dd"),
-            PaymentMethod = "PRZ",
-            CalculationType = "BRT",
+            IssueDate = today,
+            SalesDate = today,
+            PaymentDeadline = today.AddDays(14),
+            IssuePlace = "Leszno",
+            PaymentMethod = PaymentMethodEnum.PRZ,
+            CalculationType = CalculationTypeEnum.BRT,
+            SalesDateFormat = SalesDateFormatEnum.DZN,
+            RecipientSignatureType = RecipientSignatureTypeEnum.OUP,
+            NumberingSeriesName = "Domyślna roczna",
             Contractor = new Contractor
             {
+                VatNumber = "1549402951",
                 Name = "Test Client",
-                VatNumber = "123",
                 Street = "Test Street 1",
                 PostalCode = "00-001",
                 City = "Warsaw",
                 Country = "PL",
-                Email = "",
-                Phone = ""
+                Email = "test@test.com",
+                Phone = "123456789"
             },
             Items =
             [
@@ -62,7 +68,7 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
                     Quantity = 1,
                     UnitPrice = 100.00m,
                     VatRate = 0.23M,
-                    VatRateType = "PRC",
+                    VatRateType = VatRateTypeEnum.PRC,
                 }
             ]
         };
@@ -73,7 +79,7 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Assert
         result.Should().NotBeNull();
         result.Response.Should().NotBeNull();
-        result.Response.StatusCode.Should().Be(0, "API should return success status");
         result.Response.Message.Should().Be("Faktura została pomyślnie dodana.", "API should return success message");
+        result.Response.StatusCode.Should().Be(0, "API should return success status");
     }
 }

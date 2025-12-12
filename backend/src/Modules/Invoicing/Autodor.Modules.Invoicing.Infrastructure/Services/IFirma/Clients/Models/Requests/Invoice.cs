@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Enums;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
 
@@ -26,7 +27,8 @@ public class Invoice
     /// Required.
     /// </summary>
     [JsonPropertyName("LiczOd")]
-    public required string CalculationType { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required CalculationTypeEnum CalculationType { get; set; }
 
     /// <summary>
     /// Bank account number.
@@ -48,7 +50,7 @@ public class Invoice
     /// Must be >= sales date, >= previous invoice date, <= 15th day of next month relative to sales date.
     /// </summary>
     [JsonPropertyName("DataWystawienia")]
-    public required string IssueDate { get; set; }
+    public required DateOnly IssueDate { get; set; }
 
     /// <summary>
     /// Invoice issue place.
@@ -63,28 +65,30 @@ public class Invoice
     /// If current accounting month, use current date, otherwise last day of month.
     /// </summary>
     [JsonPropertyName("DataSprzedazy")]
-    public required string SalesDate { get; set; }
+    public required DateOnly SalesDate { get; set; }
 
     /// <summary>
     /// Sales date format: DZN (daily) or MSC (monthly).
     /// Required.
     /// </summary>
     [JsonPropertyName("FormatDatySprzedazy")]
-    public string? SalesDateFormat { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required SalesDateFormatEnum SalesDateFormat { get; set; }
 
     /// <summary>
     /// Payment deadline.
     /// Optional, format: YYYY-MM-DD. Must be >= sales date.
     /// </summary>
     [JsonPropertyName("TerminPlatnosci")]
-    public string? PaymentDeadline { get; set; }
+    public DateOnly? PaymentDeadline { get; set; }
 
     /// <summary>
     /// Payment method.
     /// Required. Valid values: GTK, POB, PRZ, KAR, PZA, CZK, KOM, BAR, DOT, PAL, ALG, P24, TPA, ELE.
     /// </summary>
     [JsonPropertyName("SposobZaplaty")]
-    public required string PaymentMethod { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required PaymentMethodEnum PaymentMethod { get; set; }
 
     /// <summary>
     /// Numbering series name.
@@ -105,7 +109,8 @@ public class Invoice
     /// Required. Valid values: OUP, UPO, BPO, BWO.
     /// </summary>
     [JsonPropertyName("RodzajPodpisuOdbiorcy")]
-    public string? RecipientSignatureType { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public required RecipientSignatureTypeEnum RecipientSignatureType { get; set; }
 
     /// <summary>
     /// Recipient signature.
