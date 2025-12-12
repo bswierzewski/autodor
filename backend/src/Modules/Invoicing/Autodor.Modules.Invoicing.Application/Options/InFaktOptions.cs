@@ -13,6 +13,6 @@ public class InFaktOptions : IOptions
     /// </summary>
     public static string SectionName => $"Modules:{ModuleConstants.ModuleName}:InFakt";
 
+    public string BaseUrl { get; set; } = "https://api.sandbox-infakt.pl/api/v3";
     public string ApiKey { get; set; } = string.Empty;
-    public string ApiUrl { get; set; } = "https://api.sandbox-infakt.pl/api/v3";
 }

@@ -18,10 +18,7 @@ namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Exten
             services.AddHttpClient<InFaktHttpClient>((serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<InFaktOptions>>().Value;
-                var baseUrl = string.IsNullOrEmpty(options.ApiUrl)
-                    ? "https://www.infakt.pl/api/v3/"
-                    : options.ApiUrl;
-                client.BaseAddress = new Uri(baseUrl);
+                client.BaseAddress = new Uri(options.BaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
             })
             .AddHttpMessageHandler<InFaktAuthenticationHandler>();

@@ -11,15 +11,16 @@ namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 /// </summary>
 public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : DelegatingHandler
 {
-    private readonly IFirmaOptions _config = options.Value ?? throw new ArgumentNullException(nameof(options));
+    private readonly IFirmaOptions _options = options.Value
+        ?? throw new ArgumentNullException(nameof(options));
 
     /// <summary>
     /// Internal record to define route mappings.
     /// </summary>
-    /// <param name="KeyName">The specific key identifier used in the signature (e.g., "faktura").</param>
-    /// <param name="KeySelector">Function to select the hex API key from options.</param>
-    /// <param name="Prefixes">List of URL path prefixes that trigger this key usage.</param>
-    private record RouteConfig(string KeyName, Func<IFirmaOptions, string?> KeySelector, string[] Prefixes);
+    private record RouteConfig(
+        string KeyName,
+        Func<IFirmaOptions, string?> KeySelector,
+        string[] Prefixes);
 
     /// <summary>
     /// Route configuration for iFirma API endpoints.
@@ -27,64 +28,61 @@ public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : Dele
     /// Routes are checked in order, so more specific routes should be listed first.
     /// </summary>
     private static readonly IReadOnlyList<RouteConfig> Routes =
-        [
-            // Invoices (Faktura)
-            new("faktura", opt => opt.Keys.Faktura, [
-                    "/iapi/fakturakraj"
-                ]),
+    [
+        new("faktura", opt => opt.ApiKeys.Faktura, [
+            "/iapi/fakturakraj"
+        ]),
+    ];
 
-            //// Contractors (Abonent)
-            //("Abonent", opt => opt.Keys.Abonent, ["/iapi/abonent"]),
-
-            //// Bills (Rachunek)
-            //("Rachunek", opt => opt.Keys.Rachunek, ["/iapi/rachunek"]),
-        ];
-
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
-        var requestPath = request.RequestUri?.LocalPath ?? string.Empty;
-        var matchedRoute = FindMatchingRoute(requestPath);
+        string path = request.RequestUri?.LocalPath ?? string.Empty;
+        var route = FindMatchingRoute(path);
 
-        if (matchedRoute is null)
-            return await base.SendAsync(request, cancellationToken);
+        if (route is not null)
+        {
+            string content = await GetContentAsync(request, cancellationToken);
+            string signature = ComputeSignature(route, path, content);
 
-        string? keyHex = matchedRoute.KeySelector(_config);
-        if (string.IsNullOrEmpty(keyHex))
-            throw new InvalidOperationException($"API Key is missing in configuration for key name: {matchedRoute.KeyName}");
-
-        string requestContent = await GetContentAsync(request, cancellationToken);
-        string messageToSign = BuildMessageToSign(requestPath, matchedRoute.KeyName, requestContent);
-
-        string hash = HmacSha1.Compute(keyHex, messageToSign);
-        string headerValue = $"IAPIS user={_config.User}, hmac-sha1={hash}";
-
-        request.Headers.TryAddWithoutValidation("Authentication", headerValue);
+            request.Headers.Add(
+                "Authentication",
+                $"IAPIS user={_options.User}, hmac-sha1={signature}"
+            );
+        }
 
         return await base.SendAsync(request, cancellationToken);
+    }
+
+    /// <summary>
+    /// Constructs the concatenation string required for the HMAC signature.
+    /// Format: BaseUrl + Path + User + KeyName + Content
+    /// </summary>
+    private string ComputeSignature(RouteConfig route, string path, string content)
+    {
+        string keyHex = route.KeySelector(_options)
+            ?? throw new InvalidOperationException($"Missing API key for {route.KeyName}");
+
+        var baseUrl = _options.BaseUrl?.TrimEnd('/') ?? string.Empty;
+        var user = _options.User ?? string.Empty;
+        var keyName = route.KeyName;
+
+        string message = $"{baseUrl}{path}{user}{keyName}{content}";
+        return HmacSha1.Compute(keyHex, message);
     }
 
     /// <summary>
     /// Finds the first route configuration where one of the prefixes matches the start of the request path.
     /// Comparison is case-insensitive.
     /// </summary>
-    private static RouteConfig? FindMatchingRoute(string path)
-        => Routes.FirstOrDefault(r => r.Prefixes.Any(prefix => path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)));
-
-    /// <summary>
-    /// Constructs the concatenation string required for the HMAC signature.
-    /// Format: BaseUrl + Path + User + KeyName + Content
-    /// </summary>
-    private string BuildMessageToSign(string path, string keyName, string content)
-        => $"{_config.BaseUrl.TrimEnd('/')}{path}{_config.User}{keyName}{content}";
+    private static RouteConfig? FindMatchingRoute(string path) =>
+        Routes.FirstOrDefault(r =>
+            r.Prefixes.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)));
 
     /// <summary>
     /// Safely reads the request content as a string. Returns empty string if content is null.
     /// </summary>
-    private static async Task<string> GetContentAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        if (request.Content is null)
-            return string.Empty;
-
-        return await request.Content.ReadAsStringAsync(cancellationToken);
-    }
+    private static Task<string> GetContentAsync(HttpRequestMessage request, CancellationToken ct) =>
+        request.Content?.ReadAsStringAsync(ct) ?? Task.FromResult(string.Empty);
 }

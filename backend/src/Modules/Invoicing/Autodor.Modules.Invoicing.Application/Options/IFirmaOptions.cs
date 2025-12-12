@@ -15,13 +15,13 @@ public class IFirmaOptions : IOptions
 
     public string BaseUrl { get; set; } = "https://www.ifirma.pl/";
     public string User { get; set; } = string.Empty;
-    public IFirmaKeys Keys { get; set; } = new();
+    public IFirmaApiKeys ApiKeys { get; set; } = new();
 }
 
 /// <summary>
 /// API Keys for different iFirma endpoints.
 /// </summary>
-public class IFirmaKeys
+public class IFirmaApiKeys
 {
     public string? Faktura { get; set; }
     public string? Abonent { get; set; }
