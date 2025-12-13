@@ -38,13 +38,12 @@ public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         var today = DateOnly.FromDateTime(DateTime.Now);
         var invoice = new Invoice
         {
-            Number = int.Parse(DateTime.Now.ToString("MMddHHmmss")),
             IssueDate = today,
             SalesDate = today,
             PaymentDeadline = today.AddDays(14),
             IssuePlace = "Leszno",
             PaymentMethod = PaymentMethodEnum.PRZ,
-            CalculationType = CalculationTypeEnum.BRT,
+            CalculationType = CalculationTypeEnum.NET,
             SalesDateFormat = SalesDateFormatEnum.DZN,
             RecipientSignatureType = RecipientSignatureTypeEnum.OUP,
             NumberingSeriesName = "Domyślna roczna",
