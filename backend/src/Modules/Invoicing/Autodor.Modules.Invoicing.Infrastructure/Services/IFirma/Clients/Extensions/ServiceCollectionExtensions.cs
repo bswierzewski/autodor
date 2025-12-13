@@ -18,11 +18,8 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<IFirmaHttpClient>((serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<IFirmaOptions>>().Value;
-            var baseUrl = string.IsNullOrEmpty(options.BaseUrl)
-                ? "https://www.ifirma.pl/"
-                : options.BaseUrl;
-
-            client.BaseAddress = new Uri(baseUrl);
+            var baseUri = options.BaseUrl.TrimEnd('/') + "/";
+            client.BaseAddress = new Uri(baseUri);
             client.Timeout = TimeSpan.FromSeconds(30);
         })
         .AddHttpMessageHandler<IFirmaAuthenticationHandler>();

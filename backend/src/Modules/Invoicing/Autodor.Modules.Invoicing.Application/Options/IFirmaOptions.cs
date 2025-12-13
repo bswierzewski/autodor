@@ -13,7 +13,7 @@ public class IFirmaOptions : IOptions
     /// </summary>
     public static string SectionName => $"Modules:{ModuleConstants.ModuleName}:IFirma";
 
-    public string BaseUrl { get; set; } = "https://www.ifirma.pl/";
+    public string BaseUrl { get; set; } = "https://www.ifirma.pl/iapi";
     public string User { get; set; } = string.Empty;
     public IFirmaApiKeys ApiKeys { get; set; } = new();
 }

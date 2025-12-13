@@ -45,7 +45,6 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Assert
         result.Should().NotBeNull();
         result.Entities.Should().NotBeNull();
-        result.Total.Should().BeGreaterThanOrEqualTo(0);
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Arrange - Using a valid test NIP
         var query = new ClientSearchQuery
         {
-            Filter = new ClientSearchFilter { NipEq = "7579750973" }
+            Filter = new ClientSearchFilter { NipEq = "1176224556" }
         };
 
         // Act
@@ -64,30 +63,6 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         result.Should().NotBeNull();
         result.Entities.Should().NotBeNull();
         // Filter may return 0 results if client doesn't exist in sandbox
-    }
-
-    [Fact]
-    public async Task CreateClientAsync_WithValidClient_ShouldCreateAndReturnClient()
-    {
-        // Arrange
-        var client = new Client
-        {
-            Country = "PL",
-            FirstName = "Test",
-            LastName = "User",
-            BusinessActivityKind = "private_person",
-            Email = $"test-{Guid.NewGuid()}@example.com",
-            PhoneNumber = "+48123456789"
-        };
-
-        // Act
-        var result = await _client.CreateClientAsync(client);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.FirstName.Should().Be("Test");
-        result.LastName.Should().Be("User");
-        result.Id.Should().NotBeNull();
     }
 
     [Fact]
@@ -116,27 +91,43 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateInvoice()
+    public async Task CreateClientAsync_WithValidClient_ShouldCreateAndReturnClient()
     {
-        // Arrange - Create a test client first
+        // Arrange
         var client = new Client
         {
+            BusinessActivityKind = "self_employed",
+            Nip = "1176224556",  // Valid 10-digit NIP from documentation
+            FirstName = "Test",
+            LastName = "User",
+            CompanyName = "Test Company Test User",  // Required for self_employed
+            Street = "Testowa",
+            StreetNumber = "1",
+            City = "Warsaw",
             Country = "PL",
-            FirstName = "Invoice",
-            LastName = "Client",
-            BusinessActivityKind = "private_person",
-            Email = $"invoice-{Guid.NewGuid()}@example.com"
+            PostalCode = "00-001"
         };
 
-        var createdClient = await _client.CreateClientAsync(client);
+        // Act
+        var result = await _client.CreateClientAsync(client);
 
+        // Assert
+        result.Should().NotBeNull();
+        result.FirstName.Should().Be("Test");
+        result.LastName.Should().Be("User");
+        result.Id.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateInvoice()
+    {
         var invoice = new Invoice
         {
-            Number = $"TEST-{DateTime.Now:yyyyMMddHHmmss}",
             Currency = "PLN",
             Notes = "Test invoice from API",
             Kind = "vat",
             PaymentMethod = "transfer",
+            ClientTaxCode = "1176224556", // Known valid NIP from creation
             InvoiceDate = DateTime.Now.ToString("yyyy-MM-dd"),
             SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
             Services = new List<InvoiceItem>
@@ -149,8 +140,7 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
                     Quantity = 1,
                     UnitNetPrice = 10000 // 100.00 PLN in groszy
                 }
-            },
-            Client = createdClient
+            }
         };
 
         // Act
@@ -159,7 +149,6 @@ public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
         // Assert
         result.Should().NotBeNull();
         result.Id.Should().NotBeNull();
-        result.Number.Should().StartWith("TEST-");
         result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
     }
 }

@@ -197,11 +197,60 @@ public class Invoice
     public required ICollection<InvoiceItem> Services { get; set; }
 
     /// <summary>
-    /// Client/buyer information.
-    /// Required.
+    /// Client company name.
+    /// Optional.
     /// </summary>
-    [JsonPropertyName("client")]
-    public required Client Client { get; set; }
+    [JsonPropertyName("client_company_name")]
+    public string? ClientCompanyName { get; set; }
+
+    /// <summary>
+    /// Client business activity kind.
+    /// Optional. Values: private_person, self_employed, other_business.
+    /// </summary>
+    [JsonPropertyName("client_business_activity_kind")]
+    public string? ClientBusinessActivityKind { get; set; }
+
+    /// <summary>
+    /// Client street address.
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_street")]
+    public string? ClientStreet { get; set; }
+
+    /// <summary>
+    /// Client building number.
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_street_number")]
+    public string? ClientStreetNumber { get; set; }
+
+    /// <summary>
+    /// Client city.
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_city")]
+    public string? ClientCity { get; set; }
+
+    /// <summary>
+    /// Client postal code.
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_post_code")]
+    public string? ClientPostCode { get; set; }
+
+    /// <summary>
+    /// Client VAT number (NIP).
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_tax_code")]
+    public string? ClientTaxCode { get; set; }
+
+    /// <summary>
+    /// Client country code (ISO Alpha-2).
+    /// Optional.
+    /// </summary>
+    [JsonPropertyName("client_country")]
+    public string? ClientCountry { get; set; }
 
     /// <summary>
     /// VAT exemption reason ID.
