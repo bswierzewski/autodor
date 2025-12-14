@@ -30,7 +30,7 @@ public class InFaktHttpClient(HttpClient httpClient)
         using var request = new HttpRequestMessage(HttpMethod.Post, "invoices.json");
 
         // Set the request content (JSON serialized invoice request)
-        var invoiceRequest = new InvoiceRequest { Invoice = invoice };
+        var invoiceRequest = new InvoiceRoot(invoice);
         request.Content = JsonContent.Create(invoiceRequest);
 
         // Send the request
@@ -63,7 +63,7 @@ public class InFaktHttpClient(HttpClient httpClient)
         using var request = new HttpRequestMessage(HttpMethod.Post, "clients.json");
 
         // Set the request content (JSON serialized client request)
-        var clientRequest = new ClientRequest { Client = client };
+        var clientRequest = new ClientRoot(client);
         request.Content = JsonContent.Create(clientRequest);
 
         // Send the request

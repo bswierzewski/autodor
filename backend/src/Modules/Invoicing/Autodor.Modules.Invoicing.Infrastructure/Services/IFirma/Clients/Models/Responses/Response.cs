@@ -3,6 +3,12 @@ using System.Text.Json.Serialization;
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Responses;
 
 /// <summary>
+/// Response envelope wrapping the iFirma API response.
+/// </summary>
+/// <param name="Response"></param>
+public record ResponseRoot([property: JsonPropertyName("response")] Response Response);
+
+/// <summary>
 /// Response model from iFirma API containing status information and result.
 /// </summary>
 public class Response

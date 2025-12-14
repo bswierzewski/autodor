@@ -22,7 +22,7 @@ public class IFirmaHttpClient(HttpClient httpClient)
     /// <exception cref="ArgumentNullException">Thrown when invoice is null.</exception>
     /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the iFirma API returns an empty response.</exception>
-    public async Task<Envelope> CreateInvoiceAsync(
+    public async Task<ResponseRoot> CreateInvoiceAsync(
         Invoice invoice,
         CancellationToken cancellationToken = default)
     {
@@ -42,7 +42,7 @@ public class IFirmaHttpClient(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
 
         // Deserialize the response from iFirma
-        var invoiceResponse = await response.Content.ReadFromJsonAsync<Envelope>(cancellationToken: cancellationToken);
+        var invoiceResponse = await response.Content.ReadFromJsonAsync<ResponseRoot>(cancellationToken: cancellationToken);
 
         return invoiceResponse ?? throw new InvalidOperationException(
             "Empty response from iFirma API when creating invoice.");

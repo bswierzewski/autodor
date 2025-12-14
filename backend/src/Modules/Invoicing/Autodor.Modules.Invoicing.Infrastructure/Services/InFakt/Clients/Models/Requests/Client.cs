@@ -3,6 +3,12 @@ using System.Text.Json.Serialization;
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
 
 /// <summary>
+/// Client root wrapper.
+/// </summary>
+/// <param name="Client"></param>
+public record ClientRoot([property: JsonPropertyName("client")] Client Client);
+
+/// <summary>
 /// Represents a client/customer in InFakt API.
 /// </summary>
 public class Client
