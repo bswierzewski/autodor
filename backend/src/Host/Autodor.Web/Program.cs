@@ -1,7 +1,6 @@
 using DotNetEnv;
 using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Exceptions;
-using Shared.Infrastructure.Extensions;
 using Shared.Infrastructure.Logging;
 using Shared.Users.Infrastructure.Extensions.Supabase;
 
@@ -24,8 +23,10 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 // OpenAPI for Orval client generation
-builder.Services.AddEndpointsApiExplorer(); // Exposes Minimal API endpoints to OpenAPI
-builder.Services.AddOpenApi(options => options.AddProblemDetailsSchemas()); // Generates OpenAPI document
+builder.Services.AddOpenApi(); // Generates OpenAPI document automatically
+
+// CORS configuration
+builder.Services.AddCors();
 
 // Register modules from auto-generated registry
 builder.Services.RegisterModules(builder.Configuration);
@@ -36,10 +37,11 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// OpenAPI endpoint always available at /openapi/v1.json for orval
+app.MapOpenApi();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-
     // CORS only in Development (production runs in single Docker container)
     app.UseCors(policy =>
         policy.AllowAnyOrigin()

@@ -49,38 +49,32 @@ public static class ContractorsEndpoints
         // POST /api/contractors - Create new contractor (supplier, customer, or service provider)
         // Returns 200 OK with generated ID - essential for business partner onboarding
         group.MapPost("/", CreateContractor)
-            .WithName("CreateContractor")
-            .WithOpenApi();
+            .WithName("CreateContractor");
 
         // GET /api/contractors/{id} - Retrieve specific contractor by unique identifier
         // Returns 200 OK with contractor details - supports detailed business partner information display
         group.MapGet("/{id:guid}", GetContractor)
-            .WithName("GetContractor")
-            .WithOpenApi();
+            .WithName("GetContractor");
 
         // GET /api/contractors - Retrieve all contractors for listing and selection scenarios
         // Returns 200 OK with contractor collection - used in dropdowns and management interfaces
         group.MapGet("/", GetAllContractors)
-            .WithName("GetAllContractors")
-            .WithOpenApi();
+            .WithName("GetAllContractors");
 
         // PUT /api/contractors/{id} - Update existing contractor information
         // Returns 204 No Content on success - follows REST semantics for successful updates
         group.MapPut("/{id:guid}", UpdateContractor)
-            .WithName("UpdateContractor")
-            .WithOpenApi();
+            .WithName("UpdateContractor");
 
         // DELETE /api/contractors/{id} - Remove contractor from the system
         // Returns 204 No Content on success - supports cleanup and relationship termination
         group.MapDelete("/{id:guid}", DeleteContractor)
-            .WithName("DeleteContractor")
-            .WithOpenApi();
+            .WithName("DeleteContractor");
 
         // GET /api/contractors/by-nip/{nip} - Polish tax identification number lookup
         // Returns 200 OK with contractor details - critical for regulatory compliance and tax reporting
         group.MapGet("/by-nip/{nip}", GetContractorByNIP)
-            .WithName("GetContractorByNIP")
-            .WithOpenApi();
+            .WithName("GetContractorByNIP");
 
         return endpoints;
     }

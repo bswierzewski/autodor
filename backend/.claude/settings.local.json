@@ -15,7 +15,13 @@
       "Bash(docker:*)",
       "Bash(dotnet sln remove:*)",
       "Read(//d/repos/autodor/api/src/Application/Common/Options/**)",
-      "Read(//d/repos/autodor/api/**)"
+      "Read(//d/repos/autodor/api/**)",
+      "Bash(dir /s /b *.sln)",
+      "Bash(xargs:*)",
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(timeout 10 dotnet test:*)"
     ],
     "deny": [],
     "ask": []

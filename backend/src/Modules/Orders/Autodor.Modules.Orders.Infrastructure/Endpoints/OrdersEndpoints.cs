@@ -44,20 +44,17 @@ public static class OrdersEndpoints
         // POST /api/orders/exclude - Business operation to exclude problematic orders from processing
         // Returns 200 OK with success indicator - used when orders cannot be fulfilled or have issues
         group.MapPost("/exclude", ExcludeOrder)
-            .WithName("ExcludeOrder")
-            .WithOpenApi();
+            .WithName("ExcludeOrder");
 
         // GET /api/orders/by-date - Query operation to retrieve orders for a specific business day
         // Critical for daily operations and order processing workflows
         group.MapGet("/by-date", GetOrdersByDate)
-            .WithName("GetOrdersByDate")
-            .WithOpenApi();
+            .WithName("GetOrdersByDate");
 
         // GET /api/orders/by-date-range - Query operation for historical order analysis and reporting
         // Supports business intelligence and period-based order tracking
         group.MapGet("/by-date-range", GetOrdersByDateRange)
-            .WithName("GetOrdersByDateRange")
-            .WithOpenApi();
+            .WithName("GetOrdersByDateRange");
 
         return endpoints;
     }
