@@ -2,6 +2,7 @@ using DotNetEnv;
 using Shared.Abstractions.Modules;
 using Shared.Infrastructure.Exceptions;
 using Shared.Infrastructure.Logging;
+using Shared.Infrastructure.OpenApi;
 using Shared.Users.Infrastructure.Extensions.Supabase;
 
 // Load environment variables from .env file BEFORE creating builder
@@ -19,11 +20,14 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHttpContextAccessor();
 
 // Exception handling
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 // OpenAPI for Orval client generation
-builder.Services.AddOpenApi(); // Generates OpenAPI document automatically
+builder.Services.AddOpenApi(options =>
+{
+    options.AddSchemaTransformer<ApiProblemDetailsSchemaTransformer>();
+});
 
 // CORS configuration
 builder.Services.AddCors();
