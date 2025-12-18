@@ -16,7 +16,7 @@ public record InvoiceItem
     /// <summary>
     /// Unit of measurement - defaults to "szt"
     /// </summary>
-    public string Unit { get; init; } = "sztuk";
+    public string Unit { get; init; } = "szt";
 
     /// <summary>
     /// Quantity of the item being invoiced

@@ -203,6 +203,12 @@ public class Invoice
     public required ICollection<InvoiceItem> Services { get; set; }
 
     /// <summary>
+    /// Identifier of an existing client in InFakt system.
+    /// </summary>
+    [JsonPropertyName("client_id")]
+    public int? ClientId { get; set; }
+
+    /// <summary>
     /// Client company name.
     /// Optional.
     /// </summary>

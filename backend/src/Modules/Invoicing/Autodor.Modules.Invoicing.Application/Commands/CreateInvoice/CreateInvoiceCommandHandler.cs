@@ -22,7 +22,7 @@ public class CreateInvoiceCommandHandler(
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Result<string>>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Result>
 {
 
     /// <summary>
@@ -30,8 +30,8 @@ public class CreateInvoiceCommandHandler(
     /// </summary>
     /// <param name="request">Invoice creation parameters including dates, order IDs, and contractor information</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
-    /// <returns>Unique identifier of the created invoice from the external system</returns>
-    public async Task<Result<string>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+    /// <returns>Result indicating success or failure of invoice creation</returns>
+    public async Task<Result> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
             request.ContractorId, request.OrderIds.Count(), request.Dates.Count());
@@ -45,7 +45,7 @@ public class CreateInvoiceCommandHandler(
         if (filteredOrders.Count == 0)
         {
             logger.LogWarning("No orders found for the specified order IDs");
-            return Result<string>.Failure("NO_ORDERS_FOUND", "No orders found for the specified order IDs");
+            return Result.Failure("NO_ORDERS_FOUND", "No orders found for the specified order IDs");
         }
 
         // Extract unique product numbers from all order items for bulk product lookup
@@ -63,7 +63,7 @@ public class CreateInvoiceCommandHandler(
         if (contractor == null)
         {
             logger.LogError("Contractor with ID {ContractorId} not found", request.ContractorId);
-            return Result<string>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.ContractorId} not found");
+            return Result.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.ContractorId} not found");
         }
 
         // Map contractor DTO to domain value object
@@ -106,10 +106,17 @@ public class CreateInvoiceCommandHandler(
         };
 
         var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
-        var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-        logger.LogInformation("Successfully created invoice with number {InvoiceNumber}", invoiceNumber);
+        try
+        {
+            await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-        return Result<string>.Success(invoiceNumber);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to create invoice: {Error}", ex.Message);
+            return Result.Failure("INVOICE_CREATION_FAILED", $"An unexpected error occurred: {ex.Message}");
+        }
     }
 }

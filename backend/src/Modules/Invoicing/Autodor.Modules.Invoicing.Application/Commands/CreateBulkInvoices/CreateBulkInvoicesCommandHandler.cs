@@ -22,7 +22,7 @@ public class CreateBulkInvoicesCommandHandler(
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Result<IEnumerable<string>>>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Result<Dictionary<string, bool>>>
 {
 
     /// <summary>
@@ -31,8 +31,8 @@ public class CreateBulkInvoicesCommandHandler(
     /// </summary>
     /// <param name="request">Bulk invoice creation parameters including date range</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
-    /// <returns>Collection of unique identifiers for all created invoices</returns>
-    public async Task<Result<IEnumerable<string>>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
+    /// <returns>Dictionary mapping contractor NIP to creation status (true if successful, false otherwise)</returns>
+    public async Task<Result<Dictionary<string, bool>>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
@@ -51,7 +51,7 @@ public class CreateBulkInvoicesCommandHandler(
         {
             logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
                 request.DateFrom, request.DateTo);
-            return Result<IEnumerable<string>>.Failure("NO_VALID_ORDERS", "No valid orders found for bulk invoice creation");
+            return Result<Dictionary<string, bool>>.Failure("NO_VALID_ORDERS", "No valid orders found for bulk invoice creation");
         }
 
         logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",
@@ -83,7 +83,7 @@ public class CreateBulkInvoicesCommandHandler(
 
         logger.LogInformation("Grouped orders into {ContractorCount} contractors", ordersByContractor.Count);
 
-        var invoiceNumbers = new List<string>();
+        var invoiceStatuses = new Dictionary<string, bool>();
 
         foreach (var contractorGroup in ordersByContractor)
         {
@@ -99,6 +99,7 @@ public class CreateBulkInvoicesCommandHandler(
                 if (!contractorDict.TryGetValue(contractorNIP, out var contractorDto))
                 {
                     logger.LogWarning("Contractor with NIP {ContractorNIP} not found, skipping orders", contractorNIP);
+                    invoiceStatuses[contractorNIP] = false;
                     continue;
                 }
 
@@ -143,23 +144,24 @@ public class CreateBulkInvoicesCommandHandler(
                 };
 
                 var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
-                var invoiceNumber = await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
+                await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-                invoiceNumbers.Add(invoiceNumber);
+                invoiceStatuses[contractorNIP] = true;
 
-                logger.LogInformation("Successfully created invoice {InvoiceNumber} for contractor {ContractorNIP}",
-                    invoiceNumber, contractorNIP);
+                logger.LogInformation("Successfully created invoice for contractor {ContractorNIP}", contractorNIP);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to create invoice for contractor {ContractorNIP}",
                     contractorNIP);
-                return Result<IEnumerable<string>>.Failure("INVOICE_CREATION_FAILED",
-                    $"Failed to create invoice for contractor {contractorNIP}: {ex.Message}");
+                invoiceStatuses[contractorNIP] = false;
             }
         }
 
-        logger.LogInformation("Successfully created {InvoiceCount} bulk invoices", invoiceNumbers.Count);
-        return Result<IEnumerable<string>>.Success(invoiceNumbers);
+        var successCount = invoiceStatuses.Count(kvp => kvp.Value);
+        logger.LogInformation("Successfully created {SuccessCount} out of {TotalCount} bulk invoices",
+            successCount, invoiceStatuses.Count);
+
+        return Result<Dictionary<string, bool>>.Success(invoiceStatuses);
     }
 }

@@ -134,4 +134,44 @@ public class InFaktHttpClient(HttpClient httpClient)
         var clientListResponse = await response.Content.ReadFromJsonAsync<Responses.ClientList>(cancellationToken: cancellationToken);
         return clientListResponse ?? throw new InvalidOperationException("Empty response from InFakt API when listing clients.");
     }
+
+    /// <summary>
+    /// Updates an existing client in InFakt.
+    /// </summary>
+    /// <param name="clientId">The ID of the client to update.</param>
+    /// <param name="client">Updated client data.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Response from InFakt API containing updated client details if successful.</returns>
+    /// <exception cref="ArgumentException">Thrown when clientId is invalid.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when client is null.</exception>
+    /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+    public async Task<Responses.Client> UpdateClientAsync(
+        int clientId,
+        Requests.Client client,
+        CancellationToken cancellationToken = default)
+    {
+        if (clientId <= 0)
+            throw new ArgumentException("Client ID must be greater than 0.", nameof(clientId));
+
+        if (client == null)
+            throw new ArgumentNullException(nameof(client));
+
+        // Create the request with the appropriate HTTP method and endpoint
+        var endpoint = $"clients/{clientId}.json";
+        using var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
+
+        // Set the request content (JSON serialized client request)
+        var clientRequest = new ClientRoot(client);
+        request.Content = JsonContent.Create(clientRequest);
+
+        // Send the request
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+
+        // Ensure the response indicates success (2xx status code)
+        response.EnsureSuccessStatusCode();
+
+        // Deserialize the response from InFakt
+        var clientResponse = await response.Content.ReadFromJsonAsync<Responses.Client>(cancellationToken: cancellationToken);
+        return clientResponse ?? throw new InvalidOperationException("Empty response from InFakt API when updating client.");
+    }
 }

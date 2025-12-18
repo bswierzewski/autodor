@@ -21,4 +21,4 @@ public record CreateInvoiceCommand(
     IEnumerable<DateTime> Dates,
     IEnumerable<string> OrderIds,
     Guid ContractorId
-) : IRequest<Result<string>>;
+) : IRequest<Result>;

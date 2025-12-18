@@ -60,11 +60,10 @@ public static class InvoicingEndpoints
     /// </summary>
     /// <param name="command">The command containing invoice details, order information, contractor data, and tax requirements</param>
     /// <param name="mediator">MediatR instance for executing the command through the application layer with full validation</param>
-    /// <returns>HTTP 201 Created with invoice number and location header, enabling immediate invoice access</returns>
+    /// <returns>HTTP 201 Created on success or 400 Bad Request on validation failure</returns>
     /// <remarks>
     /// Invoice creation is a critical business operation that must comply with Polish and EU tax regulations.
     /// The operation includes comprehensive tax calculations, VAT processing, and regulatory compliance checks.
-    /// The generated invoice number can be used immediately for document retrieval, printing, and customer communication.
     /// All invoices maintain complete audit trails for regulatory compliance and business reporting.
     /// </remarks>
     private static async Task<IResult> CreateInvoice(
@@ -75,10 +74,9 @@ public static class InvoicingEndpoints
         // Includes regulatory compliance checks and integration with accounting systems
         var result = await mediator.Send(command);
 
-        // Return 201 Created with invoice number or 400 Bad Request on validation failure
-        // The invoice number enables immediate access to the newly created invoice resource
+        // Return 201 Created on success or 400 Bad Request on validation failure
         return result.IsSuccess
-            ? Results.Created($"/api/invoicing/{result.Value}", new { InvoiceNumber = result.Value })
+            ? Results.Created("/api/invoicing", new { Success = true })
             : Results.BadRequest(result.Errors);
     }
 
