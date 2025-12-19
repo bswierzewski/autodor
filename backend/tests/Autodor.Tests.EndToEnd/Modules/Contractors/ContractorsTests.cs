@@ -109,7 +109,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
             "55-555",
             "testget@example.com"
         ));
-        var contractorId = result.Value;
+        var contractorId = result;
 
         // Act
         var response = await _context.Client.GetAsync($"/api/contractors/{contractorId}");
@@ -140,7 +140,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
             "77-777",
             "delete@example.com"
         ));
-        var contractorId = result.Value;
+        var contractorId = result;
 
         // Verify contractor exists before deletion
         var contractorBeforeDelete = await readContext.Contractors

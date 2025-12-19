@@ -1,7 +1,6 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Application.Abstractions;
 using MediatR;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
@@ -9,7 +8,7 @@ namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 /// Handles the exclusion of orders by creating an excluded order record in the database.
 /// </summary>
 public class ExcludeOrderCommandHandler(IOrdersDbContext context, TimeProvider timeProvider)
-    : IRequestHandler<ExcludeOrderCommand, Result<bool>>
+    : IRequestHandler<ExcludeOrderCommand, bool>
 {
     private readonly IOrdersDbContext _context = context;
 
@@ -19,7 +18,7 @@ public class ExcludeOrderCommandHandler(IOrdersDbContext context, TimeProvider t
     /// <param name="request">The exclude order command containing the order ID to exclude.</param>
     /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     /// <returns>True if the order was successfully excluded.</returns>
-    public async Task<Result<bool>> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
     {
         var excludedOrder = new ExcludedOrder(request.OrderId, timeProvider.GetUtcNow());
 
@@ -27,6 +26,6 @@ public class ExcludeOrderCommandHandler(IOrdersDbContext context, TimeProvider t
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<bool>.Success(true);
+        return true;
     }
 }

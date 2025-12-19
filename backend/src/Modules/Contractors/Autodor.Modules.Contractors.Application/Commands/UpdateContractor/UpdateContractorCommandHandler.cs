@@ -2,11 +2,10 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
-public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand, Result<Unit>>
+public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand, Unit>
 {
     private readonly IContractorsDbContext _context;
 
@@ -15,13 +14,13 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
         _context = context;
     }
 
-    public async Task<Result<Unit>> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
     {
         var contractor = await _context.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
-            return Result<Unit>.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.Id} not found");
+            throw new KeyNotFoundException($"Contractor with ID {request.Id} not found");
 
         contractor.UpdateDetails(
             request.Name,
@@ -34,6 +33,6 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Result<Unit>.Success(Unit.Value);
+        return Unit.Value;
     }
 }

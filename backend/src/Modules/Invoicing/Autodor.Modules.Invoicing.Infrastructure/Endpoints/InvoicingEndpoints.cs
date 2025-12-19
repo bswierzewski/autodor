@@ -72,12 +72,17 @@ public static class InvoicingEndpoints
     {
         // Execute invoice creation with comprehensive business validation and tax calculations
         // Includes regulatory compliance checks and integration with accounting systems
-        var result = await mediator.Send(command);
+        try
+        {
+            await mediator.Send(command);
 
-        // Return 201 Created on success or 400 Bad Request on validation failure
-        return result.IsSuccess
-            ? Results.Created("/api/invoicing", new { Success = true })
-            : Results.BadRequest(result.Errors);
+            // Return 201 Created on success
+            return Results.Created("/api/invoicing", new { Success = true });
+        }
+        catch (Exception)
+        {
+            return Results.BadRequest();
+        }
     }
 
     /// <summary>
@@ -101,12 +106,10 @@ public static class InvoicingEndpoints
     {
         // Execute bulk invoice creation with optimized processing and comprehensive validation
         // Maintains individual invoice integrity while providing batch processing efficiency
-        var result = await mediator.Send(command);
+        var invoiceStatuses = await mediator.Send(command);
 
-        // Return 200 OK with invoice numbers collection or 400 Bad Request on validation failure
+        // Return 200 OK with invoice statuses
         // Enables clients to verify successful processing and handle any partial failures
-        return result.IsSuccess
-            ? Results.Ok(new { InvoiceNumbers = result.Value, Count = result.Value?.Count() ?? 0 })
-            : Results.BadRequest(result.Errors);
+        return Results.Ok(new { InvoiceStatuses = invoiceStatuses, Count = invoiceStatuses?.Count() ?? 0 });
     }
 }

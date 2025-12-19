@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Infrastructure.Endpoints;
 
@@ -78,13 +77,11 @@ public static class OrdersEndpoints
     {
         // Execute the exclusion command through the application layer
         // This ensures all business rules and domain validations are applied
-        var result = await mediator.Send(command);
+        var success = await mediator.Send(command);
 
-        // Return 200 OK with success indicator or 400 Bad Request on validation failure
+        // Return 200 OK with success indicator
         // The result indicates whether the exclusion was successfully recorded
-        return result.IsSuccess
-            ? Results.Ok(new { Success = result.Value })
-            : Results.BadRequest(result.Errors);
+        return Results.Ok(new { Success = success });
     }
 
     /// <summary>
@@ -107,13 +104,11 @@ public static class OrdersEndpoints
         // Create query with the specified date for business date filtering
         // This supports daily operational workflows and reporting requirements
         var query = new GetOrdersByDateQuery(date);
-        var result = await mediator.Send(query);
+        var orders = await mediator.Send(query);
 
-        // Return 200 OK with order collection or 400 Bad Request on validation failure
+        // Return 200 OK with order collection
         // Empty collections are valid responses when no orders exist for the specified date
-        return result.IsSuccess
-            ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Errors);
+        return Results.Ok(orders);
     }
 
     /// <summary>
@@ -139,12 +134,10 @@ public static class OrdersEndpoints
         // Create query with date range parameters for period-based filtering
         // Supports business reporting and analytics requirements across multiple time periods
         var query = new GetOrdersByDateRangeQuery(dateFrom, dateTo);
-        var result = await mediator.Send(query);
+        var orders = await mediator.Send(query);
 
-        // Return 200 OK with order collection or 400 Bad Request on validation failure
+        // Return 200 OK with order collection
         // Results may be large for extended date ranges, consider implementing pagination
-        return result.IsSuccess
-            ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Errors);
+        return Results.Ok(orders);
     }
 }

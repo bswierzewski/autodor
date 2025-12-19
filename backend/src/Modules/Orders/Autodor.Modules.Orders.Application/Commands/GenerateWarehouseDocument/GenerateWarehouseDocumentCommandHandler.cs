@@ -1,7 +1,6 @@
 using Autodor.Modules.Orders.Application.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 
@@ -10,7 +9,7 @@ namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 /// This handler processes the warehouse document generation request by collecting
 /// order data and generating a formatted PDF document for warehouse operations.
 /// </summary>
-public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateWarehouseDocumentCommand, Result<byte[]>>
+public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateWarehouseDocumentCommand, byte[]>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IPdfDocumentService _pdfDocumentService;
@@ -26,7 +25,7 @@ public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateW
         _logger = logger;
     }
 
-    public async Task<Result<byte[]>> Handle(GenerateWarehouseDocumentCommand request, CancellationToken cancellationToken)
+    public async Task<byte[]> Handle(GenerateWarehouseDocumentCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Generating warehouse document for order {OrderId} on date {Date}",
             request.OrderId, request.Date);
@@ -36,13 +35,13 @@ public class GenerateWarehouseDocumentCommandHandler : IRequestHandler<GenerateW
         if (order == null)
         {
             _logger.LogWarning("Order {OrderId} not found for date {Date}", request.OrderId, request.Date);
-            return Result<byte[]>.Failure("ORDER_NOT_FOUND", $"Order {request.OrderId} not found for date {request.Date:yyyy-MM-dd}");
+            throw new KeyNotFoundException($"Order {request.OrderId} not found for date {request.Date:yyyy-MM-dd}");
         }
 
         var pdfBytes = await _pdfDocumentService.GenerateWarehouseDocumentAsync(order, request.Date, cancellationToken);
 
         _logger.LogInformation("Successfully generated warehouse document for order {OrderId}", request.OrderId);
 
-        return Result<byte[]>.Success(pdfBytes);
+        return pdfBytes;
     }
 }

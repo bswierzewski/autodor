@@ -1,12 +1,11 @@
 using MediatR;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
 
 /// <summary>
 /// Query to retrieve all contractors from the system.
 /// </summary>
-public record GetAllContractorsQuery() : IRequest<Result<IEnumerable<GetAllContractorsDto>>>;
+public record GetAllContractorsQuery() : IRequest<IEnumerable<GetAllContractorsDto>>;
 
 /// <summary>
 /// Data transfer object containing contractor information for display purposes.

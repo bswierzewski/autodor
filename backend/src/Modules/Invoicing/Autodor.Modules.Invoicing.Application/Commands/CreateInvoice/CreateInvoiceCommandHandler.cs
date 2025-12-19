@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 
@@ -22,7 +21,7 @@ public class CreateInvoiceCommandHandler(
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Result>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Unit>
 {
 
     /// <summary>
@@ -30,8 +29,8 @@ public class CreateInvoiceCommandHandler(
     /// </summary>
     /// <param name="request">Invoice creation parameters including dates, order IDs, and contractor information</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
-    /// <returns>Result indicating success or failure of invoice creation</returns>
-    public async Task<Result> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+    /// <returns>Unit indicating completion</returns>
+    public async Task<Unit> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",
             request.ContractorId, request.OrderIds.Count(), request.Dates.Count());
@@ -45,7 +44,7 @@ public class CreateInvoiceCommandHandler(
         if (filteredOrders.Count == 0)
         {
             logger.LogWarning("No orders found for the specified order IDs");
-            return Result.Failure("NO_ORDERS_FOUND", "No orders found for the specified order IDs");
+            throw new InvalidOperationException("No orders found for the specified order IDs");
         }
 
         // Extract unique product numbers from all order items for bulk product lookup
@@ -63,7 +62,7 @@ public class CreateInvoiceCommandHandler(
         if (contractor == null)
         {
             logger.LogError("Contractor with ID {ContractorId} not found", request.ContractorId);
-            return Result.Failure("CONTRACTOR_NOT_FOUND", $"Contractor with ID {request.ContractorId} not found");
+            throw new KeyNotFoundException($"Contractor with ID {request.ContractorId} not found");
         }
 
         // Map contractor DTO to domain value object
@@ -111,12 +110,12 @@ public class CreateInvoiceCommandHandler(
         {
             await invoiceService.CreateInvoiceAsync(invoice, cancellationToken);
 
-            return Result.Success();
+            return Unit.Value;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to create invoice: {Error}", ex.Message);
-            return Result.Failure("INVOICE_CREATION_FAILED", $"An unexpected error occurred: {ex.Message}");
+            throw;
         }
     }
 }

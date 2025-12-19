@@ -1,4 +1,4 @@
-using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
+﻿using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
 using System.Net.Http.Json;
 using Requests = Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
@@ -35,6 +35,9 @@ public class InFaktHttpClient(HttpClient httpClient)
 
         // Send the request
         using var response = await httpClient.SendAsync(request, cancellationToken);
+
+        // {"error":"Wadliwy zasób. Popraw błędy i spróbuj ponownie.","errors":{"number":["Masz już wystawione faktury dla późniejszych dat i wystawienie faktury z wybraną datą spowoduje niespójność w numeracji."]}}
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
         // Ensure the response indicates success (2xx status code)
         response.EnsureSuccessStatusCode();

@@ -1,5 +1,4 @@
 using MediatR;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
@@ -19,4 +18,4 @@ public record CreateContractorCommand(
     string City,
     string ZipCode,
     string Email
-) : IRequest<Result<Guid>>;
+) : IRequest<Guid>;

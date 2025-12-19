@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 
@@ -22,7 +21,7 @@ public class CreateBulkInvoicesCommandHandler(
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Result<Dictionary<string, bool>>>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Dictionary<string, bool>>
 {
 
     /// <summary>
@@ -32,7 +31,7 @@ public class CreateBulkInvoicesCommandHandler(
     /// <param name="request">Bulk invoice creation parameters including date range</param>
     /// <param name="cancellationToken">Cancellation token for async operations</param>
     /// <returns>Dictionary mapping contractor NIP to creation status (true if successful, false otherwise)</returns>
-    public async Task<Result<Dictionary<string, bool>>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, bool>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
@@ -51,7 +50,7 @@ public class CreateBulkInvoicesCommandHandler(
         {
             logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
                 request.DateFrom, request.DateTo);
-            return Result<Dictionary<string, bool>>.Failure("NO_VALID_ORDERS", "No valid orders found for bulk invoice creation");
+            throw new InvalidOperationException("No valid orders found for bulk invoice creation");
         }
 
         logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",
@@ -162,6 +161,6 @@ public class CreateBulkInvoicesCommandHandler(
         logger.LogInformation("Successfully created {SuccessCount} out of {TotalCount} bulk invoices",
             successCount, invoiceStatuses.Count);
 
-        return Result<Dictionary<string, bool>>.Success(invoiceStatuses);
+        return invoiceStatuses;
     }
 }

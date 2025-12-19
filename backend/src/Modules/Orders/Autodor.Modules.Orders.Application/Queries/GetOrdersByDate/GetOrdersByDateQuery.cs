@@ -1,6 +1,5 @@
 using Autodor.Modules.Orders.Domain.Entities;
 using MediatR;
-using Shared.Infrastructure.Models;
 
 namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
 
@@ -8,4 +7,4 @@ namespace Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
 /// Query to retrieve all orders for a specific date from external systems.
 /// </summary>
 /// <param name="Date">The date for which to retrieve orders.</param>
-public record GetOrdersByDateQuery(DateTime Date) : IRequest<Result<IEnumerable<Order>>>;
+public record GetOrdersByDateQuery(DateTime Date) : IRequest<IEnumerable<Order>>;
