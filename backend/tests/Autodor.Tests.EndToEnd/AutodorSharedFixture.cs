@@ -26,8 +26,6 @@ namespace Autodor.Tests.EndToEnd;
 /// </remarks>
 public class AutodorSharedFixture : IAsyncLifetime
 {
-    private TestContext _bootstrapContext = null!;
-
     /// <summary>
     /// Gets the shared PostgreSQL container.
     /// Use this in test classes with TestContextBuilder.WithContainer().
@@ -45,35 +43,10 @@ public class AutodorSharedFixture : IAsyncLifetime
     /// </summary>
     public TestUserOptions TestUser { get; private set; } = null!;
 
-    public async Task InitializeAsync()
-    {
-        // Start PostgreSQL container (once for all tests)
-        await Container.StartAsync();
+    public Task DisposeAsync() => throw new NotImplementedException();
 
-        // Create bootstrap context to run migrations and get configuration
-        _bootstrapContext = await TestContext.CreateBuilder<Program>()
-            .WithContainer(Container)
-            .WithServices((services, configuration) =>
-            {
-                services.ConfigureOptions<TestUserOptions>(configuration);
-                services.AddSingleton<ITokenProvider, SupabaseTokenProvider>();
-            })
-            .BuildAsync();
+    public Task InitializeAsync() => throw new NotImplementedException();
 
-        // Get shared instances
-        TestUser = _bootstrapContext.GetRequiredService<IOptions<TestUserOptions>>().Value;
-        TokenProvider = _bootstrapContext.GetRequiredService<ITokenProvider>();
-    }
-
-    public async Task DisposeAsync()
-    {
-        if (_bootstrapContext != null)
-        {
-            await _bootstrapContext.DisposeAsync();
-        }
-
-        await Container.StopAsync();
-    }
 }
 
 /// <summary>
