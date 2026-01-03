@@ -6,6 +6,7 @@
  */
 
 export interface OrderItem {
+  isExcluded?: boolean;
   /** @nullable */
   partNumber?: string | null;
   /** @nullable */

@@ -63,5 +63,5 @@ jobs:
         with:
           context: ./client
           file: client/Dockerfile
-          tags: ninjatechfun/autodor_client:latest
+          tags: bswierzewski/autodor_client:latest
           push: true

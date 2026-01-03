@@ -21,7 +21,7 @@ import type {
 } from '@tanstack/react-query';
 
 import { customInstance } from '../axios';
-import type { ExcludeOrderCommand, GetOrdersParams, OrderDto, Void } from '../models';
+import type { ExcludeOrderCommand, ExcludeOrderPositionCommand, GetOrdersParams, OrderDto, Void } from '../models';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -117,6 +117,102 @@ export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TErr
   return query;
 }
 
+export const getOrderById = (
+  orderId?: string,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal
+) => {
+  return customInstance<OrderDto>({ url: `/api/Orders/${orderId}`, method: 'GET', signal }, options);
+};
+
+export const getGetOrderByIdQueryKey = (orderId?: string) => {
+  return [`/api/Orders/${orderId}`] as const;
+};
+
+export const getGetOrderByIdQueryOptions = <TData = Awaited<ReturnType<typeof getOrderById>>, TError = unknown>(
+  orderId?: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderById>>, TError, TData>>;
+    request?: SecondParameter<typeof customInstance>;
+  }
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetOrderByIdQueryKey(orderId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrderById>>> = ({ signal }) =>
+    getOrderById(orderId, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!orderId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOrderById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetOrderByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getOrderById>>>;
+export type GetOrderByIdQueryError = unknown;
+
+export function useGetOrderById<TData = Awaited<ReturnType<typeof getOrderById>>, TError = unknown>(
+  orderId: undefined | string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderById>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOrderById>>,
+          TError,
+          Awaited<ReturnType<typeof getOrderById>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetOrderById<TData = Awaited<ReturnType<typeof getOrderById>>, TError = unknown>(
+  orderId?: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderById>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOrderById>>,
+          TError,
+          Awaited<ReturnType<typeof getOrderById>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetOrderById<TData = Awaited<ReturnType<typeof getOrderById>>, TError = unknown>(
+  orderId?: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderById>>, TError, TData>>;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useGetOrderById<TData = Awaited<ReturnType<typeof getOrderById>>, TError = unknown>(
+  orderId?: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderById>>, TError, TData>>;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+  const queryOptions = getGetOrderByIdQueryOptions(orderId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 export const excludeOrder = (
   excludeOrderCommand: ExcludeOrderCommand,
   options?: SecondParameter<typeof customInstance>,
@@ -124,7 +220,7 @@ export const excludeOrder = (
 ) => {
   return customInstance<Void>(
     {
-      url: `/api/Orders`,
+      url: `/api/Orders/exclude`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: excludeOrderCommand,
@@ -178,6 +274,81 @@ export const useExcludeOrder = <TError = unknown, TContext = unknown>(
   queryClient?: QueryClient
 ): UseMutationResult<Awaited<ReturnType<typeof excludeOrder>>, TError, { data: ExcludeOrderCommand }, TContext> => {
   const mutationOptions = getExcludeOrderMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+export const excludeOrderPosition = (
+  excludeOrderPositionCommand: ExcludeOrderPositionCommand,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal
+) => {
+  return customInstance<Void>(
+    {
+      url: `/api/Orders/exclude-position`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: excludeOrderPositionCommand,
+      signal
+    },
+    options
+  );
+};
+
+export const getExcludeOrderPositionMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof excludeOrderPosition>>,
+    TError,
+    { data: ExcludeOrderPositionCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof excludeOrderPosition>>,
+  TError,
+  { data: ExcludeOrderPositionCommand },
+  TContext
+> => {
+  const mutationKey = ['excludeOrderPosition'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof excludeOrderPosition>>,
+    { data: ExcludeOrderPositionCommand }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return excludeOrderPosition(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ExcludeOrderPositionMutationResult = NonNullable<Awaited<ReturnType<typeof excludeOrderPosition>>>;
+export type ExcludeOrderPositionMutationBody = ExcludeOrderPositionCommand;
+export type ExcludeOrderPositionMutationError = unknown;
+
+export const useExcludeOrderPosition = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof excludeOrderPosition>>,
+      TError,
+      { data: ExcludeOrderPositionCommand },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof excludeOrderPosition>>,
+  TError,
+  { data: ExcludeOrderPositionCommand },
+  TContext
+> => {
+  const mutationOptions = getExcludeOrderPositionMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

@@ -44,7 +44,7 @@ jobs:
         with:
           context: ./api
           file: api/src/Web/Dockerfile
-          tags: ninjatechfun/autodor_api:latest
+          tags: bswierzewski/autodor_api:latest
           push: true
           build-args: | # Pass build arguments to Docker
             APP_VERSION_SHA_ARG=${{ steps.git_sha.outputs.sha }}

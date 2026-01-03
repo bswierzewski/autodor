@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<ExcludedOrder> ExcludedOrders => Set<ExcludedOrder>();
     public DbSet<Contractor> Contractors => Set<Contractor>();
+    public DbSet<ExcludedOrderPosition> ExcludedOrderPositions => Set<ExcludedOrderPosition>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

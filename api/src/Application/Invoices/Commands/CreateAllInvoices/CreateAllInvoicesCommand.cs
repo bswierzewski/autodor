@@ -62,13 +62,25 @@ public class CreateAllInvoicesCommandHandler(
             {
                 var invoiceItems = new List<InvoiceItem>();
 
-                var items = groupedOrder.Value.SelectMany(x => x.Items);
+                // Get excluded positions for orders in this group only
+                var groupOrderIds = groupedOrder.Value.Select(o => o.Id).ToList();
+                var excludedPositionsForGroup = (await context.ExcludedOrderPositions
+                    .Where(x => groupOrderIds.Contains(x.OrderId))
+                    .ToListAsync(cancellationToken))
+                    .GroupBy(x => x.OrderId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => x.PartNumber).ToHashSet()
+                    );
+
+                var items = groupedOrder.Value
+                    .SelectMany(order => order.Items
+                        .Where(item => item.TotalPrice > 0)
+                        .Where(item => !excludedPositionsForGroup.TryGetValue(order.Id, out var excluded) || !excluded.Contains(item.PartNumber))
+                    );
 
                 foreach (var item in items)
                 {
-                    if (item.TotalPrice <= 0)
-                        continue;
-
                     var existsName = products.ContainsKey(item?.PartNumber ?? "");
                     var productName = existsName ? products[item.PartNumber].Name : item.PartNumber;
                     var fullName = existsName ? $"{productName} ({item.PartNumber})" : item.PartNumber;

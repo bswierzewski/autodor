@@ -6,6 +6,7 @@ public interface IApplicationDbContext
 {
     DbSet<ExcludedOrder> ExcludedOrders { get; }
     DbSet<Contractor> Contractors { get; }
+    DbSet<ExcludedOrderPosition> ExcludedOrderPositions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

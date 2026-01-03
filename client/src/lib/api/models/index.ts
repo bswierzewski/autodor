@@ -13,6 +13,8 @@ export * from './createContractorCommand';
 export * from './createInvoiceCommand';
 export * from './deleteContractorCommand';
 export * from './excludeOrderCommand';
+export * from './excludeOrderPositionCommand';
+export * from './getOrderByIdParams';
 export * from './getOrdersParams';
 export * from './invoiceResponseDto';
 export * from './orderDto';

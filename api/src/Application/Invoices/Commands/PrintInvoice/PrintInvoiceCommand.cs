@@ -22,8 +22,11 @@ public class PrintInvoiceCommandHandler(
     {
         var order = await GetOrderAsync(request);
         var products = await GetProductsAsync();
-        var contractor = await GetContractorAsync(order.CustomerNumber) 
+        var contractor = await GetContractorAsync(order.CustomerNumber)
             ?? throw new Exception($"Contractor for {order.CustomerNumber} not found");
+
+        // Filter excluded positions
+        await FilterExcludedPositions(order, cancellationToken);
 
         // Enrich order with product names
         EnrichOrderWithProductNames(order, products);
@@ -50,6 +53,19 @@ public class PrintInvoiceCommandHandler(
     {
         var contractors = await context.Contractors.ToListAsync();
         return contractors.FirstOrDefault(x => customerNumber.Contains(x.NIP));
+    }
+
+    private async Task FilterExcludedPositions(Order order, CancellationToken cancellationToken)
+    {
+        var excludedPartNumbers = await context.ExcludedOrderPositions
+            .Where(x => x.OrderId == order.Id)
+            .Select(x => x.PartNumber)
+            .ToListAsync(cancellationToken);
+
+        var excludedSet = excludedPartNumbers.ToHashSet();
+
+        // Filter items in place
+        order.Items = order.Items.Where(item => !excludedSet.Contains(item.PartNumber)).ToList();
     }
 
     private void EnrichOrderWithProductNames(Order order, IDictionary<string, Product> products)

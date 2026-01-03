@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.Common.Interfaces;
 using Domain.Entities;
+using System.Linq;
 
 namespace Application.Invoices.Commands.CreateInvoice;
 
@@ -22,17 +23,19 @@ public class CreateInvoiceCommandHandler(
 {
     public async Task<Result<string>> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        // Start both tasks in parallel
+        // Start all tasks in parallel
         var ordersTask = FetchOrdersAsync(request.Dates);
         var productsTask = productsService.GetProductsAsync();
+        var excludedPositionsTask = LoadExcludedPositionsAsync(request.OrderIds, cancellationToken);
 
-        await Task.WhenAll(ordersTask, productsTask).ConfigureAwait(false);
+        await Task.WhenAll(ordersTask, productsTask, excludedPositionsTask).ConfigureAwait(false);
 
         var allOrders = await ordersTask.ConfigureAwait(false);
         var products = await productsTask.ConfigureAwait(false);
+        var excludedPositions = await excludedPositionsTask.ConfigureAwait(false);
 
         var filteredOrders = FilterOrdersByIds(allOrders, request.OrderIds);
-        var items = MapInvoiceItems(filteredOrders, products);
+        var items = MapInvoiceItems(filteredOrders, products, excludedPositions);
         var invoice = await CreateInvoiceAsync(request, items).ConfigureAwait(false);
 
         return await invoiceService.AddInvoice(invoice).ConfigureAwait(false);
@@ -53,22 +56,36 @@ public class CreateInvoiceCommandHandler(
         return [.. orders.Where(o => idSet.Contains(o.Id))];
     }
 
-    private List<InvoiceItem> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products)
+    private async Task<Dictionary<string, HashSet<string>>> LoadExcludedPositionsAsync(
+        IEnumerable<string> orderIds,
+        CancellationToken cancellationToken)
+    {
+        return await context.ExcludedOrderPositions
+            .Where(x => orderIds.Contains(x.OrderId))
+            .GroupBy(x => x.OrderId)
+            .ToDictionaryAsync(
+                g => g.Key,
+                g => g.Select(x => x.PartNumber).ToHashSet()
+            , cancellationToken);
+    }
+
+    private List<InvoiceItem> MapInvoiceItems(Order[] orders, IDictionary<string, Product> products, Dictionary<string, HashSet<string>> excludedPositions)
     {
         return [.. orders
-            .SelectMany(order => order.Items)
-            .Where(item => item != null && item.TotalPrice > 0)
-            .Select(item =>
+            .SelectMany(order => order.Items.Select(item => new { Order = order, Item = item }))
+            .Where(x => x.Item != null && x.Item.TotalPrice > 0)
+            .Where(x => !excludedPositions.TryGetValue(x.Order.Id, out var excluded) || !excluded.Contains(x.Item.PartNumber))
+            .Select(x =>
             {
-                var partNumber = item.PartNumber ?? string.Empty;
+                var partNumber = x.Item.PartNumber ?? string.Empty;
                 var productName = products.TryGetValue(partNumber, out var product)
                     ? $"{product.Name} ({partNumber})"
                     : partNumber;
 
                 return new InvoiceItem
                 {
-                    Quantity = item.Quantity,
-                    UnitPrice = Math.Round(item.TotalPrice, 2),
+                    Quantity = x.Item.Quantity,
+                    UnitPrice = Math.Round(x.Item.TotalPrice, 2),
                     Unit = "sztuk",
                     Name = productName,
                     VatRate = 0.23M,

@@ -1,7 +1,8 @@
 import { handleDownload } from '@/lib/utils';
 import { useOrdersStore } from '@/stores/orders';
 import { format } from 'date-fns';
-import { BookmarkCheck, BookmarkX, Printer, RotateCw } from 'lucide-react';
+import { BookmarkCheck, BookmarkX, Pencil, Printer, RotateCw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -16,6 +17,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 export default function OrdersTable() {
   var daysInSecond = 7 * 24 * 60 * 60 * 1000;
+
+  const router = useRouter();
 
   const [dateFrom, setDateFrom] = useState<Date | undefined>(new Date(Date.now() - daysInSecond));
   const [dateTo, setDateTo] = useState<Date | undefined>(new Date());
@@ -37,7 +40,7 @@ export default function OrdersTable() {
     },
     {
       query: {
-        enabled: false,
+        enabled: true,
         gcTime: 0
       }
     }
@@ -140,6 +143,11 @@ export default function OrdersTable() {
                         className={`cursor-pointer opacity-10`}
                       />
                     )}
+
+                    <Pencil
+                      onClick={() => router.push(`/orders/${order.id}`)}
+                      className="cursor-pointer"
+                    />
 
                     <Printer
                       onClick={() => {

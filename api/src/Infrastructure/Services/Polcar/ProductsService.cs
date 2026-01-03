@@ -44,7 +44,7 @@ public class ProductsService(
             foreach (var product in products)
                 productsDictionary[product.Number] = product;
 
-            cache.Set(CacheConsts.PolcarProducts, productsDictionary, TimeSpan.FromHours(1));
+            cache.Set(CacheConsts.PolcarProducts, productsDictionary, TimeSpan.FromHours(24));
         }
         catch (Exception ex)
         {

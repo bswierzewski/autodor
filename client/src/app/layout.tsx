@@ -47,9 +47,7 @@ export default async function RootLayout({
                   <main className="p-10 flex-1">{children}</main>
                   <footer className="flex items-center justify-center py-3">
                     <span className="text-default-600">
-                      <a>
-                        <Link href={'/about'}>Informacje o aplikacji</Link>
-                      </a>
+                      <Link href={'/about'}>Informacje o aplikacji</Link>
                     </span>
                   </footer>
                 </div>
