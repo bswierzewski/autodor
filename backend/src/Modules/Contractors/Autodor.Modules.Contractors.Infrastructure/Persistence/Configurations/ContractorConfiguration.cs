@@ -5,9 +5,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Configurations;
 
-/// <summary>
-/// Entity Framework configuration for the Contractor aggregate, defining database mappings and constraints.
-/// </summary>
 public class ContractorConfiguration : IEntityTypeConfiguration<Contractor>
 {
     public void Configure(EntityTypeBuilder<Contractor> builder)

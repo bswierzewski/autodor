@@ -1,6 +1,4 @@
 <Project>
-
-  <!-- Build Configuration -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -10,5 +8,4 @@
     <WarningsAsErrors />
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
 </Project>

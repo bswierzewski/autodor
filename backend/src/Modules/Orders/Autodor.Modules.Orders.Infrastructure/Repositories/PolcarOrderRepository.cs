@@ -1,19 +1,16 @@
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
-using Polly;
-using Polly.Retry;
 using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Application.Options;
 using Autodor.Modules.Orders.Domain.Entities;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
-using Shared.Abstractions.Extensions;
+using BuildingBlocks.Abstractions.Extensions;
+using BuildingBlocks.Infrastructure.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Retry;
 
 namespace Autodor.Modules.Orders.Infrastructure.Repositories;
 
-/// <summary>
-/// Repository implementation for retrieving orders from the Polcar external system via SOAP API.
-/// Includes retry policies for resilient communication with the external service.
-/// </summary>
 public class PolcarOrderRepository : IOrdersRepository
 {
     private readonly PolcarSalesOptions _options;
@@ -22,12 +19,6 @@ public class PolcarOrderRepository : IOrdersRepository
 
     private readonly AsyncRetryPolicy _retryPolicy;
 
-    /// <summary>
-    /// Initializes a new instance of the PolcarOrderRepository with necessary dependencies and retry policy.
-    /// </summary>
-    /// <param name="options">Configuration options for Polcar API connection.</param>
-    /// <param name="logger">Logger for tracking repository operations and errors.</param>
-    /// <param name="soapClient">The SOAP client for communicating with Polcar service.</param>
     public PolcarOrderRepository(
         IOptions<PolcarSalesOptions> options,
         ILogger<PolcarOrderRepository> logger,
@@ -49,22 +40,11 @@ public class PolcarOrderRepository : IOrdersRepository
                 });
     }
 
-    /// <summary>
-    /// Retrieves all orders for a specific date from the Polcar system.
-    /// </summary>
-    /// <param name="date">The date for which to retrieve orders.</param>
-    /// <returns>A collection of orders for the specified date.</returns>
     public async Task<IEnumerable<Order>> GetOrdersByDateAsync(DateTime date)
     {
         return await GetOrdersByDateRangeAsync(date.Date, date.Date);
     }
 
-    /// <summary>
-    /// Retrieves all orders within a specified date range from the Polcar system using parallel processing for each day.
-    /// </summary>
-    /// <param name="dateFrom">The start date of the range (inclusive).</param>
-    /// <param name="dateTo">The end date of the range (inclusive).</param>
-    /// <returns>A collection of orders within the specified date range.</returns>
     public async Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime dateFrom, DateTime dateTo)
     {
         try
@@ -91,12 +71,6 @@ public class PolcarOrderRepository : IOrdersRepository
         }
     }
 
-    /// <summary>
-    /// Retrieves a specific order by its ID and date from the Polcar system.
-    /// </summary>
-    /// <param name="orderId">The unique identifier of the order.</param>
-    /// <param name="date">The date when the order was processed.</param>
-    /// <returns>The order if found, otherwise null.</returns>
     public async Task<Order?> GetOrderByIdAndDateAsync(string orderId, DateTime date)
     {
         _logger.LogInformation("Fetching order {OrderId} for date {Date}", orderId, date.Date);
@@ -116,11 +90,6 @@ public class PolcarOrderRepository : IOrdersRepository
         return order;
     }
 
-    /// <summary>
-    /// Fetches orders for a single date from the Polcar SOAP service with retry policy.
-    /// </summary>
-    /// <param name="date">The specific date to fetch orders for.</param>
-    /// <returns>A collection of orders for the specified date.</returns>
     private async Task<IEnumerable<Order>> FetchOrdersForSingleDateAsync(DateTime date)
     {
         return await _retryPolicy.ExecuteAsync(async () =>
@@ -149,11 +118,6 @@ public class PolcarOrderRepository : IOrdersRepository
         });
     }
 
-    /// <summary>
-    /// Maps a Polcar SOAP response to a domain Order entity.
-    /// </summary>
-    /// <param name="response">The SOAP response containing order data.</param>
-    /// <returns>A mapped Order entity.</returns>
     private static Order MapToOrder(DistributorSalesOrderResponse response)
     {
         return new Order
@@ -172,11 +136,6 @@ public class PolcarOrderRepository : IOrdersRepository
         };
     }
 
-    /// <summary>
-    /// Maps a Polcar SOAP response item to a domain OrderItem entity.
-    /// </summary>
-    /// <param name="response">The SOAP response containing order item data.</param>
-    /// <returns>A mapped OrderItem entity.</returns>
     private static OrderItem MapToOrderItem(DistributorSalesOrderItemResponse response)
     {
         return new OrderItem

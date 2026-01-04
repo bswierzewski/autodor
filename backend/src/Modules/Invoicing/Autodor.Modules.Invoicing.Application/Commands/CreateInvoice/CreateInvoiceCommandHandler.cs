@@ -11,10 +11,6 @@ using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 
-/// <summary>
-/// Handles the creation of invoices by aggregating order data, enriching with product details,
-/// and sending to external invoicing systems.
-/// </summary>
 public class CreateInvoiceCommandHandler(
     ILogger<CreateInvoiceCommandHandler> logger,
     IProductsAPI productsApi,
@@ -23,13 +19,6 @@ public class CreateInvoiceCommandHandler(
     IServiceProvider serviceProvider,
     IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoiceCommand, Unit>
 {
-
-    /// <summary>
-    /// Creates an invoice by retrieving orders, enriching them with product data, and submitting to external invoicing system.
-    /// </summary>
-    /// <param name="request">Invoice creation parameters including dates, order IDs, and contractor information</param>
-    /// <param name="cancellationToken">Cancellation token for async operations</param>
-    /// <returns>Unit indicating completion</returns>
     public async Task<Unit> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating invoice for contractor {ContractorId} with {OrderCount} orders from {DateCount} dates",

@@ -21,7 +21,12 @@
       "Bash(ls:*)",
       "Bash(dir:*)",
       "Bash(dotnet sln:*)",
-      "Bash(timeout 10 dotnet test:*)"
+      "Bash(timeout 10 dotnet test:*)",
+      "Bash(while read f)",
+      "Bash(do grep -l \"Shared\\\\.\" \"$f\")",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(dotnet clean:*)"
     ],
     "deny": [],
     "ask": []

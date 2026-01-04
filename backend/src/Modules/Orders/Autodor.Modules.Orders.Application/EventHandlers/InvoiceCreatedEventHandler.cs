@@ -6,35 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Autodor.Modules.Orders.Application.EventHandlers;
 
-/// <summary>
-/// Handles invoice creation events by automatically excluding the associated orders from future processing.
-/// </summary>
-public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEvent>
+public class InvoiceCreatedEventHandler(
+    IOrdersDbContext context,
+    ILogger<InvoiceCreatedEventHandler> logger) : INotificationHandler<InvoiceCreatedEvent>
 {
-    private readonly IOrdersDbContext _context;
-    private readonly ILogger<InvoiceCreatedEventHandler> _logger;
-
-    /// <summary>
-    /// Initializes a new instance of the InvoiceCreatedEventHandler.
-    /// </summary>
-    /// <param name="context">The database context for write operations.</param>
-    /// <param name="logger">The logger for recording event handling activities.</param>
-    public InvoiceCreatedEventHandler(
-        IOrdersDbContext context,
-        ILogger<InvoiceCreatedEventHandler> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
-
-    /// <summary>
-    /// Processes the invoice creation event by excluding all associated orders.
-    /// </summary>
-    /// <param name="notification">The invoice created event containing order IDs to exclude.</param>
-    /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     public async Task Handle(InvoiceCreatedEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Processing InvoiceCreatedEvent for invoice {InvoiceNumber} with {OrderCount} orders",
+        logger.LogInformation("Processing InvoiceCreatedEvent for invoice {InvoiceNumber} with {OrderCount} orders",
             notification.InvoiceNumber, notification.OrderIds.Count());
 
         // Exclude each order associated with the created invoice
@@ -45,12 +23,12 @@ public class InvoiceCreatedEventHandler : INotificationHandler<InvoiceCreatedEve
                 notification.CreatedDate
             );
 
-            await _context.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
+            await context.ExcludedOrders.AddAsync(excludedOrder, cancellationToken);
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Successfully excluded {OrderCount} orders after invoice creation",
+        logger.LogInformation("Successfully excluded {OrderCount} orders after invoice creation",
             notification.OrderIds.Count());
     }
 }

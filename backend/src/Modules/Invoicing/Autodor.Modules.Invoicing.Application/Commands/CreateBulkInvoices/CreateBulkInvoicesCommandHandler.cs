@@ -11,10 +11,6 @@ using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 
-/// <summary>
-/// Handles the creation of multiple invoices by processing orders within a date range,
-/// excluding specified orders, and grouping by contractor for batch invoice generation.
-/// </summary>
 public class CreateBulkInvoicesCommandHandler(
     ILogger<CreateBulkInvoicesCommandHandler> logger,
     IProductsAPI productsApi,
@@ -23,14 +19,6 @@ public class CreateBulkInvoicesCommandHandler(
     IServiceProvider serviceProvider,
     IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Dictionary<string, bool>>
 {
-
-    /// <summary>
-    /// Creates multiple invoices by processing all orders in date range, excluding specified orders,
-    /// and grouping remaining orders by contractor for individual invoice generation.
-    /// </summary>
-    /// <param name="request">Bulk invoice creation parameters including date range</param>
-    /// <param name="cancellationToken">Cancellation token for async operations</param>
-    /// <returns>Dictionary mapping contractor NIP to creation status (true if successful, false otherwise)</returns>
     public async Task<Dictionary<string, bool>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",

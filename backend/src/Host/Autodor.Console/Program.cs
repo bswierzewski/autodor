@@ -1,17 +1,14 @@
-using Autodor.Console;
 using Autodor.Console.Services;
 using Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
+using BuildingBlocks.Abstractions.Abstractions;
+using BuildingBlocks.Infrastructure.Extensions;
 using DotNetEnv;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Shared.Abstractions.Authorization;
-using Shared.Abstractions.Modules;
 using Serilog;
-using Shared.Infrastructure.Logging;
-using Shared.Infrastructure.Modules;
 
 // Load environment variables from .env file BEFORE creating builder
 if (File.Exists(".env"))
@@ -32,13 +29,19 @@ var configuration = new ConfigurationBuilder()
 
 using IHost host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(configBuilder => configBuilder.AddConfiguration(configuration))
-    .AddSerilog(configuration, "Autodor.Console")
+    .UseSerilog((context, services, config) =>
+    {
+        config
+            .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
+            .Enrich.WithProperty("Application", "Autodor.Console");
+    })
     .ConfigureServices(services =>
     {
         services.RegisterModules(configuration);
 
         services.AddSingleton(TimeProvider.System);
-        services.AddScoped<IUser, ConsoleUser>();
+        services.AddScoped<IUserContext, ConsoleUser>();
 
         services.AddOptions<Options>()
             .Configure(opts =>
@@ -110,6 +113,4 @@ static async Task CreateBulkInvoicesAsync(ISender mediator, DateTime from, DateT
     }
 }
 
-// [GenerateModuleRegistry] triggers source generator to create ModuleRegistry class
-[GenerateModuleRegistry]
 public partial class Program { }

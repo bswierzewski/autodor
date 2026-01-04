@@ -22,13 +22,9 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Label="NuGet Package References">
-    <PackageReference Include="Shared.Abstractions" />
-    <PackageReference Include="Shared.Infrastructure" />
-    <PackageReference Include="Shared.Users.Domain" />
-    <PackageReference Include="Shared.Users.Application" />
-    <PackageReference Include="Shared.Users.Infrastructure" />
-    <PackageReference Include="Shared.Infrastructure.Generators" />
+  <ItemGroup Label="BuildingBlocks Package References">
+    <ProjectReference Include="..\..\BuildingBlocks\src\BuildingBlocks.Abstractions\BuildingBlocks.Abstractions.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

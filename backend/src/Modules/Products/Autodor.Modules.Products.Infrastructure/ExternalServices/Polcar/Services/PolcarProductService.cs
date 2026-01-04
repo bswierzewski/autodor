@@ -6,7 +6,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Retry;
-using Shared.Abstractions.Extensions;
+using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Abstractions.Extensions;
 using System.Xml.Serialization;
 
 namespace Autodor.Modules.Products.Infrastructure.ExternalServices.Polcar.Services;

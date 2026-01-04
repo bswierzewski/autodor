@@ -1,14 +1,5 @@
-using Shared.Abstractions.Modules;
+using BuildingBlocks.Abstractions.Abstractions;
 
 namespace Autodor.Modules.Products.Infrastructure;
 
-/// <summary>
-/// Marker class for the Products module Infrastructure assembly.
-/// Enables automatic discovery and registration of:
-/// - MediatR handlers (commands, queries, notifications)
-/// - FluentValidation validators
-/// - Module endpoints (IModuleEndpoints)
-/// </summary>
-public sealed class InfrastructureAssembly : IModuleAssembly
-{
-}
+public sealed class InfrastructureAssembly : IModuleAssembly { }

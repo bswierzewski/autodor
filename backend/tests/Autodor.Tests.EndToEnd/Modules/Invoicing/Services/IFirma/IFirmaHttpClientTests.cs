@@ -1,7 +1,7 @@
 ﻿using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
-using Shared.Infrastructure.Tests.Core;
+using BuildingBlocks.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
 

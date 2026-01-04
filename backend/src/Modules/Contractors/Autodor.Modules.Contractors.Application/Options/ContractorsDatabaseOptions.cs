@@ -1,22 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-using Shared.Abstractions.Options;
 using Autodor.Modules.Contractors.Domain;
+using BuildingBlocks.Abstractions.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Autodor.Modules.Contractors.Application.Options;
 
-/// <summary>
-/// Database configuration options for the Contractors module.
-/// </summary>
 public class ContractorsDatabaseOptions : IOptions
 {
-    /// <summary>
-    /// Configuration section name for binding.
-    /// </summary>
-    public static string SectionName => $"Modules:{ModuleConstants.ModuleName}";
+    public static string SectionName => $"Modules:{Module.Name}";
 
-    /// <summary>
-    /// Gets or sets the PostgreSQL connection string for Contractors database.
-    /// </summary>
     [Required(ErrorMessage = "ConnectionString is required")]
     public string ConnectionString { get; set; } = null!;
 }

@@ -8,23 +8,14 @@ using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders.Infrastructure.Services;
 
-public class PdfDocumentService : IPdfDocumentService
+public class PdfDocumentService(IProductsAPI productsAPI, ILogger<PdfDocumentService> logger) : IPdfDocumentService
 {
-    private readonly IProductsAPI _productsAPI;
-    private readonly ILogger<PdfDocumentService> _logger;
-
-    public PdfDocumentService(IProductsAPI productsAPI, ILogger<PdfDocumentService> logger)
-    {
-        _productsAPI = productsAPI;
-        _logger = logger;
-    }
-
     public async Task<byte[]> GenerateWarehouseDocumentAsync(Order order, DateTime documentDate, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Generating warehouse document for order {OrderId} on date {Date}", order.Id, documentDate);
+        logger.LogInformation("Generating warehouse document for order {OrderId} on date {Date}", order.Id, documentDate);
 
         var productNumbers = order.Items.Select(i => i.Number).ToList();
-        var products = await _productsAPI.GetProductsByNumbersAsync(productNumbers, cancellationToken);
+        var products = await productsAPI.GetProductsByNumbersAsync(productNumbers, cancellationToken);
         var productsDictionary = products.ToDictionary(p => p.Number, p => p);
 
         var document = Document.Create(container =>

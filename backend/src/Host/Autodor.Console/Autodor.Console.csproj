@@ -8,6 +8,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\src\BuildingBlocks.Abstractions\BuildingBlocks.Abstractions.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Shared\Autodor.Shared.Contracts\Autodor.Shared.Contracts.csproj" />
     <ProjectReference Include="..\..\Modules\Contractors\Autodor.Modules.Contractors.Application\Autodor.Modules.Contractors.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders.Application\Autodor.Modules.Orders.Application.csproj" />
@@ -33,9 +35,6 @@
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
-    <PackageReference Include="Shared.Abstractions" />
-    <PackageReference Include="Shared.Infrastructure" />
-    <PackageReference Include="Shared.Infrastructure.Generators" />
   </ItemGroup>
 
   <PropertyGroup>

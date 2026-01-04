@@ -5,26 +5,16 @@ using System.Collections.Concurrent;
 
 namespace Autodor.Modules.Products.Infrastructure.Persistence;
 
-/// <summary>
-/// In-memory implementation of products repository using ConcurrentDictionary for thread-safe operations.
-/// Optimized for read-heavy workloads with periodic bulk updates.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the InMemoryProductsRepository.
-/// </remarks>
-/// <param name="logger">Logger for repository operations</param>
 public class InMemoryProductsRepository(ILogger<InMemoryProductsRepository> logger) : IProductsRepository
 {
     private ConcurrentDictionary<string, Product> _products = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <inheritdoc />
     public Product? GetProductByNumber(string number)
     {
         _products.TryGetValue(number, out var product);
         return product;
     }
 
-    /// <inheritdoc />
     public IEnumerable<Product> GetProductsByNumbers(IEnumerable<string> numbers)
     {
         var result = new List<Product>();
@@ -38,7 +28,6 @@ public class InMemoryProductsRepository(ILogger<InMemoryProductsRepository> logg
         return result;
     }
 
-    /// <inheritdoc />
     public void ReplaceAllProducts(IEnumerable<Product> products)
     {
         var productsList = products.ToList();
@@ -69,9 +58,5 @@ public class InMemoryProductsRepository(ILogger<InMemoryProductsRepository> logg
             duplicatesCount);
     }
 
-    /// <inheritdoc />
-    public int GetProductCount()
-    {
-        return _products.Count;
-    }
+    public int GetProductCount() => _products.Count;
 }

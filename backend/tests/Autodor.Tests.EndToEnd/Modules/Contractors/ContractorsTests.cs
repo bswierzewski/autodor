@@ -1,17 +1,16 @@
-using System.Net;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
+using BuildingBlocks.Tests.Core;
+using BuildingBlocks.Tests.Extensions.Http;
+using BuildingBlocks.Tests.Infrastructure.Authentication;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructure.Tests.Core;
-using Shared.Infrastructure.Tests.Extensions.Http;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 
 namespace Autodor.Tests.EndToEnd.Modules.Contractors;
 
-/// <summary>
-/// End-to-end tests for contractor management functionality including creation, retrieval, and deletion operations.
-/// </summary>
 [Collection("Autodor")]
 public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
 {
@@ -24,13 +23,21 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         _context = await TestContext.CreateBuilder<Program>()
             .WithContainer(_fixture.Container)
             .WithoutModuleInitialization()
+            .WithServices((services, _) =>
+            {
+                // Register test authentication handler for bypassing authorization in tests
+                services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
+                    .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions,
+                        TestAuthenticationHandler>(
+                        TestAuthenticationHandler.AuthenticationScheme, null);
+
+                // Replace IUserContext with test implementation
+                services.AddScoped<BuildingBlocks.Abstractions.Abstractions.IUserContext,
+                    TestUserContext>();
+            })
             .BuildAsync();
 
         await _context.ResetDatabaseAsync();
-
-        // Token is obtained from shared fixture's TokenProvider for better caching
-        var token = await _fixture.TokenProvider.GetTokenAsync(_fixture.TestUser.Email, _fixture.TestUser.Password);
-        _context.Client.WithBearerToken(token);
     }
 
     public Task DisposeAsync() => Task.CompletedTask;

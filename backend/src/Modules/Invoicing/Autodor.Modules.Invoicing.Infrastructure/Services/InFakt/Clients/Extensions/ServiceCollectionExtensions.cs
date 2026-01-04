@@ -4,14 +4,8 @@ using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Extensions
 {
-    /// <summary>
-    /// Extension methods for registering InFakt HTTP client
-    /// </summary>
     public static class ServiceCollectionExtensions
     {
-        /// <summary>
-        /// Registers InFakt HTTP client with API key authentication handler
-        /// </summary>
         public static IServiceCollection AddInFaktHttpClient(this IServiceCollection services)
         {
             services.AddTransient<InFaktAuthenticationHandler>();

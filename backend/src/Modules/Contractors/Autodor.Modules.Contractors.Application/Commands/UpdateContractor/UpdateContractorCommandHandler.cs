@@ -5,18 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
-public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCommand, Unit>
+public class UpdateContractorCommandHandler(IContractorsDbContext context) : IRequestHandler<UpdateContractorCommand, Unit>
 {
-    private readonly IContractorsDbContext _context;
-
-    public UpdateContractorCommandHandler(IContractorsDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Unit> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
     {
-        var contractor = await _context.Contractors
+        var contractor = await context.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
@@ -29,9 +22,9 @@ public class UpdateContractorCommandHandler : IRequestHandler<UpdateContractorCo
             new Email(request.Email)
         );
 
-        _context.Contractors.Update(contractor);
+        context.Contractors.Update(contractor);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
     }

@@ -1,26 +1,17 @@
 using Autodor.Modules.Invoicing.Domain;
-using Shared.Abstractions.Options;
+using BuildingBlocks.Abstractions.Abstractions;
 
 namespace Autodor.Modules.Invoicing.Application.Options;
 
-/// <summary>
-/// Configuration options for iFirma accounting service integration.
-/// </summary>
 public class IFirmaOptions : IOptions
 {
-    /// <summary>
-    /// The configuration section name for iFirma options.
-    /// </summary>
-    public static string SectionName => $"Modules:{ModuleConstants.ModuleName}:IFirma";
+    public static string SectionName => $"Modules:{Module.Name}:IFirma";
 
     public string BaseUrl { get; set; } = "https://www.ifirma.pl/iapi";
     public string User { get; set; } = string.Empty;
     public IFirmaApiKeys ApiKeys { get; set; } = new();
 }
 
-/// <summary>
-/// API Keys for different iFirma endpoints.
-/// </summary>
 public class IFirmaApiKeys
 {
     public string? Faktura { get; set; }

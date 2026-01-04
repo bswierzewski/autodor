@@ -1,23 +1,16 @@
-using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.API;
+using Autodor.Modules.Contractors.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 
-public class GetContractorByNIPQueryHandler : IRequestHandler<GetContractorByNIPQuery, GetContractorByNIPDto>
+public class GetContractorByNIPQueryHandler(IContractorsDbContext dbContext) : IRequestHandler<GetContractorByNIPQuery, GetContractorByNIPDto>
 {
-    private readonly IContractorsDbContext _dbContext;
-
-    public GetContractorByNIPQueryHandler(IContractorsDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<GetContractorByNIPDto> Handle(GetContractorByNIPQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await _dbContext.Contractors
+        var contractor = await dbContext.Contractors
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.NIP == new TaxId(request.NIP), cancellationToken);
 

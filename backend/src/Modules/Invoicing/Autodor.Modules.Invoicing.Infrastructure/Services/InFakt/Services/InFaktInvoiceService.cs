@@ -53,10 +53,6 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
         await httpClient.CreateClientAsync(newClient, cancellationToken);
     }
 
-    /// <summary>
-    /// Checks if the contractor data has changed and requires an update in InFakt.
-    /// Compares key fields: company name, street, city, postal code, NIP, and email.
-    /// </summary>
     private static bool RequiresUpdate(
         Clients.Models.Responses.Client existingClient,
         Contractor contractor)

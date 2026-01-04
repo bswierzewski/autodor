@@ -1,25 +1,23 @@
-using System.Net;
 using Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 using Autodor.Modules.Invoicing.Application.Options;
+using Autodor.Modules.Invoicing.Domain.Enums;
 using Autodor.Shared.Contracts.Contractors;
 using Autodor.Shared.Contracts.Contractors.Dtos;
 using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
+using BuildingBlocks.Tests.Core;
+using BuildingBlocks.Tests.Extensions.Http;
+using BuildingBlocks.Tests.Extensions.Services;
+using BuildingBlocks.Tests.Infrastructure.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Shared.Infrastructure.Tests.Core;
-using Shared.Infrastructure.Tests.Extensions.Http;
-using Shared.Infrastructure.Tests.Extensions.Services;
+using System.Net;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
-/// <summary>
-/// Integration tests for CreateInvoiceCommand with real invoice service implementations.
-/// Tests are parameterized to run against both InFakt and IFirma providers.
-/// Uses mocked module APIs (Contractors, Orders, Products) but real invoice services.
-/// </summary>
 [Collection("Autodor")]
 public class CreateInvoiceCommandTests(AutodorSharedFixture shared) : IAsyncLifetime
 {
@@ -51,6 +49,16 @@ public class CreateInvoiceCommandTests(AutodorSharedFixture shared) : IAsyncLife
                 .WithContainer(shared.Container)
                 .WithServices((services, _) =>
                 {
+                    // Register test authentication handler for bypassing authorization in tests
+                    services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
+                        .AddScheme<AuthenticationSchemeOptions,
+                            TestAuthenticationHandler>(
+                            TestAuthenticationHandler.AuthenticationScheme, null);
+
+                    // Replace IUserContext with test implementation
+                    services.AddScoped<BuildingBlocks.Abstractions.Abstractions.IUserContext,
+                        TestUserContext>();
+
                     // Replace cross-module APIs with mocks
                     services.ReplaceInstance(_mockContractorsApi.Object);
                     services.ReplaceInstance(_mockOrdersApi.Object);
@@ -65,10 +73,6 @@ public class CreateInvoiceCommandTests(AutodorSharedFixture shared) : IAsyncLife
                 .BuildAsync();
 
             await context.ResetDatabaseAsync();
-
-            // Get token using shared provider (has built-in cache)
-            var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
-            context.Client.WithBearerToken(token);
 
             _contexts[provider] = context;
         }

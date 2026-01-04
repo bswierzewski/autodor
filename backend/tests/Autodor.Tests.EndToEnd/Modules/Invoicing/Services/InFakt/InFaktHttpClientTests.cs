@@ -1,7 +1,7 @@
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
-using Shared.Infrastructure.Tests.Core;
+using BuildingBlocks.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.InFakt;
 

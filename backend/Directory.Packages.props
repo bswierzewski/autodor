@@ -2,10 +2,8 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-
-    <!-- Shared Version Variable -->
-    <SharedVersion>1.0.0-build.55</SharedVersion>
   </PropertyGroup>
+	
   <ItemGroup>
     <!-- Microsoft Extensions Framework -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
@@ -56,10 +54,6 @@
     <!-- Environment Variables -->
     <PackageVersion Include="DotNetEnv" Version="3.1.1" />
 
-    <!-- Authentication and Backend Services -->
-    <PackageVersion Include="Supabase" Version="1.1.1" />
-    <PackageVersion Include="Azure.Identity" Version="1.14.0" />
-
     <!-- Document Generation -->
     <PackageVersion Include="QuestPDF" Version="2025.7.0" />
 
@@ -83,16 +77,5 @@
     <!-- Integration Testing with TestContainers -->
     <PackageVersion Include="Testcontainers" Version="4.9.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0" />
-
-    <!-- Shared Packages -->
-    <PackageVersion Include="Shared.Abstractions" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Infrastructure" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Infrastructure.Generators" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Infrastructure.Tests" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Users.Domain" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Users.Application" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Users.Infrastructure" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Exceptions.Application" Version="$(SharedVersion)" />
-    <PackageVersion Include="Shared.Exceptions.Infrastructure" Version="$(SharedVersion)" />
   </ItemGroup>
 </Project>

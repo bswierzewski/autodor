@@ -1,12 +1,8 @@
 using Autodor.Shared.Contracts.Products;
-using Shared.Infrastructure.Tests.Core;
+using BuildingBlocks.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Products;
 
-/// <summary>
-/// End-to-end tests for Products module.
-/// Tests the in-memory repository behavior in Development environment.
-/// </summary>
 [Collection("Autodor")]
 public class ProductsTests(AutodorSharedFixture shared) : IAsyncLifetime
 {
@@ -14,7 +10,6 @@ public class ProductsTests(AutodorSharedFixture shared) : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        // Create test context with default configuration
         _context = await TestContext.CreateBuilder<Program>()
             .WithContainer(shared.Container)
             .BuildAsync();

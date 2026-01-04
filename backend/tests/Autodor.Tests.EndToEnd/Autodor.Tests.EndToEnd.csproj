@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" />
-    <PackageReference Include="Supabase" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -38,15 +37,11 @@
     <ProjectReference Include="..\..\src\Modules\Orders\Autodor.Modules.Orders.Infrastructure\Autodor.Modules.Orders.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Products\Autodor.Modules.Products.Infrastructure\Autodor.Modules.Products.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Invoicing\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\src\BuildingBlocks.Tests\BuildingBlocks.Tests.csproj" />
   </ItemGroup>
 
   <!-- NuGet Shared packages -->
   <ItemGroup>
-    <PackageReference Include="Shared.Abstractions" />
-    <PackageReference Include="Shared.Infrastructure.Tests" />
-    <PackageReference Include="Shared.Users.Domain" />
-    <PackageReference Include="Shared.Users.Application" />
-    <PackageReference Include="Shared.Users.Infrastructure" />
   </ItemGroup>
 
   <ItemGroup>

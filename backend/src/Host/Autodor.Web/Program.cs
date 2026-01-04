@@ -1,9 +1,6 @@
+using BuildingBlocks.Infrastructure.Extensions;
 using DotNetEnv;
-using Shared.Abstractions.Modules;
-using Shared.Infrastructure.Exceptions;
-using Shared.Infrastructure.Logging;
-using Shared.Infrastructure.OpenApi;
-using Shared.Users.Infrastructure.Extensions.Supabase;
+using Serilog;
 
 // Load environment variables from .env file BEFORE creating builder
 // clobberExistingVars: false ensures Docker/CI/CD environment variables take precedence
@@ -13,51 +10,44 @@ if (File.Exists(".env"))
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog with TraceId support
-builder.AddSerilog("Autodor.Backend");
+builder.AddSerilog();
 
 // Register core services
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddUserContext();
+builder.Services.AddCors();
 
-// Exception handling
-builder.Services.AddExceptionHandler<ApiExceptionHandler>();
-builder.Services.AddProblemDetails();
+// ProblemDetails configuration (traceId)
+builder.Services.AddProblemDetails(options => 
+{
+    options.AddCustomConfiguration(builder.Environment);
+});
 
 // OpenAPI for Orval client generation
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer<ApiProblemDetailsSchemaTransformer>();
+    options.AddProblemDetailsSchemas();
 });
 
-// CORS configuration
-builder.Services.AddCors();
-
 // Register modules from auto-generated registry
-builder.Services.RegisterModules(builder.Configuration);
+builder.Services.RegisterModules(builder.Configuration, []);
 
-builder.Services.AddAuthentication()
-    .AddSupabaseJwtBearer();
+builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// OpenAPI endpoint always available at /openapi/v1.json for orval
-app.MapOpenApi();
-
 if (app.Environment.IsDevelopment())
 {
+    // OpenAPI endpoint always available at /openapi/v1.json for orval
+    app.MapOpenApi();
+
     // CORS only in Development (production runs in single Docker container)
     app.UseCors(policy =>
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader());
 }
-
-// Exception handling
-app.UseExceptionHandler(options => { });
-
-// Request logging with TraceId (MUST be after UseExceptionHandler)
-app.UseSerilogRequestLogging();
 
 // Middleware pipeline order matters!
 app.UseAuthentication(); // 1. Authentication first
@@ -69,10 +59,4 @@ app.UseModules(builder.Configuration);
 
 // Initialize all modules (run migrations, seed data, etc.)
 await app.Services.InitModules();
-
 await app.RunAsync();
-
-// Make the Program class accessible for integration tests
-// [GenerateModuleRegistry] triggers source generator to create ModuleRegistry class
-[GenerateModuleRegistry]
-public partial class Program { }

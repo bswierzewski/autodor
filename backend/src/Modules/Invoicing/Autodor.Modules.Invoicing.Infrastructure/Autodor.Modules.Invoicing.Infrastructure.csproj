@@ -4,9 +4,11 @@
 		<ProjectReference Include="..\Autodor.Modules.Invoicing.Application\Autodor.Modules.Invoicing.Application.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Label="BuildingBlocks References">
+		<ProjectReference Include="..\..\..\BuildingBlocks\src\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+	</ItemGroup>
+
 	<ItemGroup Label="NuGet Package References">
-		<PackageReference Include="Shared.Abstractions" />
-		<PackageReference Include="Shared.Infrastructure" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
 		<PackageReference Include="Microsoft.Extensions.Http.Polly" />

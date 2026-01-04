@@ -6,18 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractor;
 
-public class GetContractorQueryHandler : IRequestHandler<GetContractorQuery, GetContractorDto>
+public class GetContractorQueryHandler(IContractorsDbContext dbContext) : IRequestHandler<GetContractorQuery, GetContractorDto>
 {
-    private readonly IContractorsDbContext _dbContext;
-
-    public GetContractorQueryHandler(IContractorsDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<GetContractorDto> Handle(GetContractorQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await _dbContext.Contractors
+        var contractor = await dbContext.Contractors
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 

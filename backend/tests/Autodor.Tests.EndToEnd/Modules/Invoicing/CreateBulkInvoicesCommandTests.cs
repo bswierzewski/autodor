@@ -1,26 +1,24 @@
-using System.Net;
 using Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 using Autodor.Modules.Invoicing.Application.Options;
+using Autodor.Modules.Invoicing.Domain.Enums;
 using Autodor.Shared.Contracts.Contractors;
 using Autodor.Shared.Contracts.Contractors.Dtos;
 using Autodor.Shared.Contracts.Orders;
 using Autodor.Shared.Contracts.Orders.Dtos;
 using Autodor.Shared.Contracts.Products;
 using Autodor.Shared.Contracts.Products.Dtos;
+using BuildingBlocks.Abstractions.Abstractions;
+using BuildingBlocks.Tests.Core;
+using BuildingBlocks.Tests.Extensions.Http;
+using BuildingBlocks.Tests.Extensions.Services;
+using BuildingBlocks.Tests.Infrastructure.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Shared.Infrastructure.Tests.Core;
-using Shared.Infrastructure.Tests.Extensions.Http;
-using Shared.Infrastructure.Tests.Extensions.Services;
+using System.Net;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing;
 
-/// <summary>
-/// Integration tests for CreateBulkInvoicesCommand with real invoice service implementations.
-/// Tests bulk invoice creation functionality including order grouping, contractor filtering,
-/// and error handling across multiple invoices.
-/// Tests are parameterized to run against both InFakt and IFirma providers.
-/// </summary>
 [Collection("Autodor")]
 public class CreateBulkInvoicesCommandTests(AutodorSharedFixture shared) : IAsyncLifetime
 {
@@ -53,6 +51,15 @@ public class CreateBulkInvoicesCommandTests(AutodorSharedFixture shared) : IAsyn
                 .WithContainer(shared.Container)
                 .WithServices((services, _) =>
                 {
+                    // Register test authentication handler for bypassing authorization in tests
+                    services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
+                        .AddScheme<AuthenticationSchemeOptions,
+                            TestAuthenticationHandler>(
+                            TestAuthenticationHandler.AuthenticationScheme, null);
+
+                    // Replace IUserContext with test implementation
+                    services.AddScoped<IUserContext, TestUserContext>();
+
                     // Replace cross-module APIs with mocks
                     services.ReplaceInstance(_mockContractorsApi.Object);
                     services.ReplaceInstance(_mockOrdersApi.Object);
@@ -67,10 +74,6 @@ public class CreateBulkInvoicesCommandTests(AutodorSharedFixture shared) : IAsyn
                 .BuildAsync();
 
             await context.ResetDatabaseAsync();
-
-            // Get token using shared provider (has built-in cache)
-            var token = await shared.TokenProvider.GetTokenAsync(shared.TestUser.Email, shared.TestUser.Password);
-            context.Client.WithBearerToken(token);
 
             _contexts[provider] = context;
         }
