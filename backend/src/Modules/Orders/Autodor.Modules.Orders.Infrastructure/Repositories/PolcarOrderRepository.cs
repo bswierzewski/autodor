@@ -1,6 +1,7 @@
 using Autodor.Modules.Orders.Application.Abstractions;
 using Autodor.Modules.Orders.Application.Options;
 using Autodor.Modules.Orders.Domain.Entities;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Polcar.Generated;
 using BuildingBlocks.Abstractions.Extensions;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -71,6 +72,35 @@ public class PolcarOrderRepository : IOrdersRepository
         }
     }
 
+    public async Task<Order?> GetOrderByIdAsync(string orderId)
+    {
+        return await _retryPolicy.ExecuteAsync(async () =>
+        {
+            _logger.LogInformation("Fetching order {OrderId}", orderId);
+
+            var response = await _soapClient.GetOrderDetailsAsync(
+                DistributorCode: _options.DistributorCode,
+                OrderID: orderId,
+                Login: _options.Login,
+                Password: _options.Password,
+                LanguageID: _options.LanguageId
+            );
+
+            var soapOrder = response.Body.GetOrderDetailsResult;
+
+            if (soapOrder == null)
+            {
+                _logger.LogWarning("Order {OrderId} not found", orderId);
+                return null;
+            }
+
+            var order = soapOrder.MapToOrder();
+            _logger.LogInformation("Successfully found order {OrderId}", orderId);
+
+            return order;
+        });
+    }
+
     public async Task<Order?> GetOrderByIdAndDateAsync(string orderId, DateTime date)
     {
         _logger.LogInformation("Fetching order {OrderId} for date {Date}", orderId, date.Date);
@@ -113,40 +143,8 @@ public class PolcarOrderRepository : IOrdersRepository
             _logger.LogInformation("Successfully retrieved orders for date {Date}", date.Date);
 
             return responseBody?.ListOfOrders?.Length > 0
-                ? responseBody.ListOfOrders.Select(MapToOrder)
+                ? responseBody.ListOfOrders.Select(order => order.MapToOrder())
                 : [];
         });
     }
-
-    private static Order MapToOrder(DistributorSalesOrderResponse response)
-    {
-        return new Order
-        {
-            EntryDate = response.EntryDate,
-            Id = response.OrderID,
-            Number = response.PolcarOrderNumber,
-
-            Contractor = new OrderContractor
-            {
-                Name = response.OrderingPerson,
-                Number = response.CustomerNumber,
-            },
-
-            Items = response.OrderedItemsResponse?.Select(MapToOrderItem).ToList() ?? []
-        };
-    }
-
-    private static OrderItem MapToOrderItem(DistributorSalesOrderItemResponse response)
-    {
-        return new OrderItem
-        {
-            OrderId = response.OrderId,
-            Number = response.PartNumber,
-
-            Quantity = response.QuantityOrdered,
-            Price = response.Price
-        };
-    }
-
-
 }

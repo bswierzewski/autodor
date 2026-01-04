@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
 
-// Load environment variables from .env file BEFORE creating builder
 if (File.Exists(".env"))
     Env.Load();
 

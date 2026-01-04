@@ -17,7 +17,6 @@
     <Project Path="src/BuildingBlocks/src/BuildingBlocks.Tools/BuildingBlocks.Tools.csproj" />
   </Folder>
   <Folder Name="/src/Host/">
-    <Project Path="src/Host/Autodor.Console/Autodor.Console.csproj" />
     <Project Path="src/Host/Autodor.Web/Autodor.Web.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />

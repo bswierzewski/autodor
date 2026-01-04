@@ -1,4 +1,5 @@
 using Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
+using Autodor.Modules.Orders.Application.Queries.GetOrderById;
 using Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
 using Autodor.Modules.Orders.Application.Queries.GetOrdersByDateRange;
 using MediatR;
@@ -24,6 +25,9 @@ public static class OrdersEndpoints
 
         group.MapGet("/by-date-range", GetOrdersByDateRange)
             .WithName("GetOrdersByDateRange");
+
+        group.MapGet("/by-id/{orderId}", GetOrderById)
+            .WithName("GetOrderById");
 
         return endpoints;
     }
@@ -56,5 +60,20 @@ public static class OrdersEndpoints
         var orders = await mediator.Send(query);
 
         return Results.Ok(orders);
+    }
+
+    private static async Task<IResult> GetOrderById(
+        string orderId,
+        IMediator mediator)
+    {
+        var query = new GetOrderByIdQuery(orderId);
+        var order = await mediator.Send(query);
+
+        if (order is null)
+        {
+            return Results.NotFound($"Order with ID '{orderId}' not found");
+        }
+
+        return Results.Ok(order);
     }
 }
