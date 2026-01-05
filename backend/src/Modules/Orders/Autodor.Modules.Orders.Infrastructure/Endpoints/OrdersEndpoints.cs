@@ -1,7 +1,6 @@
 using Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 using Autodor.Modules.Orders.Application.Queries.GetOrderById;
-using Autodor.Modules.Orders.Application.Queries.GetOrdersByDate;
-using Autodor.Modules.Orders.Application.Queries.GetOrdersByDateRange;
+using Autodor.Modules.Orders.Application.Queries.GetOrders;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -17,22 +16,20 @@ public static class OrdersEndpoints
         var group = endpoints.MapGroup("/api/orders")
             .WithTags("Orders");
 
-        group.MapPost("/exclude", ExcludeOrder)
-            .WithName("ExcludeOrder");
+        group.MapGet("/", GetOrders)
+            .WithName("GetOrders");
 
-        group.MapGet("/by-date", GetOrdersByDate)
-            .WithName("GetOrdersByDate");
-
-        group.MapGet("/by-date-range", GetOrdersByDateRange)
-            .WithName("GetOrdersByDateRange");
-
-        group.MapGet("/by-id/{orderId}", GetOrderById)
+        group.MapGet("/{orderId}", GetOrderById)
             .WithName("GetOrderById");
+
+        group.MapPost("/{orderId}/exclude", ExcludeOrder)
+            .WithName("ExcludeOrder");
 
         return endpoints;
     }
 
     private static async Task<IResult> ExcludeOrder(
+        string orderId,
         [FromBody] ExcludeOrderCommand command,
         IMediator mediator)
     {
@@ -41,24 +38,13 @@ public static class OrdersEndpoints
         return Results.Ok(new { Success = success });
     }
 
-    private static async Task<IResult> GetOrdersByDate(
-        DateTime date,
+    private static async Task<IResult> GetOrders(
+        [FromQuery] DateTime from,
+        [FromQuery] DateTime? to,
         IMediator mediator)
     {
-        var query = new GetOrdersByDateQuery(date);
+        var query = new GetOrdersQuery(from, to);
         var orders = await mediator.Send(query);
-
-        return Results.Ok(orders);
-    }
-
-    private static async Task<IResult> GetOrdersByDateRange(
-        DateTime dateFrom,
-        DateTime dateTo,
-        IMediator mediator)
-    {
-        var query = new GetOrdersByDateRangeQuery(dateFrom, dateTo);
-        var orders = await mediator.Send(query);
-
         return Results.Ok(orders);
     }
 

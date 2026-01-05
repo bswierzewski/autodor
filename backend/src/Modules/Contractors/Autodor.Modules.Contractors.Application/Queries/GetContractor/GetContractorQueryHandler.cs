@@ -10,12 +10,30 @@ public class GetContractorQueryHandler(IContractorsDbContext dbContext) : IReque
 {
     public async Task<GetContractorDto> Handle(GetContractorQuery request, CancellationToken cancellationToken)
     {
-        var contractor = await dbContext.Contractors
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
+        Domain.Aggregates.Contractor? contractor = null;
 
-        if (contractor is null)
-            throw new KeyNotFoundException($"Contractor with ID {request.Id} not found");
+        if (request.Id.HasValue)
+        {
+            contractor = await dbContext.Contractors
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id.Value), cancellationToken);
+
+            if (contractor is null)
+                throw new KeyNotFoundException($"Contractor with ID {request.Id} not found");
+        }
+        else if (!string.IsNullOrEmpty(request.NIP))
+        {
+            contractor = await dbContext.Contractors
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.NIP == new TaxId(request.NIP), cancellationToken);
+
+            if (contractor is null)
+                throw new KeyNotFoundException($"Contractor with NIP {request.NIP} not found");
+        }
+        else
+        {
+            throw new ArgumentException("Either Id or NIP must be provided");
+        }
 
         return contractor.ToGetContractorDto();
     }

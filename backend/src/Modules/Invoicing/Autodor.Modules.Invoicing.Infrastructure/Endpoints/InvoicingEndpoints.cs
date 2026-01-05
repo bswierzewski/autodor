@@ -1,5 +1,5 @@
-using Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
 using Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
+using Autodor.Modules.Invoicing.Application.Commands.CreateInvoices;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +15,11 @@ public static class InvoicingEndpoints
         var group = endpoints.MapGroup("/api/invoicing")
             .WithTags("Invoicing");
 
-        group.MapPost("/create", CreateInvoice)
+        group.MapPost("/", CreateInvoice)
             .WithName("CreateInvoice");
 
-        group.MapPost("/create-bulk", CreateBulkInvoices)
-            .WithName("CreateBulkInvoices");
+        group.MapPost("/bulk", CreateInvoices)
+            .WithName("CreateInvoices");
 
         return endpoints;
     }
@@ -40,8 +40,8 @@ public static class InvoicingEndpoints
         }
     }
 
-    private static async Task<IResult> CreateBulkInvoices(
-        [FromBody] CreateBulkInvoicesCommand command,
+    private static async Task<IResult> CreateInvoices(
+        [FromBody] CreateInvoicesCommand command,
         IMediator mediator)
     {
         var invoiceStatuses = await mediator.Send(command);

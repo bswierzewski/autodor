@@ -9,17 +9,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Autodor.Modules.Invoicing.Application.Commands.CreateBulkInvoices;
+namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoices;
 
-public class CreateBulkInvoicesCommandHandler(
-    ILogger<CreateBulkInvoicesCommandHandler> logger,
+public class CreateInvoicesCommandHandler(
+    ILogger<CreateInvoicesCommandHandler> logger,
     IProductsAPI productsApi,
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateBulkInvoicesCommand, Dictionary<string, bool>>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoicesCommand, Dictionary<string, bool>>
 {
-    public async Task<Dictionary<string, bool>> Handle(CreateBulkInvoicesCommand request, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, bool>> Handle(CreateInvoicesCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);

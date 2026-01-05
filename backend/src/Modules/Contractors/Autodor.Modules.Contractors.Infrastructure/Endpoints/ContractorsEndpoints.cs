@@ -1,9 +1,8 @@
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 using Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
-using Autodor.Modules.Contractors.Application.Queries.GetAllContractors;
+using Autodor.Modules.Contractors.Application.Queries.GetContractors;
 using Autodor.Modules.Contractors.Application.Queries.GetContractor;
-using Autodor.Modules.Contractors.Application.Queries.GetContractorByNIP;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -23,20 +22,17 @@ public static class ContractorsEndpoints
         group.MapPost("/", CreateContractor)
             .WithName("CreateContractor");
 
+        group.MapGet("/", GetContractors)
+            .WithName("GetContractors");
+
         group.MapGet("/{id:guid}", GetContractor)
             .WithName("GetContractor");
-
-        group.MapGet("/", GetAllContractors)
-            .WithName("GetAllContractors");
 
         group.MapPut("/{id:guid}", UpdateContractor)
             .WithName("UpdateContractor");
 
         group.MapDelete("/{id:guid}", DeleteContractor)
             .WithName("DeleteContractor");
-
-        group.MapGet("/by-nip/{nip}", GetContractorByNIP)
-            .WithName("GetContractorByNIP");
 
         return endpoints;
     }
@@ -52,25 +48,36 @@ public static class ContractorsEndpoints
 
     private static async Task<IResult> GetContractor(
         Guid id,
+        [FromQuery] string? nip,
         IMediator mediator)
     {
         try
         {
-            var contractor = await mediator.Send(new GetContractorQuery(id));
+            // Jeśli podany jest NIP, szukaj po NIP zamiast ID
+            if (!string.IsNullOrEmpty(nip))
+            {
+                var contractor = await mediator.Send(new GetContractorQuery(NIP: nip));
+                return Results.Ok(contractor);
+            }
 
-            return Results.Ok(contractor);
+            // W przeciwnym razie szukaj po ID
+            var contractorById = await mediator.Send(new GetContractorQuery(Id: id));
+            return Results.Ok(contractorById);
         }
         catch (KeyNotFoundException)
         {
             return Results.NotFound();
         }
+        catch (ArgumentException)
+        {
+            return Results.BadRequest("Either use route parameter {id} or provide 'nip' query parameter");
+        }
     }
 
-    private static async Task<IResult> GetAllContractors(
+    private static async Task<IResult> GetContractors(
         IMediator mediator)
     {
-        var contractors = await mediator.Send(new GetAllContractorsQuery());
-
+        var contractors = await mediator.Send(new GetContractorsQuery());
         return Results.Ok(contractors);
     }
 
@@ -105,22 +112,6 @@ public static class ContractorsEndpoints
             await mediator.Send(new DeleteContractorCommand(id));
 
             return Results.NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return Results.NotFound();
-        }
-    }
-
-    private static async Task<IResult> GetContractorByNIP(
-        string nip,
-        IMediator mediator)
-    {
-        try
-        {
-            var contractor = await mediator.Send(new GetContractorByNIPQuery(nip));
-
-            return Results.Ok(contractor);
         }
         catch (KeyNotFoundException)
         {
