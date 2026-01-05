@@ -1,3 +1,4 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
@@ -9,4 +10,4 @@ public record CreateContractorCommand(
     string City,
     string ZipCode,
     string Email
-) : IRequest<Guid>;
+) : IRequest<ErrorOr<Guid>>;

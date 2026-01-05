@@ -1,9 +1,10 @@
-using Autodor.Shared.Contracts.Products;
-using Autodor.Shared.Contracts.Orders;
-using Autodor.Shared.Contracts.Contractors;
 using Autodor.Modules.Invoicing.Application.Abstractions;
 using Autodor.Modules.Invoicing.Application.Options;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
+using Autodor.Shared.Contracts.Contractors;
+using Autodor.Shared.Contracts.Orders;
+using Autodor.Shared.Contracts.Products;
+using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,9 +18,9 @@ public class CreateInvoicesCommandHandler(
     IOrdersAPI ordersApi,
     IContractorsAPI contractorsApi,
     IServiceProvider serviceProvider,
-    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoicesCommand, Dictionary<string, bool>>
+    IOptions<InvoicingOptions> options) : IRequestHandler<CreateInvoicesCommand, ErrorOr<Dictionary<string, bool>>>
 {
-    public async Task<Dictionary<string, bool>> Handle(CreateInvoicesCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Dictionary<string, bool>>> Handle(CreateInvoicesCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}",
             request.DateFrom, request.DateTo);
@@ -38,7 +39,9 @@ public class CreateInvoicesCommandHandler(
         {
             logger.LogWarning("No valid orders found for bulk invoice creation in date range {DateFrom} to {DateTo}",
                 request.DateFrom, request.DateTo);
-            throw new InvalidOperationException("No valid orders found for bulk invoice creation");
+            return Error.NotFound(
+                code: "Invoice.NoValidOrders",
+                description: "No valid orders found for bulk invoice creation");
         }
 
         logger.LogInformation("Found {ValidOrderCount} valid orders after excluding {ExcludedCount} excluded orders",

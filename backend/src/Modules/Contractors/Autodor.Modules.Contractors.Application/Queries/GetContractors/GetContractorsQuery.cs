@@ -1,8 +1,9 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractors;
 
-public record GetContractorsQuery() : IRequest<IEnumerable<GetContractorsDto>>;
+public record GetContractorsQuery() : IRequest<ErrorOr<IEnumerable<GetContractorsDto>>>;
 
 public record GetContractorsDto(
     Guid Id,

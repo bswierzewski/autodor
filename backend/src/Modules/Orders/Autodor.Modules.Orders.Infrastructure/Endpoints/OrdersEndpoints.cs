@@ -1,6 +1,7 @@
 using Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 using Autodor.Modules.Orders.Application.Queries.GetOrderById;
 using Autodor.Modules.Orders.Application.Queries.GetOrders;
+using BuildingBlocks.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -33,9 +34,9 @@ public static class OrdersEndpoints
         [FromBody] ExcludeOrderCommand command,
         IMediator mediator)
     {
-        var success = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        return Results.Ok(new { Success = success });
+        return result.ToNoContentResult();
     }
 
     private static async Task<IResult> GetOrders(
@@ -44,8 +45,8 @@ public static class OrdersEndpoints
         IMediator mediator)
     {
         var query = new GetOrdersQuery(from, to);
-        var orders = await mediator.Send(query);
-        return Results.Ok(orders);
+        var result = await mediator.Send(query);
+        return result.ToHttpResult();
     }
 
     private static async Task<IResult> GetOrderById(
@@ -53,13 +54,8 @@ public static class OrdersEndpoints
         IMediator mediator)
     {
         var query = new GetOrderByIdQuery(orderId);
-        var order = await mediator.Send(query);
+        var result = await mediator.Send(query);
 
-        if (order is null)
-        {
-            return Results.NotFound($"Order with ID '{orderId}' not found");
-        }
-
-        return Results.Ok(order);
+        return result.ToHttpResult();
     }
 }

@@ -1,5 +1,6 @@
 using Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
 using Autodor.Modules.Invoicing.Application.Commands.CreateInvoices;
+using BuildingBlocks.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -28,24 +29,17 @@ public static class InvoicingEndpoints
         [FromBody] CreateInvoiceCommand command,
         IMediator mediator)
     {
-        try
-        {
-            await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-            return Results.Created("/api/invoicing", new { Success = true });
-        }
-        catch (Exception)
-        {
-            return Results.BadRequest();
-        }
+        return result.ToCreatedResult("/api/invoicing");
     }
 
     private static async Task<IResult> CreateInvoices(
         [FromBody] CreateInvoicesCommand command,
         IMediator mediator)
     {
-        var invoiceStatuses = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        return Results.Ok(new { InvoiceStatuses = invoiceStatuses, Count = invoiceStatuses?.Count() ?? 0 });
+        return result.ToHttpResult();
     }
 }

@@ -1,3 +1,4 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Invoicing.Application.Commands.CreateInvoice;
@@ -9,4 +10,4 @@ public record CreateInvoiceCommand(
     IEnumerable<DateTime> Dates,
     IEnumerable<string> OrderIds,
     Guid ContractorId
-) : IRequest<Unit>;
+) : IRequest<ErrorOr<Success>>;

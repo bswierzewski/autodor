@@ -1,3 +1,4 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
@@ -10,4 +11,4 @@ public record UpdateContractorCommand(
     string City,
     string ZipCode,
     string Email
-) : IRequest<Unit>;
+) : IRequest<ErrorOr<Success>>;

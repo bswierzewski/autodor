@@ -1,5 +1,6 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 
-public record DeleteContractorCommand(Guid Id) : IRequest<Unit>;
+public record DeleteContractorCommand(Guid Id) : IRequest<ErrorOr<Success>>;

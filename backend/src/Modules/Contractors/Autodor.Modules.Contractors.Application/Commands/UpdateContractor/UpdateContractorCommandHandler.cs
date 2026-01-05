@@ -1,19 +1,23 @@
-using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Application.Abstractions;
+using Autodor.Modules.Contractors.Domain.ValueObjects;
+using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 
-public class UpdateContractorCommandHandler(IContractorsDbContext context) : IRequestHandler<UpdateContractorCommand, Unit>
+public class UpdateContractorCommandHandler(IContractorsDbContext context) 
+    : IRequestHandler<UpdateContractorCommand, ErrorOr<Success>>
 {
-    public async Task<Unit> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(UpdateContractorCommand request, CancellationToken cancellationToken)
     {
         var contractor = await context.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), cancellationToken);
 
         if (contractor is null)
-            throw new KeyNotFoundException($"Contractor with ID {request.Id} not found");
+            return Error.NotFound(
+                code: "Contractor.NotFound",
+                description: $"Contractor with ID {request.Id} was not found");
 
         contractor.UpdateDetails(
             request.Name,
@@ -21,11 +25,8 @@ public class UpdateContractorCommandHandler(IContractorsDbContext context) : IRe
             new Address(request.Street, request.City, request.ZipCode),
             new Email(request.Email)
         );
-
-        context.Contractors.Update(contractor);
-
         await context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return Result.Success;
     }
 }

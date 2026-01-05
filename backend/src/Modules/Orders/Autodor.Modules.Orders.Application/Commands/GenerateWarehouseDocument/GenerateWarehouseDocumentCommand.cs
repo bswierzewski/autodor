@@ -1,3 +1,4 @@
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
@@ -8,4 +9,4 @@ namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 public record GenerateWarehouseDocumentCommand(
     string OrderId,
     DateTime Date
-) : IRequest<byte[]>;
+) : IRequest<ErrorOr<byte[]>>;

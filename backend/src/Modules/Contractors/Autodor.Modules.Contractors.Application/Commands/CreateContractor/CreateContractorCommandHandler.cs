@@ -1,13 +1,14 @@
+using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using Autodor.Modules.Contractors.Application.Abstractions;
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 
-public class CreateContractorCommandHandler(IContractorsDbContext context) : IRequestHandler<CreateContractorCommand, Guid>
+public class CreateContractorCommandHandler(IContractorsDbContext context) : IRequestHandler<CreateContractorCommand, ErrorOr<Guid>>
 {
-    public async Task<Guid> Handle(CreateContractorCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> Handle(CreateContractorCommand request, CancellationToken cancellationToken)
     {
         var contractorId = new ContractorId(Guid.NewGuid());
 

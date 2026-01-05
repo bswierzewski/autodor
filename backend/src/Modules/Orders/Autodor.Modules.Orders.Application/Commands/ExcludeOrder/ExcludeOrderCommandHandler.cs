@@ -1,15 +1,16 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Application.Abstractions;
+using ErrorOr;
 using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
 public class ExcludeOrderCommandHandler(IOrdersDbContext context, TimeProvider timeProvider)
-    : IRequestHandler<ExcludeOrderCommand, bool>
+    : IRequestHandler<ExcludeOrderCommand, ErrorOr<bool>>
 {
     private readonly IOrdersDbContext _context = context;
 
-    public async Task<bool> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<bool>> Handle(ExcludeOrderCommand request, CancellationToken cancellationToken)
     {
         var excludedOrder = new ExcludedOrder(request.OrderId, timeProvider.GetUtcNow());
 

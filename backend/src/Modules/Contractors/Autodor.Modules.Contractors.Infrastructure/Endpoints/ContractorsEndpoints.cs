@@ -3,6 +3,7 @@ using Autodor.Modules.Contractors.Application.Commands.UpdateContractor;
 using Autodor.Modules.Contractors.Application.Commands.DeleteContractor;
 using Autodor.Modules.Contractors.Application.Queries.GetContractors;
 using Autodor.Modules.Contractors.Application.Queries.GetContractor;
+using BuildingBlocks.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -41,9 +42,9 @@ public static class ContractorsEndpoints
         [FromBody] CreateContractorCommand command,
         IMediator mediator)
     {
-        var contractorId = await mediator.Send(command);
+        var result = await mediator.Send(command);
 
-        return Results.Ok(contractorId);
+        return result.ToHttpResult();
     }
 
     private static async Task<IResult> GetContractor(
@@ -51,34 +52,20 @@ public static class ContractorsEndpoints
         [FromQuery] string? nip,
         IMediator mediator)
     {
-        try
-        {
-            // Jeśli podany jest NIP, szukaj po NIP zamiast ID
-            if (!string.IsNullOrEmpty(nip))
-            {
-                var contractor = await mediator.Send(new GetContractorQuery(NIP: nip));
-                return Results.Ok(contractor);
-            }
+        // Jeśli podany jest NIP, szukaj po NIP zamiast ID
+        var query = !string.IsNullOrEmpty(nip)
+            ? new GetContractorQuery(NIP: nip)
+            : new GetContractorQuery(Id: id);
 
-            // W przeciwnym razie szukaj po ID
-            var contractorById = await mediator.Send(new GetContractorQuery(Id: id));
-            return Results.Ok(contractorById);
-        }
-        catch (KeyNotFoundException)
-        {
-            return Results.NotFound();
-        }
-        catch (ArgumentException)
-        {
-            return Results.BadRequest("Either use route parameter {id} or provide 'nip' query parameter");
-        }
+        var result = await mediator.Send(query);
+        return result.ToHttpResult();
     }
 
     private static async Task<IResult> GetContractors(
         IMediator mediator)
     {
-        var contractors = await mediator.Send(new GetContractorsQuery());
-        return Results.Ok(contractors);
+        var result = await mediator.Send(new GetContractorsQuery());
+        return result.ToHttpResult();
     }
 
     private static async Task<IResult> UpdateContractor(
@@ -91,31 +78,15 @@ public static class ContractorsEndpoints
             return Results.BadRequest("Route ID does not match command ID");
         }
 
-        try
-        {
-            await mediator.Send(command);
-
-            return Results.NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return Results.NotFound();
-        }
+        var result = await mediator.Send(command);
+        return result.ToNoContentResult();
     }
 
     private static async Task<IResult> DeleteContractor(
         Guid id,
         IMediator mediator)
     {
-        try
-        {
-            await mediator.Send(new DeleteContractorCommand(id));
-
-            return Results.NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return Results.NotFound();
-        }
+        var result = await mediator.Send(new DeleteContractorCommand(id));
+        return result.ToNoContentResult();
     }
 }

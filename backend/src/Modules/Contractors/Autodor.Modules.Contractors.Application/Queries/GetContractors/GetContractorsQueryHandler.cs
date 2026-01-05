@@ -1,18 +1,18 @@
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.API;
+using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Application.Queries.GetContractors;
 
-public class GetContractorsQueryHandler(IContractorsDbContext dbContext) : IRequestHandler<GetContractorsQuery, IEnumerable<GetContractorsDto>>
+public class GetContractorsQueryHandler(IContractorsDbContext dbContext) : IRequestHandler<GetContractorsQuery, ErrorOr<IEnumerable<GetContractorsDto>>>
 {
-    public async Task<IEnumerable<GetContractorsDto>> Handle(GetContractorsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<GetContractorsDto>>> Handle(GetContractorsQuery request, CancellationToken cancellationToken)
     {
-        var contractors = await dbContext.Contractors
+        return await dbContext.Contractors
             .AsNoTracking()
+            .Select(c => c.ToGetContractorsDto())
             .ToListAsync(cancellationToken);
-
-        return contractors.Select(c => c.ToGetContractorsDto());
     }
 }

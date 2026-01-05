@@ -27,6 +27,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 
     <!-- CQRS and Mediator Pattern -->
+    <PackageVersion Include="ErrorOr" Version="2.0.1" />
     <PackageVersion Include="MediatR" Version="12.5.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
 

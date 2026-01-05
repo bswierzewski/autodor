@@ -1,9 +1,10 @@
+using ErrorOr;
 using FluentValidation;
 using MediatR;
 
 namespace Autodor.Modules.Orders.Application.Commands.ExcludeOrder;
 
-public record ExcludeOrderCommand(string OrderId) : IRequest<bool>;
+public record ExcludeOrderCommand(string OrderId) : IRequest<ErrorOr<bool>>;
 
 public class ExcludeOrderCommandValidator : AbstractValidator<ExcludeOrderCommand>
 {

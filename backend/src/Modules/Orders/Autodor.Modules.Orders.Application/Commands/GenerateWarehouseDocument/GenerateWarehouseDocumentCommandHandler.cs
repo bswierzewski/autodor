@@ -1,4 +1,5 @@
 using Autodor.Modules.Orders.Application.Abstractions;
+using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -7,9 +8,9 @@ namespace Autodor.Modules.Orders.Application.Commands.GenerateWarehouseDocument;
 public class GenerateWarehouseDocumentCommandHandler(
     IOrdersRepository ordersRepository,
     IPdfDocumentService pdfDocumentService,
-    ILogger<GenerateWarehouseDocumentCommandHandler> logger) : IRequestHandler<GenerateWarehouseDocumentCommand, byte[]>
+    ILogger<GenerateWarehouseDocumentCommandHandler> logger) : IRequestHandler<GenerateWarehouseDocumentCommand, ErrorOr<byte[]>>
 {
-    public async Task<byte[]> Handle(GenerateWarehouseDocumentCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<byte[]>> Handle(GenerateWarehouseDocumentCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Generating warehouse document for order {OrderId} on date {Date}",
             request.OrderId, request.Date);
@@ -19,7 +20,9 @@ public class GenerateWarehouseDocumentCommandHandler(
         if (order == null)
         {
             logger.LogWarning("Order {OrderId} not found for date {Date}", request.OrderId, request.Date);
-            throw new KeyNotFoundException($"Order {request.OrderId} not found for date {request.Date:yyyy-MM-dd}");
+            return Error.NotFound(
+                code: "Order.NotFound",
+                description: $"Order '{request.OrderId}' not found for date {request.Date:yyyy-MM-dd}");
         }
 
         var pdfBytes = await pdfDocumentService.GenerateWarehouseDocumentAsync(order, request.Date, cancellationToken);
