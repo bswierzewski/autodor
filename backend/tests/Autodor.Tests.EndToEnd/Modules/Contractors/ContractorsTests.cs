@@ -1,51 +1,23 @@
 using Autodor.Modules.Contractors.Application.Abstractions;
 using Autodor.Modules.Contractors.Application.Commands.CreateContractor;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using BuildingBlocks.Tests.Core;
 using BuildingBlocks.Tests.Extensions.Http;
-using BuildingBlocks.Tests.Infrastructure.Authentication;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace Autodor.Tests.EndToEnd.Modules.Contractors;
 
 [Collection("Autodor")]
-public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
+public class ContractorsTests(AutodorSharedFixture fixture) : AutodorTestBase(fixture)
 {
-    private readonly AutodorSharedFixture _fixture = fixture;
-    private TestContext _context = null!;
-
-    public async Task InitializeAsync()
-    {
-        // Create test context for this test class
-        _context = await TestContext.CreateBuilder<Program>()
-            .WithContainer(_fixture.Container)
-            .WithoutModuleInitialization()
-            .WithServices((services, _) =>
-            {
-                // Register test authentication handler for bypassing authorization in tests
-                services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
-                    .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions,
-                        TestAuthenticationHandler>(
-                        TestAuthenticationHandler.AuthenticationScheme, null);
-
-                // Replace IUserContext with test implementation
-                services.AddScoped<BuildingBlocks.Abstractions.Abstractions.IUserContext,
-                    TestUserContext>();
-            })
-            .BuildAsync();
-
-        await _context.ResetDatabaseAsync();
-    }
-
-    public Task DisposeAsync() => Task.CompletedTask;
+    // No need for InitializeAsync/DisposeAsync - handled by base class
+    // Override ConfigureServices if you need to register custom services for all tests in this class
 
     [Fact]
     public async Task GetContractors_ShouldReturnSuccess()
     {
-        var response = await _context.Client.GetAsync("/api/contractors");
+        var response = await Context.Client.GetAsync("/api/contractors");
 
         response.IsSuccessStatusCode.Should().BeTrue();
     }
@@ -57,13 +29,13 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         var command = new CreateContractorCommand("Test Company", "1234567890", "Test Street 123", "Test City", "12-345", "test@example.com");
 
         // Act
-        var response = await _context.Client.PostJsonAsync("/api/contractors", command);
+        var response = await Context.Client.PostJsonAsync("/api/contractors", command);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         // Verify in database
-        var readContext = _context.GetRequiredService<IContractorsDbContext>();
+        var readContext = Context.GetRequiredService<IContractorsDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(1);
 
@@ -76,7 +48,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
     public async Task GetContractors_WithMultipleContractors_ShouldReturnCorrectCount()
     {
         // Arrange - Create multiple contractors
-        var mediator = _context.GetRequiredService<IMediator>();
+        var mediator = Context.GetRequiredService<IMediator>();
 
         var commands = new[]
         {
@@ -91,13 +63,13 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         }
 
         // Act
-        var response = await _context.Client.GetAsync("/api/contractors");
+        var response = await Context.Client.GetAsync("/api/contractors");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
         // Verify database count
-        var readContext = _context.GetRequiredService<IContractorsDbContext>();
+        var readContext = Context.GetRequiredService<IContractorsDbContext>();
         var contractorsCount = await readContext.Contractors.CountAsync();
         contractorsCount.Should().Be(3);
     }
@@ -106,7 +78,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
     public async Task GetContractorById_WithExistingId_ShouldReturnContractor()
     {
         // Arrange
-        var mediator = _context.GetRequiredService<IMediator>();
+        var mediator = Context.GetRequiredService<IMediator>();
 
         var result = await mediator.Send(new CreateContractorCommand(
             "Test Company",
@@ -119,13 +91,13 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         var contractorId = result.Value;
 
         // Act
-        var response = await _context.Client.GetAsync($"/api/contractors/{contractorId}");
+        var response = await Context.Client.GetAsync($"/api/contractors/{contractorId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
         // Verify contractor exists in database
-        var readContext = _context.GetRequiredService<IContractorsDbContext>();
+        var readContext = Context.GetRequiredService<IContractorsDbContext>();
         var contractor = await readContext.Contractors
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(contractorId));
         contractor.Should().NotBeNull();
@@ -136,8 +108,8 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
     public async Task DeleteContractor_WithExistingId_ShouldRemoveFromDatabase()
     {
         // Arrange
-        var mediator = _context.GetRequiredService<IMediator>();
-        var readContext = _context.GetRequiredService<IContractorsDbContext>();
+        var mediator = Context.GetRequiredService<IMediator>();
+        var readContext = Context.GetRequiredService<IContractorsDbContext>();
 
         var result = await mediator.Send(new CreateContractorCommand(
             "To Delete Company",
@@ -155,7 +127,7 @@ public class ContractorsTests(AutodorSharedFixture fixture) : IAsyncLifetime
         contractorBeforeDelete.Should().NotBeNull();
 
         // Act - Delete via HTTP
-        var response = await _context.Client.DeleteAsync($"/api/contractors/{contractorId}");
+        var response = await Context.Client.DeleteAsync($"/api/contractors/{contractorId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Contractors.Infrastructure.Migrations
 {
     [DbContext(typeof(ContractorsDbContext))]
-    [Migration("20251019100037_InitialCreate")]
+    [Migration("20260105190044_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -34,7 +34,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("CreatedBy")
+                    b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -45,7 +45,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("ModifiedBy")
+                    b.Property<Guid>("ModifiedBy")
                         .HasColumnType("uuid");
 
                     b.Property<string>("NIP")
@@ -58,7 +58,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Address", "Autodor.Modules.Contractors.Domain.Aggregates.Contractor.Address#Address", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Address", "Autodor.Modules.Contractors.Domain.Aggregates.Contractor.Address#Address", b1 =>
                         {
                             b1.IsRequired();
 

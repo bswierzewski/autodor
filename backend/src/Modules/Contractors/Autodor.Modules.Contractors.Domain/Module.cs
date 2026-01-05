@@ -2,5 +2,5 @@ namespace Autodor.Modules.Contractors.Domain;
 
 public static class Module
 {
-    public const string Name = "contractors";
+    public const string Name = "Contractors";
 }

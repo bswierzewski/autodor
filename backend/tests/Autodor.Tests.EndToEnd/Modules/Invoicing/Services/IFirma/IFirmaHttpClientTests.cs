@@ -1,7 +1,6 @@
 ﻿using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Services.IFirma.Clients.Models.Requests;
-using BuildingBlocks.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
 
@@ -11,25 +10,10 @@ namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.IFirma;
 /// </summary>
 [Collection("Autodor")]
 [Trait("Category", "Integration")]
-public class IFirmaHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
+public class IFirmaHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBase(fixture)
 {
-    private TestContext _context = null!;
-    private IFirmaHttpClient _client => _context.GetRequiredService<IFirmaHttpClient>();
 
-    public async Task InitializeAsync()
-    {
-        // Create test context with mocks injected
-        _context = await TestContext.CreateBuilder<Program>()
-            .WithContainer(shared.Container)
-            .BuildAsync();
-
-        await _context.ResetDatabaseAsync();
-    }
-    public async Task DisposeAsync()
-    {
-        if (_context != null)        
-            await _context.DisposeAsync();        
-    }
+    private IFirmaHttpClient _client => Context.GetRequiredService<IFirmaHttpClient>();
 
     [Fact]
     public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateAndReturnInvoice()

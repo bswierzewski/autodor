@@ -1,7 +1,6 @@
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
-using BuildingBlocks.Tests.Core;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.InFakt;
 
@@ -13,25 +12,10 @@ namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.InFakt;
 /// </summary>
 [Collection("Autodor")]
 [Trait("Category", "Integration")]
-public class InFaktHttpClientTests(AutodorSharedFixture shared) : IAsyncLifetime
+public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBase(fixture)
 {
-    private TestContext _context = null!;
-    private InFaktHttpClient _client => _context.GetRequiredService<InFaktHttpClient>();
 
-    public async Task InitializeAsync()
-    {
-        // Create test context with mocks injected
-        _context = await TestContext.CreateBuilder<Program>()
-            .WithContainer(shared.Container)
-            .BuildAsync();
-
-        await _context.ResetDatabaseAsync();
-    }
-    public async Task DisposeAsync()
-    {
-        if (_context != null)
-            await _context.DisposeAsync();
-    }
+    private InFaktHttpClient _client => Context.GetRequiredService<InFaktHttpClient>();
 
     [Fact]
     public async Task GetClientsAsync_WithEmptyFilter_ShouldReturnClientList()

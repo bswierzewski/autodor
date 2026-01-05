@@ -6,9 +6,15 @@ public class AutodorSharedFixture : IAsyncLifetime
 {
     public PostgreSqlTestContainer Container { get; } = new();
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task InitializeAsync()
+    {
+        await Container.StartAsync();
+    }
 
-    public Task InitializeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync()
+    {
+        await Container.StopAsync();
+    }
 }
 
 [CollectionDefinition("Autodor")]
