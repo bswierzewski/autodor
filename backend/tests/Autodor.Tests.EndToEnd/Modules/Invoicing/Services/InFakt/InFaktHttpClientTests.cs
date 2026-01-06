@@ -1,6 +1,7 @@
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Requests;
+using ErrorOr;
 
 namespace Autodor.Tests.EndToEnd.Modules.Invoicing.Services.InFakt;
 
@@ -27,8 +28,9 @@ public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBa
         var result = await _client.GetClientsAsync(query);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Entities.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
     }
 
     [Fact]
@@ -44,8 +46,9 @@ public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBa
         var result = await _client.GetClientsAsync(query);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Entities.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
         // Filter may return 0 results if client doesn't exist in sandbox
     }
 
@@ -62,16 +65,18 @@ public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBa
             Email = $"get-test-{Guid.NewGuid()}@example.com"
         };
 
-        var createdClient = await _client.CreateClientAsync(newClient);
-        createdClient.Id.Should().NotBeNull();
+        var createdClientResult = await _client.CreateClientAsync(newClient);
+        createdClientResult.IsError.Should().BeFalse();
+        createdClientResult.Value.Id.Should().NotBeNull();
 
         // Act
-        var retrievedClient = await _client.GetClientAsync(createdClient.Id!.Value);
+        var result = await _client.GetClientAsync(createdClientResult.Value.Id!.Value);
 
         // Assert
-        retrievedClient.Should().NotBeNull();
-        retrievedClient.FirstName.Should().Be("GetTest");
-        retrievedClient.Id.Should().Be(createdClient.Id);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("GetTest");
+        result.Value.Id.Should().Be(createdClientResult.Value.Id);
     }
 
     [Fact]
@@ -96,10 +101,11 @@ public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBa
         var result = await _client.CreateClientAsync(client);
 
         // Assert
-        result.Should().NotBeNull();
-        result.FirstName.Should().Be("Test");
-        result.LastName.Should().Be("User");
-        result.Id.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("Test");
+        result.Value.LastName.Should().Be("User");
+        result.Value.Id.Should().NotBeNull();
     }
 
     [Fact]
@@ -132,7 +138,83 @@ public class InFaktHttpClientTests(AutodorSharedFixture fixture) : AutodorTestBa
 
         // Assert
         result.Should().NotBeNull();
-        result.Id.Should().NotBeNull();
-        result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+        result.Value.Id.Should().NotBeNull();
+        result.Value.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+    }
+
+    [Fact]
+    public async Task CreateInvoiceAsync_WithInvalidInvoice_ShouldReturnError()
+    {
+        var invoice = new Invoice
+        {
+            Currency = "PLN",
+            Notes = "Test invoice from API",
+            Kind = "vats",
+            PaymentMethod = "transfera",
+            ClientTaxCode = "117622455622", // Known valid NIP from creation
+            InvoiceDate = DateTime.Now.ToString("yyyy-dd-MM"),
+            SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            Services = new List<InvoiceItem>
+            {
+                new()
+                {
+                    Name = "Test Service",
+                    TaxSymbol = "231",
+                    Unit = "szta",
+                    Quantity = -1,
+                    UnitNetPrice = 10000 // 100.00 PLN in groszy
+                }
+            }
+        };
+
+        // Act
+        var result = await _client.CreateInvoiceAsync(invoice);
+
+        // Assert
+        result.IsError.Should().BeTrue("API should return error for missing required field");
+        result.Errors.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task CreateInvoiceAsync_WithMissingRequiredField_ShouldReturnError()
+    {
+        // Arrange - Missing required Services field
+        var invoice = new Invoice
+        {
+            Currency = "PLN",
+            Notes = "Test invoice with error",
+            Kind = "vat",
+            PaymentMethod = "transfer",
+            ClientTaxCode = "1176224556",
+            InvoiceDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            Services = null!  // Intentionally null to trigger API error
+        };
+
+        // Act
+        var result = await _client.CreateInvoiceAsync(invoice);
+
+        // Assert
+        result.IsError.Should().BeTrue("API should return error for missing required field");
+        result.Errors.Should().NotBeEmpty();
+        result.FirstError.Code.Should().Be("InFakt.CreateInvoiceFailed.services", "Error code should include the field name");
+        result.FirstError.Type.Should().Be(ErrorType.Validation, "Should return validation error with detailed business messages");
+        result.FirstError.Description.Should().Be("Proszę dodać pozycję na fakturze.");
+    }
+
+    [Fact]
+    public async Task GetClientAsync_WithInvalidId_ShouldReturnError()
+    {
+        // Arrange - Using a non-existent client ID
+        var invalidClientId = 999999999;
+
+        // Act
+        var result = await _client.GetClientAsync(invalidClientId);
+
+        // Assert
+        result.IsError.Should().BeTrue("API should return error for non-existent client");
+        result.Errors.Should().NotBeEmpty();
+        result.FirstError.Code.Should().Be("InFakt.GetClientFailed");
+        result.FirstError.Description.Should().NotBeEmpty("Zasób którego szukasz nie został znaleziony.");
     }
 }

@@ -44,7 +44,9 @@ public static class ContractorsEndpoints
     {
         var result = await mediator.Send(command);
 
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> GetContractor(
@@ -58,14 +60,18 @@ public static class ContractorsEndpoints
             : new GetContractorQuery(Id: id);
 
         var result = await mediator.Send(query);
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> GetContractors(
         IMediator mediator)
     {
         var result = await mediator.Send(new GetContractorsQuery());
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> UpdateContractor(
@@ -79,7 +85,9 @@ public static class ContractorsEndpoints
         }
 
         var result = await mediator.Send(command);
-        return result.ToNoContentResult();
+        return result.Match(
+            value => Results.NoContent(),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> DeleteContractor(
@@ -87,6 +95,8 @@ public static class ContractorsEndpoints
         IMediator mediator)
     {
         var result = await mediator.Send(new DeleteContractorCommand(id));
-        return result.ToNoContentResult();
+        return result.Match(
+            value => Results.NoContent(),
+            errors => errors.Problem());
     }
 }

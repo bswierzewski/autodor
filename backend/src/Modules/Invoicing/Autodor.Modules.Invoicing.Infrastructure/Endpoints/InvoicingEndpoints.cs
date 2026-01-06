@@ -31,7 +31,9 @@ public static class InvoicingEndpoints
     {
         var result = await mediator.Send(command);
 
-        return result.ToCreatedResult("/api/invoicing");
+        return result.Match(
+            value => Results.Created("/api/invoicing", value),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> CreateInvoices(
@@ -40,6 +42,8 @@ public static class InvoicingEndpoints
     {
         var result = await mediator.Send(command);
 
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 }

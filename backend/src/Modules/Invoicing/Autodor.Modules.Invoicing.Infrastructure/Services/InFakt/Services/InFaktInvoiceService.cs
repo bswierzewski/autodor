@@ -2,23 +2,28 @@
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients;
 using Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Clients.Models.Filters;
+using ErrorOr;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Services.InFakt.Services;
 
 public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
 {
-    public async Task<bool> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<bool>> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
         // Upsert client (ensure it exists in InFakt system and is up to date)
-        await UpsertClientAsync(invoice.Contractor, cancellationToken);
+        var upsertResult = await UpsertClientAsync(invoice.Contractor, cancellationToken);
+        if (upsertResult.IsError)
+            return upsertResult.Errors;
 
         // Create invoice (InFakt will automatically link to client by NIP)
-        await CreateInvoiceInternalAsync(invoice, cancellationToken);
+        var createResult = await CreateInvoiceInternalAsync(invoice, cancellationToken);
+        if (createResult.IsError)
+            return createResult.Errors;
 
         return true;
     }
 
-    private async Task UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
+    private async Task<ErrorOr<bool>> UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
     {
         // Search for existing client by NIP
         var searchQuery = new ClientSearchQuery
@@ -29,28 +34,39 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
             }
         };
 
-        var clientList = await httpClient.GetClientsAsync(searchQuery, cancellationToken);
+        var clientListResult = await httpClient.GetClientsAsync(searchQuery, cancellationToken);
+
+        if (clientListResult.IsError)
+            return clientListResult.Errors;
 
         // If client exists, check if update is needed
-        if (clientList.Entities.Count != 0)
+        if (clientListResult.Value.Entities.Count != 0)
         {
-            var existingClient = clientList.Entities.First();
+            var existingClient = clientListResult.Value.Entities.First();
             if (existingClient.Id.HasValue)
             {
                 // Check if client data has changed
                 if (RequiresUpdate(existingClient, contractor))
                 {
                     var updatedClient = contractor.ToInFaktClient();
-                    await httpClient.UpdateClientAsync(existingClient.Id.Value, updatedClient, cancellationToken);
+                    var updateResult = await httpClient.UpdateClientAsync(existingClient.Id.Value, updatedClient, cancellationToken);
+
+                    if (updateResult.IsError)
+                        return updateResult.Errors;
                 }
 
-                return;
+                return true;
             }
         }
 
         // Client doesn't exist, create new one
         var newClient = contractor.ToInFaktClient();
-        await httpClient.CreateClientAsync(newClient, cancellationToken);
+        var createResult = await httpClient.CreateClientAsync(newClient, cancellationToken);
+
+        if (createResult.IsError)
+            return createResult.Errors;
+
+        return true;
     }
 
     private static bool RequiresUpdate(
@@ -85,10 +101,15 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
         return false;
     }
 
-    private async Task CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
+    private async Task<ErrorOr<bool>> CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
     {
         var inFaktInvoice = invoice.ToInFaktInvoice();
 
-        await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
+        var createResult = await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
+
+        if (createResult.IsError)
+            return createResult.Errors;
+
+        return true;
     }
 }

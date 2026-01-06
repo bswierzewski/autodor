@@ -36,7 +36,9 @@ public static class OrdersEndpoints
     {
         var result = await mediator.Send(command);
 
-        return result.ToNoContentResult();
+        return result.Match(
+            value => Results.NoContent(),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> GetOrders(
@@ -46,7 +48,9 @@ public static class OrdersEndpoints
     {
         var query = new GetOrdersQuery(from, to);
         var result = await mediator.Send(query);
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 
     private static async Task<IResult> GetOrderById(
@@ -56,6 +60,8 @@ public static class OrdersEndpoints
         var query = new GetOrderByIdQuery(orderId);
         var result = await mediator.Send(query);
 
-        return result.ToHttpResult();
+        return result.Match(
+            value => Results.Ok(value),
+            errors => errors.Problem());
     }
 }

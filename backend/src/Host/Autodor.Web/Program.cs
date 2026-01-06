@@ -12,6 +12,7 @@ if (File.Exists(".env"))
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSerilog();
+
 builder.Services.AddCors();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddUserContext();
