@@ -12,7 +12,7 @@ namespace Infrastructure.Services.Polcar;
 
 public class DistributorsSalesService(IMapper mapper, IOptions<PolcarOptions> polcarOptions, ILogger<DistributorsSalesService> logger) : IDistributorsSalesService
 {
-    private readonly DistributorsSalesServiceSoapClient _client = new(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap12);
+    private readonly DistributorsSalesServiceSoapClient _client = new(DistributorsSalesServiceSoapClient.EndpointConfiguration.DistributorsSalesServiceSoap);
 
     private readonly AsyncRetryPolicy _retryPolicy = Policy
             .Handle<Exception>()
