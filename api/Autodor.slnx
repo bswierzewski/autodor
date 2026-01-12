@@ -12,7 +12,9 @@
     <Project Path="src/Aspire/Autodor.ServiceDefaults/Autodor.ServiceDefaults.csproj" />
   </Folder>
 
-  <Folder Name="/src/Host/" />
+  <Folder Name="/src/Host/">
+    <Project Path="src/Host/Autodor.Api/Autodor.Api.csproj" />
+  </Folder>
 
   <Folder Name="/src/Modules/" />
 
