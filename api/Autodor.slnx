@@ -1,15 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Solution>
-  <Folder Name="src">
-    <Folder Name="Aspire" />
-    <Folder Name="Host" />
-    <Folder Name="Modules" />
-    <Folder Name="Shared" />
-  </Folder>
-
-  <Folder Name="solution items">
+  <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+  </Folder>
+
+  <Folder Name="/src/" />
+
+  <Folder Name="/src/Aspire/">
+    <Project Path="src/Aspire/Autodor.AppHost/Autodor.AppHost.csproj" />
+    <Project Path="src/Aspire/Autodor.ServiceDefaults/Autodor.ServiceDefaults.csproj" />
+  </Folder>
+
+  <Folder Name="/src/Host/" />
+
+  <Folder Name="/src/Modules/" />
+
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Autodor.Shared.Core/Autodor.Shared.Core.csproj" />
+    <Project Path="src/Shared/Autodor.Shared.Contracts/Autodor.Shared.Contracts.csproj" />
+    <Project Path="src/Shared/Autodor.Shared.Infrastructure/Autodor.Shared.Infrastructure.csproj" />
   </Folder>
 </Solution>
