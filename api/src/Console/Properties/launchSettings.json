@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Console": {
-      "commandName": "Project",
-      "commandLineArgs": "-f 2025-07-28 -t 2025-07-28"
-    }
-  }
-}
