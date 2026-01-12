@@ -1,1 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk" />
+<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\Autodor.Shared.Infrastructure\Autodor.Shared.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\..\Shared\Autodor.Shared.Core\Autodor.Shared.Core.csproj" />
+	</ItemGroup>
+</Project>

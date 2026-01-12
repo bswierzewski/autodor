@@ -2,10 +2,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="WolverineFx" />
+		<PackageReference Include="WolverineFx.Http" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Aspire\Autodor.ServiceDefaults\Autodor.ServiceDefaults.csproj" />
+	  <ProjectReference Include="..\..\Modules\Contractors\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
+	  <ProjectReference Include="..\..\Modules\Invoicing\Autodor.Modules.Invoicing\Autodor.Modules.Invoicing.csproj" />
+	  <ProjectReference Include="..\..\Modules\Orders\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+	  <ProjectReference Include="..\..\Modules\Products\Autodor.Modules.Products\Autodor.Modules.Products.csproj" />
 	</ItemGroup>
 	
 </Project>

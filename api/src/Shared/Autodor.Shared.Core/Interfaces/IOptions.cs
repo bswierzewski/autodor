@@ -5,6 +5,8 @@ namespace Autodor.Shared.Core.Interfaces;
 /// </summary>
 public interface IOptions
 {
-    /// <summary>Gets the configuration section name for this options class</summary>
+    /// <summary>
+    /// Gets the configuration section name for this options class
+    /// </summary>
     static abstract string SectionName { get; }
 }

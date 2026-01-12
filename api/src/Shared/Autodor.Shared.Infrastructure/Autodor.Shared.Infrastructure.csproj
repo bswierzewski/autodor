@@ -5,6 +5,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<PackageReference Include="WolverineFx.EntityFrameworkCore" />
 	</ItemGroup>
 	
 </Project>
