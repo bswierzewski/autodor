@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Solution>
+  <Folder Name="src">
+    <Folder Name="Aspire" />
+    <Folder Name="Host" />
+    <Folder Name="Modules" />
+    <Folder Name="Shared" />
+  </Folder>
+
+  <Folder Name="solution items">
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+</Solution>
