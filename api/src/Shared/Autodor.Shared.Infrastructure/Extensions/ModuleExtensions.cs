@@ -52,7 +52,6 @@ public sealed class ModuleBuilder(IServiceCollection services, IConfiguration co
             options.UseNpgsql(dataSource, npgsql =>
             {
                 npgsql.MigrationsHistoryTable("__EFMigrationsHistory", SchemaName);
-                npgsql.MigrationsAssembly(typeof(TDbContext).Assembly.FullName);
             });
 
             options.AddInterceptors(auditableInterceptor);

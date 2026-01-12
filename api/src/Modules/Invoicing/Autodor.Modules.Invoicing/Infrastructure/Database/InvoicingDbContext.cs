@@ -1,5 +1,6 @@
 using Autodor.Modules.Invoicing.Domain;
 using Microsoft.EntityFrameworkCore;
+using Wolverine.EntityFrameworkCore;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Database;
 
@@ -10,6 +11,8 @@ public class InvoicingDbContext(DbContextOptions<InvoicingDbContext> options) : 
         modelBuilder.HasDefaultSchema(Module.Name.ToLowerInvariant());
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(InvoicingDbContext).Assembly);
+
+        modelBuilder.MapWolverineEnvelopeStorage();
 
         base.OnModelCreating(modelBuilder);
     }
