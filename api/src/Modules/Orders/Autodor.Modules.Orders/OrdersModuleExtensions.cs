@@ -1,6 +1,5 @@
 using Autodor.Modules.Orders.Domain;
 using Autodor.Modules.Orders.Infrastructure.Database;
-using Autodor.Modules.Orders.Infrastructure.Options;
 using Autodor.Shared.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

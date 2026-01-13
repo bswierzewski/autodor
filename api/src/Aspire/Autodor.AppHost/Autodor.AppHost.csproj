@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\Host\Autodor.Api\Autodor.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+  </ItemGroup>
+
 </Project>

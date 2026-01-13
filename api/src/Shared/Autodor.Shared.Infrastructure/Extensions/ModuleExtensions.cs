@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Wolverine.EntityFrameworkCore;
 
 namespace Autodor.Shared.Infrastructure.Extensions;
 
@@ -44,7 +43,7 @@ public sealed class ModuleBuilder(IServiceCollection services, IConfiguration co
 
         Services.TryAddScoped<AuditableEntityInterceptor>();
 
-        Services.AddDbContextWithWolverineIntegration<TDbContext>((sp, options) =>
+        Services.AddDbContext<TDbContext>((sp, options) =>
         {
             var dataSource = sp.GetRequiredKeyedService<NpgsqlDataSource>(ModuleName);
             var auditableInterceptor = sp.GetRequiredService<AuditableEntityInterceptor>();
@@ -56,7 +55,7 @@ public sealed class ModuleBuilder(IServiceCollection services, IConfiguration co
 
             options.AddInterceptors(auditableInterceptor);
 
-        }, wolverineDatabaseSchema: SchemaName);
+        });
 
         return this;
     }

@@ -1,7 +1,7 @@
-﻿using Autodor.Modules.Invoicing.Domain;
+﻿using Autodor.Modules.Orders.Domain;
 using Autodor.Shared.Core.Interfaces;
 
-namespace Autodor.Modules.Invoicing.Infrastructure.Options;
+namespace Autodor.Modules.Orders.Infrastructure.Database;
 
 public class DatabaseOptions : IDatabaseOptions
 {

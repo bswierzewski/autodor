@@ -1,8 +1,11 @@
-﻿using Autodor.Modules.Contractors;
+﻿using Autodor.Api;
+using Autodor.Modules.Contractors;
 using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
 using Autodor.Modules.Products;
 using Autodor.ServiceDefaults;
+using Autodor.Shared.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Wolverine;
 using Wolverine.Http;
 
@@ -14,6 +17,10 @@ builder.Services.AddContractorsModule(builder.Configuration);
 builder.Services.AddInvoicingModule(builder.Configuration);
 builder.Services.AddOrdersModule(builder.Configuration);
 builder.Services.AddProductsModule(builder.Configuration);
+
+// Dummy implementation of IUserContext for demonstration purposes
+// Remove after add IHttpContextAccessor and real user context implementation
+builder.Services.TryAddScoped<IUserContext, DummyUserContext>();
 
 builder.Host.UseWolverine(opts =>
 {
