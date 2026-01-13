@@ -6,6 +6,7 @@ using Autodor.Modules.Products;
 using Autodor.ServiceDefaults;
 using Autodor.Shared.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Scalar.AspNetCore;
 using Wolverine;
 using Wolverine.Http;
 
@@ -31,6 +32,8 @@ builder.Host.UseWolverine(opts =>
 });
 
 // Add services to the container.
+builder.Services.AddWolverineHttp();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -42,6 +45,7 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.MapWolverineEndpoints();

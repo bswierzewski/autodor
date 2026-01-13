@@ -1,30 +1,31 @@
 <Project>
-	<PropertyGroup>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-	<ItemGroup>
-		<!-- WolverineFx -->
-		<PackageVersion Include="WolverineFx" Version="5.9.2" />
-		<PackageVersion Include="WolverineFx.FluentValidation" Version="5.9.2" />
-		<PackageVersion Include="WolverineFx.Http" Version="5.9.2" />
-		<!-- Microsoft Extensions -->
-		<PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />
-		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
-		<!-- AspNet Core -->
-		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
-		<!-- Entity Framework Core -->
-		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-		<!-- Aspire -->
-		<PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
-		<PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
-		<PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
-		<PackageVersion Include="OpenTelemetry" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
-	</ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- WolverineFx -->
+    <PackageVersion Include="WolverineFx" Version="5.9.2" />
+    <PackageVersion Include="WolverineFx.FluentValidation" Version="5.9.2" />
+    <PackageVersion Include="WolverineFx.Http" Version="5.9.2" />
+    <!-- Microsoft Extensions -->
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
+    <!-- AspNet Core -->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.5" />
+    <!-- Entity Framework Core -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <!-- Aspire -->
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
+    <PackageVersion Include="OpenTelemetry" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
+  </ItemGroup>
 </Project>
