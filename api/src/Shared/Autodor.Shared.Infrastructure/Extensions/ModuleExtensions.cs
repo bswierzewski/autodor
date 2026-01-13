@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace Autodor.Shared.Infrastructure.Extensions;
@@ -22,23 +21,20 @@ public sealed class ModuleBuilder(IServiceCollection services, IConfiguration co
     public string ModuleName { get; } = moduleName;
     public string SchemaName { get; } = moduleName.ToLowerInvariant();
 
-    public ModuleBuilder AddPostgres<TDbContext, TOptions>()
+    public ModuleBuilder AddPostgres<TDbContext>()
         where TDbContext : DbContext
-        where TOptions : class, IDatabaseOptions
     {
-        ConfigureOptions<TOptions>();
-
         Services.AddKeyedSingleton(ModuleName, (sp, key) =>
         {
-            var options = sp.GetRequiredService<IOptions<TOptions>>().Value;
-            var connectionString = options.ConnectionString;
+            // Get connection string from standard location (works with Aspire, Docker Compose, and appsettings)
+            var connectionString = Configuration.GetConnectionString(SchemaName);
 
             if (string.IsNullOrWhiteSpace(connectionString))
-                throw new InvalidOperationException($"Connection string for module '{ModuleName}' is empty.");
+                throw new InvalidOperationException($"Connection string '{SchemaName}' not found. ");
 
-            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-            dataSourceBuilder.EnableDynamicJson();
-            return dataSourceBuilder.Build();
+            return new NpgsqlDataSourceBuilder(connectionString)
+                .EnableDynamicJson()
+                .Build();
         });
 
         Services.TryAddScoped<AuditableEntityInterceptor>();

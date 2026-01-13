@@ -58,11 +58,13 @@ namespace Autodor.ServiceDefaults
                 {
                     metrics.AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
-                        .AddRuntimeInstrumentation();
+                        .AddRuntimeInstrumentation()
+                        .AddMeter("Wolverine");
                 })
                 .WithTracing(tracing =>
                 {
                     tracing.AddSource(builder.Environment.ApplicationName)
+                        .AddSource("Wolverine")
                         .AddAspNetCoreInstrumentation(tracing =>
                             // Exclude health check requests from tracing to reduce noise
                             tracing.Filter = context =>

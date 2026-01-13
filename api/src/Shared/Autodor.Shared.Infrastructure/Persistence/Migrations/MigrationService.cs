@@ -9,12 +9,9 @@ namespace Autodor.Shared.Infrastructure.Persistence.Migrations;
 /// Used during application startup to automatically update the database schema.
 /// </summary>
 /// <typeparam name="TContext">The type of DbContext to migrate</typeparam>
-public class MigrationService<TContext>(IServiceProvider serviceProvider)
+public class MigrationService<TContext>(IServiceScopeFactory scopeFactory, ILogger<MigrationService<TContext>> logger)
     where TContext : DbContext
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
-    private readonly ILogger<MigrationService<TContext>> _logger = serviceProvider.GetRequiredService<ILogger<MigrationService<TContext>>>();
-
     /// <summary>
     /// Checks for and applies any pending database migrations asynchronously
     /// </summary>
@@ -23,34 +20,34 @@ public class MigrationService<TContext>(IServiceProvider serviceProvider)
     public async Task MigrateAsync(CancellationToken cancellationToken = default)
     {
         // Create a new scope to ensure DbContext instance is properly disposed
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
         try
         {
             var contextName = typeof(TContext).Name;
-            _logger.LogInformation("Checking migrations for {ContextName}...", contextName);
+            logger.LogInformation("Checking migrations for {ContextName}...", contextName);
 
             // Check for any migrations that haven't been applied to the database
             var pendingMigrations = await context.Database.GetPendingMigrationsAsync(cancellationToken);
             if (pendingMigrations.Any())
             {
-                _logger.LogInformation("Found {Count} pending migrations for {ContextName}: [{Migrations}]",
+                logger.LogInformation("Found {Count} pending migrations for {ContextName}: [{Migrations}]",
                     pendingMigrations.Count(), contextName, string.Join(", ", pendingMigrations));
 
                 // Apply all pending migrations
                 await context.Database.MigrateAsync(cancellationToken);
-                _logger.LogInformation("{ContextName} database migrations applied successfully", contextName);
+                logger.LogInformation("{ContextName} database migrations applied successfully", contextName);
             }
             else
             {
-                _logger.LogInformation("No pending migrations for {ContextName} - database is up to date", contextName);
+                logger.LogInformation("No pending migrations for {ContextName} - database is up to date", contextName);
             }
         }
         catch (Exception ex)
         {
             var contextName = typeof(TContext).Name;
-            _logger.LogError(ex, "Error occurred during {ContextName} database migration", contextName);
+            logger.LogError(ex, "Error occurred during {ContextName} database migration", contextName);
             throw;
         }
     }

@@ -16,27 +16,16 @@
     <Project Path="src/Host/Autodor.Api/Autodor.Api.csproj" />
   </Folder>
 
-  <Folder Name="/src/Modules/" />
-
-  <Folder Name="/src/Modules/Invoicing/">
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/Contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
     <Project Path="src/Modules/Invoicing/Autodor.Modules.Invoicing/Autodor.Modules.Invoicing.csproj" />
-  </Folder>
-
-  <Folder Name="/src/Modules/Orders/">
     <Project Path="src/Modules/Orders/Autodor.Modules.Orders/Autodor.Modules.Orders.csproj" />
-  </Folder>
-
-  <Folder Name="/src/Modules/Products/">
     <Project Path="src/Modules/Products/Autodor.Modules.Products/Autodor.Modules.Products.csproj" />
   </Folder>
 
-  <Folder Name="/src/Modules/Contractors/">
-    <Project Path="src/Modules/Contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
-  </Folder>
-
   <Folder Name="/src/Shared/">
-    <Project Path="src/Shared/Autodor.Shared.Core/Autodor.Shared.Core.csproj" />
     <Project Path="src/Shared/Autodor.Shared.Contracts/Autodor.Shared.Contracts.csproj" />
+    <Project Path="src/Shared/Autodor.Shared.Core/Autodor.Shared.Core.csproj" />
     <Project Path="src/Shared/Autodor.Shared.Infrastructure/Autodor.Shared.Infrastructure.csproj" />
   </Folder>
 </Solution>
