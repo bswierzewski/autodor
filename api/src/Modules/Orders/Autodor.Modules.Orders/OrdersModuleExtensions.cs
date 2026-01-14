@@ -12,7 +12,7 @@ public static class OrdersModuleExtensions
     {
         services.AddModule(configuration, Module.Name)
             .AddOptions(opts => { })
-            .AddPostgres<OrdersDbContext, DatabaseOptions>();
+            .AddPostgres<OrdersDbContext>();
 
         return services;
     }

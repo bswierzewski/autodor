@@ -1,3 +1,5 @@
+using FluentValidation.Results;
+
 namespace Autodor.Shared.Infrastructure.Exceptions;
 
 /// <summary>

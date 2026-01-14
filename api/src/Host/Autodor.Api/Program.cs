@@ -2,11 +2,9 @@
 using Autodor.Modules.Contractors;
 using Autodor.Modules.Contractors.Infrastructure.Database;
 using Autodor.Modules.Invoicing;
-using Autodor.Modules.Invoicing.Infrastructure.Database;
 using Autodor.Modules.Orders;
 using Autodor.Modules.Orders.Infrastructure.Database;
 using Autodor.Modules.Products;
-using Autodor.Modules.Products.Infrastructure.Database;
 using Autodor.ServiceDefaults;
 using Autodor.Shared.Core.Interfaces;
 using Autodor.Shared.Infrastructure.Exceptions.Handlers;
@@ -14,6 +12,7 @@ using Autodor.Shared.Infrastructure.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scalar.AspNetCore;
 using Wolverine;
+using Wolverine.FluentValidation;
 using Wolverine.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,8 +54,12 @@ builder.Host.UseWolverine(opts =>
     // Not 100% necessary for "modular monoliths", but this makes the Wolverine durable
     // inbox/outbox feature a lot easier to use and DRYs up your message handlers
     opts.Policies.AutoApplyTransactions();
+    
+    // Include infrastructure assembly for middleware discovery
+    opts.Discovery.IncludeAssembly(typeof(InfrastructureAssembly).Assembly);
 
     // Add all of the message handlers, etc. from the modules
+    // This also discovers middleware from these assemblies
     opts.Discovery.IncludeAssembly(typeof(ContractorsModuleExtensions).Assembly);
     opts.Discovery.IncludeAssembly(typeof(InvoicingModuleExtensions).Assembly);
     opts.Discovery.IncludeAssembly(typeof(ProductsModuleExtensions).Assembly);
@@ -89,8 +92,6 @@ if (app.Environment.IsDevelopment())
 app.MapWolverineEndpoints();
 
 await app.MigrateDatabaseAsync<ContractorsDbContext>();
-await app.MigrateDatabaseAsync<InvoicingDbContext>();
-await app.MigrateDatabaseAsync<ProductsDbContext>();
 await app.MigrateDatabaseAsync<OrdersDbContext>();
 
 app.Run();

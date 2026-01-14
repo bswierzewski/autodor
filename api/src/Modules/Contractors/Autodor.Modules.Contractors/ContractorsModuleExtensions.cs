@@ -12,7 +12,7 @@ public static class ContractorsModuleExtensions
     {
         services.AddModule(configuration, Module.Name)
             .AddOptions(opts => { })
-            .AddPostgres<ContractorsDbContext, DatabaseOptions>();
+            .AddPostgres<ContractorsDbContext>();
 
         return services;
     }

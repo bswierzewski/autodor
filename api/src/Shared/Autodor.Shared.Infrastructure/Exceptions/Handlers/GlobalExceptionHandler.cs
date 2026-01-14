@@ -3,6 +3,7 @@ using Autodor.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Autodor.Shared.Infrastructure.Exceptions.Handlers;
@@ -10,7 +11,7 @@ namespace Autodor.Shared.Infrastructure.Exceptions.Handlers;
 /// <summary>
 /// Global exception handler that converts exceptions to ProblemDetails responses
 /// </summary>
-public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+public sealed class GlobalExceptionHandler(IHostEnvironment env, ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
