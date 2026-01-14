@@ -24,7 +24,7 @@ public static class OpenApiProblemDetailsExtensions
             {
                 operation.Responses.Add("default", new OpenApiResponse
                 {
-                    Description = "An error occurred (4xx/5xx)",
+                    Description = "An error occurred",
                     Content = new Dictionary<string, OpenApiMediaType>
                     {
                         ["application/problem+json"] = new OpenApiMediaType
@@ -51,21 +51,20 @@ public static class OpenApiProblemDetailsExtensions
     private static OpenApiSchema CreateProblemDetailsSchema() => new()
     {
         Type = "object",
-        Description = "Standard error response.",
+        Description = "RFC 7807 Problem Details for HTTP APIs",
         Properties = new Dictionary<string, OpenApiSchema>
         {
-            ["type"] = new() { Type = "string" },
-            ["title"] = new() { Type = "string" },
-            ["status"] = new() { Type = "integer", Format = "int32" },
-            ["detail"] = new() { Type = "string" },
-            ["instance"] = new() { Type = "string" },
-            ["traceId"] = new() { Type = "string" },
-            ["timestamp"] = new() { Type = "string", Format = "date-time" },
+            ["type"] = new() { Type = "string", Description = "A URI reference that identifies the problem type." },
+            ["title"] = new() { Type = "string", Description = "A short, human-readable summary of the problem type." },
+            ["status"] = new() { Type = "integer", Format = "int32", Description = "The HTTP status code." },
+            ["detail"] = new() { Type = "string", Description = "A human-readable explanation specific to this occurrence." },
+            ["instance"] = new() { Type = "string", Description = "A URI reference that identifies the specific occurrence." },
+            ["traceId"] = new() { Type = "string", Description = "The trace identifier for request tracking." },
+            ["timestamp"] = new() { Type = "string", Format = "date-time", Description = "The timestamp when the error occurred (UTC)." },
             ["errors"] = new()
             {
                 Type = "object",
-                Nullable = true,
-                Description = "Validation errors (grouped by field name)",
+                Description = "Validation errors grouped by field name.",
                 AdditionalProperties = new OpenApiSchema
                 {
                     Type = "array",
