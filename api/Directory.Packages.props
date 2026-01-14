@@ -17,6 +17,9 @@
     <PackageVersion Include="WolverineFx" Version="5.9.2" />
     <PackageVersion Include="WolverineFx.FluentValidation" Version="5.9.2" />
     <PackageVersion Include="WolverineFx.Http" Version="5.9.2" />
+    <PackageVersion Include="WolverineFx.Http.FluentValidation" Version="5.9.2" />
+    <!-- FluentValidation -->
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />

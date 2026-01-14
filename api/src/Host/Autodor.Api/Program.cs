@@ -9,6 +9,7 @@ using Autodor.Modules.Products;
 using Autodor.Modules.Products.Infrastructure.Database;
 using Autodor.ServiceDefaults;
 using Autodor.Shared.Core.Interfaces;
+using Autodor.Shared.Infrastructure.Exceptions.Handlers;
 using Autodor.Shared.Infrastructure.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scalar.AspNetCore;
@@ -27,6 +28,10 @@ builder.Host.UseSerilog(logging =>
 
 builder.AddServiceDefaults();
 
+// Add global exception handling
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddContractorsModule(builder.Configuration);
 builder.Services.AddInvoicingModule(builder.Configuration);
 builder.Services.AddOrdersModule(builder.Configuration);
@@ -38,6 +43,10 @@ builder.Services.TryAddScoped<IUserContext, DummyUserContext>();
 
 builder.Host.UseWolverine(opts =>
 {
+    // Enable FluentValidation middleware for all message handlers
+    // This will automatically discover and register validators
+    opts.UseFluentValidation();
+
     // Tell Wolverine that when you have more than one handler for the same
     // message type, they should be executed separately and automatically
     // "stuck" to separate local queues
@@ -61,6 +70,9 @@ builder.Services.AddWolverineHttp();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Use global exception handler
+app.UseExceptionHandler();
 
 app.MapDefaultEndpoints();
 
