@@ -1,4 +1,5 @@
 using Autodor.Modules.Contractors;
+using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -81,7 +82,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapWolverineEndpoints();
 
-//await app.MigrateDatabaseAsync<ContractorsDbContext>();
+await app.MigrateDatabaseAsync<ContractorsDbContext>();
 //await app.MigrateDatabaseAsync<OrdersDbContext>();
 //await app.MigrateDatabaseAsync<InvoicingModule>();
 

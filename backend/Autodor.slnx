@@ -4,6 +4,9 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts\add-migrations.ps1" />
+  </Folder>
   <Folder Name="/src/">
     <Folder Name="/src/Aspire/">
       <Project Path="src\Aspire\Autodor.AppHost\Autodor.AppHost.csproj" />
