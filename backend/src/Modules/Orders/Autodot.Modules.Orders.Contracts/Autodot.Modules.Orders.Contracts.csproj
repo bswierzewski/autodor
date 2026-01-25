@@ -1,2 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+	</ItemGroup>
+
+</Project>
 

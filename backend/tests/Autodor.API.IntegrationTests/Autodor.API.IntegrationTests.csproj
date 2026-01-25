@@ -20,4 +20,11 @@
     <Using Include="FluentAssertions" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Orders\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Invoicing\Autodor.Modules.Invoicing\Autodor.Modules.Invoicing.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Contractors\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
+    <ProjectReference Include="..\..\src\Host\Autodor.API\Autodor.API.csproj" />
+  </ItemGroup>
+
 </Project>
