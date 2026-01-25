@@ -108,33 +108,28 @@ src/
         ├── Extensions/
         └── Primitives/
 tests/
-├── Shared/
-│   ├── Fixtures/
-│   ├── Builders/
-│   └── Extensions/
-└── Modules/
-    ├── Orders/
-    │   └── Autodor.Modules.Orders.IntegrationTests/
-    │       └── Features/
-    │           ├── GetOrders/
-    │           ├── GetOrder/
-    │           ├── ExcludeOrder/
-    │           ├── ExcludeOrderPosition/
-    │           ├── GenerateWarehouseDocument/
-    │           └── SyncProducts/
-    ├── Invoicing/
-    │   └── Autodor.Modules.Invoicing.IntegrationTests/
-    │       └── Features/
-    │           ├── CreateInvoice/
-    │           └── BulkCreateInvoices/
-    └── Contractors/
-        └── Autodor.Modules.Contractors.IntegrationTests/
-            └── Features/
-                ├── CreateContractor/
-                ├── GetContractor/
-                ├── GetContractors/
-                ├── UpdateContractor/
-                └── DeleteContractor/
+├── Autodor.API.IntegrationTests/
+│   ├── Shared/
+│   │   ├── Fixtures/
+│   │   ├── Builders/
+│   │   └── Extensions/
+│   └── Modules/
+│       ├── Orders/
+│       │   ├── GetOrders/
+│       │   ├── GetOrder/
+│       │   ├── ExcludeOrder/
+│       │   ├── ExcludeOrderPosition/
+│       │   ├── GenerateWarehouseDocument/
+│       │   └── SyncProducts/
+│       ├── Invoicing/
+│       │   ├── CreateInvoice/
+│       │   └── BulkCreateInvoices/
+│       └── Contractors/
+│           ├── CreateContractor/
+│           ├── GetContractor/
+│           ├── GetContractors/
+│           ├── UpdateContractor/
+│           └── DeleteContractor/
 ```
 
 ## Opis głównych obszarów
@@ -146,8 +141,8 @@ tests/
   - **Invoicing** - Moduł fakturowania (tworzenie pojedynczych i masowych faktur)
   - **Contractors** - Moduł wykonawców (CRUD operacje)
 - **src/BuildingBlocks** - Kod wspólny (Building Blocks)
-- **tests/** - Testy integracyjne (HTTP):
+- **tests/Autodor.API.IntegrationTests** - Testy integracyjne HTTP API (modularny monolit):
   - **Shared** - Wspólna infrastruktura testowa (Alba, Testcontainers, Respawn)
-  - **Modules** - Testy integracyjne dla każdego modułu
+  - **Modules** - Testy integracyjne zorganizowane według modułów
 
 > BuildingBlocks jest dodany jako submoduł git i jest dostępny pod tym adresem https://github.com/bswierzewski/building_blocks.git

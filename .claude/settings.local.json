@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git submodule add:*)",
+      "Bash(tree:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet sln:*)"
+    ]
+  }
+}
