@@ -101,3 +101,6 @@ class DummyUserContext : IUserContext
         return Roles.Contains(role, StringComparer.OrdinalIgnoreCase);
     }
 }
+
+// Make Program class accessible to integration tests
+public partial class Program { }

@@ -6,7 +6,19 @@
       "Bash(dotnet new:*)",
       "Bash(dotnet restore:*)",
       "Bash(dotnet build:*)",
-      "Bash(dotnet sln:*)"
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet list:*)",
+      "Bash(dotnet nuget:*)",
+      "Bash(findstr:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet add:*)",
+      "Bash(pwsh -File:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"D:\\\\repos\\\\vertical\\\\autodor\\\\backend\\\\scripts\\\\add-migrations.ps1\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"scripts\\\\add-migrations.ps1\")",
+      "Bash(dotnet ef migrations remove:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(echo:*)",
+      "Bash(dotnet test:*)"
     ]
   }
 }
