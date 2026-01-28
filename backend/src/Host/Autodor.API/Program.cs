@@ -26,6 +26,10 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Remove after add IHttpContextAccessor and real user context implementation
 builder.Services.AddScoped<IUserContext>(_ => new DummyUserContext());
 
+// Add modules
+builder.Services.AddContractorsModule(builder.Configuration);
+//builder.Services.AddOrdersModule(builder.Configuration);
+//builder.Services.AddInvoicingModule(builder.Configuration);
 
 builder.Host.UseWolverine(opts =>
 {

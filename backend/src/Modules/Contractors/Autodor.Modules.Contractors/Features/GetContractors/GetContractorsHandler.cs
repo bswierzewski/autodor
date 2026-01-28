@@ -11,16 +11,16 @@ public class GetContractorsHandler
     [WolverineGet("/contractors")]
     [Tags("Contractors")]
     public static async Task<List<GetContractorsResponse>> Handle(
-        [AsParameters] GetContractorsQuery query,
+        string[]? nips,
         ContractorsDbContext dbContext,
         CancellationToken ct)
     {
         var queryable = dbContext.Contractors.AsNoTracking();
 
         // Filter by NIPs if provided
-        if (query.NIPs != null && query.NIPs.Length > 0)
+        if (nips != null && nips.Length > 0)
         {
-            var taxIds = query.NIPs.Select(nip => new TaxId(nip)).ToList();
+            var taxIds = nips.Select(nip => new TaxId(nip)).ToList();
             queryable = queryable.Where(c => taxIds.Contains(c.NIP));
         }
 

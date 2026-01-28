@@ -12,15 +12,16 @@ public class UpdateContractorHandler
     [WolverinePut("/contractors/{id}")]
     [Tags("Contractors")]
     public static async Task Handle(
-        [AsParameters] UpdateContractorCommand command,
+        Guid id,
+        UpdateContractorCommand command,
         ContractorsDbContext dbContext,
         CancellationToken ct)
     {
         var contractor = await dbContext.Contractors
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct);
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(id), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with ID {command.Id} was not found");
+            throw new NotFoundException($"Contractor with ID {id} was not found");
 
         contractor.UpdateDetails(
             command.Name,

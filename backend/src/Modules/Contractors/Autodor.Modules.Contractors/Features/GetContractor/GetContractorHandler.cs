@@ -12,16 +12,16 @@ public class GetContractorHandler
     [WolverineGet("/contractors/{id}")]
     [Tags("Contractors")]
     public static async Task<GetContractorResponse> Handle(
-        [AsParameters] GetContractorQuery query,
+        Guid id,
         ContractorsDbContext dbContext,
         CancellationToken ct)
     {
         var contractor = await dbContext.Contractors
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(query.Id), ct);
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(id), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with ID {query.Id} was not found");
+            throw new NotFoundException($"Contractor with ID {id} was not found");
 
         return new GetContractorResponse(
             contractor.Id.Value,
