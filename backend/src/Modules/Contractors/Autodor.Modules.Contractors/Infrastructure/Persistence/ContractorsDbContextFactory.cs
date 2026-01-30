@@ -9,7 +9,10 @@ public class ContractorsDbContextFactory : IDesignTimeDbContextFactory<Contracto
     {
         var optionsBuilder = new DbContextOptionsBuilder<ContractorsDbContext>();
 
-        optionsBuilder.UseNpgsql("Host=localhost;Database=Autodor");
+        optionsBuilder.UseNpgsql("Host=localhost;Database=Autodor", npgsqlOptions =>
+        {
+            npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", ContractorsDbContext.Schema);
+        });
 
         return new ContractorsDbContext(optionsBuilder.Options);
     }

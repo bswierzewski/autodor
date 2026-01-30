@@ -5,8 +5,10 @@ using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Kernel.Abstractions;
 using Wolverine;
+using Wolverine.EntityFrameworkCore;
 using Wolverine.FluentValidation;
 using Wolverine.Http;
+using Wolverine.Postgresql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,9 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Remove after add IHttpContextAccessor and real user context implementation
 builder.Services.AddScoped<IUserContext>(_ => new DummyUserContext());
 
+// Add shared NpgsqlDataSource for all modules
+var dataSource = builder.Services.AddNpgsqlDataSource(builder.Configuration);
+
 // Add modules
 builder.Services.AddContractorsModule(builder.Configuration);
 //builder.Services.AddOrdersModule(builder.Configuration);
@@ -41,6 +46,9 @@ builder.Host.UseWolverine(opts =>
     // message type, they should be executed separately and automatically
     // "stuck" to separate local queues
     opts.MultipleHandlerBehavior = MultipleHandlerBehavior.Separated;
+
+    // Configure Wolverine persistence with PostgreSQL using dedicated schema
+    opts.PersistMessagesWithPostgresql(dataSource, "wolverine");
 
     // Include infrastructure assembly for middleware discovery
     opts.Discovery.IncludeAssembly(typeof(InfrastructureAssembly).Assembly);

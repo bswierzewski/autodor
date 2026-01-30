@@ -9,6 +9,7 @@ public class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema(ContractorsModule.Name.ToLowerInvariant());
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContractorsDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);

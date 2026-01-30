@@ -18,7 +18,8 @@
       "Bash(dotnet ef migrations remove:*)",
       "Bash(dotnet ef migrations:*)",
       "Bash(echo:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "WebSearch"
     ]
   }
 }
