@@ -50,6 +50,9 @@ builder.Host.UseWolverine(opts =>
     // Configure Wolverine persistence with PostgreSQL using dedicated schema
     opts.PersistMessagesWithPostgresql(dataSource, "wolverine");
 
+    // Enable distributed transactions with Entity Framework Core
+    opts.UseEntityFrameworkCoreTransactions();
+
     // Include infrastructure assembly for middleware discovery
     opts.Discovery.IncludeAssembly(typeof(InfrastructureAssembly).Assembly);
 

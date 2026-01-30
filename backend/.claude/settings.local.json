@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(git submodule update:*)",
+      "Bash(git submodule:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nUpdate BuildingBlocks submodule to 6253930\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(dotnet --list-sdks:*)",
+      "WebSearch",
+      "WebFetch(domain:wolverinefx.net)",
+      "WebFetch(domain:github.com)",
+      "Bash(dotnet build:*)"
     ]
   }
 }

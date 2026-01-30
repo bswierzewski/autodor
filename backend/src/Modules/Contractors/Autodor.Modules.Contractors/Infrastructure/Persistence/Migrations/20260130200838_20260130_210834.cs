@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class _20260125_211255 : Migration
+    public partial class _20260130_210834 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "contractors");
+
             migrationBuilder.CreateTable(
                 name: "Contractors",
+                schema: "contractors",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -30,6 +34,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contractors_NIP",
+                schema: "contractors",
                 table: "Contractors",
                 column: "NIP",
                 unique: true);
@@ -39,7 +44,8 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Contractors");
+                name: "Contractors",
+                schema: "contractors");
         }
     }
 }

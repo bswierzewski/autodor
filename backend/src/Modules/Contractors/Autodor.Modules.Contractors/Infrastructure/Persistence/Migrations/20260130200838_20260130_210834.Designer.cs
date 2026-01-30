@@ -12,14 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ContractorsDbContext))]
-    [Migration("20260125201258_20260125_211255")]
-    partial class _20260125_211255
+    [Migration("20260130200838_20260130_210834")]
+    partial class _20260130_210834
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("contractors")
                 .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -50,7 +51,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
                     b.HasIndex("NIP")
                         .IsUnique();
 
-                    b.ToTable("Contractors", (string)null);
+                    b.ToTable("Contractors", "contractors");
                 });
 
             modelBuilder.Entity("Autodor.Modules.Contractors.Domain.Aggregates.Contractor", b =>
@@ -77,7 +78,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("ContractorId");
 
-                            b1.ToTable("Contractors");
+                            b1.ToTable("Contractors", "contractors");
 
                             b1.WithOwner()
                                 .HasForeignKey("ContractorId");

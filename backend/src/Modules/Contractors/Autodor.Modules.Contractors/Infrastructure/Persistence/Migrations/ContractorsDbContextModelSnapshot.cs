@@ -17,6 +17,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("contractors")
                 .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -47,7 +48,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
                     b.HasIndex("NIP")
                         .IsUnique();
 
-                    b.ToTable("Contractors", (string)null);
+                    b.ToTable("Contractors", "contractors");
                 });
 
             modelBuilder.Entity("Autodor.Modules.Contractors.Domain.Aggregates.Contractor", b =>
@@ -74,7 +75,7 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("ContractorId");
 
-                            b1.ToTable("Contractors", (string)null);
+                            b1.ToTable("Contractors", "contractors");
 
                             b1.WithOwner()
                                 .HasForeignKey("ContractorId");

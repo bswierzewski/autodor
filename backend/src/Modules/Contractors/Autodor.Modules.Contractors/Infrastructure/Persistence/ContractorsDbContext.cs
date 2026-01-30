@@ -5,11 +5,13 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence;
 
 public class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options) : DbContext(options)
 {
+    public static string Schema => ContractorsModule.Name.ToLowerInvariant();
+
     public DbSet<Contractor> Contractors => Set<Contractor>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema(ContractorsModule.Name.ToLowerInvariant());
+        modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContractorsDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
