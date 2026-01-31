@@ -19,7 +19,9 @@
       "Bash(dotnet ef migrations:*)",
       "Bash(echo:*)",
       "Bash(dotnet test:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(dotnet run:*)",
+      "WebFetch(domain:localhost)"
     ]
   }
 }

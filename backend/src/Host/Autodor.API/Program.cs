@@ -12,6 +12,9 @@ using Wolverine.Postgresql;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Aspire service defaults
+builder.AddServiceDefaults();
+
 // Configure Serilog with Aspire and Wolverine integration
 builder.Host.UseSerilog(logging =>
 {
@@ -80,7 +83,8 @@ var app = builder.Build();
 // Use global exception handler
 app.UseExceptionHandler();
 
-//app.MapDefaultEndpoints();
+// Map Aspire default endpoints (health checks, etc.)
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

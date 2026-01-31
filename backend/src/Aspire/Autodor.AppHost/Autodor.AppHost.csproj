@@ -1,2 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" />
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
 
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Host\Autodor.API\Autodor.API.csproj" />
+	</ItemGroup>
+
+</Project>
