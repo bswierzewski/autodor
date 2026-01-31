@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Wolverine.Http;
 
@@ -13,7 +14,7 @@ public class DeleteContractorHandler
     [Tags("Contractors")]
     public static async Task Handle(
         Guid id,
-        ContractorsDbContext dbContext,
+        [FromServices] ContractorsDbContext dbContext,
         CancellationToken ct)
     {
         var contractor = await dbContext.Contractors
