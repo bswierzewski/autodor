@@ -1,5 +1,7 @@
 using Autodor.Modules.Contractors;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using Autodor.Modules.Invoicing;
+using Autodor.Modules.Orders;
 using BuildingBlocks.Infrastructure;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -36,8 +38,8 @@ var dataSource = builder.Services.AddNpgsqlDataSource(builder.Configuration);
 
 // Add modules
 builder.Services.AddContractorsModule(builder.Configuration);
-//builder.Services.AddOrdersModule(builder.Configuration);
-//builder.Services.AddInvoicingModule(builder.Configuration);
+builder.Services.AddOrdersModule(builder.Configuration);
+builder.Services.AddInvoicingModule(builder.Configuration);
 
 builder.Host.UseWolverine(opts =>
 {
