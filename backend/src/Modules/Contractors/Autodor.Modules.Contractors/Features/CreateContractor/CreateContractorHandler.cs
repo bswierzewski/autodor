@@ -26,7 +26,6 @@ public class CreateContractorHandler
         );
 
         await dbContext.Contractors.AddAsync(contractor, ct);
-        await dbContext.SaveChangesAsync(ct);
 
         return new CreateContractorResponse(contractorId.Value);
     }

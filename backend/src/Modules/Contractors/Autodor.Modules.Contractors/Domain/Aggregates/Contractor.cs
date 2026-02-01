@@ -4,7 +4,7 @@ using BuildingBlocks.Kernel.Primitives;
 
 namespace Autodor.Modules.Contractors.Domain.Aggregates;
 
-public class Contractor : Entity<ContractorId>, IAggregateRoot
+public class Contractor : AuditableEntity<ContractorId>, IAggregateRoot
 {
     public TaxId NIP { get; private set; } = null!;
 

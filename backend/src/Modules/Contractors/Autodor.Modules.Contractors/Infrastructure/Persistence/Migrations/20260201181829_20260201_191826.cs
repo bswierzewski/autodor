@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class _20260130_210834 : Migration
+    public partial class _20260201_191826 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,7 +25,11 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
                     Address_Street = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Address_City = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Address_ZipCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {

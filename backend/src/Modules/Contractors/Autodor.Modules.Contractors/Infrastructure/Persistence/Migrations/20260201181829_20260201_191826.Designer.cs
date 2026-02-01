@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ContractorsDbContext))]
-    [Migration("20260130200838_20260130_210834")]
-    partial class _20260130_210834
+    [Migration("20260201181829_20260201_191826")]
+    partial class _20260201_191826
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,10 +31,22 @@ namespace Autodor.Modules.Contractors.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ModifiedBy")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("NIP")
                         .IsRequired()

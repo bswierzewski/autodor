@@ -56,6 +56,9 @@ builder.Host.UseWolverine(opts =>
     // Enable distributed transactions with Entity Framework Core
     opts.UseEntityFrameworkCoreTransactions();
 
+    // Automatically apply outgoing messages as part of the same transaction
+    opts.Policies.AutoApplyTransactions();
+
     // Include infrastructure assembly for middleware discovery
     opts.Discovery.IncludeAssembly(typeof(InfrastructureAssembly).Assembly);
 

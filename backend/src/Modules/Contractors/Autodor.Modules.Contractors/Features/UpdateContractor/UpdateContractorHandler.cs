@@ -29,7 +29,5 @@ public class UpdateContractorHandler
             new Address(command.Street, command.City, command.ZipCode),
             new Email(command.Email)
         );
-
-        await dbContext.SaveChangesAsync(ct);
     }
 }

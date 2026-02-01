@@ -24,6 +24,5 @@ public class DeleteContractorHandler
             throw new NotFoundException($"Contractor with ID {id} was not found");
 
         dbContext.Contractors.Remove(contractor);
-        await dbContext.SaveChangesAsync(ct);
     }
 }
