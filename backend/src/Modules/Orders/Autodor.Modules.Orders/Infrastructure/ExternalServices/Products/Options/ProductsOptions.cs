@@ -10,7 +10,7 @@ public class ProductsOptions : IOptions
     /// <summary>
     /// Configuration section name in appsettings
     /// </summary>
-    public static string SectionName => $"Modules:{OrdersModule.Name}:DistributorsSales";
+    public static string SectionName => $"Modules:{OrdersModule.Name}:Products";
 
     /// <summary>
     /// Login

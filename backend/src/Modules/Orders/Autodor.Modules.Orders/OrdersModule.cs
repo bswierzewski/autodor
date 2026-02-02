@@ -1,3 +1,5 @@
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +14,11 @@ public static class OrdersModule
     public static IServiceCollection AddOrdersModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddModule(configuration, Name)
+            .AddOptions(cfg =>
+            {
+                cfg.ConfigureOptions<ProductsOptions>();
+                cfg.ConfigureOptions<DistributorsSalesOptions>();
+            })
             .AddPostgres<OrdersDbContext>()
             .Build();
 
