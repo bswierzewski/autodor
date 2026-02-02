@@ -39,6 +39,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
 	<PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0" />
+	<PackageVersion Include="Microsoft.Extensions.Resilience" Version="10.1.0" />
 	<PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.1.0" />
 
     <!-- OpenTelemetry -->
@@ -62,6 +63,10 @@
 
     <!-- Validation -->
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
+
+    <!-- WCF / SOAP -->
+    <PackageVersion Include="System.ServiceModel.Http" Version="8.0.0" />
+    <PackageVersion Include="System.ServiceModel.Primitives" Version="8.0.0" />
 
     <!-- WolverineFx -->
     <PackageVersion Include="WolverineFx" Version="5.9.2" />
