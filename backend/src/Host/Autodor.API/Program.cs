@@ -12,6 +12,9 @@ using Wolverine.FluentValidation;
 using Wolverine.Http;
 using Wolverine.Postgresql;
 
+// Load environment variables from .env file
+DotNetEnv.Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Aspire service defaults
