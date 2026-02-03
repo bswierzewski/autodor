@@ -1,4 +1,6 @@
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -21,6 +23,10 @@ public static class OrdersModule
             })
             .AddPostgres<OrdersDbContext>()
             .Build();
+
+        // Register external services
+        services.AddScoped<IDistributorsSalesService, DistributorsSalesService>();
+        services.AddScoped<IProductsService, ProductsService>();
 
         return services;
     }
