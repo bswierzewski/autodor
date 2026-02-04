@@ -1,19 +1,19 @@
-namespace Autodor.Modules.Orders.Abstractions.Integrations.DistributorsSales.Models;
+namespace Autodor.Modules.Orders.Domain.Models;
 
 /// <summary>
-/// Represents a minimal order data transfer object from distributors sales.
+/// Represents an order from Polcar distributors sales.
 /// </summary>
-public record DistributorsSalesOrderDto
+public record Order
 {
     /// <summary>
     /// Gets the order identifier (OrderID).
     /// </summary>
-    public string Id { get; init; }
+    public string? Id { get; init; }
 
     /// <summary>
     /// Gets the Polcar order number (PolcarOrderNumber).
     /// </summary>
-    public string Number { get; init; }
+    public string? Number { get; init; }
 
     /// <summary>
     /// Gets the entry date of the order (EntryDate).
@@ -23,28 +23,28 @@ public record DistributorsSalesOrderDto
     /// <summary>
     /// Gets the ordering person name (OrderingPerson).
     /// </summary>
-    public string Person { get; init; }
+    public string? Person { get; init; }
 
     /// <summary>
     /// Gets the customer number (CustomerNumber).
     /// </summary>
-    public string CustomerNumber { get; init; }
+    public string? CustomerNumber { get; init; }
 
     /// <summary>
     /// Gets the list of order items.
     /// </summary>
-    public List<DistributorsSalesOrderItemDto> Items { get; init; }
+    public List<OrderItem> Items { get; init; } = [];
 }
 
 /// <summary>
-/// Represents a minimal order item data transfer object from distributors sales.
+/// Represents an order item from Polcar distributors sales.
 /// </summary>
-public record DistributorsSalesOrderItemDto
+public record OrderItem
 {
     /// <summary>
     /// Gets the part number (PartNumber).
     /// </summary>
-    public string PartNumber { get; init; }
+    public string? PartNumber { get; init; }
 
     /// <summary>
     /// Gets the quantity ordered (QuantityOrdered).

@@ -1,19 +1,63 @@
-using Autodor.Modules.Orders.Abstractions.Integrations.Products;
-using Autodor.Modules.Orders.Abstractions.Integrations.Products.Models;
+using Autodor.Modules.Orders.Abstractions.Integrations;
+using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Infrastructure.Consts;
+using Autodor.Modules.Orders.Infrastructure.Extensions;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Factories;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
+using BuildingBlocks.Kernel.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polly;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 
 /// <summary>
 /// Service for products external integration
 /// </summary>
-public class ProductsService(IOptions<ProductsOptions> options) : IProductsService
+public class ProductsService(
+    IOptions<ProductsOptions> options,
+    IProductsSoapClientFactory clientFactory,
+    [FromKeyedServices(KeyedServicesConsts.ProductsSoap)] ResiliencePipeline resiliencePipeline,
+    ILogger<ProductsService> logger
+    ) : IProductsService
 {
     private readonly ProductsOptions _options = options.Value;
 
-    public Task<IEnumerable<ProductDto>> GetProductsAsync()
+    public async Task<IEnumerable<Product>> GetProductsAsync()
     {
-        throw new NotImplementedException();
+        var client = clientFactory.Create();
+
+        try
+        {
+            var response = await resiliencePipeline.ExecuteAsync(async ct =>
+            {
+                return await client.GetEAN13ListAsync(
+                    Login: _options.Login,
+                    Password: _options.Password,
+                    LanguageID: _options.LanguageId,
+                    FormatID: _options.FormatId);
+            });
+
+            var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
+
+            return deserialized.Items?
+                .Select(item => new Product(
+                    item.Number ?? string.Empty,
+                    item.PartName ?? string.Empty,
+                    item.EAN13Code
+                ))
+                .ToList() ?? [];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error occurred while loading products from Polcar");
+            return [];
+        }
+        finally
+        {
+            await client.CloseClientAsync();
+        }
     }
 }

@@ -11,7 +11,10 @@
       "WebSearch",
       "WebFetch(domain:wolverinefx.net)",
       "WebFetch(domain:github.com)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(dotnet list:*)",
+      "Bash(dotnet nuget list:*)",
+      "Bash(dotnet add package:*)"
     ]
   }
 }
