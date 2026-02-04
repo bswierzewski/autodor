@@ -1,7 +1,8 @@
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
+using Autodor.Modules.Orders.Abstractions.Integrations.Products;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Options;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ public static class OrdersModule
             .Build();
 
         // Register external services
-        services.AddScoped<IDistributorsSalesService, DistributorsSalesService>();
+        services.AddScoped<Abstractions.Integrations.DistributorsSales.IDistributorsSalesService, DistributorsSalesService>();
         services.AddScoped<IProductsService, ProductsService>();
 
         return services;

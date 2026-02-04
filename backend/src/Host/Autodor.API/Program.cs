@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
+using Autodor.ServiceDefaults;
 using BuildingBlocks.Infrastructure;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
