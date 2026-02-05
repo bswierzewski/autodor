@@ -1,5 +1,5 @@
 using Autodor.API.IntegrationTests.Shared;
-using Autodor.Modules.Orders.Abstractions.Integrations;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
 

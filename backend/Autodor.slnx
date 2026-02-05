@@ -17,6 +17,7 @@
     <Project Path="src/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
     <Project Path="src/BuildingBlocks/BuildingBlocks.IntegrationTests/BuildingBlocks.IntegrationTests.csproj" />
     <Project Path="src/BuildingBlocks/BuildingBlocks.Kernel/BuildingBlocks.Kernel.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.Tools.EnvGenerator/BuildingBlocks.Tools.EnvGenerator.csproj" />
   </Folder>
   <Folder Name="/src/Host/">
     <Project Path="src/Host/Autodor.API/Autodor.API.csproj" />

@@ -4,6 +4,7 @@ using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
 using Autodor.ServiceDefaults;
 using BuildingBlocks.Infrastructure;
+using BuildingBlocks.Infrastructure.Exceptions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Kernel.Abstractions;
@@ -11,6 +12,7 @@ using Wolverine;
 using Wolverine.EntityFrameworkCore;
 using Wolverine.FluentValidation;
 using Wolverine.Http;
+using Wolverine.Http.FluentValidation;
 using Wolverine.Postgresql;
 
 // Load environment variables from .env file
@@ -30,7 +32,10 @@ builder.Host.UseSerilog(logging =>
 });
 
 // Add global exception handling
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetails(options =>
+{
+    options.AddDiagnosticInformation();
+});
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Dummy implementation of IUserContext for demonstration purposes
@@ -71,7 +76,7 @@ builder.Host.UseWolverine(opts =>
     // Add all of the message handlers, etc. from the modules
     // This also discovers middleware from these assemblies
     opts.Discovery.IncludeAssembly(typeof(ContractorsModule).Assembly);
-    //opts.Discovery.IncludeAssembly(typeof(OrdersModule).Assembly);
+    opts.Discovery.IncludeAssembly(typeof(OrdersModule).Assembly);
     //opts.Discovery.IncludeAssembly(typeof(InvoicingModule).Assembly);
 });
 
@@ -108,7 +113,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapWolverineEndpoints();
+app.MapWolverineEndpoints(opts =>
+{
+    // Enable FluentValidation middleware for HTTP endpoints
+    opts.UseFluentValidationProblemDetailMiddleware();
+});
 
 await app.MigrateDatabaseAsync<ContractorsDbContext>();
 //await app.MigrateDatabaseAsync<OrdersDbContext>();
