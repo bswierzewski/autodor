@@ -1,8 +1,5 @@
-using Autodor.Modules.Orders.Abstractions.Integrations;
-using Autodor.Modules.Orders.Abstractions.Services;
 using Autodor.Modules.Orders.Infrastructure.Consts;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Factories;
-using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using System.ServiceModel;

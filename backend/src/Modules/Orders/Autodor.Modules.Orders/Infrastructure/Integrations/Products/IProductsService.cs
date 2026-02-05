@@ -1,6 +1,6 @@
 using Autodor.Modules.Orders.Domain.Models;
 
-namespace Autodor.Modules.Orders.Abstractions.Integrations;
+namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 
 /// <summary>
 /// Service for products external integration

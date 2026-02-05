@@ -1,4 +1,3 @@
-using Autodor.Modules.Orders.Abstractions.Integrations;
 using Autodor.Modules.Orders.Domain.Models;
 using Autodor.Modules.Orders.Infrastructure.Consts;
 using Autodor.Modules.Orders.Infrastructure.Extensions;
