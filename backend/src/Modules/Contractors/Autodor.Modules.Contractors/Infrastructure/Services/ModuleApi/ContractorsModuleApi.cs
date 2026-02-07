@@ -4,7 +4,7 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Autodor.Modules.Contractors.Infrastructure.ModuleApi;
+namespace Autodor.Modules.Contractors.Infrastructure.Services.ModuleApi;
 
 /// <summary>
 /// Internal implementation of Contractors Module API

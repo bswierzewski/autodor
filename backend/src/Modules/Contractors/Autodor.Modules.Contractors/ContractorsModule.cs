@@ -1,6 +1,6 @@
 using Autodor.Modules.Contractors.Contracts.Abstractions;
-using Autodor.Modules.Contractors.Infrastructure.ModuleApi;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using Autodor.Modules.Contractors.Infrastructure.Services.ModuleApi;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
