@@ -1,8 +1,2 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<ItemGroup>
-		<ProjectReference Include="..\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
-	</ItemGroup>
-
-</Project>
+﻿<Project Sdk="Microsoft.NET.Sdk" />
 
