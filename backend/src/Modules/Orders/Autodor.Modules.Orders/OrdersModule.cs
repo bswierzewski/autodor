@@ -7,6 +7,7 @@ using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Autodor.Modules.Orders.Infrastructure.Services.OrderEnrichment;
 
 namespace Autodor.Modules.Orders;
 
@@ -30,6 +31,9 @@ public static class OrdersModule
 
         // Register products cache
         services.AddSingleton<IProductsCache, ProductsCache>();
+
+        // Register services
+        services.AddScoped<IOrderEnrichmentService, OrderEnrichmentService>();
 
         // Register external integrations
         services.AddProducts();

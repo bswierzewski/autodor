@@ -47,6 +47,11 @@ public record OrderItem
     public string? PartNumber { get; init; }
 
     /// <summary>
+    /// Gets the product name (enriched data, populated by OrderEnrichmentService).
+    /// </summary>
+    public string? ProductName { get; init; }
+
+    /// <summary>
     /// Gets the quantity ordered (QuantityOrdered).
     /// </summary>
     public int Quantity { get; init; }
@@ -55,4 +60,12 @@ public record OrderItem
     /// Gets the price (Price).
     /// </summary>
     public decimal Price { get; init; }
+
+    /// <summary>
+    /// Gets the full product description combining product name and part number.
+    /// Returns "ProductName (PartNumber)" if ProductName is available, otherwise just PartNumber.
+    /// </summary>
+    public string? ProductDisplayName => !string.IsNullOrWhiteSpace(ProductName)
+        ? $"{ProductName} ({PartNumber})"
+        : PartNumber;
 }
