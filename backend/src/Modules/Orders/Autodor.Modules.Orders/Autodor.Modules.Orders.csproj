@@ -8,11 +8,16 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Resilience" />
+		<PackageReference Include="QuestPDF" />
 		<PackageReference Include="System.ServiceModel.Http" />
 		<PackageReference Include="System.ServiceModel.Primitives" />
 		<PackageReference Include="WolverineFx.FluentValidation" />
 		<PackageReference Include="WolverineFx.Http" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\**\*" />
+	</ItemGroup>
+
 </Project>
 

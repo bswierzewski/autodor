@@ -8,6 +8,7 @@ using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Autodor.Modules.Orders.Infrastructure.Services.OrderEnrichment;
+using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders;
 
@@ -26,6 +27,8 @@ public static class OrdersModule
             .AddPostgres<OrdersDbContext>()
             .Build();
 
+        // Configure QuestPDF license (Community license for organizations with less than $1M USD annual gross revenue)
+        QuestPDF.Settings.License = LicenseType.Community;
 
         services.AddMemoryCache();
 

@@ -1,0 +1,192 @@
+using Autodor.Modules.Contractors.Contracts.Abstractions;
+using Autodor.Modules.Contractors.Contracts.Models;
+using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.Services.OrderEnrichment;
+using BuildingBlocks.Infrastructure.Extensions;
+using ErrorOr;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System.Reflection;
+using Wolverine.Http;
+
+namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
+
+public static class GenerateDeliveryNoteHandler
+{
+    [WolverinePost("/orders/delivery-note")]
+    [Tags("Orders")]
+    public static async Task<IResult> Handle(
+        GenerateDeliveryNoteCommand command,
+        IDistributorsSalesService distributorsSalesService,
+        IOrderEnrichmentService orderEnrichmentService,
+        IContractorsModuleApi contractorsApi,
+        ILogger<GenerateDeliveryNoteCommand> logger,
+        CancellationToken ct)
+    {
+        logger.LogInformation("Generating delivery note for order {OrderId} on date {Date}", command.OrderId, command.Date);
+
+        // Fetch order
+        var orders = await distributorsSalesService.GetOrdersAsync(command.Date);
+        var order = orders.FirstOrDefault(o => o.Id == command.OrderId);
+
+        if (order is null)
+            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found").Problem();
+
+        // Fetch contractor by NIP (CustomerNumber)
+        if (string.IsNullOrWhiteSpace(order.CustomerNumber))
+            return Error.NotFound("Order.EmptyCustomerNumber", "Customer number is empty").Problem();
+
+        var contractor = await contractorsApi.GetContractorByNipAsync(order.CustomerNumber, ct);
+
+        if (contractor is null)
+            return Error.NotFound("Contractor.NotFound", $"Contractor with NIP '{order.CustomerNumber}' was not found").Problem();
+
+        // Enrich order with product names
+        await orderEnrichmentService.EnrichWithProductNamesAsync(order, ct);
+
+        // Get pdf bytes from document
+        var pdfBytes = CreateDocument(order, contractor).GeneratePdf();
+
+        // Return PDF file
+        var fileName = $"WZ_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+        return Results.File(pdfBytes, "application/pdf", fileName);
+    }
+
+    private static Document CreateDocument(Order order, ContractorDto contractor)
+    {
+        // Generate PDF using QuestPDF
+        return Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(1.5f, Unit.Centimetre);
+                page.DefaultTextStyle(x => x.FontFamily(Fonts.Arial));
+
+                page.Content().Column(column =>
+                {
+                    column.Item().Element(c => ComposeHeader(c, order, contractor));
+                    column.Item().PaddingVertical(15);
+                    column.Item().Element(c => ComposeTable(c, order));
+                });
+            });
+        });
+    }
+
+    private static void ComposeHeader(IContainer container, Order order, ContractorDto contractor)
+    {
+        container.Column(column =>
+        {
+            // Title
+            column.Item()
+                .PaddingBottom(10)
+                .AlignCenter()
+                .Text("Wydanie Zewnętrzne")
+                .FontSize(24)
+                .Bold();
+
+            column.Item().Row(row =>
+            {
+                // Left side - Order and contractor info
+                row.RelativeItem().Column(col =>
+                {
+                    void AddAttribute(string label, string value)
+                    {
+                        col.Item().Text(text =>
+                        {
+                            text.Span(label).Bold();
+                            text.Span(value);
+                        });
+                    }
+
+                    AddAttribute("Data: ", order.Date.ToString("dd-MM-yyyy"));
+                    AddAttribute("Numer Zlecenia: ", order.Number ?? "");
+                    AddAttribute("Klient: ", contractor.Name);
+                    AddAttribute("Adres: ", $"{contractor.Street}, {contractor.ZipCode} {contractor.City}");
+                    AddAttribute("NIP: ", contractor.NIP);
+                    AddAttribute("Email: ", contractor.Email ?? "");
+                });
+
+                // Right side - Logo
+                row.ConstantItem(150)
+                    .AlignMiddle()
+                    .Image(LoadEmbeddedResource("Resources.Images.Logo.png"));
+            });
+        });
+    }
+
+    private static void ComposeTable(IContainer container, Domain.Models.Order order)
+    {
+        container.Table(table =>
+        {
+            // Define columns
+            table.ColumnsDefinition(columns =>
+            {
+                columns.RelativeColumn(5); // Nazwa
+                columns.RelativeColumn(0.8f); // Ilość
+                columns.RelativeColumn(1.5f); // Wartość netto
+                columns.RelativeColumn(1.5f); // Wartość VAT
+                columns.RelativeColumn(1.5f); // Wartość Brutto
+            });
+
+            // Header
+            table.Header(header =>
+            {
+                header.Cell().Element(HeaderCellStyle).Text("Nazwa").Bold();
+                header.Cell().Element(HeaderCellStyle).Text("Ilość").AlignRight().Bold();
+                header.Cell().Element(HeaderCellStyle).Text("Wartość\nNetto").AlignRight().Bold();
+                header.Cell().Element(HeaderCellStyle).Text("Wartość\nVAT").AlignRight().Bold();
+                header.Cell().Element(HeaderCellStyle).Text("Wartość\nBrutto").AlignRight().Bold();
+
+                static IContainer HeaderCellStyle(IContainer container)
+                {
+                    return container
+                        .Border(0.5f)
+                        .BorderColor(Colors.Black)
+                        .Background(Colors.Grey.Lighten3)
+                        .Padding(5);
+                }
+            });
+
+            // Items
+            foreach (var item in order.Items)
+            {
+                var totalPrice = item.Price * item.Quantity;
+                var vatAmount = Math.Round(totalPrice * 0.23M, 2);
+                var grossAmount = Math.Round(totalPrice * 1.23M, 2);
+
+                table.Cell().Element(CellStyle).Text(item.ProductDisplayName);
+                table.Cell().Element(CellStyle).AlignRight().Text(item.Quantity.ToString());
+                table.Cell().Element(CellStyle).AlignRight().Text($"{totalPrice:F2} zł");
+                table.Cell().Element(CellStyle).AlignRight().Text($"{vatAmount:F2} zł");
+                table.Cell().Element(CellStyle).AlignRight().Text($"{grossAmount:F2} zł");
+
+                static IContainer CellStyle(IContainer container)
+                {
+                    return container
+                        .Border(0.5f)
+                        .BorderColor(Colors.Black)
+                        .Padding(5);
+                }
+            }
+        });
+    }
+
+    private static byte[] LoadEmbeddedResource(string resourcePath)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        using var stream = assembly.GetManifestResourceStream($"Autodor.Modules.Orders.{resourcePath}");
+
+        if (stream is null)
+            return [];
+
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
+    }
+}
