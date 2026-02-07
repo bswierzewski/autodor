@@ -34,7 +34,7 @@ public class ProductsSyncWorker(
             await using var scope = scopeFactory.CreateAsyncScope();
             var messageBus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
 
-            await messageBus.InvokeAsync(new SyncProducts.Command());
+            await messageBus.InvokeAsync(new SyncProductsCommand());
 
             logger.LogInformation("Products loaded into cache successfully");
         }
