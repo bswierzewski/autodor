@@ -43,8 +43,16 @@ foreach ($m in $modules) {
         2>&1 | Out-String
 
     # Check if DbContext exists
-    if ($output -match "No DbContext named" -or $output -match "Unable to create") {
+    if ($output -match "No DbContext named") {
         Write-Host " SKIPPED (DbContext not found)" -ForegroundColor Yellow
+        $skipped++
+        continue
+    }
+
+    # Check for other errors (configuration issues, etc.)
+    if ($output -match "Unable to create") {
+        Write-Host " ERROR" -ForegroundColor Red
+        Write-Host $output -ForegroundColor Red
         $skipped++
         continue
     }

@@ -1,17 +1,20 @@
 using Autodor.Modules.Orders.Domain.ValueObjects;
 using BuildingBlocks.Kernel.Abstractions;
-using BuildingBlocks.Kernel.Primitives;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 
-public class ExcludedOrderItem : Entity<OrderItemId>, IAggregateRoot
+public class ExcludedOrderItem : IAggregateRoot
 {
+    public string OrderId { get; private set; } = default!;
+    public string ItemNumber { get; private set; } = default!;
+
     private ExcludedOrderItem() { }
 
     public ExcludedOrderItem(OrderItemId itemId)
     {
         ArgumentNullException.ThrowIfNull(itemId);
 
-        Id = itemId;
+        OrderId = itemId.OrderId;
+        ItemNumber = itemId.ItemNumber;
     }
 }
