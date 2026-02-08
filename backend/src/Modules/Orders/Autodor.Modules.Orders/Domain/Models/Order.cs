@@ -34,6 +34,11 @@ public record Order
     /// Gets the list of order items.
     /// </summary>
     public List<OrderItem> Items { get; init; } = [];
+
+    /// <summary>
+    /// Gets whether the order is excluded (populated by OrderService when includeExcluded is true).
+    /// </summary>
+    public bool IsExcluded { get; init; }
 }
 
 /// <summary>
@@ -44,12 +49,12 @@ public record OrderItem
     /// <summary>
     /// Gets the part number (PartNumber).
     /// </summary>
-    public string? PartNumber { get; init; }
+    public string PartNumber { get; init; } = string.Empty;
 
     /// <summary>
-    /// Gets the product name (enriched data, populated by OrderEnrichmentService).
+    /// Gets the product name (enriched data, populated by OrderService).
     /// </summary>
-    public string? ProductName { get; init; }
+    public string ProductName { get; init; } = string.Empty;
 
     /// <summary>
     /// Gets the quantity ordered (QuantityOrdered).
@@ -62,10 +67,15 @@ public record OrderItem
     public decimal Price { get; init; }
 
     /// <summary>
+    /// Gets whether the order item is excluded (populated by OrderService when includeExcluded is true).
+    /// </summary>
+    public bool IsExcluded { get; init; }
+
+    /// <summary>
     /// Gets the full product description combining product name and part number.
     /// Returns "ProductName (PartNumber)" if ProductName is available, otherwise just PartNumber.
     /// </summary>
-    public string? ProductDisplayName => !string.IsNullOrWhiteSpace(ProductName)
+    public string ProductDisplayName => !string.IsNullOrWhiteSpace(ProductName)
         ? $"{ProductName} ({PartNumber})"
         : PartNumber;
 }

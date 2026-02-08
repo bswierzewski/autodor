@@ -1,17 +1,17 @@
-using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Extensions;
 
 /// <summary>
-/// Extension methods for mapping between DistributorsSales SOAP response types and domain models.
+/// Extension methods for mapping between DistributorsSales SOAP response types and DTOs.
 /// </summary>
 public static class MappingExtensions
 {
     /// <summary>
-    /// Converts a collection of DistributorSalesOrderResponse to a collection of PolcarOrder.
+    /// Converts a collection of DistributorSalesOrderResponse to a collection of DistributorOrderDto.
     /// </summary>
-    public static IEnumerable<Order> ToDto(this IEnumerable<DistributorSalesOrderResponse> source)
+    public static IEnumerable<DistributorOrderDto> ToDto(this IEnumerable<DistributorSalesOrderResponse> source)
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
@@ -22,14 +22,14 @@ public static class MappingExtensions
     }
 
     /// <summary>
-    /// Converts DistributorSalesOrderItemResponse to PolcarOrderItem.
+    /// Converts DistributorSalesOrderItemResponse to DistributorOrderItemDto.
     /// </summary>
-    public static OrderItem ToDto(this DistributorSalesOrderItemResponse source)
+    public static DistributorOrderItemDto ToDto(this DistributorSalesOrderItemResponse source)
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
 
-        return new OrderItem
+        return new DistributorOrderItemDto
         {
             PartNumber = source.PartNumber ?? string.Empty,
             Quantity = source.QuantityOrdered,
@@ -38,14 +38,14 @@ public static class MappingExtensions
     }
 
     /// <summary>
-    /// Converts DistributorSalesOrderResponse to PolcarOrder.
+    /// Converts DistributorSalesOrderResponse to DistributorOrderDto.
     /// </summary>
-    public static Order ToDto(this DistributorSalesOrderResponse source)
+    public static DistributorOrderDto ToDto(this DistributorSalesOrderResponse source)
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
 
-        return new Order
+        return new DistributorOrderDto
         {
             Id = source.OrderID ?? string.Empty,
             Number = source.PolcarOrderNumber ?? string.Empty,

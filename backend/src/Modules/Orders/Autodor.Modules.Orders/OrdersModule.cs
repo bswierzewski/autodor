@@ -1,13 +1,13 @@
-using Autodor.Modules.Orders.Infrastructure.Services.Caching;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Options;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
+using Autodor.Modules.Orders.Infrastructure.Services.Caching;
+using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Autodor.Modules.Orders.Infrastructure.Services.OrderEnrichment;
 using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders;
@@ -36,7 +36,7 @@ public static class OrdersModule
         services.AddSingleton<IProductsCache, ProductsCache>();
 
         // Register services
-        services.AddScoped<IOrderEnrichmentService, OrderEnrichmentService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         // Register external integrations
         services.AddProducts();

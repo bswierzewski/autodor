@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
         });
 
         // Register service implementation
-        services.AddScoped<IDistributorsSalesService, DistributorsSalesService>();
+        services.AddSingleton<IDistributorsSalesService, DistributorsSalesService>();
 
         return services;
     }

@@ -1,6 +1,6 @@
-using Autodor.Modules.Orders.Domain.Models;
 using Autodor.Modules.Orders.Infrastructure.Consts;
 using Autodor.Modules.Orders.Infrastructure.Extensions;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Dtos;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Factories;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
@@ -24,7 +24,7 @@ public class ProductsService(
 {
     private readonly ProductsOptions _options = options.Value;
 
-    public async Task<IEnumerable<Product>> GetProductsAsync()
+    public async Task<IEnumerable<ProductDto>> GetProductsAsync()
     {
         var client = clientFactory.Create();
 
@@ -42,11 +42,12 @@ public class ProductsService(
             var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
 
             return deserialized.Items?
-                .Select(item => new Product(
-                    item.Number ?? string.Empty,
-                    item.PartName ?? string.Empty,
-                    item.EAN13Code
-                ))
+                .Select(item => new ProductDto
+                {
+                    Number = item.Number,
+                    Name = item.PartName,
+                    EAN13 = item.EAN13Code
+                })
                 .ToList() ?? [];
         }
         catch (Exception ex)

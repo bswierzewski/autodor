@@ -9,14 +9,16 @@ public record GetOrderResponse(
     DateTime Date,
     string? Person,
     string? CustomerNumber,
-    List<OrderItemResponse> Items
+    List<OrderItemResponse> Items,
+    bool IsExcluded
 );
 
 /// <summary>
 /// Response DTO for Order Item
 /// </summary>
 public record OrderItemResponse(
-    string? PartNumber,
+    string ProductDisplayName,
     int Quantity,
-    decimal Price
+    decimal Price,
+    bool IsExcluded
 );

@@ -14,7 +14,11 @@
       "Bash(dotnet build:*)",
       "Bash(dotnet list:*)",
       "Bash(dotnet nuget list:*)",
-      "Bash(dotnet add package:*)"
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(pwsh -File:*)",
+      "Bash(powershell -File scripts/add-migrations.ps1:*)",
+      "Bash(dir:*)"
     ]
   }
 }

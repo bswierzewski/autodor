@@ -1,8 +1,7 @@
 using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Contracts.Models;
 using Autodor.Modules.Orders.Domain.Models;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
-using Autodor.Modules.Orders.Infrastructure.Services.OrderEnrichment;
+using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
@@ -21,20 +20,18 @@ public static class GenerateDeliveryNoteHandler
     [Tags("Orders")]
     public static async Task<IResult> Handle(
         GenerateDeliveryNoteCommand command,
-        IDistributorsSalesService distributorsSalesService,
-        IOrderEnrichmentService orderEnrichmentService,
+        IOrderService orderService,
         IContractorsModuleApi contractorsApi,
         ILogger<GenerateDeliveryNoteCommand> logger,
         CancellationToken ct)
     {
         logger.LogInformation("Generating delivery note for order {OrderId} on date {Date}", command.OrderId, command.Date);
 
-        // Fetch order
-        var orders = await distributorsSalesService.GetOrdersAsync(command.Date);
-        var order = orders.FirstOrDefault(o => o.Id == command.OrderId);
+        // Fetch order (with exclusions filtered out and enriched)
+        var order = await orderService.GetOrderAsync(command.OrderId, command.Date, includeExcluded: false, ct);
 
         if (order is null)
-            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found").Problem();
+            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found or is excluded").Problem();
 
         // Fetch contractor by NIP (CustomerNumber)
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
@@ -44,9 +41,6 @@ public static class GenerateDeliveryNoteHandler
 
         if (contractor is null)
             return Error.NotFound("Contractor.NotFound", $"Contractor with NIP '{order.CustomerNumber}' was not found").Problem();
-
-        // Enrich order with product names
-        await orderEnrichmentService.EnrichWithProductNamesAsync(order, ct);
 
         // Get pdf bytes from document
         var pdfBytes = CreateDocument(order, contractor).GeneratePdf();

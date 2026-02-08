@@ -1,4 +1,4 @@
-using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 
@@ -12,5 +12,5 @@ public interface IDistributorsSalesService
     /// </summary>
     /// <param name="date">The date to retrieve orders for.</param>
     /// <returns>A collection of orders.</returns>
-    Task<IEnumerable<Order>> GetOrdersAsync(DateTime date);
+    Task<IEnumerable<DistributorOrderDto>> GetOrdersAsync(DateTime date);
 }

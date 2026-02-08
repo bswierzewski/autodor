@@ -1,5 +1,4 @@
-using Autodor.Modules.Orders.Domain.Models;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using Microsoft.AspNetCore.Http;
 using Wolverine.Http;
 
@@ -11,20 +10,14 @@ public static class GetOrdersHandler
     [Tags("Orders")]
     public static async Task<IResult> Handle(
         [AsParameters] GetOrdersQuery query,
-        IDistributorsSalesService distributorsSalesService,
+        IOrderService orderService,
         CancellationToken ct)
     {
-        var allOrders = new List<Order>();
-
-        // Fetch orders for each day in the date range
-        for (var date = query.From.Date; date <= query.To.Date; date = date.AddDays(1))
-        {
-            var ordersForDate = await distributorsSalesService.GetOrdersAsync(date);
-            allOrders.AddRange(ordersForDate);
-        }
+        // Fetch orders with exclusions marked (includeExcluded = true)
+        var orders = await orderService.GetOrdersAsync(query.From, query.To, includeExcluded: true, ct);
 
         var response = new GetOrdersResponse(
-            allOrders
+            orders
                 .Select(o => new OrderSummaryResponse(
                     o.Id!,
                     o.Number,
@@ -32,7 +25,9 @@ public static class GetOrdersHandler
                     o.Person,
                     o.CustomerNumber,
                     o.Items.Count,
-                    o.Items.Sum(i => i.Price * i.Quantity)
+                    o.Items.Sum(i => i.Price * i.Quantity),
+                    IsExcluded: o.IsExcluded,
+                    ExcludedItemsCount: o.Items.Count(i => i.IsExcluded)
                 ))
                 .ToList()
         );

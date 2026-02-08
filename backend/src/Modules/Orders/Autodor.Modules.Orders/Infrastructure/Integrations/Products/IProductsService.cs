@@ -1,4 +1,4 @@
-using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Dtos;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 
@@ -11,5 +11,5 @@ public interface IProductsService
     /// Gets all products from the external system.
     /// </summary>
     /// <returns>A collection of products.</returns>
-    Task<IEnumerable<Product>> GetProductsAsync();
+    Task<IEnumerable<ProductDto>> GetProductsAsync();
 }

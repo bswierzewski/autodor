@@ -1,3 +1,4 @@
+using Autodor.Modules.Orders.Domain.Models;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 using Autodor.Modules.Orders.Infrastructure.Services.Caching;
 using Microsoft.AspNetCore.Http;
@@ -20,11 +21,22 @@ public static class SyncProductsHandler
 
         try
         {
-            var products = await productsService.GetProductsAsync();
+            // Fetch products from external API (returns DTO)
+            var productDtos = await productsService.GetProductsAsync();
 
+            // Map DTO to domain model
+            var products = productDtos
+                .Select(dto => new Product(
+                    dto.Number,
+                    dto.Name,
+                    dto.EAN13
+                ))
+                .ToList();
+
+            // Store domain models in cache
             productsCache.Set(products);
 
-            logger.LogInformation("Products synchronization completed successfully. {Count} products synced", products.Count());
+            logger.LogInformation("Products synchronization completed successfully. {Count} products synced", products.Count);
         }
         catch (Exception ex)
         {

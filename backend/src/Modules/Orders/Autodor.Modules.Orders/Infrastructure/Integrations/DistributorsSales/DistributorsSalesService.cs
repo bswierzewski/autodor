@@ -1,10 +1,11 @@
-using Autodor.Modules.Orders.Domain.Models;
 using Autodor.Modules.Orders.Infrastructure.Consts;
 using Autodor.Modules.Orders.Infrastructure.Extensions;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Extensions;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Factories;
 using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 
@@ -16,12 +17,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 public class DistributorsSalesService(
         IOptions<DistributorsSalesOptions> options,
         IDistributorsSalesServiceClientFactory clientFactory,
-        [FromKeyedServices(KeyedServicesConsts.DistributorsSalesSoap)] ResiliencePipeline resiliencePipeline
+        [FromKeyedServices(KeyedServicesConsts.DistributorsSalesSoap)] ResiliencePipeline resiliencePipeline,
+        ILogger<DistributorsSalesService> logger
     ) : IDistributorsSalesService
 {
     private readonly DistributorsSalesOptions _options = options.Value;
 
-    public async Task<IEnumerable<Order>> GetOrdersAsync(DateTime date)
+    public async Task<IEnumerable<DistributorOrderDto>> GetOrdersAsync(DateTime date)
     {
         var client = clientFactory.Create();
 
@@ -45,9 +47,23 @@ public class DistributorsSalesService(
             var responseBody = response.Body.GetListOfOrdersV3Result;
 
             if (responseBody.ErrorCode != "0")
-                throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
+            {
+                logger.LogError("DistributorsSales API returned error. ErrorCode: {ErrorCode}, ErrorInformation: {ErrorInformation}",
+                    responseBody.ErrorCode, responseBody.ErrorInformation);
 
-            return responseBody.ListOfOrders?.ToDto() ?? [];
+                throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
+            }
+
+            var orders = responseBody.ListOfOrders?.ToDto() ?? [];
+
+            logger.LogInformation("Successfully fetched {Count} orders from DistributorsSales API for date {Date}", orders.Count(), date.Date);
+
+            return orders;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error occurred while loading orders from DistributorsSales API for date {Date}", date.Date);
+            throw;
         }
         finally
         {

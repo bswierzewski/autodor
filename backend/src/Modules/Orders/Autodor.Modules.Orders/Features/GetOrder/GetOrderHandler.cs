@@ -1,4 +1,4 @@
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +12,11 @@ public static class GetOrderHandler
     [Tags("Orders")]
     public static async Task<IResult> Handle(
         [AsParameters] GetOrderQuery query,
-        IDistributorsSalesService distributorsSalesService,
+        IOrderService orderService,
         CancellationToken ct)
     {
-        var orders = await distributorsSalesService.GetOrdersAsync(query.Date);
-        var order = orders.FirstOrDefault(o => o.Id == query.OrderId);
+        // Fetch order with exclusions marked (includeExcluded = true)
+        var order = await orderService.GetOrderAsync(query.OrderId, query.Date, includeExcluded: true, ct);
 
         if (order is null)
             return Error.NotFound("Order.NotFound", $"Order with ID '{query.OrderId}' was not found")
@@ -30,10 +30,12 @@ public static class GetOrderHandler
             order.Person,
             order.CustomerNumber,
             order.Items.Select(i => new OrderItemResponse(
-                i.PartNumber,
+                i.ProductDisplayName,
                 i.Quantity,
-                i.Price
-            )).ToList()
+                i.Price,
+                IsExcluded: i.IsExcluded
+            )).ToList(),
+            IsExcluded: order.IsExcluded
         );
 
         return Results.Ok(response);
