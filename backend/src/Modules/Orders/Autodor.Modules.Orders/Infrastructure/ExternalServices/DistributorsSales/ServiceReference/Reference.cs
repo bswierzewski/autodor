@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference
 {
     using System.Runtime.Serialization;
     
@@ -18,14 +18,14 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     public partial class SalesOrderList : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse[] ListOfOrdersField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse[] ListOfOrdersField;
         
         private string ErrorCodeField;
         
         private string ErrorInformationField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse[] ListOfOrders
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse[] ListOfOrders
         {
             get
             {
@@ -70,9 +70,9 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     public partial class SalesOrderResponse : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderItemResponse[] OrderedItemsResponseField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderItemResponse[] OrderedItemsResponseField;
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderAttributeResponse[] AttributesField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderAttributeResponse[] AttributesField;
         
         private string CustomerOrderNumberField;
         
@@ -100,7 +100,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         
         private string ErrorInformationField;
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderStatus OrderStatusField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderStatus OrderStatusField;
         
         private int OrderStatusIdField;
         
@@ -113,7 +113,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         private string MaterialReleaseReceiptStateDescriptionField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderItemResponse[] OrderedItemsResponse
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderItemResponse[] OrderedItemsResponse
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderAttributeResponse[] Attributes
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderAttributeResponse[] Attributes
         {
             get
             {
@@ -308,7 +308,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=15)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderStatus OrderStatus
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderStatus OrderStatus
         {
             get
             {
@@ -402,7 +402,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         
         private int QuantityCompletedField;
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderItemAvailabilityStatus AvailabilityStatusField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderItemAvailabilityStatus AvailabilityStatusField;
         
         private string DistributorCurrencyField;
         
@@ -492,7 +492,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=5)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderItemAvailabilityStatus AvailabilityStatus
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderItemAvailabilityStatus AvailabilityStatus
         {
             get
             {
@@ -799,14 +799,14 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     public partial class DistributorOrderList : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderResponse[] ListOfOrdersField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderResponse[] ListOfOrdersField;
         
         private string ErrorCodeField;
         
         private string ErrorInformationField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderResponse[] ListOfOrders
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderResponse[] ListOfOrders
         {
             get
             {
@@ -851,9 +851,9 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     public partial class DistributorSalesOrderResponse : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderItemResponse[] OrderedItemsResponseField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderItemResponse[] OrderedItemsResponseField;
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderAttributeResponse[] OrderAttributesField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderAttributeResponse[] OrderAttributesField;
         
         private string PolcarOrderNumberField;
         
@@ -884,7 +884,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         private System.DateTime EntryDateField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderItemResponse[] OrderedItemsResponse
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderItemResponse[] OrderedItemsResponse
         {
             get
             {
@@ -897,7 +897,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorSalesOrderAttributeResponse[] OrderAttributes
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorSalesOrderAttributeResponse[] OrderAttributes
         {
             get
             {
@@ -1277,14 +1277,14 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     public partial class CartDetailsResponseDto : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CartDetail[] PositionsField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CartDetail[] PositionsField;
         
         private string ErrorCodeField;
         
         private string ErrorInformationField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CartDetail[] Positions
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CartDetail[] Positions
         {
             get
             {
@@ -1817,35 +1817,35 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/GetListOfOrders", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersResponse> GetListOfOrdersAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersResponse> GetListOfOrdersAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/GetListOfOrdersV2", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> GetListOfOrdersV2Async(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Request request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> GetListOfOrdersV2Async(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Request request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/GetListOfOrdersV3", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> GetListOfOrdersV3Async(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Request request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> GetListOfOrdersV3Async(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Request request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/CancelOrder", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderResponse> CancelOrderAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderResponse> CancelOrderAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/CloseOrder", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderResponse> CloseOrderAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderResponse> CloseOrderAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/GetOrderDetails", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsResponse> GetOrderDetailsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsResponse> GetOrderDetailsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/GetCartDetails", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsResponse> GetCartDetailsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsResponse> GetCartDetailsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://cis.polcar.com/Integration/WebServices/Distributors/Sales/IDistributorsSal" +
             "esService/DeleteCartPositionPositions", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> DeleteCartPositionPositionsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> DeleteCartPositionPositionsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1856,13 +1856,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrders", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody Body;
         
         public GetListOfOrdersRequest()
         {
         }
         
-        public GetListOfOrdersRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody Body)
+        public GetListOfOrdersRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody Body)
         {
             this.Body = Body;
         }
@@ -1928,13 +1928,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrdersResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersResponseBody Body;
         
         public GetListOfOrdersResponse()
         {
         }
         
-        public GetListOfOrdersResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersResponseBody Body)
+        public GetListOfOrdersResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersResponseBody Body)
         {
             this.Body = Body;
         }
@@ -1948,13 +1948,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderList GetListOfOrdersResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderList GetListOfOrdersResult;
         
         public GetListOfOrdersResponseBody()
         {
         }
         
-        public GetListOfOrdersResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderList GetListOfOrdersResult)
+        public GetListOfOrdersResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderList GetListOfOrdersResult)
         {
             this.GetListOfOrdersResult = GetListOfOrdersResult;
         }
@@ -1968,13 +1968,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrdersV2", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody Body;
         
         public GetListOfOrdersV2Request()
         {
         }
         
-        public GetListOfOrdersV2Request(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody Body)
+        public GetListOfOrdersV2Request(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody Body)
         {
             this.Body = Body;
         }
@@ -2040,13 +2040,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrdersV2Response", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2ResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2ResponseBody Body;
         
         public GetListOfOrdersV2Response()
         {
         }
         
-        public GetListOfOrdersV2Response(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2ResponseBody Body)
+        public GetListOfOrdersV2Response(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2ResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2060,13 +2060,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV2Result;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV2Result;
         
         public GetListOfOrdersV2ResponseBody()
         {
         }
         
-        public GetListOfOrdersV2ResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV2Result)
+        public GetListOfOrdersV2ResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV2Result)
         {
             this.GetListOfOrdersV2Result = GetListOfOrdersV2Result;
         }
@@ -2080,13 +2080,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrdersV3", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody Body;
         
         public GetListOfOrdersV3Request()
         {
         }
         
-        public GetListOfOrdersV3Request(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody Body)
+        public GetListOfOrdersV3Request(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody Body)
         {
             this.Body = Body;
         }
@@ -2152,13 +2152,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetListOfOrdersV3Response", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3ResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3ResponseBody Body;
         
         public GetListOfOrdersV3Response()
         {
         }
         
-        public GetListOfOrdersV3Response(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3ResponseBody Body)
+        public GetListOfOrdersV3Response(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3ResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2172,13 +2172,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV3Result;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV3Result;
         
         public GetListOfOrdersV3ResponseBody()
         {
         }
         
-        public GetListOfOrdersV3ResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV3Result)
+        public GetListOfOrdersV3ResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DistributorOrderList GetListOfOrdersV3Result)
         {
             this.GetListOfOrdersV3Result = GetListOfOrdersV3Result;
         }
@@ -2192,13 +2192,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CancelOrder", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequestBody Body;
         
         public CancelOrderRequest()
         {
         }
         
-        public CancelOrderRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequestBody Body)
+        public CancelOrderRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequestBody Body)
         {
             this.Body = Body;
         }
@@ -2248,13 +2248,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CancelOrderResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderResponseBody Body;
         
         public CancelOrderResponse()
         {
         }
         
-        public CancelOrderResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderResponseBody Body)
+        public CancelOrderResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2268,13 +2268,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse CancelOrderResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse CancelOrderResult;
         
         public CancelOrderResponseBody()
         {
         }
         
-        public CancelOrderResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse CancelOrderResult)
+        public CancelOrderResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse CancelOrderResult)
         {
             this.CancelOrderResult = CancelOrderResult;
         }
@@ -2288,13 +2288,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CloseOrder", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequestBody Body;
         
         public CloseOrderRequest()
         {
         }
         
-        public CloseOrderRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequestBody Body)
+        public CloseOrderRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequestBody Body)
         {
             this.Body = Body;
         }
@@ -2344,13 +2344,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CloseOrderResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderResponseBody Body;
         
         public CloseOrderResponse()
         {
         }
         
-        public CloseOrderResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderResponseBody Body)
+        public CloseOrderResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2364,13 +2364,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse CloseOrderResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse CloseOrderResult;
         
         public CloseOrderResponseBody()
         {
         }
         
-        public CloseOrderResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse CloseOrderResult)
+        public CloseOrderResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse CloseOrderResult)
         {
             this.CloseOrderResult = CloseOrderResult;
         }
@@ -2384,13 +2384,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetOrderDetails", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody Body;
         
         public GetOrderDetailsRequest()
         {
         }
         
-        public GetOrderDetailsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody Body)
+        public GetOrderDetailsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -2440,13 +2440,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetOrderDetailsResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsResponseBody Body;
         
         public GetOrderDetailsResponse()
         {
         }
         
-        public GetOrderDetailsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsResponseBody Body)
+        public GetOrderDetailsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2460,13 +2460,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse GetOrderDetailsResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse GetOrderDetailsResult;
         
         public GetOrderDetailsResponseBody()
         {
         }
         
-        public GetOrderDetailsResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.SalesOrderResponse GetOrderDetailsResult)
+        public GetOrderDetailsResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.SalesOrderResponse GetOrderDetailsResult)
         {
             this.GetOrderDetailsResult = GetOrderDetailsResult;
         }
@@ -2480,13 +2480,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetCartDetails", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequestBody Body;
         
         public GetCartDetailsRequest()
         {
         }
         
-        public GetCartDetailsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequestBody Body)
+        public GetCartDetailsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -2536,13 +2536,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetCartDetailsResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsResponseBody Body;
         
         public GetCartDetailsResponse()
         {
         }
         
-        public GetCartDetailsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsResponseBody Body)
+        public GetCartDetailsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2556,13 +2556,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CartDetailsResponseDto GetCartDetailsResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CartDetailsResponseDto GetCartDetailsResult;
         
         public GetCartDetailsResponseBody()
         {
         }
         
-        public GetCartDetailsResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CartDetailsResponseDto GetCartDetailsResult)
+        public GetCartDetailsResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CartDetailsResponseDto GetCartDetailsResult)
         {
             this.GetCartDetailsResult = GetCartDetailsResult;
         }
@@ -2576,13 +2576,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="DeleteCartPositionPositions", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody Body;
         
         public DeleteCartPositionPositionsRequest()
         {
         }
         
-        public DeleteCartPositionPositionsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody Body)
+        public DeleteCartPositionPositionsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -2602,7 +2602,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         public string Password;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.Object CartPositions;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.Object CartPositions;
         
         [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
         public int LanguageID;
@@ -2611,7 +2611,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         {
         }
         
-        public DeleteCartPositionPositionsRequestBody(string Login, string Password, Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.Object CartPositions, int LanguageID)
+        public DeleteCartPositionPositionsRequestBody(string Login, string Password, Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.Object CartPositions, int LanguageID)
         {
             this.Login = Login;
             this.Password = Password;
@@ -2628,13 +2628,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="DeleteCartPositionPositionsResponse", Namespace="http://cis.polcar.com/Integration/WebServices/Distributors/Sales", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponseBody Body;
         
         public DeleteCartPositionPositionsResponse()
         {
         }
         
-        public DeleteCartPositionPositionsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponseBody Body)
+        public DeleteCartPositionPositionsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -2648,26 +2648,26 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionsResponse DeleteCartPositionPositionsResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionsResponse DeleteCartPositionPositionsResult;
         
         public DeleteCartPositionPositionsResponseBody()
         {
         }
         
-        public DeleteCartPositionPositionsResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionsResponse DeleteCartPositionPositionsResult)
+        public DeleteCartPositionPositionsResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionsResponse DeleteCartPositionPositionsResult)
         {
             this.DeleteCartPositionPositionsResult = DeleteCartPositionPositionsResult;
         }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public interface IDistributorsSalesServiceChannel : Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService, System.ServiceModel.IClientChannel
+    public interface IDistributorsSalesServiceChannel : Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public partial class DistributorsSalesServiceClient : System.ServiceModel.ClientBase<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService>, Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService
+    public partial class DistributorsSalesServiceClient : System.ServiceModel.ClientBase<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService>, Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService
     {
         
         /// <summary>
@@ -2711,15 +2711,15 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequest request)
         {
             return base.Channel.GetListOfOrdersAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersResponse> GetListOfOrdersAsync(string DistributorCode, bool GetOpenOrdersOnly, int BranchID, System.DateTime DateFrom, System.DateTime DateTo, bool GetOrdersHeadersOnly, string Login, string Password, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersResponse> GetListOfOrdersAsync(string DistributorCode, bool GetOpenOrdersOnly, int BranchID, System.DateTime DateFrom, System.DateTime DateTo, bool GetOrdersHeadersOnly, string Login, string Password, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersRequestBody();
             inValue.Body.DistributorCode = DistributorCode;
             inValue.Body.GetOpenOrdersOnly = GetOpenOrdersOnly;
             inValue.Body.BranchID = BranchID;
@@ -2729,19 +2729,19 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersV2Async(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Request request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersV2Async(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Request request)
         {
             return base.Channel.GetListOfOrdersV2Async(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> GetListOfOrdersV2Async(string distributorCode, bool getOpenOrdersOnly, int branchId, System.DateTime dateFrom, System.DateTime dateTo, bool getOrdersHeadersOnly, string login, string password, int languageId)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Response> GetListOfOrdersV2Async(string distributorCode, bool getOpenOrdersOnly, int branchId, System.DateTime dateFrom, System.DateTime dateTo, bool getOrdersHeadersOnly, string login, string password, int languageId)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Request inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2Request();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Request inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2Request();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV2RequestBody();
             inValue.Body.distributorCode = distributorCode;
             inValue.Body.getOpenOrdersOnly = getOpenOrdersOnly;
             inValue.Body.branchId = branchId;
@@ -2751,19 +2751,19 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
             inValue.Body.login = login;
             inValue.Body.password = password;
             inValue.Body.languageId = languageId;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersV2Async(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersV2Async(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersV3Async(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Request request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.GetListOfOrdersV3Async(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Request request)
         {
             return base.Channel.GetListOfOrdersV3Async(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> GetListOfOrdersV3Async(string distributorCode, bool getOpenOrdersOnly, int branchId, System.DateTime dateFrom, System.DateTime dateTo, bool getOrdersHeadersOnly, string login, string password, int languageId)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Response> GetListOfOrdersV3Async(string distributorCode, bool getOpenOrdersOnly, int branchId, System.DateTime dateFrom, System.DateTime dateTo, bool getOrdersHeadersOnly, string login, string password, int languageId)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Request inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3Request();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Request inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3Request();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetListOfOrdersV3RequestBody();
             inValue.Body.distributorCode = distributorCode;
             inValue.Body.getOpenOrdersOnly = getOpenOrdersOnly;
             inValue.Body.branchId = branchId;
@@ -2773,96 +2773,96 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.S
             inValue.Body.login = login;
             inValue.Body.password = password;
             inValue.Body.languageId = languageId;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersV3Async(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetListOfOrdersV3Async(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.CancelOrderAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.CancelOrderAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequest request)
         {
             return base.Channel.CancelOrderAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderResponse> CancelOrderAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderResponse> CancelOrderAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CancelOrderRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CancelOrderRequestBody();
             inValue.Body.DistributorCode = DistributorCode;
             inValue.Body.OrderID = OrderID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).CancelOrderAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).CancelOrderAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.CloseOrderAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.CloseOrderAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequest request)
         {
             return base.Channel.CloseOrderAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderResponse> CloseOrderAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderResponse> CloseOrderAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.CloseOrderRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.CloseOrderRequestBody();
             inValue.Body.DistributorCode = DistributorCode;
             inValue.Body.OrderID = OrderID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).CloseOrderAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).CloseOrderAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.GetOrderDetailsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.GetOrderDetailsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequest request)
         {
             return base.Channel.GetOrderDetailsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsResponse> GetOrderDetailsAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsResponse> GetOrderDetailsAsync(string DistributorCode, string OrderID, string Login, string Password, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetOrderDetailsRequestBody();
             inValue.Body.DistributorCode = DistributorCode;
             inValue.Body.OrderID = OrderID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetOrderDetailsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetOrderDetailsAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.GetCartDetailsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.GetCartDetailsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequest request)
         {
             return base.Channel.GetCartDetailsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsResponse> GetCartDetailsAsync(string DistributorCode, string CustomerNumber, int LanguageID, string Login, string Password)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsResponse> GetCartDetailsAsync(string DistributorCode, string CustomerNumber, int LanguageID, string Login, string Password)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.GetCartDetailsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.GetCartDetailsRequestBody();
             inValue.Body.DistributorCode = DistributorCode;
             inValue.Body.CustomerNumber = CustomerNumber;
             inValue.Body.LanguageID = LanguageID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetCartDetailsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).GetCartDetailsAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService.DeleteCartPositionPositionsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService.DeleteCartPositionPositionsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest request)
         {
             return base.Channel.DeleteCartPositionPositionsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> DeleteCartPositionPositionsAsync(string Login, string Password, Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.Object CartPositions, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsResponse> DeleteCartPositionPositionsAsync(string Login, string Password, Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.Object CartPositions, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.DeleteCartPositionPositionsRequestBody();
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.CartPositions = CartPositions;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).DeleteCartPositionPositionsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference.IDistributorsSalesService)(this)).DeleteCartPositionPositionsAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

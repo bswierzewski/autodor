@@ -3,10 +3,10 @@
   "version": "8.0.0",
   "options": {
     "inputs": [
-      "https://dedal.polcar.com/Sales/DistributorsSalesService.asmx?wsdl"
+      "https://dedal.polcar.com/Dystrybutorzy/Products.asmx?wsdl"
     ],
     "namespaceMappings": [
-      "*, Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference"
+      "*, Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference"
     ],
     "outputFile": "Reference.cs",
     "targetFramework": "net10.0",

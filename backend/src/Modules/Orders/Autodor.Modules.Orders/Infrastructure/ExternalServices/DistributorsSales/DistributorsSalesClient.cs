@@ -1,22 +1,21 @@
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Extensions;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Options;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference;
-using BuildingBlocks.Infrastructure.Soap;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Extensions;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 
 /// <summary>
 /// Service for distributors sales external integration
 /// </summary>
-public class DistributorsSalesService(
+public class DistributorsSalesClient(
         IOptions<DistributorsSalesOptions> options,
         ISoapInvoker<DistributorsSalesServiceClient> soapInvoker,
-        ILogger<DistributorsSalesService> logger
-    ) : IDistributorsSalesService
+        ILogger<DistributorsSalesClient> logger
+    ) : IDistributorsSalesClient
 {
     private readonly DistributorsSalesOptions _options = options.Value;
 

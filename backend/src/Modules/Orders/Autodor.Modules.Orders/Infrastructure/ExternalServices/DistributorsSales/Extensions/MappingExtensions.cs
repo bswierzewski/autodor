@@ -1,7 +1,7 @@
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference;
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Extensions;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Extensions;
 
 /// <summary>
 /// Extension methods for mapping between DistributorsSales SOAP response types and DTOs.

@@ -1,11 +1,11 @@
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 
 /// <summary>
 /// Service for distributors sales external integration
 /// </summary>
-public interface IDistributorsSalesService
+public interface IDistributorsSalesClient
 {
     /// <summary>
     /// Gets orders for the specified date.

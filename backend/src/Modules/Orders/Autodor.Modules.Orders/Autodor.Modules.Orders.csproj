@@ -19,9 +19,5 @@
 		<EmbeddedResource Include="Resources\**\*" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Infrastructure\Integrations\Products\Dtos\" />
-	</ItemGroup>
-
 </Project>
 

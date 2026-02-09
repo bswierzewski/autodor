@@ -1,4 +1,4 @@
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.Dtos;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Dtos;
 
 /// <summary>
 /// DTO representing a product from the Products API.

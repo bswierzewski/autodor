@@ -1,23 +1,22 @@
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Dtos;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Models;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference;
-using BuildingBlocks.Infrastructure.Soap;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
 using BuildingBlocks.Kernel.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 
 /// <summary>
 /// Service for products external integration
 /// </summary>
-public class ProductsService(
+public class ProductsClient(
     IOptions<ProductsOptions> options,
     ISoapInvoker<ProductsSoapClient> soapInvoker,
-    ILogger<ProductsService> logger
-    ) : IProductsService
+    ILogger<ProductsClient> logger
+    ) : IProductsClient
 {
     private readonly ProductsOptions _options = options.Value;
 

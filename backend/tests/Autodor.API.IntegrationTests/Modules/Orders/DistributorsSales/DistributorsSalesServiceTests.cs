@@ -1,5 +1,5 @@
 using Autodor.API.IntegrationTests.Shared;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
 
@@ -16,7 +16,7 @@ public class DistributorsSalesServiceTests(DatabaseFixture databaseFixture) : Te
     public async Task GetOrdersAsync_ShouldReturnOrdersFromRealApi()
     {
         // Arrange
-        var service = GetRequiredService<IDistributorsSalesService>();
+        var service = GetRequiredService<IDistributorsSalesClient>();
 
         // Act
         var result = await service.GetOrdersAsync(new DateTime(2026, 02, 04));

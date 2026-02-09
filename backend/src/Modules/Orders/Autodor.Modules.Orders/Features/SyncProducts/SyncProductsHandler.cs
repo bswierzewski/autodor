@@ -1,5 +1,5 @@
 using Autodor.Modules.Orders.Domain.Models;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.Services.Caching;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ public static class SyncProductsHandler
     [Tags("Products")]
     public static async Task Handle(
         SyncProductsCommand command,
-        IProductsService productsService,
+        IProductsClient productsService,
         IProductsCache productsCache,
         ILogger logger)
     {

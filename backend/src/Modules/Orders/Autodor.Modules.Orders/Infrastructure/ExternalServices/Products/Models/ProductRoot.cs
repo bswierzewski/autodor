@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.Models;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 
 /// <summary>
 /// Represents the root element for Polcar product list XML response.

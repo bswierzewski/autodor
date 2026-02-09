@@ -1,6 +1,6 @@
 using Autodor.Modules.Orders.Domain.Models;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Caching;
 using BuildingBlocks.Kernel.Extensions;
@@ -12,7 +12,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Services.Orders;
 /// Service for managing orders with business logic applied (exclusions, enrichment).
 /// </summary>
 public class OrderService(
-    IDistributorsSalesService distributorsSalesService,
+    IDistributorsSalesClient distributorsSalesService,
     OrdersDbContext dbContext,
     IProductsCache productsCache) : IOrderService
 {

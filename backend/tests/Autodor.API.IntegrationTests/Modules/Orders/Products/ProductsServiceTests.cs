@@ -1,5 +1,5 @@
 using Autodor.API.IntegrationTests.Shared;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
 
@@ -16,7 +16,7 @@ public class ProductsServiceTests(DatabaseFixture databaseFixture) : TestBase<Pr
     public async Task RefreshAsync_ShouldLoadProductsIntoCache()
     {
         // Arrange
-        var service = GetRequiredService<IProductsService>();
+        var service = GetRequiredService<IProductsClient>();
 
         // Act - Refresh cache from SOAP API
         var products = await service.GetProductsAsync();

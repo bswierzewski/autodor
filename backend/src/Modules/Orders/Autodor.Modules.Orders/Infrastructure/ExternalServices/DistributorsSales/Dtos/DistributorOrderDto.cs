@@ -1,4 +1,4 @@
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Dtos;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
 
 /// <summary>
 /// DTO representing an order from the distributors sales API.

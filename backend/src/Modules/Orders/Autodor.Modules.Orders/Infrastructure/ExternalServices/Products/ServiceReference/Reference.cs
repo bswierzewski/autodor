@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference
 {
     using System.Runtime.Serialization;
     
@@ -18,7 +18,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     public partial class ProductRequest : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.Product[] ListOfProductsField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Product[] ListOfProductsField;
         
         private int BranchIDField;
         
@@ -31,7 +31,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
         private string ErrorInformationField;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.Product[] ListOfProducts
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Product[] ListOfProducts
         {
             get
             {
@@ -167,7 +167,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     public partial class ProductResponse : object
     {
         
-        private Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.Product[] ListOfProductsField;
+        private Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Product[] ListOfProductsField;
         
         private int BranchIDField;
         
@@ -176,7 +176,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
         private string ErrorInformationField;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.Product[] ListOfProducts
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Product[] ListOfProducts
         {
             get
             {
@@ -235,37 +235,37 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetStockLevels", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsResponse> GetStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsResponse> GetStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetStockLevelsForList", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListResponse> GetStockLevelsForListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListResponse> GetStockLevelsForListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetStockLevelsForListOfProducts", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetStockLevels_eTN", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNResponse> GetStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNResponse> GetStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/UploadStockLevels", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsResponse> UploadStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsResponse> UploadStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/UploadStockLevelsWithReport", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportResponse> UploadStockLevelsWithReportAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportResponse> UploadStockLevelsWithReportAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/UploadStockLevels_eTN", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNResponse> UploadStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNResponse> UploadStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetProductsList", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListResponse> GetProductsListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListResponse> GetProductsListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetProductsList_eTN", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNResponse> GetProductsList_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNResponse> GetProductsList_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetEAN13List", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListResponse> GetEAN13ListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListResponse> GetEAN13ListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://dedal.polcar.com.pl/Nemesis/WebServices/GetEAN13List_eTN", ReplyAction="*")]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNResponse> GetEAN13List_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequest request);
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNResponse> GetEAN13List_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -276,13 +276,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevels", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequestBody Body;
         
         public GetStockLevelsRequest()
         {
         }
         
-        public GetStockLevelsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequestBody Body)
+        public GetStockLevelsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -324,13 +324,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevelsResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsResponseBody Body;
         
         public GetStockLevelsResponse()
         {
         }
         
-        public GetStockLevelsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsResponseBody Body)
+        public GetStockLevelsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -364,13 +364,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevelsForList", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequestBody Body;
         
         public GetStockLevelsForListRequest()
         {
         }
         
-        public GetStockLevelsForListRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequestBody Body)
+        public GetStockLevelsForListRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequestBody Body)
         {
             this.Body = Body;
         }
@@ -416,13 +416,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevelsForListResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListResponseBody Body;
         
         public GetStockLevelsForListResponse()
         {
         }
         
-        public GetStockLevelsForListResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListResponseBody Body)
+        public GetStockLevelsForListResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListResponseBody Body)
         {
             this.Body = Body;
         }
@@ -456,13 +456,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevelsForListOfProducts", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody Body;
         
         public GetStockLevelsForListOfProductsRequest()
         {
         }
         
-        public GetStockLevelsForListOfProductsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody Body)
+        public GetStockLevelsForListOfProductsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -476,7 +476,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductRequest productRequest;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductRequest productRequest;
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
         public string Login;
@@ -491,7 +491,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
         {
         }
         
-        public GetStockLevelsForListOfProductsRequestBody(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductRequest productRequest, string Login, string Password, int LanguageID)
+        public GetStockLevelsForListOfProductsRequestBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductRequest productRequest, string Login, string Password, int LanguageID)
         {
             this.productRequest = productRequest;
             this.Login = Login;
@@ -508,13 +508,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevelsForListOfProductsResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsResponseBody Body;
         
         public GetStockLevelsForListOfProductsResponse()
         {
         }
         
-        public GetStockLevelsForListOfProductsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsResponseBody Body)
+        public GetStockLevelsForListOfProductsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -528,13 +528,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductResponse GetStockLevelsForListOfProductsResult;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductResponse GetStockLevelsForListOfProductsResult;
         
         public GetStockLevelsForListOfProductsResponseBody()
         {
         }
         
-        public GetStockLevelsForListOfProductsResponseBody(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductResponse GetStockLevelsForListOfProductsResult)
+        public GetStockLevelsForListOfProductsResponseBody(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductResponse GetStockLevelsForListOfProductsResult)
         {
             this.GetStockLevelsForListOfProductsResult = GetStockLevelsForListOfProductsResult;
         }
@@ -548,13 +548,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevels_eTN", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequestBody Body;
         
         public GetStockLevels_eTNRequest()
         {
         }
         
-        public GetStockLevels_eTNRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequestBody Body)
+        public GetStockLevels_eTNRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequestBody Body)
         {
             this.Body = Body;
         }
@@ -592,13 +592,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetStockLevels_eTNResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNResponseBody Body;
         
         public GetStockLevels_eTNResponse()
         {
         }
         
-        public GetStockLevels_eTNResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNResponseBody Body)
+        public GetStockLevels_eTNResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNResponseBody Body)
         {
             this.Body = Body;
         }
@@ -632,13 +632,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevels", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequestBody Body;
         
         public UploadStockLevelsRequest()
         {
         }
         
-        public UploadStockLevelsRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequestBody Body)
+        public UploadStockLevelsRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequestBody Body)
         {
             this.Body = Body;
         }
@@ -684,13 +684,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevelsResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsResponseBody Body;
         
         public UploadStockLevelsResponse()
         {
         }
         
-        public UploadStockLevelsResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsResponseBody Body)
+        public UploadStockLevelsResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsResponseBody Body)
         {
             this.Body = Body;
         }
@@ -724,13 +724,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevelsWithReport", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequestBody Body;
         
         public UploadStockLevelsWithReportRequest()
         {
         }
         
-        public UploadStockLevelsWithReportRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequestBody Body)
+        public UploadStockLevelsWithReportRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequestBody Body)
         {
             this.Body = Body;
         }
@@ -776,13 +776,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevelsWithReportResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportResponseBody Body;
         
         public UploadStockLevelsWithReportResponse()
         {
         }
         
-        public UploadStockLevelsWithReportResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportResponseBody Body)
+        public UploadStockLevelsWithReportResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportResponseBody Body)
         {
             this.Body = Body;
         }
@@ -816,13 +816,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevels_eTN", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequestBody Body;
         
         public UploadStockLevels_eTNRequest()
         {
         }
         
-        public UploadStockLevels_eTNRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequestBody Body)
+        public UploadStockLevels_eTNRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequestBody Body)
         {
             this.Body = Body;
         }
@@ -864,13 +864,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UploadStockLevels_eTNResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNResponseBody Body;
         
         public UploadStockLevels_eTNResponse()
         {
         }
         
-        public UploadStockLevels_eTNResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNResponseBody Body)
+        public UploadStockLevels_eTNResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNResponseBody Body)
         {
             this.Body = Body;
         }
@@ -904,13 +904,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetProductsList", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequestBody Body;
         
         public GetProductsListRequest()
         {
         }
         
-        public GetProductsListRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequestBody Body)
+        public GetProductsListRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequestBody Body)
         {
             this.Body = Body;
         }
@@ -956,13 +956,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetProductsListResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListResponseBody Body;
         
         public GetProductsListResponse()
         {
         }
         
-        public GetProductsListResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListResponseBody Body)
+        public GetProductsListResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListResponseBody Body)
         {
             this.Body = Body;
         }
@@ -996,13 +996,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetProductsList_eTN", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequestBody Body;
         
         public GetProductsList_eTNRequest()
         {
         }
         
-        public GetProductsList_eTNRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequestBody Body)
+        public GetProductsList_eTNRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequestBody Body)
         {
             this.Body = Body;
         }
@@ -1044,13 +1044,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetProductsList_eTNResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNResponseBody Body;
         
         public GetProductsList_eTNResponse()
         {
         }
         
-        public GetProductsList_eTNResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNResponseBody Body)
+        public GetProductsList_eTNResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNResponseBody Body)
         {
             this.Body = Body;
         }
@@ -1084,13 +1084,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetEAN13List", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequestBody Body;
         
         public GetEAN13ListRequest()
         {
         }
         
-        public GetEAN13ListRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequestBody Body)
+        public GetEAN13ListRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequestBody Body)
         {
             this.Body = Body;
         }
@@ -1136,13 +1136,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetEAN13ListResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListResponseBody Body;
         
         public GetEAN13ListResponse()
         {
         }
         
-        public GetEAN13ListResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListResponseBody Body)
+        public GetEAN13ListResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListResponseBody Body)
         {
             this.Body = Body;
         }
@@ -1176,13 +1176,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetEAN13List_eTN", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequestBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequestBody Body;
         
         public GetEAN13List_eTNRequest()
         {
         }
         
-        public GetEAN13List_eTNRequest(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequestBody Body)
+        public GetEAN13List_eTNRequest(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequestBody Body)
         {
             this.Body = Body;
         }
@@ -1224,13 +1224,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetEAN13List_eTNResponse", Namespace="http://dedal.polcar.com.pl/Nemesis/WebServices", Order=0)]
-        public Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNResponseBody Body;
+        public Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNResponseBody Body;
         
         public GetEAN13List_eTNResponse()
         {
         }
         
-        public GetEAN13List_eTNResponse(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNResponseBody Body)
+        public GetEAN13List_eTNResponse(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNResponseBody Body)
         {
             this.Body = Body;
         }
@@ -1257,13 +1257,13 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public interface ProductsSoapChannel : Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap, System.ServiceModel.IClientChannel
+    public interface ProductsSoapChannel : Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
-    public partial class ProductsSoapClient : System.ServiceModel.ClientBase<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap>, Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap
+    public partial class ProductsSoapClient : System.ServiceModel.ClientBase<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap>, Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap
     {
         
         /// <summary>
@@ -1300,184 +1300,184 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceRef
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequest request)
         {
             return base.Channel.GetStockLevelsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsResponse> GetStockLevelsAsync(string Login, string Password, int BranchID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsResponse> GetStockLevelsAsync(string Login, string Password, int BranchID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsRequestBody();
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.BranchID = BranchID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetStockLevelsForListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetStockLevelsForListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequest request)
         {
             return base.Channel.GetStockLevelsForListAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListResponse> GetStockLevelsForListAsync(string Login, string Password, int BranchID, System.Xml.XmlElement PartsList)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListResponse> GetStockLevelsForListAsync(string Login, string Password, int BranchID, System.Xml.XmlElement PartsList)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListRequestBody();
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.BranchID = BranchID;
             inValue.Body.PartsList = PartsList;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsForListAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsForListAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequest request)
         {
             return base.Channel.GetStockLevelsForListOfProductsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductRequest productRequest, string Login, string Password, int LanguageID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsResponse> GetStockLevelsForListOfProductsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductRequest productRequest, string Login, string Password, int LanguageID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevelsForListOfProductsRequestBody();
             inValue.Body.productRequest = productRequest;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsForListOfProductsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetStockLevelsForListOfProductsAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequest request)
         {
             return base.Channel.GetStockLevels_eTNAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNResponse> GetStockLevels_eTNAsync(string StoreID, string CredentialsGuid)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNResponse> GetStockLevels_eTNAsync(string StoreID, string CredentialsGuid)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetStockLevels_eTNRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetStockLevels_eTNRequestBody();
             inValue.Body.StoreID = StoreID;
             inValue.Body.CredentialsGuid = CredentialsGuid;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetStockLevels_eTNAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetStockLevels_eTNAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.UploadStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.UploadStockLevelsAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequest request)
         {
             return base.Channel.UploadStockLevelsAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsResponse> UploadStockLevelsAsync(System.Xml.XmlElement StockLevels, int BranchID, string Login, string Password)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsResponse> UploadStockLevelsAsync(System.Xml.XmlElement StockLevels, int BranchID, string Login, string Password)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsRequestBody();
             inValue.Body.StockLevels = StockLevels;
             inValue.Body.BranchID = BranchID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevelsAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevelsAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.UploadStockLevelsWithReportAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.UploadStockLevelsWithReportAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequest request)
         {
             return base.Channel.UploadStockLevelsWithReportAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportResponse> UploadStockLevelsWithReportAsync(System.Xml.XmlElement StockLevels, int BranchID, string Login, string Password)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportResponse> UploadStockLevelsWithReportAsync(System.Xml.XmlElement StockLevels, int BranchID, string Login, string Password)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevelsWithReportRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevelsWithReportRequestBody();
             inValue.Body.StockLevels = StockLevels;
             inValue.Body.BranchID = BranchID;
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevelsWithReportAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevelsWithReportAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.UploadStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.UploadStockLevels_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequest request)
         {
             return base.Channel.UploadStockLevels_eTNAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNResponse> UploadStockLevels_eTNAsync(System.Xml.XmlElement StockLevels, string StoreID, string CredentialsGuid)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNResponse> UploadStockLevels_eTNAsync(System.Xml.XmlElement StockLevels, string StoreID, string CredentialsGuid)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.UploadStockLevels_eTNRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.UploadStockLevels_eTNRequestBody();
             inValue.Body.StockLevels = StockLevels;
             inValue.Body.StoreID = StoreID;
             inValue.Body.CredentialsGuid = CredentialsGuid;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevels_eTNAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).UploadStockLevels_eTNAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetProductsListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetProductsListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequest request)
         {
             return base.Channel.GetProductsListAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListResponse> GetProductsListAsync(string Login, string Password, int LanguageID, int FormatID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListResponse> GetProductsListAsync(string Login, string Password, int LanguageID, int FormatID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsListRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsListRequestBody();
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
             inValue.Body.FormatID = FormatID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetProductsListAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetProductsListAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetProductsList_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetProductsList_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequest request)
         {
             return base.Channel.GetProductsList_eTNAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNResponse> GetProductsList_eTNAsync(int LanguageID, int FormatID, string CredentialsGuid)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNResponse> GetProductsList_eTNAsync(int LanguageID, int FormatID, string CredentialsGuid)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetProductsList_eTNRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetProductsList_eTNRequestBody();
             inValue.Body.LanguageID = LanguageID;
             inValue.Body.FormatID = FormatID;
             inValue.Body.CredentialsGuid = CredentialsGuid;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetProductsList_eTNAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetProductsList_eTNAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetEAN13ListAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetEAN13ListAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequest request)
         {
             return base.Channel.GetEAN13ListAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListResponse> GetEAN13ListAsync(string Login, string Password, int LanguageID, int FormatID)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListResponse> GetEAN13ListAsync(string Login, string Password, int LanguageID, int FormatID)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13ListRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13ListRequestBody();
             inValue.Body.Login = Login;
             inValue.Body.Password = Password;
             inValue.Body.LanguageID = LanguageID;
             inValue.Body.FormatID = FormatID;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetEAN13ListAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetEAN13ListAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNResponse> Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap.GetEAN13List_eTNAsync(Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequest request)
+        System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNResponse> Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap.GetEAN13List_eTNAsync(Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequest request)
         {
             return base.Channel.GetEAN13List_eTNAsync(request);
         }
         
-        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNResponse> GetEAN13List_eTNAsync(int LanguageID, int FormatID, string CredentialsGuid)
+        public System.Threading.Tasks.Task<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNResponse> GetEAN13List_eTNAsync(int LanguageID, int FormatID, string CredentialsGuid)
         {
-            Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequest();
-            inValue.Body = new Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.GetEAN13List_eTNRequestBody();
+            Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequest inValue = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequest();
+            inValue.Body = new Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.GetEAN13List_eTNRequestBody();
             inValue.Body.LanguageID = LanguageID;
             inValue.Body.FormatID = FormatID;
             inValue.Body.CredentialsGuid = CredentialsGuid;
-            return ((Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference.ProductsSoap)(this)).GetEAN13List_eTNAsync(inValue);
+            return ((Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.ProductsSoap)(this)).GetEAN13List_eTNAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
