@@ -1,14 +1,12 @@
-using Autodor.Modules.Orders.Infrastructure.Consts;
-using Autodor.Modules.Orders.Infrastructure.Extensions;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Dtos;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Factories;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Options;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference;
+using BuildingBlocks.Infrastructure.Soap;
+using BuildingBlocks.Infrastructure.Soap.Abstractions;
 using BuildingBlocks.Kernel.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 
@@ -17,8 +15,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 /// </summary>
 public class ProductsService(
     IOptions<ProductsOptions> options,
-    IProductsSoapClientFactory clientFactory,
-    [FromKeyedServices(KeyedServicesConsts.ProductsSoap)] ResiliencePipeline resiliencePipeline,
+    ISoapInvoker<ProductsSoapClient> soapInvoker,
     ILogger<ProductsService> logger
     ) : IProductsService
 {
@@ -26,11 +23,9 @@ public class ProductsService(
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync()
     {
-        var client = clientFactory.Create();
-
         try
         {
-            var response = await resiliencePipeline.ExecuteAsync(async ct =>
+            var response = await soapInvoker.InvokeAsync(async client =>
             {
                 return await client.GetEAN13ListAsync(
                     Login: _options.Login,
@@ -54,10 +49,6 @@ public class ProductsService(
         {
             logger.LogError(ex, "Error occurred while loading products from Polcar");
             return [];
-        }
-        finally
-        {
-            await client.CloseClientAsync();
         }
     }
 }

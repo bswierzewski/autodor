@@ -1,8 +1,6 @@
-using Autodor.Modules.Orders.Infrastructure.Consts;
-using Autodor.Modules.Orders.Infrastructure.Integrations.Products.Factories;
+using Autodor.Modules.Orders.Infrastructure.Integrations.Products.ServiceReference;
+using BuildingBlocks.Infrastructure.Soap;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
-using System.ServiceModel;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 
@@ -12,34 +10,20 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.Products;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds Products integration services including SOAP client factory, resilience pipeline, service, and cache.
+    /// Adds Products integration services including SOAP invoker with resilience and logging, and service implementation.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddProducts(this IServiceCollection services)
     {
-        // Register SOAP client factory
-        services.AddSingleton<IProductsSoapClientFactory, ProductsSoapClientFactory>();
+        // Register SOAP invoker with resilience and logging using builder pattern
+        services.AddSoapInvoker<ProductsSoapClient>(() =>
+                new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap))
+            .AddResilience()
+            .AddLogging()
+            .Build();
 
-        // Register resilience pipeline for SOAP client with retry and timeout policies
-        services.AddResiliencePipeline(KeyedServicesConsts.ProductsSoap, builder =>
-        {
-            builder
-                .AddRetry(new Polly.Retry.RetryStrategyOptions
-                {
-                    MaxRetryAttempts = 3,
-                    Delay = TimeSpan.FromSeconds(2),
-                    BackoffType = DelayBackoffType.Exponential,
-                    UseJitter = true,
-                    ShouldHandle = new PredicateBuilder()
-                        .Handle<CommunicationException>()
-                        .Handle<TimeoutException>()
-                        .Handle<EndpointNotFoundException>()
-                })
-                .AddTimeout(TimeSpan.FromSeconds(30));
-        });
-
-        // Register SOAP service
+        // Register service implementation
         services.AddSingleton<IProductsService, ProductsService>();
 
         return services;

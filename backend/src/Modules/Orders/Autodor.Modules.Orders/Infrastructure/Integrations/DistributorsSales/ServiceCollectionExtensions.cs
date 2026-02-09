@@ -1,8 +1,6 @@
-using Autodor.Modules.Orders.Infrastructure.Consts;
-using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.Factories;
+using Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales.ServiceReference;
+using BuildingBlocks.Infrastructure.Soap;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
-using System.ServiceModel;
 
 namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 
@@ -12,32 +10,18 @@ namespace Autodor.Modules.Orders.Infrastructure.Integrations.DistributorsSales;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds DistributorsSales integration services including SOAP client factory, resilience pipeline, and service implementation.
+    /// Adds DistributorsSales integration services including SOAP invoker with resilience and logging, and service implementation.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddDistributorsSales(this IServiceCollection services)
     {
-        // Register SOAP client factory
-        services.AddSingleton<IDistributorsSalesServiceClientFactory, DistributorsSalesServiceClientFactory>();
-
-        // Register resilience pipeline for SOAP client with retry and timeout policies
-        services.AddResiliencePipeline(KeyedServicesConsts.DistributorsSalesSoap, builder =>
-        {
-            builder
-                .AddRetry(new Polly.Retry.RetryStrategyOptions
-                {
-                    MaxRetryAttempts = 3,
-                    Delay = TimeSpan.FromSeconds(2),
-                    BackoffType = DelayBackoffType.Exponential,
-                    UseJitter = true,
-                    ShouldHandle = new PredicateBuilder()
-                        .Handle<CommunicationException>()
-                        .Handle<TimeoutException>()
-                        .Handle<EndpointNotFoundException>()
-                })
-                .AddTimeout(TimeSpan.FromSeconds(30));
-        });
+        // Register SOAP invoker with resilience and logging using builder pattern
+        services.AddSoapInvoker<DistributorsSalesServiceClient>(() =>
+                new DistributorsSalesServiceClient(DistributorsSalesServiceClient.EndpointConfiguration.BasicHttpBinding_IDistributorsSalesService_soap))
+            .AddResilience()
+            .AddLogging()
+            .Build();
 
         // Register service implementation
         services.AddSingleton<IDistributorsSalesService, DistributorsSalesService>();
