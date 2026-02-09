@@ -13,8 +13,8 @@ public static class GetOrdersHandler
         IOrderService orderService,
         CancellationToken ct)
     {
-        // Fetch orders with exclusions marked (includeExcluded = true)
-        var orders = await orderService.GetOrdersAsync(query.From, query.To, includeExcluded: true, ct);
+        // Fetch orders with exclusions marked (OrderService handles enrichment and marking)
+        var orders = await orderService.GetOrdersAsync(query.From, query.To, ct);
 
         var response = new GetOrdersResponse(
             orders

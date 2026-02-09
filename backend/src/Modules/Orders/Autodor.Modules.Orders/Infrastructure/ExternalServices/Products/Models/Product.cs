@@ -1,9 +1,9 @@
-namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Dtos;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 
 /// <summary>
-/// DTO representing a product from the Products API.
+/// Represents a product item from the external Products API.
 /// </summary>
-public record ProductDto
+public record Product
 {
     /// <summary>
     /// Gets the unique product number identifier.

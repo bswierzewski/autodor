@@ -1,19 +1,19 @@
-namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
+namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Models;
 
 /// <summary>
-/// DTO representing an order from the distributors sales API.
+/// Represents an order from the Distributors Sales API.
 /// </summary>
-public record DistributorOrderDto
+public record DistributorOrder
 {
     /// <summary>
     /// Gets the order identifier (OrderID).
     /// </summary>
-    public string Id { get; init; } = string.Empty;
+    public required string Id { get; init; }
 
     /// <summary>
     /// Gets the Polcar order number (PolcarOrderNumber).
     /// </summary>
-    public string Number { get; init; } = string.Empty;
+    public required string Number { get; init; }
 
     /// <summary>
     /// Gets the entry date of the order (EntryDate).
@@ -23,28 +23,28 @@ public record DistributorOrderDto
     /// <summary>
     /// Gets the ordering person name (OrderingPerson).
     /// </summary>
-    public string Person { get; init; } = string.Empty;
+    public required string Person { get; init; }
 
     /// <summary>
     /// Gets the customer number (CustomerNumber).
     /// </summary>
-    public string CustomerNumber { get; init; } = string.Empty;
+    public required string CustomerNumber { get; init; }
 
     /// <summary>
     /// Gets the list of order items.
     /// </summary>
-    public List<DistributorOrderItemDto> Items { get; init; } = [];
+    public List<DistributorOrderItem> Items { get; init; } = [];
 }
 
 /// <summary>
-/// DTO representing an order item from the distributors sales API.
+/// Represents an order item from the Distributors Sales API.
 /// </summary>
-public record DistributorOrderItemDto
+public record DistributorOrderItem
 {
     /// <summary>
     /// Gets the part number (PartNumber).
     /// </summary>
-    public string PartNumber { get; init; } = string.Empty;
+    public required string PartNumber { get; init; }
 
     /// <summary>
     /// Gets the quantity ordered (QuantityOrdered).

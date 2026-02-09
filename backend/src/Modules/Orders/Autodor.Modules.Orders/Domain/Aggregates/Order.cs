@@ -1,4 +1,4 @@
-namespace Autodor.Modules.Orders.Domain.Models;
+namespace Autodor.Modules.Orders.Domain.Aggregates;
 
 /// <summary>
 /// Represents an order from Polcar distributors sales.
@@ -36,7 +36,7 @@ public record Order
     public List<OrderItem> Items { get; init; } = [];
 
     /// <summary>
-    /// Gets whether the order is excluded (populated by OrderService when includeExcluded is true).
+    /// Gets whether the order is excluded (populated by OrderService).
     /// </summary>
     public bool IsExcluded { get; init; }
 }
@@ -67,7 +67,7 @@ public record OrderItem
     public decimal Price { get; init; }
 
     /// <summary>
-    /// Gets whether the order item is excluded (populated by OrderService when includeExcluded is true).
+    /// Gets whether the order item is excluded (populated by OrderService).
     /// </summary>
     public bool IsExcluded { get; init; }
 

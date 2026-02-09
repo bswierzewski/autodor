@@ -1,14 +1,15 @@
+using System.Collections.Frozen;
+using System.Net;
 using Autodor.API.IntegrationTests.Shared;
 using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Contracts.Models;
-using Autodor.Modules.Orders.Domain.Models;
-using Autodor.Modules.Orders.Infrastructure.Services.Caching;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using System.Net;
 using Xunit.Abstractions;
 
 namespace Autodor.API.IntegrationTests.Modules.Orders.GenerateDeliveryNote;
@@ -18,20 +19,21 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
     : TestBase<Program>(databaseFixture), IAsyncLifetime
 {
     private readonly Mock<IContractorsModuleApi> _contractorsApiMock = new();
+    private readonly Mock<IProductsClient> _productsClientMock = new();
 
     protected override Task SeedDataAsync()
-    {        
-        // Initialize products cache with test data
-        var productsCache = AlbaHost.Services.GetRequiredService<IProductsCache>();
-
-        var testProducts = new List<Product>
+    {
+        // Setup mock products client with test data
+        var testProducts = new Dictionary<string, Product>
         {
-            new("3205959", "Tarcza hamulcowa przednia"),
-            new("2008554E", "Klocki hamulcowe tylne"),
-            new("3202RWT2", "Zestaw sprzęgła kompletny")
-        };
+            ["3205959"] = new Product { Number = "3205959", Name = "Tarcza hamulcowa przednia" },
+            ["2008554E"] = new Product { Number = "2008554E", Name = "Klocki hamulcowe tylne" },
+            ["3202RWT2"] = new Product { Number = "3202RWT2", Name = "Zestaw sprzęgła kompletny" }
+        }.ToFrozenDictionary();
 
-        productsCache.Set(testProducts);
+        _productsClientMock
+            .Setup(x => x.GetProductsAsync())
+            .ReturnsAsync(testProducts);
 
         return Task.CompletedTask;
     }
@@ -41,6 +43,10 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
         // Replace IContractorsModuleApi with mock
         services.RemoveAll<IContractorsModuleApi>();
         services.AddSingleton(_contractorsApiMock.Object);
+
+        // Replace IProductsClient with mock
+        services.RemoveAll<IProductsClient>();
+        services.AddSingleton(_productsClientMock.Object);
 
         // Setup mock to return test contractor
         var testContractor = new ContractorDto(

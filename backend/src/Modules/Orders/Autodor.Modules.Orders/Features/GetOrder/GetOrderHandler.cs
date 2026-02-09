@@ -15,8 +15,8 @@ public static class GetOrderHandler
         IOrderService orderService,
         CancellationToken ct)
     {
-        // Fetch order with exclusions marked (includeExcluded = true)
-        var order = await orderService.GetOrderAsync(query.OrderId, query.Date, includeExcluded: true, ct);
+        // Fetch order with exclusions marked (OrderService handles enrichment and marking)
+        var order = await orderService.GetOrderAsync(query.OrderId, query.Date, ct);
 
         if (order is null)
             return Error.NotFound("Order.NotFound", $"Order with ID '{query.OrderId}' was not found")

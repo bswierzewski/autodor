@@ -1,5 +1,4 @@
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Extensions;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Models;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
@@ -19,7 +18,7 @@ public class DistributorsSalesClient(
 {
     private readonly DistributorsSalesOptions _options = options.Value;
 
-    public async Task<IEnumerable<DistributorOrderDto>> GetOrdersAsync(DateTime date)
+    public async Task<IEnumerable<DistributorOrder>> GetOrdersAsync(DateTime date)
     {
         var response = await soapInvoker.InvokeAsync(async client =>
         {
@@ -46,9 +45,29 @@ public class DistributorsSalesClient(
             throw new Exception($"{responseBody.ErrorCode} - {responseBody.ErrorInformation}");
         }
 
-        var orders = responseBody.ListOfOrders?.ToDto() ?? [];
+        // Map from SOAP response to application model
+        var orders = responseBody.ListOfOrders?
+            .Where(soap => soap is not null)
+            .Select(soap => new DistributorOrder
+            {
+                Id = soap.OrderID ?? string.Empty,
+                Number = soap.PolcarOrderNumber ?? string.Empty,
+                Date = soap.EntryDate,
+                Person = soap.OrderingPerson ?? string.Empty,
+                CustomerNumber = soap.CustomerNumber ?? string.Empty,
+                Items = soap.OrderedItemsResponse?
+                    .Where(item => item is not null)
+                    .Select(item => new DistributorOrderItem
+                    {
+                        PartNumber = item.PartNumber ?? string.Empty,
+                        Quantity = item.QuantityOrdered,
+                        Price = item.Price
+                    })
+                    .ToList() ?? []
+            })
+            .ToList() ?? [];
 
-        logger.LogInformation("Successfully fetched {Count} orders from DistributorsSales API for date {Date}", orders.Count(), date.Date);
+        logger.LogInformation("Successfully fetched {Count} orders from DistributorsSales API for date {Date}", orders.Count, date.Date);
 
         return orders;
     }

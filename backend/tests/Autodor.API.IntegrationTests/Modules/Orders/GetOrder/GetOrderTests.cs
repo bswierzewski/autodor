@@ -1,5 +1,4 @@
 ﻿using Autodor.API.IntegrationTests.Shared;
-using Autodor.Modules.Orders.Features.GetOrder;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
 using System.Net;

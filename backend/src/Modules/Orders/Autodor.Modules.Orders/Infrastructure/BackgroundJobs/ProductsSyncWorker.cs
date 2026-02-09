@@ -1,9 +1,8 @@
-﻿using Autodor.Modules.Orders.Features.SyncProducts;
+﻿using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Wolverine;
 
 namespace Autodor.Modules.Orders.Infrastructure.BackgroundJobs;
 
@@ -32,11 +31,11 @@ public class ProductsSyncWorker(
         try
         {
             await using var scope = scopeFactory.CreateAsyncScope();
-            var messageBus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
+            var productsClient = scope.ServiceProvider.GetRequiredService<IProductsClient>();
 
-            await messageBus.InvokeAsync(new SyncProductsCommand());
+            var products = await productsClient.GetProductsAsync();
 
-            logger.LogInformation("Products loaded into cache successfully");
+            logger.LogInformation("Products loaded into cache successfully. {Count} products cached", products.Count);
         }
         catch (Exception ex)
         {

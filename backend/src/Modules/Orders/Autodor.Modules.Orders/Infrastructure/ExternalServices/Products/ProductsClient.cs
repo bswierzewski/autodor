@@ -1,11 +1,11 @@
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Dtos;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Models;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
 using BuildingBlocks.Kernel.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Frozen;
 
 namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 
@@ -20,7 +20,7 @@ public class ProductsClient(
 {
     private readonly ProductsOptions _options = options.Value;
 
-    public async Task<IEnumerable<ProductDto>> GetProductsAsync()
+    public async Task<FrozenDictionary<string, Models.Product>> GetProductsAsync()
     {
         try
         {
@@ -33,21 +33,21 @@ public class ProductsClient(
                     FormatID: _options.FormatId);
             });
 
-            var deserialized = response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>();
-
-            return deserialized.Items?
-                .Select(item => new ProductDto
+            return response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>()
+                .Items
+                .Select(xml => new Models.Product
                 {
-                    Number = item.Number,
-                    Name = item.PartName,
-                    EAN13 = item.EAN13Code
+                    Number = xml.Number,
+                    Name = xml.PartName,
+                    EAN13 = xml.EAN13Code
                 })
-                .ToList() ?? [];
+                .GroupBy(p => p.Number)
+                .ToFrozenDictionary(g => g.Key, g => g.Last());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error occurred while loading products from Polcar");
-            return [];
+            return FrozenDictionary<string, Models.Product>.Empty;
         }
     }
 }

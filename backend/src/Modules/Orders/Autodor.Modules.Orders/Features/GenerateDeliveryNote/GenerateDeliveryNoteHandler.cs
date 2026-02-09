@@ -1,6 +1,6 @@
 using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Contracts.Models;
-using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
@@ -27,11 +27,21 @@ public static class GenerateDeliveryNoteHandler
     {
         logger.LogInformation("Generating delivery note for order {OrderId} on date {Date}", command.OrderId, command.Date);
 
-        // Fetch order (with exclusions filtered out and enriched)
-        var order = await orderService.GetOrderAsync(command.OrderId, command.Date, includeExcluded: false, ct);
+        // Fetch order with exclusions marked (OrderService handles enrichment and marking)
+        var order = await orderService.GetOrderAsync(command.OrderId, command.Date, ct);
 
         if (order is null)
-            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found or is excluded").Problem();
+            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found").Problem();
+
+        // Business logic: Filter out excluded order
+        if (order.IsExcluded)
+            return Error.NotFound("Order.Excluded", $"Order with ID '{command.OrderId}' is excluded").Problem();
+
+        // Business logic: Filter out excluded items
+        var nonExcludedItems = order.Items.Where(i => !i.IsExcluded).ToList();
+
+        if (nonExcludedItems.Count == 0)
+            return Error.NotFound("Order.NoItems", "Order has no items after exclusions are applied").Problem();
 
         // Fetch contractor by NIP (CustomerNumber)
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
@@ -42,15 +52,15 @@ public static class GenerateDeliveryNoteHandler
         if (contractor is null)
             return Error.NotFound("Contractor.NotFound", $"Contractor with NIP '{order.CustomerNumber}' was not found").Problem();
 
-        // Get pdf bytes from document
-        var pdfBytes = CreateDocument(order, contractor).GeneratePdf();
+        // Generate PDF with non-excluded items
+        var pdfBytes = CreateDocument(order, nonExcludedItems, contractor).GeneratePdf();
 
         // Return PDF file
         var fileName = $"WZ_{DateTime.Now:yyyyMMddHHmmss}.pdf";
         return Results.File(pdfBytes, "application/pdf", fileName);
     }
 
-    private static Document CreateDocument(Order order, ContractorDto contractor)
+    private static Document CreateDocument(Order order, List<OrderItem> items, ContractorDto contractor)
     {
         // Generate PDF using QuestPDF
         return Document.Create(container =>
@@ -65,7 +75,7 @@ public static class GenerateDeliveryNoteHandler
                 {
                     column.Item().Element(c => ComposeHeader(c, order, contractor));
                     column.Item().PaddingVertical(15);
-                    column.Item().Element(c => ComposeTable(c, order));
+                    column.Item().Element(c => ComposeTable(c, items));
                 });
             });
         });
@@ -113,7 +123,7 @@ public static class GenerateDeliveryNoteHandler
         });
     }
 
-    private static void ComposeTable(IContainer container, Domain.Models.Order order)
+    private static void ComposeTable(IContainer container, List<OrderItem> items)
     {
         container.Table(table =>
         {
@@ -147,7 +157,7 @@ public static class GenerateDeliveryNoteHandler
             });
 
             // Items
-            foreach (var item in order.Items)
+            foreach (var item in items)
             {
                 var totalPrice = item.Price * item.Quantity;
                 var vatAmount = Math.Round(totalPrice * 0.23M, 2);

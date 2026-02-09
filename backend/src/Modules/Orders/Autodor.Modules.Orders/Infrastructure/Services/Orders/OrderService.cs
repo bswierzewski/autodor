@@ -1,150 +1,138 @@
-using Autodor.Modules.Orders.Domain.Models;
+using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Dtos;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Models;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
-using Autodor.Modules.Orders.Infrastructure.Services.Caching;
 using BuildingBlocks.Kernel.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Frozen;
 
 namespace Autodor.Modules.Orders.Infrastructure.Services.Orders;
 
 /// <summary>
-/// Service for managing orders with business logic applied (exclusions, enrichment).
+/// Service for enriching orders with product data and marking exclusions.
+/// Handlers decide what to do with IsExcluded flags (filter or show).
 /// </summary>
 public class OrderService(
-    IDistributorsSalesClient distributorsSalesService,
+    IDistributorsSalesClient distributorsSalesClient,
     OrdersDbContext dbContext,
-    IProductsCache productsCache) : IOrderService
+    IProductsClient productsClient) : IOrderService
 {
     /// <inheritdoc />
-    public async Task<IEnumerable<Order>> GetOrdersAsync(DateTime from, DateTime to, bool includeExcluded = false, CancellationToken ct = default)
+    public async Task<IEnumerable<Order>> GetOrdersAsync(
+        DateTime from,
+        DateTime to,
+        CancellationToken ct = default)
     {
-        // Generate list of dates in range
         var dates = DateTimeExtensions.EachDay(from, to);
 
-        // Fetch orders in parallel per day
-        var ordersTasks = dates.Select(distributorsSalesService.GetOrdersAsync);
-        var ordersPerDay = await Task.WhenAll(ordersTasks);
+        var ordersPerDay = await Task.WhenAll(dates.Select(distributorsSalesClient.GetOrdersAsync));
 
-        var allOrderDtos = ordersPerDay.SelectMany(o => o).ToList();
+        var orderDtos = ordersPerDay.SelectMany(x => x).ToList();
 
-        if (allOrderDtos.Count == 0)
-            return [];
-
-        // Map DTOs to domain models with business logic applied
-        return await MapToDomainAsync(allOrderDtos, includeExcluded, ct);
+        return orderDtos is { Count: > 0 }
+            ? await EnrichOrdersAsync(orderDtos, ct)
+            : [];
     }
 
     /// <inheritdoc />
-    public async Task<Order?> GetOrderAsync(string orderId, DateTime date, bool includeExcluded = false, CancellationToken ct = default)
+    public async Task<Order?> GetOrderAsync(
+        string orderId,
+        DateTime date,
+        CancellationToken ct = default)
     {
-        // Fetch orders for the specific date
-        var orderDtos = await distributorsSalesService.GetOrdersAsync(date);
-        var orderDto = orderDtos.FirstOrDefault(o => o.Id == orderId);
+        var orderDto = (await distributorsSalesClient.GetOrdersAsync(date))
+            .FirstOrDefault(o => o.Id == orderId);
 
         if (orderDto is null)
             return null;
 
-        // Map DTO to domain model with business logic applied
-        var processedOrders = await MapToDomainAsync([orderDto], includeExcluded, ct);
-        return processedOrders.FirstOrDefault();
+        return (await EnrichOrdersAsync([orderDto], ct)).FirstOrDefault();
     }
 
-    private async Task<IEnumerable<Order>> MapToDomainAsync(List<DistributorOrderDto> orderDtos, bool includeExcluded, CancellationToken ct)
+    /// <summary>
+    /// Enriches orders with product data and marks exclusions (does NOT filter).
+    /// </summary>
+    private async Task<IEnumerable<Order>> EnrichOrdersAsync(
+        List<DistributorOrder> orderDtos,
+        CancellationToken ct)
     {
         if (orderDtos.Count == 0)
             return [];
 
-        // 1. Get excluded orders and items
-        var excludedOrderIdsList = await dbContext.ExcludedOrders
-            .Select(e => e.Id)
-            .ToListAsync(ct);
-        var excludedOrderIds = excludedOrderIdsList.ToHashSet();
-
-        var orderIds = orderDtos
+        // Filter out orders without IDs upfront
+        var validOrders = orderDtos
             .Where(o => !string.IsNullOrWhiteSpace(o.Id))
-            .Select(o => o.Id!)
             .ToList();
 
-        var excludedItems = await dbContext.ExcludedOrderItems
-            .Where(e => orderIds.Contains(e.OrderId))
+        if (validOrders.Count == 0)
+            return [];
+
+        var excludedOrdersTask = dbContext.ExcludedOrders
+            .AsNoTracking()
+            .Select(e => e.Id)
             .ToListAsync(ct);
 
-        var excludedItemsSet = excludedItems
-            .Select(e => (e.OrderId, e.ItemNumber))
-            .ToHashSet();
+        var excludedItemsTask = dbContext.ExcludedOrderItems
+            .AsNoTracking()
+            .Select(e => new { e.OrderId, e.ItemNumber })
+            .ToListAsync(ct);
 
-        // 2. Get all unique part numbers for product enrichment
-        var productNumbers = orderDtos
-            .SelectMany(o => o.Items)
-            .Select(i => i.PartNumber)
-            .Where(pn => !string.IsNullOrWhiteSpace(pn))
-            .Distinct()
-            .ToArray();
+        var productsTask = productsClient.GetProductsAsync();
 
-        var productsDictionary = productNumbers.Length > 0
-            ? (await productsCache.GetByNumbersAsync(productNumbers!)).ToDictionary(p => p.Number, p => p)
-            : [];
+        await Task.WhenAll(excludedOrdersTask, excludedItemsTask, productsTask);
 
-        // 3. Map DTOs to domain models with all business logic applied in one pass
-        var orders = new List<Order>();
+        var excludedOrders = (await excludedOrdersTask).ToHashSet();
 
-        foreach (var dto in orderDtos)
-        {
-            if (string.IsNullOrWhiteSpace(dto.Id))
-                continue;
+        var excludedItems = (await excludedItemsTask)
+            .GroupBy(e => e.OrderId)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.ItemNumber).ToHashSet());
 
-            var isOrderExcluded = excludedOrderIds.Contains(dto.Id);
+        var products = await productsTask;
 
-            // Skip excluded orders if not including them
-            if (!includeExcluded && isOrderExcluded)
-                continue;
-
-            // Map items with enrichment and exclusion logic
-            var items = dto.Items
-                .Select(itemDto =>
-                {
-                    var isItemExcluded = !string.IsNullOrWhiteSpace(itemDto.PartNumber) &&
-                                        excludedItemsSet.Contains((dto.Id!, itemDto.PartNumber!));
-
-                    // Skip excluded items if not including them
-                    if (!includeExcluded && isItemExcluded)
-                        return null;
-
-                    // Get product name if available
-                    var productName = !string.IsNullOrWhiteSpace(itemDto.PartNumber) &&
-                                     productsDictionary.TryGetValue(itemDto.PartNumber!, out var product)
-                        ? product.Name
-                        : string.Empty;
-
-                    return new OrderItem
-                    {
-                        PartNumber = itemDto.PartNumber,
-                        ProductName = productName,
-                        Quantity = itemDto.Quantity,
-                        Price = itemDto.Price,
-                        IsExcluded = includeExcluded && isItemExcluded
-                    };
-                })
-                .Where(item => item is not null)
-                .ToList();
-
-            // Skip orders with no items after filtering (only when not including excluded)
-            if (!includeExcluded && items.Count == 0)
-                continue;
-
-            orders.Add(new Order
+        return validOrders
+            .Select(o =>
             {
-                Id = dto.Id,
-                Number = dto.Number,
-                Date = dto.Date,
-                Person = dto.Person,
-                CustomerNumber = dto.CustomerNumber,
-                Items = items!,
-                IsExcluded = includeExcluded && isOrderExcluded
-            });
-        }
+                var excludedItemsForOrder = excludedItems.GetValueOrDefault(o.Id) ?? [];
+                var items = o.Items
+                    .Select(item => MapOrderItem(item, excludedItemsForOrder, products))
+                    .ToList();
 
-        return orders;
+                return new Order
+                {
+                    Id = o.Id,
+                    Number = o.Number,
+                    Date = o.Date,
+                    Person = o.Person,
+                    CustomerNumber = o.CustomerNumber,
+                    Items = items,
+                    IsExcluded = excludedOrders.Contains(o.Id)
+                };
+            }
+        )
+            .ToList();
+    }
+
+    /// <summary>
+    /// Maps DistributorOrderItem to domain OrderItem with product enrichment and exclusion flag.
+    /// </summary>
+    private static OrderItem MapOrderItem(
+        DistributorOrderItem item,
+        HashSet<string> excludedItemNumbers,
+        FrozenDictionary<string, Product> products)
+    {
+        var partNumber = item.PartNumber;
+
+        return new OrderItem
+        {
+            PartNumber = partNumber,
+            ProductName = products.TryGetValue(partNumber, out var product)
+                ? product.Name
+                : string.Empty,
+            Quantity = item.Quantity,
+            Price = item.Price,
+            IsExcluded = partNumber is not null && excludedItemNumbers.Contains(partNumber)
+        };
     }
 }

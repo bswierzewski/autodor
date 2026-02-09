@@ -1,4 +1,5 @@
-using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Dtos;
+using System.Collections.Frozen;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 
 namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 
@@ -8,8 +9,8 @@ namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 public interface IProductsClient
 {
     /// <summary>
-    /// Gets all products from the external system.
+    /// Gets all products from the external system as a frozen dictionary keyed by product number.
     /// </summary>
-    /// <returns>A collection of products.</returns>
-    Task<IEnumerable<ProductDto>> GetProductsAsync();
+    /// <returns>A frozen dictionary of products keyed by product number.</returns>
+    Task<FrozenDictionary<string, Product>> GetProductsAsync();
 }
