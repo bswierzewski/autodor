@@ -1,25 +1,24 @@
-using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Contracts.Models;
+using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Autodor.Modules.Contractors.Infrastructure.Services.ModuleApi;
+namespace Autodor.Modules.Contractors.Features.GetContractorByNip;
 
-/// <summary>
-/// Internal implementation of Contractors Module API
-/// Provides data access to other modules
-/// </summary>
-public class ContractorsModuleApi(ContractorsDbContext dbContext) : IContractorsModuleApi
+public static class GetContractorByNipHandler
 {
-    public async Task<ContractorDto?> GetContractorByNipAsync(string nip, CancellationToken ct = default)
+    public static async Task<ContractorDto?> Handle(
+        GetContractorByNipQuery query, 
+        ContractorsDbContext dbContext
+        )
     {
-        if (string.IsNullOrWhiteSpace(nip))
+        if (string.IsNullOrWhiteSpace(query.Nip))
             return null;
 
         return await dbContext.Contractors
             .AsNoTracking()
-            .Where(c => new TaxId(nip) == c.NIP)
+            .Where(c => new TaxId(query.Nip) == c.NIP)
             .Select(c => new ContractorDto(
                 c.Id.Value,
                 c.Name,
@@ -29,6 +28,6 @@ public class ContractorsModuleApi(ContractorsDbContext dbContext) : IContractors
                 c.Address.ZipCode,
                 c.Email.Value
             ))
-            .FirstOrDefaultAsync(ct);
+            .FirstOrDefaultAsync();
     }
 }

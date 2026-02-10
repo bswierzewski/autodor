@@ -1,5 +1,5 @@
-using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Contracts.Models;
+using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -10,6 +10,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Reflection;
+using Wolverine;
 using Wolverine.Http;
 
 namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
@@ -21,7 +22,7 @@ public static class GenerateDeliveryNoteHandler
     public static async Task<IResult> Handle(
         GenerateDeliveryNoteCommand command,
         IOrderService orderService,
-        IContractorsModuleApi contractorsApi,
+        IMessageBus bus,
         ILogger<GenerateDeliveryNoteCommand> logger,
         CancellationToken ct)
     {
@@ -47,7 +48,7 @@ public static class GenerateDeliveryNoteHandler
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
             return Error.NotFound("Order.EmptyCustomerNumber", "Customer number is empty").Problem();
 
-        var contractor = await contractorsApi.GetContractorByNipAsync(order.CustomerNumber, ct);
+        var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNipQuery(order.CustomerNumber), ct);
 
         if (contractor is null)
             return Error.NotFound("Contractor.NotFound", $"Contractor with NIP '{order.CustomerNumber}' was not found").Problem();

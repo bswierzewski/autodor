@@ -1,8 +1,7 @@
-using System.Collections.Frozen;
-using System.Net;
 using Autodor.API.IntegrationTests.Shared;
-using Autodor.Modules.Contractors.Contracts.Abstractions;
-using Autodor.Modules.Contractors.Contracts.Models;
+using Autodor.Modules.Contractors.Domain.Aggregates;
+using Autodor.Modules.Contractors.Domain.ValueObjects;
+using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using BuildingBlocks.IntegrationTests;
@@ -10,6 +9,8 @@ using BuildingBlocks.IntegrationTests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using System.Collections.Frozen;
+using System.Net;
 using Xunit.Abstractions;
 
 namespace Autodor.API.IntegrationTests.Modules.Orders.GenerateDeliveryNote;
@@ -18,10 +19,9 @@ namespace Autodor.API.IntegrationTests.Modules.Orders.GenerateDeliveryNote;
 public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOutputHelper output)
     : TestBase<Program>(databaseFixture), IAsyncLifetime
 {
-    private readonly Mock<IContractorsModuleApi> _contractorsApiMock = new();
     private readonly Mock<IProductsClient> _productsClientMock = new();
 
-    protected override Task SeedDataAsync()
+    protected override async Task SeedDataAsync()
     {
         // Setup mock products client with test data
         var testProducts = new Dictionary<string, Product>
@@ -35,33 +35,27 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
             .Setup(x => x.GetProductsAsync())
             .ReturnsAsync(testProducts);
 
-        return Task.CompletedTask;
+        // Seed test contractor in database
+        using var scope = AlbaHost.Services.CreateScope();
+        var contractorsDb = scope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
+
+        var contractor = new Contractor(
+            new ContractorId(Guid.NewGuid()),
+            new TaxId("1234567890"),
+            "Test Contractor Sp. z o.o.",
+            new Address("ul. Testowa 123", "Warszawa", "00-001"),
+            new Email("test@contractor.pl")
+        );
+
+        contractorsDb.Contractors.Add(contractor);
+        await contractorsDb.SaveChangesAsync();
     }
 
     protected override void ConfigureServices(IServiceCollection services)
     {
-        // Replace IContractorsModuleApi with mock
-        services.RemoveAll<IContractorsModuleApi>();
-        services.AddSingleton(_contractorsApiMock.Object);
-
         // Replace IProductsClient with mock
         services.RemoveAll<IProductsClient>();
         services.AddSingleton(_productsClientMock.Object);
-
-        // Setup mock to return test contractor
-        var testContractor = new ContractorDto(
-            Id: Guid.NewGuid(),
-            Name: "Test Contractor Sp. z o.o.",
-            NIP: "1234567890",
-            Street: "ul. Testowa 123",
-            City: "Warszawa",
-            ZipCode: "00-001",
-            Email: "test@contractor.pl"
-        );
-
-        _contractorsApiMock
-            .Setup(x => x.GetContractorByNipAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(testContractor);
     }
 
     [Fact(Skip = "Manual test - requires real API connection")]

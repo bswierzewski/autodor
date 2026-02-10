@@ -1,6 +1,4 @@
-using Autodor.Modules.Contractors.Contracts.Abstractions;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
-using Autodor.Modules.Contractors.Infrastructure.Services.ModuleApi;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +14,6 @@ public static class ContractorsModule
         services.AddModule(configuration, Name)
             .AddPostgres<ContractorsDbContext>()
             .Build();
-
-        // Register module API for inter-module communication
-        services.AddScoped<IContractorsModuleApi, ContractorsModuleApi>();
 
         return services;
     }

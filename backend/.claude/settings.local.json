@@ -18,7 +18,8 @@
       "Bash(dotnet ef migrations:*)",
       "Bash(pwsh -File:*)",
       "Bash(powershell -File scripts/add-migrations.ps1:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
