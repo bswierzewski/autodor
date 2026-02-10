@@ -41,7 +41,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
 
         var contractor = new Contractor(
             new ContractorId(Guid.NewGuid()),
-            new TaxId("1234567890"),
+            new TaxId("6961872069"),
             "Test Contractor Sp. z o.o.",
             new Address("ul. Testowa 123", "Warszawa", "00-001"),
             new Email("test@contractor.pl")
@@ -58,7 +58,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
         services.AddSingleton(_productsClientMock.Object);
     }
 
-    [Fact(Skip = "Manual test - requires real API connection")]
+    [Fact]
     public async Task GenerateDeliveryNote_ShouldGenerateAndSavePdfFile()
     {       
         // Arrange - Replace with actual order ID and date from test environment
