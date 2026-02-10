@@ -4,6 +4,7 @@
 		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Kernel\BuildingBlocks.Kernel.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Contractors\Autodor.Modules.Contractors.Contracts\Autodor.Modules.Contractors.Contracts.csproj" />
+		<ProjectReference Include="..\Autodot.Modules.Orders.Contracts\Autodot.Modules.Orders.Contracts.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

@@ -37,6 +37,25 @@ public class OrderService(
     }
 
     /// <inheritdoc />
+    public async Task<IEnumerable<Order>> GetOrdersAsync(
+        IEnumerable<DateTime> dates,
+        CancellationToken ct = default)
+    {
+        var distinctDates = dates.Select(d => d.Date).Distinct().ToList();
+
+        if (distinctDates.Count == 0)
+            return [];
+
+        var ordersPerDay = await Task.WhenAll(distinctDates.Select(distributorsSalesClient.GetOrdersAsync));
+
+        var orderDtos = ordersPerDay.SelectMany(x => x).ToList();
+
+        return orderDtos is { Count: > 0 }
+            ? await EnrichOrdersAsync(orderDtos, ct)
+            : [];
+    }
+
+    /// <inheritdoc />
     public async Task<Order?> GetOrderAsync(
         string orderId,
         DateTime date,

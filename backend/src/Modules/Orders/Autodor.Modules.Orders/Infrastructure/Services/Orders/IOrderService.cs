@@ -10,12 +10,22 @@ public interface IOrderService
 {
     /// <summary>
     /// Gets all orders within the specified date range, enriched with product data and with exclusions marked.
+    /// Retrieves orders from EVERY day in the range (from to to).
     /// </summary>
     /// <param name="from">Start date (inclusive).</param>
     /// <param name="to">End date (inclusive).</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Collection of enriched orders with IsExcluded flags set.</returns>
     Task<IEnumerable<Order>> GetOrdersAsync(DateTime from, DateTime to, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets orders from specific dates only, enriched with product data and with exclusions marked.
+    /// More efficient than GetOrdersAsync when dates are sparse (non-continuous).
+    /// </summary>
+    /// <param name="dates">Specific dates to retrieve orders from.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Collection of enriched orders with IsExcluded flags set.</returns>
+    Task<IEnumerable<Order>> GetOrdersAsync(IEnumerable<DateTime> dates, CancellationToken ct = default);
 
     /// <summary>
     /// Gets a single order by ID and date, enriched with product data and with exclusions marked.
