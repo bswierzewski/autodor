@@ -1,0 +1,34 @@
+using System.Text.Json.Serialization;
+
+namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Responses;
+
+/// <summary>
+/// Response envelope wrapping the iFirma API response.
+/// </summary>
+/// <param name="Response"></param>
+public record ResponseRoot([property: JsonPropertyName("response")] Response Response);
+
+/// <summary>
+/// Response model from iFirma API containing status information and result.
+/// </summary>
+public class Response
+{
+    /// <summary>
+    /// Status code returned by the API.
+    /// 0 indicates success, non-zero values indicate errors.
+    /// </summary>
+    [JsonPropertyName("Kod")]
+    public int StatusCode { get; set; }
+
+    /// <summary>
+    /// Status message returned by the API describing the result.
+    /// </summary>
+    [JsonPropertyName("Informacja")]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// Indicates if the operation was successful.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsSuccess => StatusCode == 0;
+}
