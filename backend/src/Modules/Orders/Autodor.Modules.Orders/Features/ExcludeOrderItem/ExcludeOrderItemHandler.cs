@@ -2,6 +2,7 @@ using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Domain.ValueObjects;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Wolverine.Http;
 
@@ -9,28 +10,37 @@ namespace Autodor.Modules.Orders.Features.ExcludeOrderItem;
 
 public static class ExcludeOrderItemHandler
 {
-    [WolverinePost("/orders/{orderId}/items/{itemNumber}/exclude")]
+    [WolverinePatch("/orders/{id}/items/{itemNumber}")]
     [Tags("Orders")]
+    [EndpointName("UpdateOrderItemExclusion")]
+    [EndpointSummary("Include or exclude order item from invoicing")]
     public static async Task<IResult> Handle(
-        [AsParameters] ExcludeOrderItemCommand command,
+        string id,
+        string itemNumber,
+        ExcludeOrderItemCommand command,
         OrdersDbContext dbContext,
         CancellationToken ct)
     {
-        // Toggle exclusion - if exists, remove it (include), otherwise add it (exclude)
         var excludedOrderItem = await dbContext.ExcludedOrderItems
-            .FirstOrDefaultAsync(i => i.OrderId == command.OrderId && i.ItemNumber == command.ItemNumber, ct);
+            .FirstOrDefaultAsync(i => i.OrderId == id && i.ItemNumber == itemNumber, ct);
 
-        if (excludedOrderItem is not null)
+        if (command.Excluded)
         {
-            // Item is excluded - restore it (remove from excluded list)
-            dbContext.ExcludedOrderItems.Remove(excludedOrderItem);
+            // Exclude item - add to excluded list if not already there
+            if (excludedOrderItem is null)
+            {
+                var itemId = new OrderItemId(id, itemNumber);
+                excludedOrderItem = new ExcludedOrderItem(itemId);
+                await dbContext.ExcludedOrderItems.AddAsync(excludedOrderItem, ct);
+            }
         }
         else
         {
-            // Item is not excluded - exclude it (add to excluded list)
-            var itemId = new OrderItemId(command.OrderId, command.ItemNumber);
-            excludedOrderItem = new ExcludedOrderItem(itemId);
-            await dbContext.ExcludedOrderItems.AddAsync(excludedOrderItem, ct);
+            // Include item - remove from excluded list if present
+            if (excludedOrderItem is not null)
+            {
+                dbContext.ExcludedOrderItems.Remove(excludedOrderItem);
+            }
         }
 
         await dbContext.SaveChangesAsync(ct);

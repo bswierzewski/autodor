@@ -7,7 +7,7 @@ namespace Autodor.Modules.Orders.Features.GetOrder;
 /// </summary>
 public class GetOrderQuery
 {
-    [FromRoute(Name = "orderId")]
+    [FromRoute(Name = "id")]
     public string OrderId { get; set; } = string.Empty;
 
     [FromQuery(Name = "date")]

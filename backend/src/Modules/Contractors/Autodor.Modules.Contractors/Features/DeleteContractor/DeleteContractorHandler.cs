@@ -3,6 +3,7 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Wolverine.Http;
 
@@ -12,6 +13,8 @@ public class DeleteContractorHandler
 {
     [WolverineDelete("/contractors/{id}")]
     [Tags("Contractors")]
+    [EndpointName("DeleteContractor")]
+    [EndpointSummary("Delete contractor")]
     public static async Task Handle(
         Guid id,
         [FromServices] ContractorsDbContext dbContext,

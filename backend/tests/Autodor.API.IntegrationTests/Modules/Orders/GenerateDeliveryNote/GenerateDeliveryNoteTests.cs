@@ -72,7 +72,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
             {
                 OrderId = orderId,
                 Date = orderDate
-            }).ToUrl("/orders/delivery-note");
+            }).ToUrl("/delivery-notes");
 
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         });
@@ -110,7 +110,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
             {
                 OrderId = orderId,
                 Date = orderDate
-            }).ToUrl("/orders/delivery-note");
+            }).ToUrl("/delivery-notes");
 
             s.StatusCodeShouldBe(HttpStatusCode.NotFound);
         }).PrintBody(output);

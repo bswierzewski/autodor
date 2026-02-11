@@ -2,6 +2,7 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using BuildingBlocks.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Wolverine.Http;
 
@@ -11,6 +12,8 @@ public class UpdateContractorHandler
 {
     [WolverinePut("/contractors/{id}")]
     [Tags("Contractors")]
+    [EndpointName("UpdateContractor")]
+    [EndpointSummary("Update contractor details")]
     public static async Task Handle(
         Guid id,
         UpdateContractorCommand command,

@@ -5,6 +5,7 @@ using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -17,8 +18,10 @@ namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
 
 public static class GenerateDeliveryNoteHandler
 {
-    [WolverinePost("/orders/delivery-note")]
+    [WolverinePost("/delivery-notes")]
     [Tags("Orders")]
+    [EndpointName("GenerateDeliveryNote")]
+    [EndpointSummary("Generate PDF delivery note for an order")]
     public static async Task<IResult> Handle(
         GenerateDeliveryNoteCommand command,
         IOrderService orderService,

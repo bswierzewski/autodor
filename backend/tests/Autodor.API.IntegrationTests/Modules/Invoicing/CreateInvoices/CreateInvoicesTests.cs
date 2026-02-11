@@ -45,7 +45,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : TestBase<Pro
         // Act
         var result = await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices/bulk");
+            s.Post.Json(command).ToUrl("/invoices/bulk");
             s.StatusCodeShouldBe(200);
         });
 
@@ -67,7 +67,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : TestBase<Pro
         // Act & Assert
         await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices/bulk");
+            s.Post.Json(command).ToUrl("/invoices/bulk");
             s.StatusCodeShouldBe(404); // No orders found
         });
     }
@@ -84,7 +84,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : TestBase<Pro
         // Act
         var result = await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices/bulk");
+            s.Post.Json(command).ToUrl("/invoices/bulk");
             s.StatusCodeShouldBe(200);
         });
 

@@ -2,14 +2,17 @@ using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Wolverine.Http;
 
 namespace Autodor.Modules.Orders.Features.GetOrder;
 
 public static class GetOrderHandler
 {
-    [WolverineGet("/orders/{orderId}")]
+    [WolverineGet("/orders/{id}")]
     [Tags("Orders")]
+    [EndpointName("GetOrder")]
+    [EndpointSummary("Get order by ID and date")]
     public static async Task<IResult> Handle(
         [AsParameters] GetOrderQuery query,
         IOrderService orderService,

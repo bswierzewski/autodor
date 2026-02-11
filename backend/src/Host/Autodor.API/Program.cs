@@ -77,7 +77,7 @@ builder.Host.UseWolverine(opts =>
     // This also discovers middleware from these assemblies
     opts.Discovery.IncludeAssembly(typeof(ContractorsModule).Assembly);
     opts.Discovery.IncludeAssembly(typeof(OrdersModule).Assembly);
-    //opts.Discovery.IncludeAssembly(typeof(InvoicingModule).Assembly);
+    opts.Discovery.IncludeAssembly(typeof(InvoicingModule).Assembly);
 });
 
 // Add services to the container.

@@ -1,6 +1,7 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Wolverine.Http;
 
@@ -10,6 +11,8 @@ public class GetContractorsHandler
 {
     [WolverineGet("/contractors")]
     [Tags("Contractors")]
+    [EndpointName("GetContractors")]
+    [EndpointSummary("Get all contractors, optionally filtered by NIPs")]
     public static async Task<List<GetContractorsResponse>> Handle(
         string[]? nips,
         ContractorsDbContext dbContext,

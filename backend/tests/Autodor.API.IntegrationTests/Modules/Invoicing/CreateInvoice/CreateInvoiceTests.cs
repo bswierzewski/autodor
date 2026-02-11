@@ -5,11 +5,12 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Invoicing.Features.CreateInvoice;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
+using Xunit.Abstractions;
 
 namespace Autodor.API.IntegrationTests.Modules.Invoicing.CreateInvoice;
 
 [Collection(SharedCollection.Name)]
-public class CreateInvoiceTests(DatabaseFixture databaseFixture) : TestBase<Program>(databaseFixture)
+public class CreateInvoiceTests(DatabaseFixture databaseFixture, ITestOutputHelper output) : TestBase<Program>(databaseFixture)
 {
     protected override async Task SeedDataAsync()
     {
@@ -18,7 +19,7 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : TestBase<Prog
         var contractor = new Contractor(
             id: new ContractorId(Guid.NewGuid()),
             name: "Test Company Ltd",
-            nip: new TaxId("1234567890"),
+            nip: new TaxId("1190712364"),
             address: new Address("Test Street 1", "Warsaw", "00-001"),
             email: new Email("test@company.com")
         );
@@ -34,15 +35,15 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : TestBase<Prog
             InvoiceNumber: null,
             SaleDate: DateTime.Today,
             IssueDate: DateTime.Today,
-            Dates: [DateTime.Today],
-            OrderIds: ["ORDER-001"],
-            ContractorNip: "1234567890"
+            Dates: [new DateTime(2026, 2, 5)],
+            OrderIds: ["3ff0615c-b902-f111-95f5-00155d0b7aef"],
+            ContractorNip: "1190712364"
         );
 
         // Act
         var result = await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices");
+            s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(200);
         });
 
@@ -66,7 +67,7 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : TestBase<Prog
         // Act & Assert
         await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices");
+            s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(404); // Contractor not found
         });
     }
@@ -80,14 +81,14 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : TestBase<Prog
             SaleDate: DateTime.Today,
             IssueDate: DateTime.Today,
             Dates: [DateTime.Today],
-            OrderIds: [], // Empty order IDs
+            OrderIds: [],
             ContractorNip: "1234567890"
         );
 
         // Act & Assert
         await AlbaHost.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoicing/invoices");
+            s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(404); // No orders found
         });
     }

@@ -33,22 +33,9 @@ public static class InvoicingModule
         services.AddInFaktHttpClient();
         services.AddIFirmaHttpClient();
 
-        // Register both invoice service implementations
-        services.AddScoped<InFaktInvoiceService>();
-        services.AddScoped<IFirmaInvoiceService>();
-
-        // Register IInvoiceService using factory pattern to select provider at runtime
-        services.AddScoped<IInvoiceService>(serviceProvider =>
-        {
-            var options = serviceProvider.GetRequiredService<IOptions<InvoicingOptions>>().Value;
-
-            return options.Provider switch
-            {
-                InvoiceProvider.InFakt => serviceProvider.GetRequiredService<InFaktInvoiceService>(),
-                InvoiceProvider.IFirma => serviceProvider.GetRequiredService<IFirmaInvoiceService>(),
-                _ => throw new InvalidOperationException($"Unknown invoice provider: {options.Provider}")
-            };
-        });
+        // Register both invoice service implementations as keyed services
+        services.AddKeyedScoped<IInvoiceService, InFaktInvoiceService>(InvoiceProvider.InFakt);
+        services.AddKeyedScoped<IInvoiceService, IFirmaInvoiceService>(InvoiceProvider.IFirma);
 
         return services;
     }

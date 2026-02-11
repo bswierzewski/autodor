@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace Autodor.Modules.Orders.Features.ExcludeOrder;
 
 /// <summary>
-/// Command for ExcludeOrder endpoint
+/// Command for exclude/include order endpoint
 /// </summary>
 public class ExcludeOrderCommand
 {
-    [FromRoute(Name = "orderId")]
-    public string OrderId { get; set; } = string.Empty;
+    public bool Excluded { get; set; }
 }

@@ -9,6 +9,7 @@ using Autodot.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Infrastructure.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,8 +20,10 @@ namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
 
 public class CreateInvoicesHandler
 {
-    [WolverinePost("/invoicing/invoices/bulk")]
+    [WolverinePost("/invoices/bulk")]
     [Tags("Invoicing")]
+    [EndpointName("CreateInvoicesBulk")]
+    [EndpointSummary("Create multiple invoices for date range")]
     public static async Task<IResult> Handle(
         CreateInvoicesCommand command,
         IMessageBus bus,
