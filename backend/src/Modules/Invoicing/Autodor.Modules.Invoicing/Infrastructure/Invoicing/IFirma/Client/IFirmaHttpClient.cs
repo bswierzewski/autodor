@@ -1,30 +1,30 @@
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Responses;
 using BuildingBlocks.Infrastructure.Http;
+using ErrorOr;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client;
 
 public class IFirmaHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient)
 {
-    public async Task<ResponseRoot> CreateInvoiceAsync(Models.Requests.Invoice invoice, CancellationToken ct = default)
+    public async Task<ErrorOr<ResponseRoot>> CreateInvoiceAsync(Models.Requests.Invoice invoice, CancellationToken ct = default)
     {
-        ArgumentNullException.ThrowIfNull(invoice);
+        if (invoice is null)
+            return Error.Validation(nameof(invoice), "Invoice cannot be null.");
 
         var result = await PostAsync<Models.Requests.Invoice, ResponseRoot>("fakturakraj.json", invoice, ct);
 
-        ValidateResponse(result);
+        if (result.IsError)
+            return result.Errors;
+
+        if (!result.Value.Response.IsSuccess)
+            return Error.Failure("IFirma.ApiError", result.Value.Response.Message ?? "Unknown error from iFirma API.");
 
         return result;
     }
 
-    protected override async Task ParseErrorAndThrowAsync(HttpResponseMessage response, CancellationToken ct)
+    protected override async Task<List<Error>> ParseErrorAsync(HttpResponseMessage response, CancellationToken ct)
     {
         var content = await response.Content.ReadAsStringAsync(ct);
-        throw new InvalidOperationException($"IFirma API error: {content}");
-    }
-
-    private static void ValidateResponse(ResponseRoot response)
-    {
-        if (!response.Response.IsSuccess)
-            throw new InvalidOperationException(response.Response.Message ?? "Unknown error from iFirma API.");
+        return [Error.Failure("IFirma.HttpError", $"IFirma API error: {content}")];
     }
 }

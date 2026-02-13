@@ -91,7 +91,14 @@ public class CreateInvoiceHandler
 
         var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
 
-        await invoiceService.CreateInvoiceAsync(invoice, ct);
+        var result = await invoiceService.CreateInvoiceAsync(invoice, ct);
+
+        if (result.IsError)
+        {
+            logger.LogError("Failed to create invoice for contractor {ContractorNip}: {Errors}",
+                command.ContractorNip, string.Join(", ", result.Errors.Select(e => e.Description)));
+            return result.Problem();
+        }
 
         logger.LogInformation("Successfully created invoice for contractor {ContractorNip}", command.ContractorNip);
 

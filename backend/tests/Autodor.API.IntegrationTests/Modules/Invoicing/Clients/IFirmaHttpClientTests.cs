@@ -62,11 +62,12 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Response.Message.Should().Be("Faktura została pomyślnie dodana.", "API should return success message");
-        result.Response.Should().NotBeNull();
-        result.Response.StatusCode.Should().Be(0, "API should return success status");
-        result.Response.IsSuccess.Should().BeTrue();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Response.Message.Should().Be("Faktura została pomyślnie dodana.", "API should return success message");
+        result.Value.Response.Should().NotBeNull();
+        result.Value.Response.StatusCode.Should().Be(0, "API should return success status");
+        result.Value.Response.IsSuccess.Should().BeTrue();
     }
 
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]
@@ -119,9 +120,10 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Response.IsSuccess.Should().BeTrue();
-        result.Response.StatusCode.Should().Be(0);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Response.IsSuccess.Should().BeTrue();
+        result.Value.Response.StatusCode.Should().Be(0);
     }
 
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]
@@ -159,10 +161,11 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         };
 
         // Act
-        var act = () => Client.CreateInvoiceAsync(invoice);
+        var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>("API should return error for missing required field");
+        result.IsError.Should().BeTrue("API should return error for missing required field");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Failure);
     }
 
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]
@@ -210,9 +213,10 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         };
 
         // Act
-        var act = () => Client.CreateInvoiceAsync(invoice);
+        var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>("API should return error for invalid VAT number");
+        result.IsError.Should().BeTrue("API should return error for invalid VAT number");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Failure);
     }
 }

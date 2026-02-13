@@ -108,7 +108,15 @@ public class CreateInvoicesHandler
                 Items = invoiceItems.AsReadOnly()
             };
 
-            await invoiceService.CreateInvoiceAsync(invoice, ct);
+            var result = await invoiceService.CreateInvoiceAsync(invoice, ct);
+
+            if (result.IsError)
+            {
+                logger.LogError("Failed to create invoice for contractor {NIP} ({Name}): {Errors}",
+                    contractorNIP, contractorDto.Name, string.Join(", ", result.Errors.Select(e => e.Description)));
+                continue;
+            }
+
             invoicesCreated++;
 
             logger.LogInformation("Created invoice for contractor {NIP} ({Name}) with {ItemCount} items",

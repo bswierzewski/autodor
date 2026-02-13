@@ -4,7 +4,6 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Fi
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests;
 using BuildingBlocks.IntegrationTests;
 using BuildingBlocks.IntegrationTests.Fixtures;
-using FluentValidation;
 
 namespace Autodor.API.IntegrationTests.Modules.Invoicing.Clients;
 
@@ -23,8 +22,9 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.GetClientsAsync(query);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Entities.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -40,8 +40,9 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.GetClientsAsync(query);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Entities.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
         // Filter may return 0 results if client doesn't exist in sandbox
     }
 
@@ -58,16 +59,18 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
             Email = $"get-test-{Guid.NewGuid()}@example.com"
         };
 
-        var createdClient = await Client.CreateClientAsync(newClient);
-        createdClient.Id.Should().NotBeNull();
+        var createdClientResult = await Client.CreateClientAsync(newClient);
+        createdClientResult.IsError.Should().BeFalse();
+        createdClientResult.Value.Id.Should().NotBeNull();
 
         // Act
-        var result = await Client.GetClientAsync(createdClient.Id!.Value);
+        var result = await Client.GetClientAsync(createdClientResult.Value.Id!.Value);
 
         // Assert
-        result.Should().NotBeNull();
-        result.FirstName.Should().Be("GetTest");
-        result.Id.Should().Be(createdClient.Id);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("GetTest");
+        result.Value.Id.Should().Be(createdClientResult.Value.Id);
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -92,10 +95,11 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.CreateClientAsync(client);
 
         // Assert
-        result.Should().NotBeNull();
-        result.FirstName.Should().Be("Test");
-        result.LastName.Should().Be("User");
-        result.Id.Should().NotBeNull();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("Test");
+        result.Value.LastName.Should().Be("User");
+        result.Value.Id.Should().NotBeNull();
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -111,8 +115,9 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
             Email = $"update-test-{Guid.NewGuid()}@example.com"
         };
 
-        var createdClient = await Client.CreateClientAsync(newClient);
-        createdClient.Id.Should().NotBeNull();
+        var createdClientResult = await Client.CreateClientAsync(newClient);
+        createdClientResult.IsError.Should().BeFalse();
+        createdClientResult.Value.Id.Should().NotBeNull();
 
         // Update the client data
         var updatedClient = new Client
@@ -121,17 +126,18 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
             FirstName = "UpdatedTest",
             LastName = "UpdatedUser",
             BusinessActivityKind = "private_person",
-            Email = createdClient.Email
+            Email = createdClientResult.Value.Email
         };
 
         // Act
-        var result = await Client.UpdateClientAsync(createdClient.Id!.Value, updatedClient);
+        var result = await Client.UpdateClientAsync(createdClientResult.Value.Id!.Value, updatedClient);
 
         // Assert
-        result.Should().NotBeNull();
-        result.FirstName.Should().Be("UpdatedTest");
-        result.LastName.Should().Be("UpdatedUser");
-        result.Id.Should().Be(createdClient.Id);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("UpdatedTest");
+        result.Value.LastName.Should().Be("UpdatedUser");
+        result.Value.Id.Should().Be(createdClientResult.Value.Id);
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -164,9 +170,10 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Id.Should().NotBeNull();
-        result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Id.Should().NotBeNull();
+        result.Value.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -196,10 +203,11 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         };
 
         // Act
-        var act = () => Client.CreateInvoiceAsync(invoice);
+        var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        await act.Should().ThrowAsync<ValidationException>("API should return error for invalid data");
+        result.IsError.Should().BeTrue("API should return error for invalid data");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -219,12 +227,11 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : TestBase<P
         };
 
         // Act
-        var act = () => Client.CreateInvoiceAsync(invoice);
+        var result = await Client.CreateInvoiceAsync(invoice);
 
         // Assert
-        var exception = await act.Should().ThrowAsync<ValidationException>("API should return error for missing required field");
-        exception.Which.Errors.Should().NotBeEmpty();
-        exception.Which.Errors.Should().Contain(e => e.PropertyName == "services", "Error should include the services field");
-        exception.Which.Errors.First(e => e.PropertyName == "services").ErrorMessage.Should().Contain("Proszę dodać pozycję na fakturze.");
+        result.IsError.Should().BeTrue("API should return error for missing required field");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
+        result.FirstError.Code.Should().Be("services");
     }
 }

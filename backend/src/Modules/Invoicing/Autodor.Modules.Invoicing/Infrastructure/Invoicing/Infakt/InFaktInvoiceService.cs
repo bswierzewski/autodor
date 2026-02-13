@@ -3,92 +3,72 @@ using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Extensions;
+using ErrorOr;
 using InFaktClient = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Responses.Client;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt;
 
 public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
 {
-    public async Task CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Success>> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
         // Upsert client (ensure it exists in InFakt system and is up to date)
-        await UpsertClientAsync(invoice.Contractor, cancellationToken);
+        var upsertResult = await UpsertClientAsync(invoice.Contractor, cancellationToken);
+        if (upsertResult.IsError)
+            return upsertResult.Errors;
 
         // Create invoice (InFakt will automatically link to client by NIP)
-        await CreateInvoiceInternalAsync(invoice, cancellationToken);
+        return await CreateInvoiceInternalAsync(invoice, cancellationToken);
     }
 
-    private async Task UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
+    private async Task<ErrorOr<Success>> UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
     {
-        // Search for existing client by NIP
         var searchQuery = new ClientSearchQuery
         {
-            Filter = new ClientSearchFilter
-            {
-                NipEq = contractor.NIP
-            }
+            Filter = new ClientSearchFilter { NipEq = contractor.NIP }
         };
 
-        var clientList = await httpClient.GetClientsAsync(searchQuery, cancellationToken);
+        var clientsResult = await httpClient.GetClientsAsync(searchQuery, cancellationToken);
+        if (clientsResult.IsError)
+            return clientsResult.Errors;
 
-        // If client exists, check if update is needed
-        if (clientList.Entities.Count != 0)
+        var existingClient = clientsResult.Value.Entities.FirstOrDefault(c => c.Id.HasValue);
+
+        if (existingClient is not null)
         {
-            var existingClient = clientList.Entities.First();
-            if (existingClient.Id.HasValue)
+            // Client exists - update if needed
+            if (RequiresUpdate(existingClient, contractor))
             {
-                // Check if client data has changed
-                if (RequiresUpdate(existingClient, contractor))
-                {
-                    var updatedClient = contractor.ToInFaktClient();
-                    await httpClient.UpdateClientAsync(existingClient.Id.Value, updatedClient, cancellationToken);
-                }
-
-                return;
+                var updatedClient = contractor.ToInFaktClient();
+                var updateResult = await httpClient.UpdateClientAsync(existingClient.Id!.Value, updatedClient, cancellationToken);
+                return updateResult.IsError ? updateResult.Errors : Result.Success;
             }
+
+            return Result.Success;
         }
 
-        // Client doesn't exist, create new one
+        // Client doesn't exist - create new one
         var newClient = contractor.ToInFaktClient();
-        await httpClient.CreateClientAsync(newClient, cancellationToken);
+        var createResult = await httpClient.CreateClientAsync(newClient, cancellationToken);
+        return createResult.IsError ? createResult.Errors : Result.Success;
     }
 
     private static bool RequiresUpdate(
         InFaktClient existingClient,
         Contractor contractor)
     {
-        // Compare company name
-        if (!string.Equals(existingClient.CompanyName, contractor.Name, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // Compare street address
-        if (!string.Equals(existingClient.Street, contractor.Street, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // Compare city
-        if (!string.Equals(existingClient.City, contractor.City, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // Compare postal code
-        if (!string.Equals(existingClient.PostalCode, contractor.ZipCode, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // Compare NIP (should be the same since we searched by NIP, but check anyway)
-        if (!string.Equals(existingClient.Nip, contractor.NIP, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // Compare email
-        if (!string.Equals(existingClient.Email, contractor.Email, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        // No changes detected
-        return false;
+        return !string.Equals(existingClient.CompanyName, contractor.Name, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(existingClient.Street, contractor.Street, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(existingClient.City, contractor.City, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(existingClient.PostalCode, contractor.ZipCode, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(existingClient.Nip, contractor.NIP, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(existingClient.Email, contractor.Email, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
+    private async Task<ErrorOr<Success>> CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
     {
         var inFaktInvoice = invoice.ToInFaktInvoice();
-
-        await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
+        var result = await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
+        return result.IsError ? result.Errors : Result.Success;
     }
 }
