@@ -13,13 +13,10 @@ var db = postgres
 // Add API project
 var api = builder.AddProject<Projects.Autodor_API>("api")
     .WaitFor(db)
-    .WithReference(db, connectionName: "Default")
-    .WithHttpEndpoint(port: 7000);
+    .WithReference(db, connectionName: "Default");
 
 // Add Frontend project (Vite + React)
 var frontend = builder.AddViteApp("frontend", "../../../../frontend")
-    .WithHttpEndpoint(port: 3000, env: "PORT")
-    .WithExternalHttpEndpoints()
     .WithReference(api);
 
 builder.Build().Run();
