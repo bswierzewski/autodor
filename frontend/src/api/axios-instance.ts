@@ -1,24 +1,25 @@
-import Axios, { type AxiosRequestConfig } from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 
-export const AXIOS_INSTANCE = Axios.create({
-	baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+export const AXIOS_INSTANCE = axios.create({
+	baseURL: import.meta.env.VITE_API_URL || "http://localhost:7000",
 });
+
+// Response interceptor for error handling
+AXIOS_INSTANCE.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		// You can add custom error handling here
+		// e.g., redirect to login on 401, show toast notifications, etc.
+		return Promise.reject(error);
+	},
+);
 
 export const customInstance = <T>(
 	config: AxiosRequestConfig,
 	options?: AxiosRequestConfig,
 ): Promise<T> => {
-	const source = Axios.CancelToken.source();
-	const promise = AXIOS_INSTANCE({
+	return AXIOS_INSTANCE({
 		...config,
 		...options,
-		cancelToken: source.token,
 	}).then(({ data }) => data);
-
-	// @ts-expect-error - adding cancel method
-	promise.cancel = () => {
-		source.cancel("Query was cancelled");
-	};
-
-	return promise;
 };
