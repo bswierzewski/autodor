@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Host\Autodor.API\Autodor.API.csproj" />
+	  <ProjectReference Include="..\..\backend\src\Host\Autodor.API\Autodor.API.csproj" />
 	</ItemGroup>
 
 </Project>

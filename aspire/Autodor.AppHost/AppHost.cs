@@ -16,7 +16,7 @@ var api = builder.AddProject<Projects.Autodor_API>("api")
     .WithReference(db, connectionName: "Default");
 
 // Add Frontend project (Vite + React)
-var frontend = builder.AddViteApp("frontend", "../../../../frontend")
+var frontend = builder.AddViteApp("frontend", "../../frontend")
     .WithReference(api);
 
 builder.Build().Run();

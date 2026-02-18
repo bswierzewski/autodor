@@ -3,7 +3,7 @@ param([ValidateSet('Contractors', 'Orders', 'Invoicing', 'All')][string]$Module 
 
 # Navigate to backend directory (where solution is located)
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$backendDir = Split-Path -Parent $scriptDir
+$backendDir = Join-Path (Split-Path -Parent $scriptDir) "backend"
 Set-Location $backendDir
 
 $modules = @(

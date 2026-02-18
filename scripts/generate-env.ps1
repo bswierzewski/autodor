@@ -8,10 +8,10 @@ Write-Host ""
 
 # Get the directory where this script is located (scripts folder)
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-# Go up one level to backend directory
-$backendDir = Split-Path -Parent $scriptDir
+$rootDir = Split-Path -Parent $scriptDir
+$backendDir = Join-Path $rootDir "backend"
 $toolProject = Join-Path $backendDir "src\BuildingBlocks\BuildingBlocks.Tools.EnvGenerator\BuildingBlocks.Tools.EnvGenerator.csproj"
-$targetDirectory = $backendDir
+$targetDirectory = $rootDir
 
 Write-Host "Building EnvGenerator tool..." -ForegroundColor Yellow
 dotnet build "$toolProject" --nologo --verbosity quiet
