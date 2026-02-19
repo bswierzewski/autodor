@@ -22,4 +22,17 @@ export default defineConfig({
 			},
 		},
 	},
+	zod: {
+		input: {
+			target: "http://localhost:7000/openapi/v1.json",
+		},
+		output: {
+			biome: true,
+			mode: "tags-split",
+			target: "src/api/generated.ts",
+			client: "zod",
+			tsconfig: "./tsconfig.app.json",
+			fileExtension: ".zod.ts",
+		},
+	},
 });
