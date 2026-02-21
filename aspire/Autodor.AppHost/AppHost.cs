@@ -11,12 +11,14 @@ var db = postgres
     .AddDatabase("autodor");
 
 // Add API project
-var api = builder.AddProject<Projects.Autodor_API>("api")
+var backend = builder.AddProject<Projects.Autodor_API>("backend")
     .WaitFor(db)
-    .WithReference(db, connectionName: "Default");
+    .WithReference(db, connectionName: "Default")
+    .WithEndpoint("http", e => e.Port = 7000);
 
 // Add Frontend project (Vite + React)
 var frontend = builder.AddViteApp("frontend", "../../frontend")
-    .WithReference(api);
+    .WithReference(backend)
+    .WithEndpoint("http", e => e.Port = 3000);
 
 builder.Build().Run();
