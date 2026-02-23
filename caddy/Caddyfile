@@ -1,0 +1,11 @@
+{$DOMAIN} {	
+  tls internal
+	
+	handle_path /api/* {
+		reverse_proxy {$BACKEND_URL}
+	}
+
+	handle {
+		reverse_proxy {$FRONTEND_URL}
+	}
+}

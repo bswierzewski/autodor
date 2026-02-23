@@ -6,23 +6,22 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [
-		tanstackRouter(),
-		react({
-			babel: {
-				plugins: [["babel-plugin-react-compiler"]],
+		plugins: [
+			tanstackRouter(),
+			react({
+				babel: {
+					plugins: [["babel-plugin-react-compiler"]],
+				},
+			}),
+			tailwindcss(),
+		],
+		envDir: path.resolve(__dirname, ".."),
+		resolve: {
+			alias: {
+				"@": path.resolve(__dirname, "./src"),
 			},
-		}),
-		tailwindcss(),
-	],
-	envDir: path.resolve(__dirname, ".."),
-	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "./src"),
 		},
-	},
-	server: {
-		port: Number(process.env.PORT) || 3000,
-		strictPort: true,
-	},
+		server: {
+			allowedHosts: true,
+		},
 });
