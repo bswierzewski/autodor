@@ -28,7 +28,18 @@
       "Bash(git merge:*)",
       "Bash(git push)",
       "Bash(dir:*)",
-      "Bash(dotnet-svcutil:*)"
+      "Bash(dotnet-svcutil:*)",
+      "Bash(git -C /d/repos/autodor log --oneline -15)",
+      "Bash(node:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run lint:fix:*)",
+      "Bash(biome check:*)",
+      "Bash(npx biome check:*)",
+      "WebFetch(domain:biomejs.dev)",
+      "WebFetch(domain:aspire.dev)"
     ]
   }
 }

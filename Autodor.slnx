@@ -1,0 +1,42 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path=".env.example" />
+    <File Path="backend\.gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts\add-migrations.ps1" />
+    <File Path="scripts\generate-env.ps1" />
+  </Folder>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/Autodor.AppHost/Autodor.AppHost.csproj" />
+    <Project Path="aspire/Autodor.ServiceDefaults/Autodor.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/backend/BuildingBlocks/">
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.IntegrationTests/BuildingBlocks.IntegrationTests.csproj" />
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Kernel/BuildingBlocks.Kernel.csproj" />
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Tools.EnvGenerator/BuildingBlocks.Tools.EnvGenerator.csproj" />
+  </Folder>
+  <Folder Name="/backend/Host/">
+    <Project Path="backend/src/Host/Autodor.API/Autodor.API.csproj" />
+  </Folder>
+  <Folder Name="/backend/Modules/" />
+  <Folder Name="/backend/Modules/Contractors/">
+    <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors.Contracts/Autodor.Modules.Contractors.Contracts.csproj" />
+    <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
+  </Folder>
+  <Folder Name="/backend/Modules/Invoicing/">
+    <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing.Contracts/Autodor.Modules.Invoicing.Contracts.csproj" />
+    <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing/Autodor.Modules.Invoicing.csproj" />
+  </Folder>
+  <Folder Name="/backend/Modules/Orders/">
+    <Project Path="backend/src/Modules/Orders/Autodor.Modules.Orders/Autodor.Modules.Orders.csproj" />
+    <Project Path="backend/src/Modules/Orders/Autodot.Modules.Orders.Contracts/Autodot.Modules.Orders.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/">
+    <Project Path="backend\tests\Autodor.API.IntegrationTests\Autodor.API.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

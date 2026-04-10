@@ -1,0 +1,18 @@
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.Docker" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" />
+		<PackageReference Include="Aspire.Hosting.JavaScript" />
+		<PackageReference Include="DotNetEnv" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\backend\src\Host\Autodor.API\Autodor.API.csproj" />
+	</ItemGroup>
+
+</Project>
