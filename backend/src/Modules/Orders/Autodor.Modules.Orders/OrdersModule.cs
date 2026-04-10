@@ -8,8 +8,8 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceRef
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
-using BuildingBlocks.Infrastructure.Soap;
-using BuildingBlocks.Infrastructure.Soap.Builders;
+using BuildingBlocks.Soap;
+using BuildingBlocks.Soap.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;

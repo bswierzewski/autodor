@@ -3,7 +3,7 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
-using Autodor.ServiceDefaults;
+using BuildingBlocks.Hosting;
 using BuildingBlocks.Infrastructure;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;

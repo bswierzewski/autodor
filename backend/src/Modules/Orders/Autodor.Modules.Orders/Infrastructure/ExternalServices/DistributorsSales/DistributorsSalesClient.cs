@@ -1,8 +1,8 @@
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Models;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference;
-using BuildingBlocks.Infrastructure.Soap.Abstractions;
-using BuildingBlocks.Infrastructure.Soap;
+using BuildingBlocks.Soap;
+using BuildingBlocks.Soap.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

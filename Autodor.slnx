@@ -12,12 +12,13 @@
   </Folder>
   <Folder Name="/aspire/">
     <Project Path="aspire/Autodor.AppHost/Autodor.AppHost.csproj" />
-    <Project Path="aspire/Autodor.ServiceDefaults/Autodor.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/backend/BuildingBlocks/">
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
     <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
     <Project Path="backend/src/BuildingBlocks/BuildingBlocks.IntegrationTests/BuildingBlocks.IntegrationTests.csproj" />
     <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Kernel/BuildingBlocks.Kernel.csproj" />
+    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Soap/BuildingBlocks.Soap.csproj" />
     <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Tools.EnvGenerator/BuildingBlocks.Tools.EnvGenerator.csproj" />
   </Folder>
   <Folder Name="/backend/Host/">
