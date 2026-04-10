@@ -2,6 +2,7 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.M
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.ServiceReference;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
+using BuildingBlocks.Infrastructure.Soap;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,7 +13,7 @@ namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSal
 /// </summary>
 public class DistributorsSalesClient(
         IOptions<DistributorsSalesOptions> options,
-        ISoapInvoker<DistributorsSalesServiceClient> soapInvoker,
+        SoapPipeline<DistributorsSalesServiceClient> soapPipeline,
         ILogger<DistributorsSalesClient> logger
     ) : IDistributorsSalesClient
 {
@@ -20,25 +21,28 @@ public class DistributorsSalesClient(
 
     public async Task<IEnumerable<DistributorOrder>> GetOrdersAsync(DateTime date)
     {
-        var response = await soapInvoker.InvokeAsync(async client =>
-        {
-            return await client.GetListOfOrdersV3Async(
-                distributorCode: _options.DistributorCode,
-                getOpenOrdersOnly: false,
-                branchId: _options.BranchId,
-                dateFrom: date.Date,
-                dateTo: date.AddDays(1).Date,
-                getOrdersHeadersOnly: false,
-                login: _options.Login,
-                password: _options.Password,
-                languageId: _options.LanguageId
-            );
-        });
+        var response = await soapPipeline.InvokeAsync(
+            async client =>
+            {
+                return await client.GetListOfOrdersV3Async(
+                    distributorCode: _options.DistributorCode,
+                    getOpenOrdersOnly: false,
+                    branchId: _options.BranchId,
+                    dateFrom: date.Date,
+                    dateTo: date.AddDays(1).Date,
+                    getOrdersHeadersOnly: false,
+                    login: _options.Login,
+                    password: _options.Password,
+                    languageId: _options.LanguageId
+                );
+            },
+            SoapCallContext.ForOperation("GetListOfOrdersV3"));
 
         var responseBody = response.Body.GetListOfOrdersV3Result;
 
         if (responseBody.ErrorCode != "0")
         {
+            // The SOAP call itself succeeded, but the partner API reported a business error in the payload.
             logger.LogError("DistributorsSales API returned error. ErrorCode: {ErrorCode}, ErrorInformation: {ErrorInformation}",
                 responseBody.ErrorCode, responseBody.ErrorInformation);
 

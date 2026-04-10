@@ -9,6 +9,7 @@ using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Infrastructure.Soap;
+using BuildingBlocks.Infrastructure.Soap.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;
@@ -38,24 +39,20 @@ public static class OrdersModule
         // Register services
         services.AddScoped<IOrderService, OrderService>();
 
-        // Register service implementation
+        // Products integration uses cache because the payload changes relatively infrequently.
         services.AddScoped<IProductsClient, ProductsClient>();
-        // Register SOAP invoker with caching, resilience and logging using builder pattern
-        services.AddSoapInvoker(() =>
-                new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap))
-            .AddCache(TimeSpan.FromDays(2))
-            .AddResilience()
-            .AddLogging()
-            .Build();
+        services.AddSoap(() => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap),
+            soap => soap
+                .AddCache(TimeSpan.FromDays(2))
+                .AddResilience()
+                .AddLogging());
 
-        // Register service implementation
+        // Orders import should be resilient and observable, but should not reuse stale responses.
         services.AddScoped<IDistributorsSalesClient, DistributorsSalesClient>();
-        // Register SOAP invoker with resilience and logging using builder pattern
-        services.AddSoapInvoker(() =>
-                new DistributorsSalesServiceClient(DistributorsSalesServiceClient.EndpointConfiguration.BasicHttpBinding_IDistributorsSalesService_soap))
-            .AddResilience()
-            .AddLogging()
-            .Build();
+        services.AddSoap(() => new DistributorsSalesServiceClient(DistributorsSalesServiceClient.EndpointConfiguration.BasicHttpBinding_IDistributorsSalesService_soap),
+            soap => soap
+                .AddResilience()
+                .AddLogging());
 
         services.AddHostedService<ProductsSyncWorker>();
 

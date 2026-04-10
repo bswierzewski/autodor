@@ -2,6 +2,7 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Models;
 using BuildingBlocks.Infrastructure.Soap.Abstractions;
+using BuildingBlocks.Infrastructure.Soap;
 using BuildingBlocks.Kernel.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,7 +15,7 @@ namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 /// </summary>
 public class ProductsClient(
     IOptions<ProductsOptions> options,
-    ISoapInvoker<ProductsSoapClient> soapInvoker,
+    SoapPipeline<ProductsSoapClient> soapPipeline,
     ILogger<ProductsClient> logger
     ) : IProductsClient
 {
@@ -24,14 +25,21 @@ public class ProductsClient(
     {
         try
         {
-            var response = await soapInvoker.InvokeAsync(async client =>
-            {
-                return await client.GetEAN13ListAsync(
-                    Login: _options.Login,
-                    Password: _options.Password,
-                    LanguageID: _options.LanguageId,
-                    FormatID: _options.FormatId);
-            });
+            var response = await soapPipeline.InvokeAsync(
+                async client =>
+                {
+                    return await client.GetEAN13ListAsync(
+                        Login: _options.Login,
+                        Password: _options.Password,
+                        LanguageID: _options.LanguageId,
+                        FormatID: _options.FormatId);
+                },
+                SoapCallContext.ForCache(
+                    "GetEAN13List",
+                    _options.Login,
+                    _options.Password,
+                    _options.LanguageId,
+                    _options.FormatId));
 
             return response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>()
                 .Items
