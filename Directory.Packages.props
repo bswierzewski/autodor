@@ -7,41 +7,31 @@
   <Import Project="backend\src\BuildingBlocks\Directory.Packages.props" Condition="Exists('backend\src\BuildingBlocks\Directory.Packages.props')" />
 
   <ItemGroup>
-    <!-- Aspire -->
-    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.1.0-preview.1.25616.3" />
-    <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.1.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
-    <!-- ASP.NET Core -->
-    <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.9" />
-    <!-- Tools -->
+    <!-- Aspire / hosting -->
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.2.1" />
+    <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.2.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.2.1" />
+    <PackageVersion Include="Aspire.Hosting.Yarp" Version="13.2.1" />
+
+    <!-- Web / OpenAPI -->
     <PackageVersion Include="DotNetEnv" Version="3.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.5.0" />
+
     <!-- Entity Framework Core -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
-    <PackageVersion Include="Npgsql" Version="10.0.0" />
-    <!-- Project -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
+
+    <!-- Documents / SOAP -->
     <PackageVersion Include="QuestPDF" Version="2025.12.4" />
-    <!-- Logging -->
-    <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
-    <!-- Microsoft Extensions -->
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-    
-    <!-- Testing -->
-    <PackageVersion Include="Alba" Version="8.4.0" />
-    <PackageVersion Include="FluentAssertions" Version="6.12.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageVersion Include="Moq" Version="4.20.70" />
-    <PackageVersion Include="Respawn" Version="7.0.0" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="3.9.0" />
-    <PackageVersion Include="xunit" Version="2.9.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.0" />
-    
-    <!-- WolverineFx -->
-    <PackageVersion Include="WolverineFx.Http" Version="5.9.2" />
-    <PackageVersion Include="WolverineFx.Http.FluentValidation" Version="5.9.2" />
+    <PackageVersion Include="System.ServiceModel.Primitives" Version="10.0.652802" />
+
+    <!-- Test tooling -->
+    <PackageVersion Include="FluentAssertions" Version="8.3.0" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Models;
+using BuildingBlocks.Core.Extensions;
 using BuildingBlocks.Soap;
 using BuildingBlocks.Soap.Abstractions;
-using BuildingBlocks.Kernel.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Frozen;
@@ -41,16 +41,25 @@ public class ProductsClient(
                     _options.LanguageId,
                     _options.FormatId));
 
-            return response.Body.GetEAN13ListResult.OuterXml.FromXml<ProductRoot>()
-                .Items
-                .Select(xml => new Models.Product
+            var xml = response.Body?.GetEAN13ListResult?.OuterXml;
+
+            if (string.IsNullOrWhiteSpace(xml))
+            {
+                logger.LogWarning("Products SOAP response did not contain XML payload.");
+                return FrozenDictionary<string, Models.Product>.Empty;
+            }
+
+            return xml.FromXml<ProductRoot>()
+                ?.Items
+                ?.Select(xml => new Models.Product
                 {
                     Number = xml.Number,
                     Name = xml.PartName,
                     EAN13 = xml.EAN13Code
                 })
                 .GroupBy(p => p.Number)
-                .ToFrozenDictionary(g => g.Key, g => g.Last());
+                .ToFrozenDictionary(g => g.Key, g => g.Last())
+                ?? FrozenDictionary<string, Models.Product>.Empty;
         }
         catch (Exception ex)
         {

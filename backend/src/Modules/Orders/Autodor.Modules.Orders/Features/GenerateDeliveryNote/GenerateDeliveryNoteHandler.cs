@@ -2,7 +2,7 @@ using Autodor.Modules.Contractors.Contracts.Models;
 using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;

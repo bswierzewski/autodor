@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace Autodor.Modules.Contractors.Features.GetContractors;
 
 public record GetContractorsResponse(

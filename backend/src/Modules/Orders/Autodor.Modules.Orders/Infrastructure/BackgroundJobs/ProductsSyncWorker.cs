@@ -1,5 +1,5 @@
 ﻿using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

@@ -6,7 +6,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodot.Modules.Orders.Contracts.Models;
 using Autodot.Modules.Orders.Contracts.Queries;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;

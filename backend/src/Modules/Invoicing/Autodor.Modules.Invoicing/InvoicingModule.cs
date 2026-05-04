@@ -7,27 +7,22 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Options;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Infrastructure.Modules.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Autodor.Modules.Invoicing;
 
-public static class InvoicingModule
+public sealed class InvoicingModule : IModule
 {
-    public static readonly string Name = "Invoicing";
+    public string Name => "Invoicing";
 
-    public static IServiceCollection AddInvoicingModule(this IServiceCollection services, IConfiguration configuration)
+    public void AddServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddModule(configuration, Name)
-            .AddOptions(cfg =>
-            {
-                cfg.ConfigureOptions<InvoicingOptions>();
-                cfg.ConfigureOptions<InFaktOptions>();
-                cfg.ConfigureOptions<IFirmaOptions>();
-            })
-            .Build();
+        services.AddValidatedOptions<InvoicingOptions>(configuration, InvoicingOptions.SectionName);
+        services.AddValidatedOptions<InFaktOptions>(configuration, InFaktOptions.SectionName);
+        services.AddValidatedOptions<IFirmaOptions>(configuration, IFirmaOptions.SectionName);
 
         // Register both HTTP clients (always available for testing and flexibility)
         services.AddInFaktHttpClient();
@@ -36,7 +31,5 @@ public static class InvoicingModule
         // Register both invoice service implementations as keyed services
         services.AddKeyedScoped<IInvoiceService, InFaktInvoiceService>(InvoiceProvider.InFakt);
         services.AddKeyedScoped<IInvoiceService, IFirmaInvoiceService>(InvoiceProvider.IFirma);
-
-        return services;
     }
 }

@@ -4,7 +4,7 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.M
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
-using BuildingBlocks.Kernel.Extensions;
+using BuildingBlocks.Core.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;
 
@@ -25,7 +25,7 @@ public class OrderService(
         DateTime to,
         CancellationToken ct = default)
     {
-        var dates = DateTimeExtensions.EachDay(from, to);
+        var dates = DateTimeUtilities.EachDay(from, to);
 
         var ordersPerDay = await Task.WhenAll(dates.Select(distributorsSalesClient.GetOrdersAsync));
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Kernel\BuildingBlocks.Kernel.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Soap\BuildingBlocks.Soap.csproj" />
 		<ProjectReference Include="..\..\Contractors\Autodor.Modules.Contractors.Contracts\Autodor.Modules.Contractors.Contracts.csproj" />
@@ -10,6 +10,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="QuestPDF" />
+		<PackageReference Include="System.Security.Cryptography.Xml" />
 		<PackageReference Include="System.ServiceModel.Http" />
 		<PackageReference Include="System.ServiceModel.Primitives" />
 		<PackageReference Include="WolverineFx.FluentValidation" />

@@ -1,10 +1,9 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
-using BuildingBlocks.Kernel.Abstractions;
-using BuildingBlocks.Kernel.Primitives;
+using BuildingBlocks.Core.Primitives;
 
 namespace Autodor.Modules.Contractors.Domain.Aggregates;
 
-public class Contractor : AuditableEntity<ContractorId>, IAggregateRoot
+public class Contractor : AuditableEntity<ContractorId>
 {
     public TaxId NIP { get; private set; } = null!;
 

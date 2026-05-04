@@ -1,11 +1,10 @@
 using Autodor.Modules.Invoicing.Domain.Enums;
-using BuildingBlocks.Kernel.Abstractions;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Options;
 
-public class InvoicingOptions : IOptions
+public class InvoicingOptions
 {
-    public static string SectionName => $"Modules:{InvoicingModule.Name}";
+    public const string SectionName = "Modules:Invoicing";
 
     public InvoiceProvider Provider { get; set; } = InvoiceProvider.InFakt;
 }

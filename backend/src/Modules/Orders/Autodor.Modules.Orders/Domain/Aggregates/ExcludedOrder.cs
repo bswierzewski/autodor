@@ -1,9 +1,8 @@
-using BuildingBlocks.Kernel.Abstractions;
-using BuildingBlocks.Kernel.Primitives;
+using BuildingBlocks.Core.Primitives;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 
-public class ExcludedOrder : Entity<string>, IAggregateRoot
+public class ExcludedOrder : Entity<string>
 {
     private ExcludedOrder() { }
 

@@ -7,8 +7,9 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using BuildingBlocks.Infrastructure.Extensions;
-using BuildingBlocks.Soap;
+using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Infrastructure.Modules.Extensions;
+using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Soap.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,20 +17,15 @@ using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders;
 
-public static class OrdersModule
+public sealed class OrdersModule : IModule
 {
-    public static readonly string Name = "Orders";
+    public string Name => "Orders";
 
-    public static IServiceCollection AddOrdersModule(this IServiceCollection services, IConfiguration configuration)
+    public void AddServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddModule(configuration, Name)
-            .AddOptions(cfg =>
-            {
-                cfg.ConfigureOptions<ProductsOptions>();
-                cfg.ConfigureOptions<DistributorsSalesOptions>();
-            })
-            .AddPostgres<OrdersDbContext>()
-            .Build();
+        services.AddValidatedOptions<ProductsOptions>(configuration, ProductsOptions.SectionName);
+        services.AddValidatedOptions<DistributorsSalesOptions>(configuration, DistributorsSalesOptions.SectionName);
+        services.AddPostgres<OrdersDbContext>(OrdersDbContext.Schema);
 
         // Configure QuestPDF license (Community license for organizations with less than $1M USD annual gross revenue)
         QuestPDF.Settings.License = LicenseType.Community;
@@ -55,7 +51,5 @@ public static class OrdersModule
                 .AddLogging());
 
         services.AddHostedService<ProductsSyncWorker>();
-
-        return services;
     }
 }

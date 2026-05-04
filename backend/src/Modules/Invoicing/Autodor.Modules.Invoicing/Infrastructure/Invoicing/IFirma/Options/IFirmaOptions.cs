@@ -1,10 +1,8 @@
-using BuildingBlocks.Kernel.Abstractions;
-
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Options;
 
-public class IFirmaOptions : IOptions
+public class IFirmaOptions
 {
-    public static string SectionName => $"Modules:{InvoicingModule.Name}:IFirma";
+    public const string SectionName = "Modules:Invoicing:IFirma";
 
     public string BaseUrl { get; set; } = "https://www.ifirma.pl/iapi";
     public string User { get; set; } = string.Empty;

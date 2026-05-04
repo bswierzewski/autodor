@@ -1,19 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using Autodor.Modules.Contractors.Domain.Aggregates;
+using BuildingBlocks.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence;
 
-public class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options) : DbContext(options)
+public class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options)
+    : ModuleDbContext<ContractorsDbContext>(options, Schema)
 {
-    public static string Schema => ContractorsModule.Name.ToLowerInvariant();
+    public const string Schema = "contractors";
 
     public DbSet<Contractor> Contractors => Set<Contractor>();
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.HasDefaultSchema(Schema);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContractorsDbContext).Assembly);
-
-        base.OnModelCreating(modelBuilder);
-    }
 }

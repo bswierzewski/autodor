@@ -1,16 +1,14 @@
-using BuildingBlocks.Kernel.Abstractions;
-
 namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
 
 /// <summary>
 /// Configuration options for Polcar external service integration
 /// </summary>
-public class DistributorsSalesOptions : IOptions
+public class DistributorsSalesOptions
 {
     /// <summary>
     /// Configuration section name in appsettings
     /// </summary>
-    public static string SectionName => $"Modules:{OrdersModule.Name}:DistributorsSales";
+    public const string SectionName = "Modules:Orders:DistributorsSales";
 
     /// <summary>
     /// Login

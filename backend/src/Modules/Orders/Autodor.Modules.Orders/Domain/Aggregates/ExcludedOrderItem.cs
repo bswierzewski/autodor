@@ -1,9 +1,8 @@
 using Autodor.Modules.Orders.Domain.ValueObjects;
-using BuildingBlocks.Kernel.Abstractions;
 
 namespace Autodor.Modules.Orders.Domain.Aggregates;
 
-public class ExcludedOrderItem : IAggregateRoot
+public class ExcludedOrderItem
 {
     public string OrderId { get; private set; } = default!;
     public string ItemNumber { get; private set; } = default!;

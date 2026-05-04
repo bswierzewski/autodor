@@ -1,0 +1,257 @@
+using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
+using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
+using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests;
+using Autodor.Tests.Integration.Shared;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Autodor.Tests.Integration.Modules.Invoicing.Clients;
+
+[Collection(SharedCollection.Name)]
+public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifetime
+{
+    public async ValueTask InitializeAsync()
+    {
+        await Environment.ResetDatabaseAsync();
+    }
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task GetClientsAsync_WithEmptyFilter_ShouldReturnClientList()
+    {
+        // Arrange
+        var query = new ClientSearchQuery();
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await client.GetClientsAsync(query);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task GetClientsAsync_WithNipFilter_ShouldReturnMatchingClients()
+    {
+        // Arrange - Using a valid test NIP
+        var query = new ClientSearchQuery
+        {
+            Filter = new ClientSearchFilter { NipEq = "1176224556" }
+        };
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await client.GetClientsAsync(query);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Entities.Should().NotBeNull();
+        // Filter may return 0 results if client doesn't exist in sandbox
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task GetClientAsync_WithValidId_ShouldReturnClient()
+    {
+        // Arrange - First create a test client
+        var newClient = new Client
+        {
+            Country = "PL",
+            FirstName = "GetTest",
+            LastName = "User",
+            BusinessActivityKind = "private_person",
+            Email = $"get-test-{Guid.NewGuid()}@example.com"
+        };
+
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var createdClientResult = await client.CreateClientAsync(newClient);
+        createdClientResult.IsError.Should().BeFalse();
+        createdClientResult.Value.Id.Should().NotBeNull();
+
+        // Act
+        var result = await client.GetClientAsync(createdClientResult.Value.Id!.Value);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("GetTest");
+        result.Value.Id.Should().Be(createdClientResult.Value.Id);
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task CreateClientAsync_WithValidClient_ShouldCreateAndReturnClient()
+    {
+        // Arrange
+        var client = new Client
+        {
+            BusinessActivityKind = "self_employed",
+            Nip = "1176224556",  // Valid 10-digit NIP from documentation
+            FirstName = "Test",
+            LastName = "User",
+            CompanyName = "Test Company Test User",  // Required for self_employed
+            Street = "Testowa",
+            StreetNumber = "1",
+            City = "Warsaw",
+            Country = "PL",
+            PostalCode = "00-001"
+        };
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var infaktClient = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await infaktClient.CreateClientAsync(client);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("Test");
+        result.Value.LastName.Should().Be("User");
+        result.Value.Id.Should().NotBeNull();
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task UpdateClientAsync_WithValidClient_ShouldUpdateAndReturnClient()
+    {
+        // Arrange - First create a test client
+        var newClient = new Client
+        {
+            Country = "PL",
+            FirstName = "UpdateTest",
+            LastName = "User",
+            BusinessActivityKind = "private_person",
+            Email = $"update-test-{Guid.NewGuid()}@example.com"
+        };
+
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var createdClientResult = await client.CreateClientAsync(newClient);
+        createdClientResult.IsError.Should().BeFalse();
+        createdClientResult.Value.Id.Should().NotBeNull();
+
+        // Update the client data
+        var updatedClient = new Client
+        {
+            Country = "PL",
+            FirstName = "UpdatedTest",
+            LastName = "UpdatedUser",
+            BusinessActivityKind = "private_person",
+            Email = createdClientResult.Value.Email
+        };
+
+        // Act
+        var result = await client.UpdateClientAsync(createdClientResult.Value.Id!.Value, updatedClient);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.FirstName.Should().Be("UpdatedTest");
+        result.Value.LastName.Should().Be("UpdatedUser");
+        result.Value.Id.Should().Be(createdClientResult.Value.Id);
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateInvoice()
+    {
+        // Arrange
+        var invoice = new Invoice
+        {
+            Currency = "PLN",
+            Notes = "Test invoice from API",
+            Kind = "vat",
+            PaymentMethod = "transfer",
+            ClientTaxCode = "1176224556", // Known valid NIP from creation
+            InvoiceDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            Services = new List<InvoiceItem>
+            {
+                new()
+                {
+                    Name = "Test Service",
+                    TaxSymbol = "23",
+                    Unit = "szt",
+                    Quantity = 1,
+                    UnitNetPrice = 10000 // 100.00 PLN in groszy
+                }
+            }
+        };
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await client.CreateInvoiceAsync(invoice);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+        result.Value.Id.Should().NotBeNull();
+        result.Value.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task CreateInvoiceAsync_WithInvalidInvoice_ShouldReturnError()
+    {
+        // Arrange
+        var invoice = new Invoice
+        {
+            Currency = "PLN",
+            Notes = "Test invoice from API",
+            Kind = "vats", // Invalid value
+            PaymentMethod = "transfera", // Invalid value
+            ClientTaxCode = "117622455622", // Invalid NIP
+            InvoiceDate = DateTime.Now.ToString("yyyy-dd-MM"), // Invalid format
+            SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            Services = new List<InvoiceItem>
+            {
+                new()
+                {
+                    Name = "Test Service",
+                    TaxSymbol = "231", // Invalid value
+                    Unit = "szta", // Invalid value
+                    Quantity = -1, // Invalid value
+                    UnitNetPrice = 10000
+                }
+            }
+        };
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await client.CreateInvoiceAsync(invoice);
+
+        // Assert
+        result.IsError.Should().BeTrue("API should return error for invalid data");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
+    }
+
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    public async Task CreateInvoiceAsync_WithMissingRequiredField_ShouldReturnError()
+    {
+        // Arrange - Missing required Services field
+        var invoice = new Invoice
+        {
+            Currency = "PLN",
+            Notes = "Test invoice with error",
+            Kind = "vat",
+            PaymentMethod = "transfer",
+            ClientTaxCode = "1176224556",
+            InvoiceDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
+            Services = null!  // Intentionally null to trigger API error
+        };
+
+        // Act
+        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var result = await client.CreateInvoiceAsync(invoice);
+
+        // Assert
+        result.IsError.Should().BeTrue("API should return error for missing required field");
+        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
+        result.FirstError.Code.Should().Be("services");
+    }
+}

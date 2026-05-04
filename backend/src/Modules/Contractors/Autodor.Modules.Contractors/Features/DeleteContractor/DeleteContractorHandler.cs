@@ -1,6 +1,6 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
-using BuildingBlocks.Infrastructure.Exceptions;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
