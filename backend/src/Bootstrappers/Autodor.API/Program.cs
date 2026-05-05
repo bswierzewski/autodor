@@ -10,9 +10,6 @@ using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Scalar.AspNetCore;
 
-// Load environment variables from .env file
-DotNetEnv.Env.TraversePath().Load();
-
 var builder = WebApplication.CreateBuilder(args);
 var executionMode = builder.GetExecutionMode();
 
