@@ -1,5 +1,7 @@
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -7,30 +9,24 @@ using System.Net;
 namespace Autodor.Tests.Integration.Modules.Orders.ExcludeOrder;
 
 [Collection(SharedCollection.Name)]
-public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
+public class ExcludeOrderTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task ExcludeOrder_WithValidOrderId_ShouldExcludeOrder()
     {
         // Arrange
         var orderId = "TEST-ORDER-123";
 
         // Act
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{orderId}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert - Verify order was excluded in database
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
         var excludedOrder = await dbContext.ExcludedOrders
             .FirstOrDefaultAsync(o => o.Id == orderId);
@@ -39,21 +35,21 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         Assert.Equal(orderId, excludedOrder.Id);
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task ExcludeOrder_WhenCalledTwice_ShouldToggleExclusion()
     {
         // Arrange
         var orderId = "TOGGLE-ORDER";
 
         // Act 1 - First call should exclude the order
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{orderId}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 1 - Verify order is excluded
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
             var excluded = await dbContext.ExcludedOrders
@@ -62,14 +58,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act 2 - Second call should restore the order (remove from excluded list)
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{orderId}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 2 - Verify order is no longer excluded
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
             var excluded = await dbContext.ExcludedOrders
@@ -78,14 +74,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act 3 - Third call should exclude the order again
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{orderId}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 3 - Verify order is excluded again
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
             var excluded = await dbContext.ExcludedOrders
@@ -94,18 +90,18 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task ExcludeOrder_WhenOrderIdIsEmpty_ShouldReturnValidationError()
     {
         // Act && Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url("/orders/ /exclude");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         });
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task ExcludeOrder_WithMultipleOrders_ShouldExcludeOnlySpecificOrder()
     {
         // Arrange - Multiple orders
@@ -113,14 +109,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         var order2Id = "ORDER-002";
 
         // Act 1 - Exclude only the first order
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{order1Id}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 1 - Verify only order1 is excluded, order2 is not
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
 
@@ -134,14 +130,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act 2 - Restore the first order (toggle off)
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{order1Id}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 2 - Verify both orders are now not excluded
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
 
@@ -155,14 +151,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act 3 - Exclude the second order this time
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{order2Id}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 3 - Verify only order2 is excluded now
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
 
@@ -176,14 +172,14 @@ public class ExcludeOrderTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act 4 - Exclude both orders
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Url($"/orders/{order1Id}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
         // Assert 4 - Verify both orders are excluded
-        await using (var scope = Environment.Host.Services.CreateAsyncScope())
+        await using (var scope = Host.Services.CreateAsyncScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
 

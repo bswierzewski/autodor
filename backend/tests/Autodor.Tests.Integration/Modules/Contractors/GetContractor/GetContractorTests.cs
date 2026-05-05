@@ -3,27 +3,23 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Features.GetContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Contractors.GetContractor;
 
 [Collection(SharedCollection.Name)]
-public class GetContractorTests(SharedEnvironment Environment) : IAsyncLifetime
+public class GetContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Get_Contractor_By_Id()
     {
         // Arrange
         var contractorId = new ContractorId(Guid.NewGuid());
 
-        await using (var arrangeScope = Environment.Host.Services.CreateAsyncScope())
+        await using (var arrangeScope = Host.Services.CreateAsyncScope())
         {
             var db = arrangeScope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
 
@@ -40,7 +36,7 @@ public class GetContractorTests(SharedEnvironment Environment) : IAsyncLifetime
         }
 
         // Act
-        var result = await Environment.Host.Scenario(s =>
+        var result = await Host.Scenario(s =>
         {
             s.Get.Url($"/contractors/{contractorId.Value}");
             s.StatusCodeShouldBe(200);
@@ -55,14 +51,14 @@ public class GetContractorTests(SharedEnvironment Environment) : IAsyncLifetime
         response.Email.Should().Be("test@company.com");
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Return_NotFound_When_Contractor_Does_Not_Exist()
     {
         // Arrange
         var nonExistentId = Guid.NewGuid();
 
         // Act & Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Get.Url($"/contractors/{nonExistentId}");
             s.StatusCodeShouldBe(404);

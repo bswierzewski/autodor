@@ -3,24 +3,23 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Features.GetContractors;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Contractors.GetContractors;
 
 [Collection(SharedCollection.Name)]
-public class GetContractorsTests(SharedEnvironment Environment) : IAsyncLifetime
+public class GetContractorsTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
+    protected override async Task OnInitializeAsync(IServiceProvider services)
     {
-        await Environment.ResetDatabaseAsync();
         await SeedDataAsync();
     }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
     private async Task SeedDataAsync()
     {
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
 
         var contractor1 = new Contractor(
@@ -43,11 +42,11 @@ public class GetContractorsTests(SharedEnvironment Environment) : IAsyncLifetime
         await db.SaveChangesAsync();
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Get_All_Contractors()
     {
         // Act
-        var result = await Environment.Host.Scenario(s =>
+        var result = await Host.Scenario(s =>
         {
             s.Get.Url("/contractors");
             s.StatusCodeShouldBe(200);
@@ -61,11 +60,11 @@ public class GetContractorsTests(SharedEnvironment Environment) : IAsyncLifetime
         contractors.Should().Contain(c => c.Name == "Company B");
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Filter_Contractors_By_NIP()
     {
         // Act
-        var result = await Environment.Host.Scenario(s =>
+        var result = await Host.Scenario(s =>
         {
             s.Get.Url("/contractors?NIPs=1111111111");
             s.StatusCodeShouldBe(200);

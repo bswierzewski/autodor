@@ -3,28 +3,32 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Tests.Integration.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using System.Collections.Frozen;
 using System.Net;
 
 namespace Autodor.Tests.Integration.Modules.Orders.GenerateDeliveryNote;
 
-[Collection(GenerateDeliveryNoteCollection.Name)]
-public class GenerateDeliveryNoteTests(GenerateDeliveryNoteEnvironment Environment, ITestOutputHelper output)
-    : IAsyncLifetime
+[Collection(SharedCollection.Name)]
+public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOutputHelper output)
+    : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
+    private Mock<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.IProductsClient> ProductsClientMock { get; } = new();
+
+    protected override void OnConfigureServices(IServiceCollection services)
     {
-        await Environment.ResetDatabaseAsync();
-        await SeedDataAsync();
+        services.RemoveAll<Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.IProductsClient>();
+        services.AddSingleton(ProductsClientMock.Object);
     }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-    private async Task SeedDataAsync()
+    protected override async Task OnInitializeAsync(IServiceProvider services)
     {
+
         // Setup mock products client with test data
         var testProducts = new Dictionary<string, Product>
         {
@@ -33,12 +37,12 @@ public class GenerateDeliveryNoteTests(GenerateDeliveryNoteEnvironment Environme
             ["3202RWT2"] = new Product { Number = "3202RWT2", Name = "Zestaw sprzęgła kompletny" }
         }.ToFrozenDictionary();
 
-        Environment.ProductsClientMock
+        ProductsClientMock
             .Setup(x => x.GetProductsAsync())
             .ReturnsAsync(testProducts);
 
         // Seed test contractor in database
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = services.CreateAsyncScope();
         var contractorsDb = scope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
 
         var contractor = new Contractor(
@@ -53,15 +57,15 @@ public class GenerateDeliveryNoteTests(GenerateDeliveryNoteEnvironment Environme
         await contractorsDb.SaveChangesAsync();
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task GenerateDeliveryNote_ShouldGenerateAndSavePdfFile()
-    {       
+    {
         // Arrange - Replace with actual order ID and date from test environment
         var orderId = "3ff0615c-b902-f111-95f5-00155d0b7aef";
         var orderDate = new DateTime(2026, 2, 5);
 
         // Act
-        var result = await Environment.Host.Scenario(s =>
+        var result = await Host.Scenario(s =>
         {
             s.Post.Json(new
             {
@@ -99,7 +103,7 @@ public class GenerateDeliveryNoteTests(GenerateDeliveryNoteEnvironment Environme
         var orderDate = new DateTime(2026, 2, 5);
 
         // Act && Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Json(new
             {

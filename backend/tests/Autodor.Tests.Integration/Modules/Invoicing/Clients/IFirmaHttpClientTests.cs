@@ -2,19 +2,15 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Invoicing.Clients;
 
 [Collection(SharedCollection.Name)]
-public class IFirmaHttpClientTests(SharedEnvironment Environment) : IAsyncLifetime
+public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
-
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]
     public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateAndReturnInvoice()
@@ -63,7 +59,7 @@ public class IFirmaHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
@@ -123,7 +119,7 @@ public class IFirmaHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
@@ -169,7 +165,7 @@ public class IFirmaHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
@@ -223,7 +219,7 @@ public class IFirmaHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 

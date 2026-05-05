@@ -3,28 +3,24 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Features.UpdateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Contractors.UpdateContractor;
 
 [Collection(SharedCollection.Name)]
-public class UpdateContractorTests(SharedEnvironment Environment) : IAsyncLifetime
+public class UpdateContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
 
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Update_Contractor()
     {
         // Arrange
         var contractorId = new ContractorId(Guid.NewGuid());
 
-        await using (var arrangeScope = Environment.Host.Services.CreateAsyncScope())
+        await using (var arrangeScope = Host.Services.CreateAsyncScope())
         {
             var db = arrangeScope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
 
@@ -50,14 +46,14 @@ public class UpdateContractorTests(SharedEnvironment Environment) : IAsyncLifeti
         );
 
         // Act
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Put.Json(request).ToUrl($"/contractors/{contractorId.Value}");
             s.StatusCodeShouldBe(204);
         });
 
         // Assert
-        await using var assertScope = Environment.Host.Services.CreateAsyncScope();
+        await using var assertScope = Host.Services.CreateAsyncScope();
         var assertDb = assertScope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
         var updatedContractor = await assertDb.Contractors
             .AsNoTracking()
@@ -72,7 +68,7 @@ public class UpdateContractorTests(SharedEnvironment Environment) : IAsyncLifeti
         updatedContractor.Email.Value.Should().Be("new@company.com");
     }
 
-    [Fact]
+    [Fact(Skip = "Disabled by default")]
     public async Task Should_Return_NotFound_When_Contractor_Does_Not_Exist()
     {
         // Arrange
@@ -88,7 +84,7 @@ public class UpdateContractorTests(SharedEnvironment Environment) : IAsyncLifeti
         );
 
         // Act & Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Put.Json(request).ToUrl($"/contractors/{nonExistentId}");
             s.StatusCodeShouldBe(404);

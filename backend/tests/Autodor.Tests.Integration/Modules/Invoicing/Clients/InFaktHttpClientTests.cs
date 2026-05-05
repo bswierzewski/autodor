@@ -2,19 +2,15 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Invoicing.Clients;
 
 [Collection(SharedCollection.Name)]
-public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifetime
+public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
-
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
     public async Task GetClientsAsync_WithEmptyFilter_ShouldReturnClientList()
@@ -23,7 +19,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         var query = new ClientSearchQuery();
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await client.GetClientsAsync(query);
 
@@ -43,7 +39,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await client.GetClientsAsync(query);
 
@@ -67,7 +63,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
             Email = $"get-test-{Guid.NewGuid()}@example.com"
         };
 
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var createdClientResult = await client.CreateClientAsync(newClient);
         createdClientResult.IsError.Should().BeFalse();
@@ -102,7 +98,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var infaktClient = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await infaktClient.CreateClientAsync(client);
 
@@ -127,7 +123,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
             Email = $"update-test-{Guid.NewGuid()}@example.com"
         };
 
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var createdClientResult = await client.CreateClientAsync(newClient);
         createdClientResult.IsError.Should().BeFalse();
@@ -181,7 +177,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
@@ -219,7 +215,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
@@ -245,7 +241,7 @@ public class InFaktHttpClientTests(SharedEnvironment Environment) : IAsyncLifeti
         };
 
         // Act
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 

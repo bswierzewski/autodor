@@ -1,18 +1,14 @@
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Orders.DistributorsSales;
 
 [Collection(SharedCollection.Name)]
-public class DistributorsSalesServiceTests(SharedEnvironment Environment) : IAsyncLifetime
+public class DistributorsSalesServiceTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
-    {
-        await Environment.ResetDatabaseAsync();
-    }
-
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     /// <summary>
     /// Manual test to verify real API integration.
@@ -22,7 +18,7 @@ public class DistributorsSalesServiceTests(SharedEnvironment Environment) : IAsy
     public async Task GetOrdersAsync_ShouldReturnOrdersFromRealApi()
     {
         // Arrange
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var service = scope.ServiceProvider.GetRequiredService<IDistributorsSalesClient>();
 
         // Act

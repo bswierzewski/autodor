@@ -3,25 +3,24 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Invoicing.Features.CreateInvoice;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Modules.Invoicing.CreateInvoice;
 
 [Collection(SharedCollection.Name)]
-public class CreateInvoiceTests(SharedEnvironment Environment) : IAsyncLifetime
+public class CreateInvoiceTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-    public async ValueTask InitializeAsync()
+    protected override async Task OnInitializeAsync(IServiceProvider services)
     {
-        await Environment.ResetDatabaseAsync();
         await SeedDataAsync();
     }
-
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     private async Task SeedDataAsync()
     {
         // Seed test contractor
-        await using var scope = Environment.Host.Services.CreateAsyncScope();
+        await using var scope = Host.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
         var contractor = new Contractor(
             id: new ContractorId(Guid.NewGuid()),
@@ -48,7 +47,7 @@ public class CreateInvoiceTests(SharedEnvironment Environment) : IAsyncLifetime
         );
 
         // Act
-        var result = await Environment.Host.Scenario(s =>
+        var result = await Host.Scenario(s =>
         {
             s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(200);
@@ -72,7 +71,7 @@ public class CreateInvoiceTests(SharedEnvironment Environment) : IAsyncLifetime
         );
 
         // Act & Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(404); // Contractor not found
@@ -93,7 +92,7 @@ public class CreateInvoiceTests(SharedEnvironment Environment) : IAsyncLifetime
         );
 
         // Act & Assert
-        await Environment.Host.Scenario(s =>
+        await Host.Scenario(s =>
         {
             s.Post.Json(command).ToUrl("/invoices");
             s.StatusCodeShouldBe(404); // No orders found
