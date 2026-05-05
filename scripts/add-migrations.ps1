@@ -1,21 +1,14 @@
 #!/usr/bin/env pwsh
-param([ValidateSet('Contractors', 'Orders', 'Invoicing', 'All')][string]$Module = 'All')
 
 # Navigate to backend directory (where solution is located)
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $backendDir = Join-Path (Split-Path -Parent $scriptDir) "backend"
 Set-Location $backendDir
 
-$modules = @(
-    @{ Name = 'Contractors'; Context = 'ContractorsDbContext'; Project = 'src/Modules/Contractors/Autodor.Modules.Contractors' }
-    @{ Name = 'Orders';      Context = 'OrdersDbContext';      Project = 'src/Modules/Orders/Autodor.Modules.Orders' }
-    @{ Name = 'Invoicing';   Context = 'InvoicingDbContext';   Project = 'src/Modules/Invoicing/Autodor.Modules.Invoicing' }
+$contexts = @(
+    @{ Context = 'ContractorsDbContext'; Project = 'src/Modules/Contractors/Autodor.Modules.Contractors' }
+    @{ Context = 'OrdersDbContext';      Project = 'src/Modules/Orders/Autodor.Modules.Orders' }
 )
-
-# Filter modules if specific one is selected
-if ($Module -ne 'All') {
-    $modules = $modules | Where-Object { $_.Name -eq $Module }
-}
 
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "  Checking Migrations" -ForegroundColor Cyan
@@ -24,12 +17,12 @@ Write-Host "========================================`n" -ForegroundColor Cyan
 $created = 0
 $skipped = 0
 
-foreach ($m in $modules) {
-    Write-Host "[$($m.Name)]" -ForegroundColor Cyan -NoNewline
+foreach ($contextDefinition in $contexts) {
+    Write-Host "[$($contextDefinition.Context)]" -ForegroundColor Cyan -NoNewline
     Write-Host " Checking changes..." -NoNewline
 
     # Check if project exists
-    if (-not (Test-Path $m.Project)) {
+    if (-not (Test-Path $contextDefinition.Project)) {
         Write-Host " SKIPPED (project not found)" -ForegroundColor Yellow
         $skipped++
         continue
@@ -37,9 +30,8 @@ foreach ($m in $modules) {
 
     # Check for pending model changes
     $output = dotnet ef migrations has-pending-model-changes `
-        --context $m.Context `
-        --project $m.Project `
-        --startup-project src/Host/Autodor.API `
+        --context $contextDefinition.Context `
+        --project $contextDefinition.Project `
         2>&1 | Out-String
 
     # Check if DbContext exists
@@ -67,18 +59,18 @@ foreach ($m in $modules) {
     Write-Host "  Creating migration..." -NoNewline
 
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    dotnet ef migrations add $timestamp `
-        --context $m.Context `
-        --project $m.Project `
-        --startup-project src/Host/Autodor.API `
+    $migrationOutput = dotnet ef migrations add $timestamp `
+        --context $contextDefinition.Context `
+        --project $contextDefinition.Project `
         --output-dir Infrastructure/Persistence/Migrations `
-        | Out-Null
+        2>&1 | Out-String
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host " SUCCESS ($timestamp)" -ForegroundColor Green
         $created++
     } else {
         Write-Host " ERROR" -ForegroundColor Red
+        Write-Host $migrationOutput -ForegroundColor Red
     }
 }
 

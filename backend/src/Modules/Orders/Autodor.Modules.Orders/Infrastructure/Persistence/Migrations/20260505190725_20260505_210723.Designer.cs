@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autodor.Modules.Orders.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrdersDbContext))]
-    [Migration("20260207055215_20260207_065212")]
-    partial class _20260207_065212
+    [Migration("20260505190725_20260505_210723")]
+    partial class _20260505_210723
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("orders")
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);

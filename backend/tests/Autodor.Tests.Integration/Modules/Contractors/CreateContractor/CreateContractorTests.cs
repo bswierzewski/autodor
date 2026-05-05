@@ -11,8 +11,7 @@ namespace Autodor.Tests.Integration.Modules.Contractors.CreateContractor;
 [Collection(SharedCollection.Name)]
 public class CreateContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
-
-    [Fact(Skip = "Disabled by default")]
+    [Fact]
     public async Task Should_Create_Contractor()
     {
         // Arrange

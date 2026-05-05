@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Orders.Infrastructure.Persistence;
 
-public class OrdersDbContext(DbContextOptions<OrdersDbContext> options)
+public sealed class Factory : ModuleDbContextDesignTimeFactory<OrdersDbContext> { }
+
+public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options)
     : ModuleDbContext<OrdersDbContext>(options, Schema)
 {
     public const string Schema = "orders";

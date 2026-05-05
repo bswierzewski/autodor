@@ -3,8 +3,6 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     <NoWarn>$(NoWarn);xUnit1051;CS9113</NoWarn>
   </PropertyGroup>
 

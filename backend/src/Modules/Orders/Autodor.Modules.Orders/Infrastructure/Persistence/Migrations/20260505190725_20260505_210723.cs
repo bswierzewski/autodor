@@ -5,7 +5,7 @@
 namespace Autodor.Modules.Orders.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class _20260207_065212 : Migration
+    public partial class _20260505_210723 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

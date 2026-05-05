@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Infrastructure.Persistence;
 
-public class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options)
+public sealed class Factory : ModuleDbContextDesignTimeFactory<ContractorsDbContext> { }
+
+public sealed class ContractorsDbContext(DbContextOptions<ContractorsDbContext> options)
     : ModuleDbContext<ContractorsDbContext>(options, Schema)
 {
     public const string Schema = "contractors";
