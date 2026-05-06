@@ -1,3 +1,5 @@
+Install: npx @tanstack/cli create --router-only
+
 Welcome to your new TanStack Start app! 
 
 # Getting Started
