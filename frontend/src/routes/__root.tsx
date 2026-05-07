@@ -22,8 +22,8 @@ function RootComponent() {
 
 			<ClerkLoaded>
 				<Show when="signed-out">
-					<div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(24,24,27,0.08),_transparent_45%),linear-gradient(180deg,_#f8fafc_0%,_#eef2f7_100%)] px-6 py-10">
-						<div className="absolute inset-x-0 top-0 h-56 bg-[linear-gradient(135deg,_rgba(15,23,42,0.08),_transparent)]" />
+					<div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top,rgba(24,24,27,0.08),transparent_45%),linear-gradient(180deg,#f8fafc_0%,#eef2f7_100%)] px-6 py-10">
+						<div className="absolute inset-x-0 top-0 h-56 bg-[linear-gradient(135deg,rgba(15,23,42,0.08),transparent)]" />
 						<div className="relative grid w-full max-w-6xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
 							<section className="space-y-6 text-center lg:text-left">
 								<p className="text-sm font-medium uppercase tracking-[0.28em] text-muted-foreground">
