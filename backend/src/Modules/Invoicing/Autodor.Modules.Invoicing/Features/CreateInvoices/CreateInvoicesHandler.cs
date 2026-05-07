@@ -20,7 +20,7 @@ namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
 
 public class CreateInvoicesHandler
 {
-    [WolverinePost("/invoices/bulk")]
+    [WolverinePost("/api/invoices/bulk")]
     [Tags("Invoicing")]
     [EndpointName("CreateInvoicesBulk")]
     [EndpointSummary("Create multiple invoices for date range")]

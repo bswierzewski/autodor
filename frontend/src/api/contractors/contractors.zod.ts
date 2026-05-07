@@ -8,7 +8,7 @@ import * as zod from 'zod';
 
 
 /**
- * PUT_contractors_id
+ * PUT_api_contractors_id
  * @summary Update contractor details
  */
 export const UpdateContractorParams = zod.object({
@@ -25,7 +25,7 @@ export const UpdateContractorBody = zod.object({
 })
 
 /**
- * GET_contractors_id
+ * GET_api_contractors_id
  * @summary Get contractor by ID
  */
 export const GetContractorParams = zod.object({
@@ -43,7 +43,7 @@ export const GetContractorResponse = zod.object({
 })
 
 /**
- * DELETE_contractors_id
+ * DELETE_api_contractors_id
  * @summary Delete contractor
  */
 export const DeleteContractorParams = zod.object({
@@ -51,7 +51,7 @@ export const DeleteContractorParams = zod.object({
 })
 
 /**
- * GET_contractors
+ * GET_api_contractors
  * @summary Get all contractors, optionally filtered by NIPs
  */
 export const GetContractorsQueryParams = zod.object({
@@ -70,7 +70,7 @@ export const GetContractorsResponseItem = zod.object({
 export const GetContractorsResponse = zod.array(GetContractorsResponseItem)
 
 /**
- * POST_contractors
+ * POST_api_contractors
  * @summary Create a new contractor
  */
 export const CreateContractorBody = zod.object({

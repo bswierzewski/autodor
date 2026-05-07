@@ -10,7 +10,7 @@ namespace Autodor.Modules.Orders.Features.ExcludeOrderItem;
 
 public static class ExcludeOrderItemHandler
 {
-    [WolverinePatch("/orders/{id}/items/{itemNumber}")]
+    [WolverinePatch("/api/orders/{id}/items/{itemNumber}")]
     [Tags("Orders")]
     [EndpointName("UpdateOrderItemExclusion")]
     [EndpointSummary("Include or exclude order item from invoicing")]

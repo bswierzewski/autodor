@@ -18,7 +18,7 @@ namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
 
 public static class GenerateDeliveryNoteHandler
 {
-    [WolverinePost("/delivery-notes")]
+    [WolverinePost("/api/delivery-notes")]
     [Tags("Orders")]
     [EndpointName("GenerateDeliveryNote")]
     [EndpointSummary("Generate PDF delivery note for an order")]

@@ -10,7 +10,7 @@ namespace Autodor.Modules.Contractors.Features.UpdateContractor;
 
 public class UpdateContractorHandler
 {
-    [WolverinePut("/contractors/{id}")]
+    [WolverinePut("/api/contractors/{id}")]
     [Tags("Contractors")]
     [EndpointName("UpdateContractor")]
     [EndpointSummary("Update contractor details")]

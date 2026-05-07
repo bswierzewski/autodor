@@ -89,11 +89,11 @@ export const getGetOrderUrl = (id: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/orders/${id}?${stringifiedParams}` : `/orders/${id}`
+  return stringifiedParams.length > 0 ? `/api/orders/${id}?${stringifiedParams}` : `/api/orders/${id}`
 }
 
 /**
- * GET_orders_id
+ * GET_api_orders_id
  * @summary Get order by ID and date
  */
 export const getOrder = async (id: string,
@@ -122,7 +122,7 @@ export const getOrder = async (id: string,
 export const getGetOrderQueryKey = (id: string,
     params?: GetOrderParams,) => {
     return [
-    `/orders/${id}`, ...(params ? [params] : [])
+    `/api/orders/${id}`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -228,11 +228,11 @@ export const getUpdateOrderExclusionUrl = (id: string,) => {
 
 
 
-  return `/orders/${id}`
+  return `/api/orders/${id}`
 }
 
 /**
- * PATCH_orders_id
+ * PATCH_api_orders_id
  * @summary Include or exclude order from invoicing
  */
 export const updateOrderExclusion = async (id: string,
@@ -343,11 +343,11 @@ export const getGetOrdersUrl = (params?: GetOrdersParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/orders?${stringifiedParams}` : `/orders`
+  return stringifiedParams.length > 0 ? `/api/orders?${stringifiedParams}` : `/api/orders`
 }
 
 /**
- * GET_orders
+ * GET_api_orders
  * @summary Get all orders within date range
  */
 export const getOrders = async (params?: GetOrdersParams, options?: RequestInit): Promise<getOrdersResponse> => {
@@ -374,7 +374,7 @@ export const getOrders = async (params?: GetOrdersParams, options?: RequestInit)
 
 export const getGetOrdersQueryKey = (params?: GetOrdersParams,) => {
     return [
-    `/orders`, ...(params ? [params] : [])
+    `/api/orders`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -480,11 +480,11 @@ export const getGenerateDeliveryNoteUrl = () => {
 
 
 
-  return `/delivery-notes`
+  return `/api/delivery-notes`
 }
 
 /**
- * POST_delivery_notes
+ * POST_api_delivery_notes
  * @summary Generate PDF delivery note for an order
  */
 export const generateDeliveryNote = async (generateDeliveryNoteCommand: GenerateDeliveryNoteCommand, options?: RequestInit): Promise<generateDeliveryNoteResponse> => {
@@ -583,11 +583,11 @@ export const getUpdateOrderItemExclusionUrl = (id: string,
 
 
 
-  return `/orders/${id}/items/${itemNumber}`
+  return `/api/orders/${id}/items/${itemNumber}`
 }
 
 /**
- * PATCH_orders_id_items_itemNumber
+ * PATCH_api_orders_id_items_itemNumber
  * @summary Include or exclude order item from invoicing
  */
 export const updateOrderItemExclusion = async (id: string,

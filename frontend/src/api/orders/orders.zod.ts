@@ -8,7 +8,7 @@ import * as zod from 'zod';
 
 
 /**
- * GET_orders_id
+ * GET_api_orders_id
  * @summary Get order by ID and date
  */
 export const GetOrderParams = zod.object({
@@ -24,7 +24,7 @@ export const GetOrderResponse = zod.looseObject({
 })
 
 /**
- * PATCH_orders_id
+ * PATCH_api_orders_id
  * @summary Include or exclude order from invoicing
  */
 export const UpdateOrderExclusionParams = zod.object({
@@ -40,7 +40,7 @@ export const UpdateOrderExclusionResponse = zod.looseObject({
 })
 
 /**
- * GET_orders
+ * GET_api_orders
  * @summary Get all orders within date range
  */
 export const GetOrdersQueryParams = zod.object({
@@ -68,7 +68,7 @@ export const GetOrdersResponse = zod.object({
 })
 
 /**
- * POST_delivery_notes
+ * POST_api_delivery_notes
  * @summary Generate PDF delivery note for an order
  */
 export const GenerateDeliveryNoteBody = zod.object({
@@ -81,7 +81,7 @@ export const GenerateDeliveryNoteResponse = zod.looseObject({
 })
 
 /**
- * PATCH_orders_id_items_itemNumber
+ * PATCH_api_orders_id_items_itemNumber
  * @summary Include or exclude order item from invoicing
  */
 export const UpdateOrderItemExclusionParams = zod.object({

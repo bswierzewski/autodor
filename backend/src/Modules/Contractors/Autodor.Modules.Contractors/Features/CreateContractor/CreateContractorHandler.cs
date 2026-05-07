@@ -9,7 +9,7 @@ namespace Autodor.Modules.Contractors.Features.CreateContractor;
 
 public class CreateContractorHandler
 {
-    [WolverinePost("/contractors")]
+    [WolverinePost("/api/contractors")]
     [Tags("Contractors")]
     [EndpointName("CreateContractor")]
     [EndpointSummary("Create a new contractor")]

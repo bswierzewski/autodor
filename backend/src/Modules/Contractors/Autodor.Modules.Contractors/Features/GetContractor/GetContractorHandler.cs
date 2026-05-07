@@ -10,7 +10,7 @@ namespace Autodor.Modules.Contractors.Features.GetContractor;
 
 public class GetContractorHandler
 {
-    [WolverineGet("/contractors/{id}")]
+    [WolverineGet("/api/contractors/{id}")]
     [Tags("Contractors")]
     [EndpointName("GetContractor")]
     [EndpointSummary("Get contractor by ID")]

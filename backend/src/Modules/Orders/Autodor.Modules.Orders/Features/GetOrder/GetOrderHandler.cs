@@ -9,7 +9,7 @@ namespace Autodor.Modules.Orders.Features.GetOrder;
 
 public static class GetOrderHandler
 {
-    [WolverineGet("/orders/{id}")]
+    [WolverineGet("/api/orders/{id}")]
     [Tags("Orders")]
     [EndpointName("GetOrder")]
     [EndpointSummary("Get order by ID and date")]

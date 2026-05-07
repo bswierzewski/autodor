@@ -8,7 +8,7 @@ import * as zod from 'zod';
 
 
 /**
- * POST_invoices
+ * POST_api_invoices
  * @summary Create a single invoice for selected orders
  */
 export const createInvoiceBodyInvoiceNumberRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
@@ -28,7 +28,7 @@ export const CreateInvoiceResponse = zod.looseObject({
 })
 
 /**
- * POST_invoices_bulk
+ * POST_api_invoices_bulk
  * @summary Create multiple invoices for date range
  */
 export const CreateInvoicesBulkBody = zod.object({

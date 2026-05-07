@@ -20,7 +20,7 @@ namespace Autodor.Modules.Invoicing.Features.CreateInvoice;
 
 public class CreateInvoiceHandler
 {
-    [WolverinePost("/invoices")]
+    [WolverinePost("/api/invoices")]
     [Tags("Invoicing")]
     [EndpointName("CreateInvoice")]
     [EndpointSummary("Create a single invoice for selected orders")]

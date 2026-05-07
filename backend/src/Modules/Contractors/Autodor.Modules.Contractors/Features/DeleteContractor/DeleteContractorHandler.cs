@@ -11,7 +11,7 @@ namespace Autodor.Modules.Contractors.Features.DeleteContractor;
 
 public class DeleteContractorHandler
 {
-    [WolverineDelete("/contractors/{id}")]
+    [WolverineDelete("/api/contractors/{id}")]
     [Tags("Contractors")]
     [EndpointName("DeleteContractor")]
     [EndpointSummary("Delete contractor")]

@@ -62,11 +62,11 @@ export const getCreateInvoiceUrl = () => {
 
 
 
-  return `/invoices`
+  return `/api/invoices`
 }
 
 /**
- * POST_invoices
+ * POST_api_invoices
  * @summary Create a single invoice for selected orders
  */
 export const createInvoice = async (createInvoiceCommand: CreateInvoiceCommand, options?: RequestInit): Promise<createInvoiceResponse> => {
@@ -164,11 +164,11 @@ export const getCreateInvoicesBulkUrl = () => {
 
 
 
-  return `/invoices/bulk`
+  return `/api/invoices/bulk`
 }
 
 /**
- * POST_invoices_bulk
+ * POST_api_invoices_bulk
  * @summary Create multiple invoices for date range
  */
 export const createInvoicesBulk = async (createInvoicesCommand: CreateInvoicesCommand, options?: RequestInit): Promise<createInvoicesBulkResponse> => {

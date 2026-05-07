@@ -88,23 +88,17 @@ public class OrderService(
         if (validOrders.Count == 0)
             return [];
 
-        var excludedOrdersTask = dbContext.ExcludedOrders
-            .AsNoTracking()
-            .Select(e => e.Id)
-            .ToListAsync(ct);
-
-        var excludedItemsTask = dbContext.ExcludedOrderItems
-            .AsNoTracking()
-            .Select(e => new { e.OrderId, e.ItemNumber })
-            .ToListAsync(ct);
-
         var productsTask = productsClient.GetProductsAsync();
 
-        await Task.WhenAll(excludedOrdersTask, excludedItemsTask, productsTask);
+        var excludedOrders = (await dbContext.ExcludedOrders
+            .AsNoTracking()
+            .Select(e => e.Id)
+            .ToListAsync(ct)).ToHashSet();
 
-        var excludedOrders = (await excludedOrdersTask).ToHashSet();
-
-        var excludedItems = (await excludedItemsTask)
+        var excludedItems = (await dbContext.ExcludedOrderItems
+            .AsNoTracking()
+            .Select(e => new { e.OrderId, e.ItemNumber })
+            .ToListAsync(ct))
             .GroupBy(e => e.OrderId)
             .ToDictionary(g => g.Key, g => g.Select(e => e.ItemNumber).ToHashSet());
 

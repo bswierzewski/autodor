@@ -7,7 +7,7 @@ namespace Autodor.Modules.Orders.Features.GetOrders;
 
 public static class GetOrdersHandler
 {
-    [WolverineGet("/orders")]
+    [WolverineGet("/api/orders")]
     [Tags("Orders")]
     [EndpointName("GetOrders")]
     [EndpointSummary("Get all orders within date range")]

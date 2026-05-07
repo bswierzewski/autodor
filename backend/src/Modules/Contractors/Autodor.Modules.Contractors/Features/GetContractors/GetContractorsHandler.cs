@@ -9,7 +9,7 @@ namespace Autodor.Modules.Contractors.Features.GetContractors;
 
 public class GetContractorsHandler
 {
-    [WolverineGet("/contractors")]
+    [WolverineGet("/api/contractors")]
     [Tags("Contractors")]
     [EndpointName("GetContractors")]
     [EndpointSummary("Get all contractors, optionally filtered by NIPs")]

@@ -69,11 +69,11 @@ export const getUpdateContractorUrl = (id: string,) => {
 
 
 
-  return `/contractors/${id}`
+  return `/api/contractors/${id}`
 }
 
 /**
- * PUT_contractors_id
+ * PUT_api_contractors_id
  * @summary Update contractor details
  */
 export const updateContractor = async (id: string,
@@ -172,11 +172,11 @@ export const getGetContractorUrl = (id: string,) => {
 
 
 
-  return `/contractors/${id}`
+  return `/api/contractors/${id}`
 }
 
 /**
- * GET_contractors_id
+ * GET_api_contractors_id
  * @summary Get contractor by ID
  */
 export const getContractor = async (id: string, options?: RequestInit): Promise<getContractorResponse> => {
@@ -203,7 +203,7 @@ export const getContractor = async (id: string, options?: RequestInit): Promise<
 
 export const getGetContractorQueryKey = (id: string,) => {
     return [
-    `/contractors/${id}`
+    `/api/contractors/${id}`
     ] as const;
     }
 
@@ -299,11 +299,11 @@ export const getDeleteContractorUrl = (id: string,) => {
 
 
 
-  return `/contractors/${id}`
+  return `/api/contractors/${id}`
 }
 
 /**
- * DELETE_contractors_id
+ * DELETE_api_contractors_id
  * @summary Delete contractor
  */
 export const deleteContractor = async (id: string, options?: RequestInit): Promise<deleteContractorResponse> => {
@@ -407,11 +407,11 @@ export const getGetContractorsUrl = (params?: GetContractorsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/contractors?${stringifiedParams}` : `/contractors`
+  return stringifiedParams.length > 0 ? `/api/contractors?${stringifiedParams}` : `/api/contractors`
 }
 
 /**
- * GET_contractors
+ * GET_api_contractors
  * @summary Get all contractors, optionally filtered by NIPs
  */
 export const getContractors = async (params?: GetContractorsParams, options?: RequestInit): Promise<getContractorsResponse> => {
@@ -438,7 +438,7 @@ export const getContractors = async (params?: GetContractorsParams, options?: Re
 
 export const getGetContractorsQueryKey = (params?: GetContractorsParams,) => {
     return [
-    `/contractors`, ...(params ? [params] : [])
+    `/api/contractors`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -539,11 +539,11 @@ export const getCreateContractorUrl = () => {
 
 
 
-  return `/contractors`
+  return `/api/contractors`
 }
 
 /**
- * POST_contractors
+ * POST_api_contractors
  * @summary Create a new contractor
  */
 export const createContractor = async (createContractorCommand: CreateContractorCommand, options?: RequestInit): Promise<createContractorResponse> => {
