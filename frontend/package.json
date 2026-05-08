@@ -10,8 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "api:generate": "orval --config ./orval.config.ts",
-    "api:watch": "orval --config ./orval.config.ts --watch",
+    "api": "orval",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check"
