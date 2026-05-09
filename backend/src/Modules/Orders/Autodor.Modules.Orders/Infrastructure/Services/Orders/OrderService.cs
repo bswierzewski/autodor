@@ -4,6 +4,7 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.M
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
+using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Core.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;
@@ -17,7 +18,8 @@ namespace Autodor.Modules.Orders.Infrastructure.Services.Orders;
 public class OrderService(
     IDistributorsSalesClient distributorsSalesClient,
     OrdersDbContext dbContext,
-    IProductsClient productsClient) : IOrderService
+    IProductsClient productsClient,
+    ICurrentUser currentUser) : IOrderService
 {
     /// <inheritdoc />
     public async Task<IEnumerable<Order>> GetOrdersAsync(
@@ -25,6 +27,8 @@ public class OrderService(
         DateTime to,
         CancellationToken ct = default)
     {
+        var user = currentUser;
+
         var dates = DateTimeUtilities.EachDay(from, to);
 
         var ordersPerDay = await Task.WhenAll(dates.Select(distributorsSalesClient.GetOrdersAsync));

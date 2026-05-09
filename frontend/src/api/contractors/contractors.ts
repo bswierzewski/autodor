@@ -33,36 +33,12 @@ import type {
   UpdateContractorCommand
 } from '../models';
 
+import { customFetch } from '.././mutator';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
-export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
-export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
-export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
-export type HTTPStatusCode4xx = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 419 | 420 | 421 | 422 | 423 | 424 | 426 | 428 | 429 | 431 | 451;
-export type HTTPStatusCode5xx = 500 | 501 | 502 | 503 | 504 | 505 | 507 | 511;
-export type HTTPStatusCodes = HTTPStatusCode1xx | HTTPStatusCode2xx | HTTPStatusCode3xx | HTTPStatusCode4xx | HTTPStatusCode5xx;
-
-
-export type updateContractorResponse204 = {
-  data: unknown
-  status: 204
-}
-
-export type updateContractorResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 204>
-}
-
-export type updateContractorResponseSuccess = (updateContractorResponse204) & {
-  headers: Headers;
-};
-export type updateContractorResponseError = (updateContractorResponseDefault) & {
-  headers: Headers;
-};
-
-export type updateContractorResponse = (updateContractorResponseSuccess | updateContractorResponseError)
 
 export const getUpdateContractorUrl = (id: string,) => {
 
@@ -77,9 +53,9 @@ export const getUpdateContractorUrl = (id: string,) => {
  * @summary Update contractor details
  */
 export const updateContractor = async (id: string,
-    updateContractorCommand: UpdateContractorCommand, options?: RequestInit): Promise<updateContractorResponse> => {
+    updateContractorCommand: UpdateContractorCommand, options?: RequestInit): Promise<unknown> => {
 
-  const res = await fetch(getUpdateContractorUrl(id),
+  return customFetch<unknown>(getUpdateContractorUrl(id),
   {
     ...options,
     method: 'PUT',
@@ -87,28 +63,21 @@ export const updateContractor = async (id: string,
     body: JSON.stringify(
       updateContractorCommand,)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateContractorResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as updateContractorResponse
-}
+);}
 
 
 
 
 export const getUpdateContractorMutationOptions = <TError = ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext> => {
 
 const mutationKey = ['updateContractor'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -116,7 +85,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateContractor>>, {id: string;data: UpdateContractorCommand}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateContractor(id,data,fetchOptions)
+          return  updateContractor(id,data,requestOptions)
         }
 
 
@@ -134,7 +103,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update contractor details
  */
 export const useUpdateContractor = <TError = ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateContractor>>,
         TError,
@@ -143,31 +112,7 @@ export const useUpdateContractor = <TError = ProblemDetails,
       > => {
       return useMutation(getUpdateContractorMutationOptions(options), queryClient);
     }
-    export type getContractorResponse200 = {
-  data: GetContractorResponse
-  status: 200
-}
-
-export type getContractorResponse404 = {
-  data: unknown
-  status: 404
-}
-
-export type getContractorResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type getContractorResponseSuccess = (getContractorResponse200) & {
-  headers: Headers;
-};
-export type getContractorResponseError = (getContractorResponse404 | getContractorResponseDefault) & {
-  headers: Headers;
-};
-
-export type getContractorResponse = (getContractorResponseSuccess | getContractorResponseError)
-
-export const getGetContractorUrl = (id: string,) => {
+    export const getGetContractorUrl = (id: string,) => {
 
 
 
@@ -179,23 +124,16 @@ export const getGetContractorUrl = (id: string,) => {
  * GET_api_contractors_id
  * @summary Get contractor by ID
  */
-export const getContractor = async (id: string, options?: RequestInit): Promise<getContractorResponse> => {
+export const getContractor = async (id: string, options?: RequestInit): Promise<GetContractorResponse> => {
 
-  const res = await fetch(getGetContractorUrl(id),
+  return customFetch<GetContractorResponse>(getGetContractorUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getContractorResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getContractorResponse
-}
+);}
 
 
 
@@ -208,16 +146,16 @@ export const getGetContractorQueryKey = (id: string,) => {
     }
 
 
-export const getGetContractorQueryOptions = <TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, fetch?: RequestInit}
+export const getGetContractorQueryOptions = <TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetContractorQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractor>>> = ({ signal }) => getContractor(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractor>>> = ({ signal }) => getContractor(id, { signal, ...requestOptions });
 
 
 
@@ -237,7 +175,7 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
           TError,
           Awaited<ReturnType<typeof getContractor>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
@@ -247,11 +185,11 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
           TError,
           Awaited<ReturnType<typeof getContractor>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -259,7 +197,7 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
  */
 
 export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -275,25 +213,6 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
 
 
 
-export type deleteContractorResponse204 = {
-  data: unknown
-  status: 204
-}
-
-export type deleteContractorResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 204>
-}
-
-export type deleteContractorResponseSuccess = (deleteContractorResponse204) & {
-  headers: Headers;
-};
-export type deleteContractorResponseError = (deleteContractorResponseDefault) & {
-  headers: Headers;
-};
-
-export type deleteContractorResponse = (deleteContractorResponseSuccess | deleteContractorResponseError)
-
 export const getDeleteContractorUrl = (id: string,) => {
 
 
@@ -306,37 +225,30 @@ export const getDeleteContractorUrl = (id: string,) => {
  * DELETE_api_contractors_id
  * @summary Delete contractor
  */
-export const deleteContractor = async (id: string, options?: RequestInit): Promise<deleteContractorResponse> => {
+export const deleteContractor = async (id: string, options?: RequestInit): Promise<unknown> => {
 
-  const res = await fetch(getDeleteContractorUrl(id),
+  return customFetch<unknown>(getDeleteContractorUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteContractorResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteContractorResponse
-}
+);}
 
 
 
 
 export const getDeleteContractorMutationOptions = <TError = ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteContractor'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -344,7 +256,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteContractor>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteContractor(id,fetchOptions)
+          return  deleteContractor(id,requestOptions)
         }
 
 
@@ -362,7 +274,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete contractor
  */
 export const useDeleteContractor = <TError = ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteContractor>>,
         TError,
@@ -371,31 +283,7 @@ export const useDeleteContractor = <TError = ProblemDetails,
       > => {
       return useMutation(getDeleteContractorMutationOptions(options), queryClient);
     }
-    export type getContractorsResponse200 = {
-  data: GetContractorsResponse[]
-  status: 200
-}
-
-export type getContractorsResponse404 = {
-  data: unknown
-  status: 404
-}
-
-export type getContractorsResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type getContractorsResponseSuccess = (getContractorsResponse200) & {
-  headers: Headers;
-};
-export type getContractorsResponseError = (getContractorsResponse404 | getContractorsResponseDefault) & {
-  headers: Headers;
-};
-
-export type getContractorsResponse = (getContractorsResponseSuccess | getContractorsResponseError)
-
-export const getGetContractorsUrl = (params?: GetContractorsParams,) => {
+    export const getGetContractorsUrl = (params?: GetContractorsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -414,23 +302,16 @@ export const getGetContractorsUrl = (params?: GetContractorsParams,) => {
  * GET_api_contractors
  * @summary Get all contractors, optionally filtered by NIPs
  */
-export const getContractors = async (params?: GetContractorsParams, options?: RequestInit): Promise<getContractorsResponse> => {
+export const getContractors = async (params?: GetContractorsParams, options?: RequestInit): Promise<GetContractorsResponse[]> => {
 
-  const res = await fetch(getGetContractorsUrl(params),
+  return customFetch<GetContractorsResponse[]>(getGetContractorsUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getContractorsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getContractorsResponse
-}
+);}
 
 
 
@@ -443,16 +324,16 @@ export const getGetContractorsQueryKey = (params?: GetContractorsParams,) => {
     }
 
 
-export const getGetContractorsQueryOptions = <TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, fetch?: RequestInit}
+export const getGetContractorsQueryOptions = <TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetContractorsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractors>>> = ({ signal }) => getContractors(params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContractors>>> = ({ signal }) => getContractors(params, { signal, ...requestOptions });
 
 
 
@@ -472,7 +353,7 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
           TError,
           Awaited<ReturnType<typeof getContractors>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
@@ -482,11 +363,11 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
           TError,
           Awaited<ReturnType<typeof getContractors>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
- params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -494,7 +375,7 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
  */
 
 export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
- params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -510,30 +391,6 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
 
 
 
-export type createContractorResponse200 = {
-  data: CreateContractorResponse
-  status: 200
-}
-
-export type createContractorResponse404 = {
-  data: unknown
-  status: 404
-}
-
-export type createContractorResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type createContractorResponseSuccess = (createContractorResponse200) & {
-  headers: Headers;
-};
-export type createContractorResponseError = (createContractorResponse404 | createContractorResponseDefault) & {
-  headers: Headers;
-};
-
-export type createContractorResponse = (createContractorResponseSuccess | createContractorResponseError)
-
 export const getCreateContractorUrl = () => {
 
 
@@ -546,9 +403,9 @@ export const getCreateContractorUrl = () => {
  * POST_api_contractors
  * @summary Create a new contractor
  */
-export const createContractor = async (createContractorCommand: CreateContractorCommand, options?: RequestInit): Promise<createContractorResponse> => {
+export const createContractor = async (createContractorCommand: CreateContractorCommand, options?: RequestInit): Promise<CreateContractorResponse> => {
 
-  const res = await fetch(getCreateContractorUrl(),
+  return customFetch<CreateContractorResponse>(getCreateContractorUrl(),
   {
     ...options,
     method: 'POST',
@@ -556,28 +413,21 @@ export const createContractor = async (createContractorCommand: CreateContractor
     body: JSON.stringify(
       createContractorCommand,)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createContractorResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createContractorResponse
-}
+);}
 
 
 
 
 export const getCreateContractorMutationOptions = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext> => {
 
 const mutationKey = ['createContractor'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -585,7 +435,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createContractor>>, {data: CreateContractorCommand}> = (props) => {
           const {data} = props ?? {};
 
-          return  createContractor(data,fetchOptions)
+          return  createContractor(data,requestOptions)
         }
 
 
@@ -603,7 +453,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a new contractor
  */
 export const useCreateContractor = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createContractor>>,
         TError,

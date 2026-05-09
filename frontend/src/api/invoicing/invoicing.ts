@@ -21,41 +21,12 @@ import type {
   ProblemDetails
 } from '../models';
 
+import { customFetch } from '.././mutator';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
-export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
-export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
-export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
-export type HTTPStatusCode4xx = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 419 | 420 | 421 | 422 | 423 | 424 | 426 | 428 | 429 | 431 | 451;
-export type HTTPStatusCode5xx = 500 | 501 | 502 | 503 | 504 | 505 | 507 | 511;
-export type HTTPStatusCodes = HTTPStatusCode1xx | HTTPStatusCode2xx | HTTPStatusCode3xx | HTTPStatusCode4xx | HTTPStatusCode5xx;
-
-
-export type createInvoiceResponse200 = {
-  data: IResult
-  status: 200
-}
-
-export type createInvoiceResponse404 = {
-  data: unknown
-  status: 404
-}
-
-export type createInvoiceResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type createInvoiceResponseSuccess = (createInvoiceResponse200) & {
-  headers: Headers;
-};
-export type createInvoiceResponseError = (createInvoiceResponse404 | createInvoiceResponseDefault) & {
-  headers: Headers;
-};
-
-export type createInvoiceResponse = (createInvoiceResponseSuccess | createInvoiceResponseError)
 
 export const getCreateInvoiceUrl = () => {
 
@@ -69,9 +40,9 @@ export const getCreateInvoiceUrl = () => {
  * POST_api_invoices
  * @summary Create a single invoice for selected orders
  */
-export const createInvoice = async (createInvoiceCommand: CreateInvoiceCommand, options?: RequestInit): Promise<createInvoiceResponse> => {
+export const createInvoice = async (createInvoiceCommand: CreateInvoiceCommand, options?: RequestInit): Promise<IResult> => {
 
-  const res = await fetch(getCreateInvoiceUrl(),
+  return customFetch<IResult>(getCreateInvoiceUrl(),
   {
     ...options,
     method: 'POST',
@@ -79,28 +50,21 @@ export const createInvoice = async (createInvoiceCommand: CreateInvoiceCommand, 
     body: JSON.stringify(
       createInvoiceCommand,)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createInvoiceResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createInvoiceResponse
-}
+);}
 
 
 
 
 export const getCreateInvoiceMutationOptions = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext> => {
 
 const mutationKey = ['createInvoice'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -108,7 +72,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoice>>, {data: CreateInvoiceCommand}> = (props) => {
           const {data} = props ?? {};
 
-          return  createInvoice(data,fetchOptions)
+          return  createInvoice(data,requestOptions)
         }
 
 
@@ -126,7 +90,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a single invoice for selected orders
  */
 export const useCreateInvoice = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createInvoice>>,
         TError,
@@ -135,31 +99,7 @@ export const useCreateInvoice = <TError = unknown | ProblemDetails,
       > => {
       return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
     }
-    export type createInvoicesBulkResponse200 = {
-  data: IResult
-  status: 200
-}
-
-export type createInvoicesBulkResponse404 = {
-  data: unknown
-  status: 404
-}
-
-export type createInvoicesBulkResponseDefault = {
-  data: ProblemDetails
-  status: Exclude<HTTPStatusCodes, 200 | 404>
-}
-
-export type createInvoicesBulkResponseSuccess = (createInvoicesBulkResponse200) & {
-  headers: Headers;
-};
-export type createInvoicesBulkResponseError = (createInvoicesBulkResponse404 | createInvoicesBulkResponseDefault) & {
-  headers: Headers;
-};
-
-export type createInvoicesBulkResponse = (createInvoicesBulkResponseSuccess | createInvoicesBulkResponseError)
-
-export const getCreateInvoicesBulkUrl = () => {
+    export const getCreateInvoicesBulkUrl = () => {
 
 
 
@@ -171,9 +111,9 @@ export const getCreateInvoicesBulkUrl = () => {
  * POST_api_invoices_bulk
  * @summary Create multiple invoices for date range
  */
-export const createInvoicesBulk = async (createInvoicesCommand: CreateInvoicesCommand, options?: RequestInit): Promise<createInvoicesBulkResponse> => {
+export const createInvoicesBulk = async (createInvoicesCommand: CreateInvoicesCommand, options?: RequestInit): Promise<IResult> => {
 
-  const res = await fetch(getCreateInvoicesBulkUrl(),
+  return customFetch<IResult>(getCreateInvoicesBulkUrl(),
   {
     ...options,
     method: 'POST',
@@ -181,28 +121,21 @@ export const createInvoicesBulk = async (createInvoicesCommand: CreateInvoicesCo
     body: JSON.stringify(
       createInvoicesCommand,)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createInvoicesBulkResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createInvoicesBulkResponse
-}
+);}
 
 
 
 
 export const getCreateInvoicesBulkMutationOptions = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext> => {
 
 const mutationKey = ['createInvoicesBulk'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -210,7 +143,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoicesBulk>>, {data: CreateInvoicesCommand}> = (props) => {
           const {data} = props ?? {};
 
-          return  createInvoicesBulk(data,fetchOptions)
+          return  createInvoicesBulk(data,requestOptions)
         }
 
 
@@ -228,7 +161,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create multiple invoices for date range
  */
 export const useCreateInvoicesBulk = <TError = unknown | ProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createInvoicesBulk>>,
         TError,

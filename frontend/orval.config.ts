@@ -13,9 +13,12 @@ export default defineConfig({
 			client: "react-query",
 			mode: "tags-split",
 			override: {
-				query: {
-					useQuery: true,
-					useMutation: true,
+				mutator: {
+					path: "./src/api/mutator.ts",
+					name: "customFetch",
+				},
+				fetch: {
+					includeHttpResponseReturnType: false,
 				},
 			},
 		},
