@@ -11,7 +11,12 @@ const config = defineConfig({
 	server: {
 		allowedHosts: ["host.docker.internal"],
 	},
-	plugins: [devtools(), tailwindcss(), tanstackRouter({ target: "react", autoCodeSplitting: true }), viteReact()],
+	plugins: [
+		devtools(),
+		tailwindcss(),
+		tanstackRouter({ target: "react", autoCodeSplitting: true }),
+		viteReact(),
+	],
 });
 
 export default config;

@@ -3,7 +3,6 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import type { RouterContext } from "../providers/AppRouterProvider";
-import "../styles.css";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: RootComponent,
