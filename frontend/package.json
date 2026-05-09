@@ -10,7 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "api": "orval",
+    "orval": "orval",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check"
