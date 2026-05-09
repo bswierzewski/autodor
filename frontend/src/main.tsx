@@ -1,5 +1,6 @@
-import { ClerkProvider } from "@clerk/react";
+import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/react";
 import ReactDOM from "react-dom/client";
+import { LoadingScreen } from "./components/LoadingScreen";
 import { AppQueryProvider } from "./providers/AppQueryProvider";
 import { AppRouterProvider } from "./providers/AppRouterProvider";
 
@@ -9,12 +10,15 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 
 	root.render(
-		<ClerkProvider
-			publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? ""}
-		>
-			<AppQueryProvider>
-				<AppRouterProvider />
-			</AppQueryProvider>
+		<ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? ""}>
+			<ClerkLoading>
+				<LoadingScreen />
+			</ClerkLoading>
+			<ClerkLoaded>
+				<AppQueryProvider>
+					<AppRouterProvider />
+				</AppQueryProvider>
+			</ClerkLoaded>
 		</ClerkProvider>,
 	);
 }

@@ -1,0 +1,8 @@
+export function LoadingScreen() {
+	return (
+		<div className="flex min-h-screen flex-col items-center justify-center gap-4">
+			<div className="size-10 animate-spin rounded-full border-4 border-border border-t-primary" />
+			<p className="text-sm text-muted-foreground">Ładowanie aplikacji...</p>
+		</div>
+	);
+}

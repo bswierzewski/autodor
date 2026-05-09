@@ -9,68 +9,135 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ContractorsIndexRouteImport } from './routes/contractors/index'
+import { Route as PendingApprovalRouteImport } from './routes/pending-approval'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
+import { Route as ProtectedContractorsRouteImport } from './routes/_protected/contractors'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PendingApprovalRoute = PendingApprovalRouteImport.update({
+  id: '/pending-approval',
+  path: '/pending-approval',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContractorsIndexRoute = ContractorsIndexRouteImport.update({
-  id: '/contractors/',
-  path: '/contractors/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ProtectedContractorsRoute = ProtectedContractorsRouteImport.update({
+  id: '/contractors',
+  path: '/contractors',
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/contractors/': typeof ContractorsIndexRoute
+  '/': typeof ProtectedIndexRoute
+  '/login': typeof LoginRoute
+  '/pending-approval': typeof PendingApprovalRoute
+  '/contractors': typeof ProtectedContractorsRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/contractors': typeof ContractorsIndexRoute
+  '/login': typeof LoginRoute
+  '/pending-approval': typeof PendingApprovalRoute
+  '/contractors': typeof ProtectedContractorsRoute
+  '/': typeof ProtectedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/contractors/': typeof ContractorsIndexRoute
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/login': typeof LoginRoute
+  '/pending-approval': typeof PendingApprovalRoute
+  '/_protected/contractors': typeof ProtectedContractorsRoute
+  '/_protected/': typeof ProtectedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contractors/'
+  fullPaths: '/' | '/login' | '/pending-approval' | '/contractors'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contractors'
-  id: '__root__' | '/' | '/contractors/'
+  to: '/login' | '/pending-approval' | '/contractors' | '/'
+  id:
+    | '__root__'
+    | '/_protected'
+    | '/login'
+    | '/pending-approval'
+    | '/_protected/contractors'
+    | '/_protected/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ContractorsIndexRoute: typeof ContractorsIndexRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  PendingApprovalRoute: typeof PendingApprovalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/pending-approval': {
+      id: '/pending-approval'
+      path: '/pending-approval'
+      fullPath: '/pending-approval'
+      preLoaderRoute: typeof PendingApprovalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contractors/': {
-      id: '/contractors/'
-      path: '/contractors'
-      fullPath: '/contractors/'
-      preLoaderRoute: typeof ContractorsIndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected/': {
+      id: '/_protected/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/contractors': {
+      id: '/_protected/contractors'
+      path: '/contractors'
+      fullPath: '/contractors'
+      preLoaderRoute: typeof ProtectedContractorsRouteImport
+      parentRoute: typeof ProtectedRoute
     }
   }
 }
 
+interface ProtectedRouteChildren {
+  ProtectedContractorsRoute: typeof ProtectedContractorsRoute
+  ProtectedIndexRoute: typeof ProtectedIndexRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedContractorsRoute: ProtectedContractorsRoute,
+  ProtectedIndexRoute: ProtectedIndexRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ContractorsIndexRoute: ContractorsIndexRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
+  LoginRoute: LoginRoute,
+  PendingApprovalRoute: PendingApprovalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
