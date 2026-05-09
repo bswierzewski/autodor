@@ -18,8 +18,7 @@ namespace Autodor.Modules.Orders.Infrastructure.Services.Orders;
 public class OrderService(
     IDistributorsSalesClient distributorsSalesClient,
     OrdersDbContext dbContext,
-    IProductsClient productsClient,
-    ICurrentUser currentUser) : IOrderService
+    IProductsClient productsClient) : IOrderService
 {
     /// <inheritdoc />
     public async Task<IEnumerable<Order>> GetOrdersAsync(
@@ -27,8 +26,6 @@ public class OrderService(
         DateTime to,
         CancellationToken ct = default)
     {
-        var user = currentUser;
-
         var dates = DateTimeUtilities.EachDay(from, to);
 
         var ordersPerDay = await Task.WhenAll(dates.Select(distributorsSalesClient.GetOrdersAsync));
