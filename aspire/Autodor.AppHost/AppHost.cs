@@ -13,7 +13,12 @@ var database = postgres.AddDatabase("db");
 var api = builder.AddProject<Projects.Autodor_API>("api")
     .WithReference(database, "Default")
     .WaitFor(database)
-    .WithHttpHealthCheck("/health");
+    .WithHttpHealthCheck("/health")
+    .WithUrlForEndpoint("http", url =>
+    {
+        url.DisplayText = "Scalar";
+        url.Url = "/scalar";
+    });
 
 // Add Frontend project (Vite + React)
 var app = builder.AddViteApp("app", "../../frontend")
