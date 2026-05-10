@@ -2,6 +2,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +25,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         var result = await client.GetClientsAsync(query);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.Entities.Should().NotBeNull();
+        result.Should().NotBeNull();
+        result.Entities.Should().NotBeNull();
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -44,9 +44,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         var result = await client.GetClientsAsync(query);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.Entities.Should().NotBeNull();
+        result.Should().NotBeNull();
+        result.Entities.Should().NotBeNull();
         // Filter may return 0 results if client doesn't exist in sandbox
     }
 
@@ -66,17 +65,15 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var createdClientResult = await client.CreateClientAsync(newClient);
-        createdClientResult.IsError.Should().BeFalse();
-        createdClientResult.Value.Id.Should().NotBeNull();
+        createdClientResult.Id.Should().NotBeNull();
 
         // Act
-        var result = await client.GetClientAsync(createdClientResult.Value.Id!.Value);
+        var result = await client.GetClientAsync(createdClientResult.Id!.Value);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.FirstName.Should().Be("GetTest");
-        result.Value.Id.Should().Be(createdClientResult.Value.Id);
+        result.Should().NotBeNull();
+        result.FirstName.Should().Be("GetTest");
+        result.Id.Should().Be(createdClientResult.Id);
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -103,11 +100,10 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         var result = await infaktClient.CreateClientAsync(client);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.FirstName.Should().Be("Test");
-        result.Value.LastName.Should().Be("User");
-        result.Value.Id.Should().NotBeNull();
+        result.Should().NotBeNull();
+        result.FirstName.Should().Be("Test");
+        result.LastName.Should().Be("User");
+        result.Id.Should().NotBeNull();
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -126,8 +122,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
         var createdClientResult = await client.CreateClientAsync(newClient);
-        createdClientResult.IsError.Should().BeFalse();
-        createdClientResult.Value.Id.Should().NotBeNull();
+        createdClientResult.Id.Should().NotBeNull();
 
         // Update the client data
         var updatedClient = new Client
@@ -136,18 +131,17 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
             FirstName = "UpdatedTest",
             LastName = "UpdatedUser",
             BusinessActivityKind = "private_person",
-            Email = createdClientResult.Value.Email
+            Email = createdClientResult.Email
         };
 
         // Act
-        var result = await client.UpdateClientAsync(createdClientResult.Value.Id!.Value, updatedClient);
+        var result = await client.UpdateClientAsync(createdClientResult.Id!.Value, updatedClient);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.FirstName.Should().Be("UpdatedTest");
-        result.Value.LastName.Should().Be("UpdatedUser");
-        result.Value.Id.Should().Be(createdClientResult.Value.Id);
+        result.Should().NotBeNull();
+        result.FirstName.Should().Be("UpdatedTest");
+        result.LastName.Should().Be("UpdatedUser");
+        result.Id.Should().Be(createdClientResult.Id);
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -182,10 +176,9 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         var result = await client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        result.Value.Should().NotBeNull();
-        result.Value.Id.Should().NotBeNull();
-        result.Value.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+        result.Should().NotBeNull();
+        result.Id.Should().NotBeNull();
+        result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -217,11 +210,10 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var result = await client.CreateInvoiceAsync(invoice);
+        var action = () => client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.IsError.Should().BeTrue("API should return error for invalid data");
-        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
+        await action.Should().ThrowAsync<ValidationException>();
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
@@ -243,11 +235,10 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
         var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var result = await client.CreateInvoiceAsync(invoice);
+        var action = () => client.CreateInvoiceAsync(invoice);
 
         // Assert
-        result.IsError.Should().BeTrue("API should return error for missing required field");
-        result.FirstError.Type.Should().Be(ErrorOr.ErrorType.Validation);
-        result.FirstError.Code.Should().Be("services");
+        var exception = await action.Should().ThrowAsync<ValidationException>();
+        exception.Which.Errors.Should().ContainKey("services");
     }
 }

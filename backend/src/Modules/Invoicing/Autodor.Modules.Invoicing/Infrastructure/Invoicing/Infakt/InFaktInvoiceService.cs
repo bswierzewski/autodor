@@ -3,25 +3,22 @@ using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Extensions;
-using ErrorOr;
 using InFaktClient = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Responses.Client;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt;
 
 public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
 {
-    public async Task<ErrorOr<Success>> CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
+    public async Task CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
         // Upsert client (ensure it exists in InFakt system and is up to date)
-        var upsertResult = await UpsertClientAsync(invoice.Contractor, cancellationToken);
-        if (upsertResult.IsError)
-            return upsertResult.Errors;
+        await UpsertClientAsync(invoice.Contractor, cancellationToken);
 
         // Create invoice (InFakt will automatically link to client by NIP)
-        return await CreateInvoiceInternalAsync(invoice, cancellationToken);
+        await CreateInvoiceInternalAsync(invoice, cancellationToken);
     }
 
-    private async Task<ErrorOr<Success>> UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
+    private async Task UpsertClientAsync(Contractor contractor, CancellationToken cancellationToken)
     {
         var searchQuery = new ClientSearchQuery
         {
@@ -29,10 +26,8 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
         };
 
         var clientsResult = await httpClient.GetClientsAsync(searchQuery, cancellationToken);
-        if (clientsResult.IsError)
-            return clientsResult.Errors;
 
-        var existingClient = clientsResult.Value.Entities.FirstOrDefault(c => c.Id.HasValue);
+        var existingClient = clientsResult.Entities.FirstOrDefault(c => c.Id.HasValue);
 
         if (existingClient is not null)
         {
@@ -40,17 +35,15 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
             if (RequiresUpdate(existingClient, contractor))
             {
                 var updatedClient = contractor.ToInFaktClient();
-                var updateResult = await httpClient.UpdateClientAsync(existingClient.Id!.Value, updatedClient, cancellationToken);
-                return updateResult.IsError ? updateResult.Errors : Result.Success;
+                await httpClient.UpdateClientAsync(existingClient.Id!.Value, updatedClient, cancellationToken);
             }
 
-            return Result.Success;
+            return;
         }
 
         // Client doesn't exist - create new one
         var newClient = contractor.ToInFaktClient();
-        var createResult = await httpClient.CreateClientAsync(newClient, cancellationToken);
-        return createResult.IsError ? createResult.Errors : Result.Success;
+        await httpClient.CreateClientAsync(newClient, cancellationToken);
     }
 
     private static bool RequiresUpdate(
@@ -65,10 +58,9 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
             || !string.Equals(existingClient.Email, contractor.Email, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task<ErrorOr<Success>> CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
+    private async Task CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
     {
         var inFaktInvoice = invoice.ToInFaktInvoice();
-        var result = await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
-        return result.IsError ? result.Errors : Result.Success;
+        await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
     }
 }

@@ -6,8 +6,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodot.Modules.Orders.Contracts.Models;
 using Autodot.Modules.Orders.Contracts.Queries;
-using BuildingBlocks.Infrastructure.Exceptions.Extensions;
-using ErrorOr;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +44,7 @@ public class CreateInvoiceHandler
         if (filteredOrders.Count == 0)
         {
             logger.LogWarning("No orders found for the specified order IDs");
-            return Error.NotFound("Orders.NotFound", "No orders found for the specified order IDs").Problem();
+            throw new NotFoundException("No orders found for the specified order IDs");
         }
 
         // Get contractor details for invoice generation
@@ -55,7 +54,7 @@ public class CreateInvoiceHandler
         if (contractor == null)
         {
             logger.LogError("Contractor with NIP {ContractorNip} not found", command.ContractorNip);
-            return Error.NotFound("Contractor.NotFound", $"Contractor with NIP {command.ContractorNip} was not found").Problem();
+            throw new NotFoundException($"Contractor with NIP {command.ContractorNip} was not found");
         }
 
         // Map contractor DTO to domain value object
@@ -91,14 +90,7 @@ public class CreateInvoiceHandler
 
         var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
 
-        var result = await invoiceService.CreateInvoiceAsync(invoice, ct);
-
-        if (result.IsError)
-        {
-            logger.LogError("Failed to create invoice for contractor {ContractorNip}: {Errors}",
-                command.ContractorNip, string.Join(", ", result.Errors.Select(e => e.Description)));
-            return result.Errors.Problem();
-        }
+        await invoiceService.CreateInvoiceAsync(invoice, ct);
 
         logger.LogInformation("Successfully created invoice for contractor {ContractorNip}", command.ContractorNip);
 

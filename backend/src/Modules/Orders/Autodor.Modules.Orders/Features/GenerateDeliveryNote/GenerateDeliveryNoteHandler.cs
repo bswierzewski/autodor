@@ -2,8 +2,7 @@ using Autodor.Modules.Contractors.Contracts.Models;
 using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using BuildingBlocks.Infrastructure.Exceptions.Extensions;
-using ErrorOr;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -35,26 +34,26 @@ public static class GenerateDeliveryNoteHandler
         var order = await orderService.GetOrderAsync(command.OrderId, command.Date, ct);
 
         if (order is null)
-            return Error.NotFound("Order.NotFound", $"Order with ID '{command.OrderId}' was not found").Problem();
+            throw new NotFoundException($"Order with ID '{command.OrderId}' was not found");
 
         // Business logic: Filter out excluded order
         if (order.IsExcluded)
-            return Error.NotFound("Order.Excluded", $"Order with ID '{command.OrderId}' is excluded").Problem();
+            throw new NotFoundException($"Order with ID '{command.OrderId}' is excluded");
 
         // Business logic: Filter out excluded items
         var nonExcludedItems = order.Items.Where(i => !i.IsExcluded).ToList();
 
         if (nonExcludedItems.Count == 0)
-            return Error.NotFound("Order.NoItems", "Order has no items after exclusions are applied").Problem();
+            throw new NotFoundException("Order has no items after exclusions are applied");
 
         // Fetch contractor by NIP (CustomerNumber)
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
-            return Error.NotFound("Order.EmptyCustomerNumber", "Customer number is empty").Problem();
+            throw new NotFoundException("Customer number is empty");
 
         var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNipQuery(order.CustomerNumber), ct);
 
         if (contractor is null)
-            return Error.NotFound("Contractor.NotFound", $"Contractor with NIP '{order.CustomerNumber}' was not found").Problem();
+            throw new NotFoundException($"Contractor with NIP '{order.CustomerNumber}' was not found");
 
         // Generate PDF with non-excluded items
         var pdfBytes = CreateDocument(order, nonExcludedItems, contractor).GeneratePdf();

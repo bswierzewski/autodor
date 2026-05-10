@@ -1,6 +1,5 @@
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using BuildingBlocks.Infrastructure.Exceptions.Extensions;
-using ErrorOr;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Wolverine.Http;
@@ -22,7 +21,7 @@ public static class GetOrderHandler
         var order = await orderService.GetOrderAsync(query.OrderId, query.Date, ct);
 
         if (order is null)
-            return Error.NotFound("Order.NotFound", $"Order with ID '{query.OrderId}' was not found").Problem();
+            throw new NotFoundException($"Order with ID '{query.OrderId}' was not found");
 
         var response = new GetOrderResponse(
             order.Id!,

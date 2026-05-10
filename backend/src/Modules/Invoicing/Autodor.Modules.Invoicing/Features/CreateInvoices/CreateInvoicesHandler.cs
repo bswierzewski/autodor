@@ -6,8 +6,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodot.Modules.Orders.Contracts.Models;
 using Autodot.Modules.Orders.Contracts.Queries;
-using BuildingBlocks.Infrastructure.Exceptions.Extensions;
-using ErrorOr;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +40,7 @@ public class CreateInvoicesHandler
         if (orders.Count == 0)
         {
             logger.LogWarning("No orders found for bulk invoice creation in date range {DateFrom} to {DateTo}", command.DateFrom, command.DateTo);
-            return Error.NotFound("Orders.NotFound", "No orders found for bulk invoice creation").Problem();
+            throw new NotFoundException("No orders found for bulk invoice creation");
         }
 
         logger.LogInformation("Found {OrderCount} orders for invoice creation", orders.Count);
@@ -108,19 +107,23 @@ public class CreateInvoicesHandler
                 Items = invoiceItems.AsReadOnly()
             };
 
-            var result = await invoiceService.CreateInvoiceAsync(invoice, ct);
-
-            if (result.IsError)
+            try
             {
-                logger.LogError("Failed to create invoice for contractor {NIP} ({Name}): {Errors}",
-                    contractorNIP, contractorDto.Name, string.Join(", ", result.Errors.Select(e => e.Description)));
-                continue;
+                await invoiceService.CreateInvoiceAsync(invoice, ct);
+                invoicesCreated++;
+
+                logger.LogInformation("Created invoice for contractor {NIP} ({Name}) with {ItemCount} items",
+                    contractorNIP, contractorDto.Name, invoiceItems.Count);
             }
-
-            invoicesCreated++;
-
-            logger.LogInformation("Created invoice for contractor {NIP} ({Name}) with {ItemCount} items",
-                contractorNIP, contractorDto.Name, invoiceItems.Count);
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to create invoice for contractor {NIP} ({Name})",
+                    contractorNIP, contractorDto.Name);
+            }
         }
 
         logger.LogInformation("Successfully created {InvoiceCount} invoices", invoicesCreated);
