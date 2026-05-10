@@ -6,6 +6,9 @@
  */
 import type { HttpValidationProblemDetailsErrors } from './httpValidationProblemDetailsErrors';
 
+/**
+ * RFC 7807 validation-style problem details returned by the API.
+ */
 export interface HttpValidationProblemDetails {
   /** @nullable */
   type?: string | null;
@@ -21,4 +24,8 @@ export interface HttpValidationProblemDetails {
   /** @nullable */
   instance?: string | null;
   errors?: HttpValidationProblemDetailsErrors;
+  /** The trace identifier for request tracking. */
+  traceId?: string;
+  /** Timestamp when the error occurred in UTC. */
+  timestamp?: string;
 }

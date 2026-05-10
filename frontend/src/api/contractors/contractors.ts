@@ -29,7 +29,7 @@ import type {
   GetContractorResponse,
   GetContractorsParams,
   GetContractorsResponse,
-  ProblemDetails,
+  HttpValidationProblemDetails,
   UpdateContractorCommand
 } from '../models';
 
@@ -68,7 +68,7 @@ export const updateContractor = async (id: string,
 
 
 
-export const getUpdateContractorMutationOptions = <TError = ProblemDetails,
+export const getUpdateContractorMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext> => {
 
@@ -97,12 +97,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UpdateContractorMutationResult = NonNullable<Awaited<ReturnType<typeof updateContractor>>>
     export type UpdateContractorMutationBody = UpdateContractorCommand
-    export type UpdateContractorMutationError = ProblemDetails
+    export type UpdateContractorMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Update contractor details
  */
-export const useUpdateContractor = <TError = ProblemDetails,
+export const useUpdateContractor = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateContractor>>, TError,{id: string;data: UpdateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateContractor>>,
@@ -146,7 +146,7 @@ export const getGetContractorQueryKey = (id: string,) => {
     }
 
 
-export const getGetContractorQueryOptions = <TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGetContractorQueryOptions = <TData = Awaited<ReturnType<typeof getContractor>>, TError = HttpValidationProblemDetails>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -165,10 +165,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetContractorQueryResult = NonNullable<Awaited<ReturnType<typeof getContractor>>>
-export type GetContractorQueryError = unknown | ProblemDetails
+export type GetContractorQueryError = HttpValidationProblemDetails
 
 
-export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
+export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = HttpValidationProblemDetails>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getContractor>>,
@@ -178,7 +178,7 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
+export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = HttpValidationProblemDetails>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getContractor>>,
@@ -188,7 +188,7 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
+export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = HttpValidationProblemDetails>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -196,7 +196,7 @@ export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor
  * @summary Get contractor by ID
  */
 
-export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = unknown | ProblemDetails>(
+export function useGetContractor<TData = Awaited<ReturnType<typeof getContractor>>, TError = HttpValidationProblemDetails>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractor>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -239,7 +239,7 @@ export const deleteContractor = async (id: string, options?: RequestInit): Promi
 
 
 
-export const getDeleteContractorMutationOptions = <TError = ProblemDetails,
+export const getDeleteContractorMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext> => {
 
@@ -268,12 +268,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DeleteContractorMutationResult = NonNullable<Awaited<ReturnType<typeof deleteContractor>>>
 
-    export type DeleteContractorMutationError = ProblemDetails
+    export type DeleteContractorMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Delete contractor
  */
-export const useDeleteContractor = <TError = ProblemDetails,
+export const useDeleteContractor = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteContractor>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteContractor>>,
@@ -324,7 +324,7 @@ export const getGetContractorsQueryKey = (params?: GetContractorsParams,) => {
     }
 
 
-export const getGetContractorsQueryOptions = <TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGetContractorsQueryOptions = <TData = Awaited<ReturnType<typeof getContractors>>, TError = HttpValidationProblemDetails>(params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -343,10 +343,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetContractorsQueryResult = NonNullable<Awaited<ReturnType<typeof getContractors>>>
-export type GetContractorsQueryError = unknown | ProblemDetails
+export type GetContractorsQueryError = HttpValidationProblemDetails
 
 
-export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
+export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = HttpValidationProblemDetails>(
  params: undefined |  GetContractorsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getContractors>>,
@@ -356,7 +356,7 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
+export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = HttpValidationProblemDetails>(
  params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getContractors>>,
@@ -366,7 +366,7 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
+export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = HttpValidationProblemDetails>(
  params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -374,7 +374,7 @@ export function useGetContractors<TData = Awaited<ReturnType<typeof getContracto
  * @summary Get all contractors, optionally filtered by NIPs
  */
 
-export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = unknown | ProblemDetails>(
+export function useGetContractors<TData = Awaited<ReturnType<typeof getContractors>>, TError = HttpValidationProblemDetails>(
  params?: GetContractorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContractors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -418,7 +418,7 @@ export const createContractor = async (createContractorCommand: CreateContractor
 
 
 
-export const getCreateContractorMutationOptions = <TError = unknown | ProblemDetails,
+export const getCreateContractorMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext> => {
 
@@ -447,12 +447,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CreateContractorMutationResult = NonNullable<Awaited<ReturnType<typeof createContractor>>>
     export type CreateContractorMutationBody = CreateContractorCommand
-    export type CreateContractorMutationError = unknown | ProblemDetails
+    export type CreateContractorMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Create a new contractor
  */
-export const useCreateContractor = <TError = unknown | ProblemDetails,
+export const useCreateContractor = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createContractor>>, TError,{data: CreateContractorCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createContractor>>,

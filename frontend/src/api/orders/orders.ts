@@ -31,8 +31,7 @@ import type {
   GetOrdersParams,
   GetOrdersResponse,
   HttpValidationProblemDetails,
-  IResult,
-  ProblemDetails
+  IResult
 } from '../models';
 
 import { customFetch } from '.././mutator';
@@ -86,7 +85,7 @@ export const getGetOrderQueryKey = (id: string,
     }
 
 
-export const getGetOrderQueryOptions = <TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(id: string,
+export const getGetOrderQueryOptions = <TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(id: string,
     params?: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -106,10 +105,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getOrder>>>
-export type GetOrderQueryError = HttpValidationProblemDetails | unknown | ProblemDetails
+export type GetOrderQueryError = HttpValidationProblemDetails
 
 
-export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
  id: string,
     params: undefined |  GetOrderParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -120,7 +119,7 @@ export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
  id: string,
     params?: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -131,7 +130,7 @@ export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
  id: string,
     params?: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -140,7 +139,7 @@ export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError
  * @summary Get order by ID and date
  */
 
-export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
  id: string,
     params?: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -186,7 +185,7 @@ export const updateOrderExclusion = async (id: string,
 
 
 
-export const getUpdateOrderExclusionMutationOptions = <TError = unknown | ProblemDetails,
+export const getUpdateOrderExclusionMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext> => {
 
@@ -215,12 +214,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UpdateOrderExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderExclusion>>>
     export type UpdateOrderExclusionMutationBody = ExcludeOrderCommand
-    export type UpdateOrderExclusionMutationError = unknown | ProblemDetails
+    export type UpdateOrderExclusionMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Include or exclude order from invoicing
  */
-export const useUpdateOrderExclusion = <TError = unknown | ProblemDetails,
+export const useUpdateOrderExclusion = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateOrderExclusion>>,
@@ -271,7 +270,7 @@ export const getGetOrdersQueryKey = (params?: GetOrdersParams,) => {
     }
 
 
-export const getGetOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGetOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -290,10 +289,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>
-export type GetOrdersQueryError = HttpValidationProblemDetails | unknown | ProblemDetails
+export type GetOrdersQueryError = HttpValidationProblemDetails
 
 
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
  params: undefined |  GetOrdersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrders>>,
@@ -303,7 +302,7 @@ export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TErr
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
  params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrders>>,
@@ -313,7 +312,7 @@ export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TErr
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
  params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -321,7 +320,7 @@ export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TErr
  * @summary Get all orders within date range
  */
 
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails | unknown | ProblemDetails>(
+export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
  params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -365,7 +364,7 @@ export const generateDeliveryNote = async (generateDeliveryNoteCommand: Generate
 
 
 
-export const getGenerateDeliveryNoteMutationOptions = <TError = HttpValidationProblemDetails | unknown | ProblemDetails,
+export const getGenerateDeliveryNoteMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext> => {
 
@@ -394,12 +393,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type GenerateDeliveryNoteMutationResult = NonNullable<Awaited<ReturnType<typeof generateDeliveryNote>>>
     export type GenerateDeliveryNoteMutationBody = GenerateDeliveryNoteCommand
-    export type GenerateDeliveryNoteMutationError = HttpValidationProblemDetails | unknown | ProblemDetails
+    export type GenerateDeliveryNoteMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Generate PDF delivery note for an order
  */
-export const useGenerateDeliveryNote = <TError = HttpValidationProblemDetails | unknown | ProblemDetails,
+export const useGenerateDeliveryNote = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof generateDeliveryNote>>,
@@ -439,7 +438,7 @@ export const updateOrderItemExclusion = async (id: string,
 
 
 
-export const getUpdateOrderItemExclusionMutationOptions = <TError = unknown | ProblemDetails,
+export const getUpdateOrderItemExclusionMutationOptions = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext> => {
 
@@ -468,12 +467,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UpdateOrderItemExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderItemExclusion>>>
     export type UpdateOrderItemExclusionMutationBody = ExcludeOrderItemCommand
-    export type UpdateOrderItemExclusionMutationError = unknown | ProblemDetails
+    export type UpdateOrderItemExclusionMutationError = HttpValidationProblemDetails
 
     /**
  * @summary Include or exclude order item from invoicing
  */
-export const useUpdateOrderItemExclusion = <TError = unknown | ProblemDetails,
+export const useUpdateOrderItemExclusion = <TError = HttpValidationProblemDetails,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateOrderItemExclusion>>,

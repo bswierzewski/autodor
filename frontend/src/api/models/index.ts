@@ -22,6 +22,4 @@ export * from './httpValidationProblemDetails';
 export * from './httpValidationProblemDetailsErrors';
 export * from './iResult';
 export * from './orderSummaryResponse';
-export * from './problemDetails';
-export * from './problemDetailsErrors';
 export * from './updateContractorCommand';

@@ -1,17 +1,16 @@
 import { defineConfig } from "orval";
 
-const inputTarget = "../openapi/Autodor.API.json";
-
 export default defineConfig({
 	api: {
 		input: {
-			target: inputTarget,
+			target: "../openapi/Autodor.API.json",
 		},
 		output: {
 			target: "./src/api/generated.ts",
 			schemas: "./src/api/models",
 			client: "react-query",
 			mode: "tags-split",
+			clean: ["!mutator.ts"],
 			override: {
 				mutator: {
 					path: "./src/api/mutator.ts",
@@ -25,7 +24,7 @@ export default defineConfig({
 	},
 	zod: {
 		input: {
-			target: inputTarget,
+			target: "../openapi/Autodor.API.json",
 		},
 		output: {
 			target: "./src/api/generated.ts",

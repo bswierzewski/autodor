@@ -1,7 +1,3 @@
-import type { ProblemDetails } from "./models/problemDetails";
-
-export type { ProblemDetails };
-
 export const customFetch = async <T>(
 	url: string,
 	options: RequestInit = {},
@@ -23,7 +19,7 @@ export const customFetch = async <T>(
 	const data = body ? JSON.parse(body) : null;
 
 	if (!response.ok) {
-		throw data as ProblemDetails;
+		throw data;
 	}
 
 	return data as T;
