@@ -1,5 +1,6 @@
 using Autodor.Modules.Contractors;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using Autodor.Modules.Errors;
 using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
@@ -38,6 +39,7 @@ public static class ModuleExtensions
         modules =
         [
             new ContractorsModule(),
+            new ErrorsModule(),
             new OrdersModule(),
             new InvoicingModule()
         ];

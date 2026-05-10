@@ -13,6 +13,7 @@ import { Route as PendingApprovalRouteImport } from './routes/pending-approval'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
+import { Route as ProtectedErrorsRouteImport } from './routes/_protected/errors'
 import { Route as ProtectedContractorsRouteImport } from './routes/_protected/contractors'
 
 const PendingApprovalRoute = PendingApprovalRouteImport.update({
@@ -34,6 +35,11 @@ const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedErrorsRoute = ProtectedErrorsRouteImport.update({
+  id: '/errors',
+  path: '/errors',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ProtectedContractorsRoute = ProtectedContractorsRouteImport.update({
   id: '/contractors',
   path: '/contractors',
@@ -45,11 +51,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/pending-approval': typeof PendingApprovalRoute
   '/contractors': typeof ProtectedContractorsRoute
+  '/errors': typeof ProtectedErrorsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pending-approval': typeof PendingApprovalRoute
   '/contractors': typeof ProtectedContractorsRoute
+  '/errors': typeof ProtectedErrorsRoute
   '/': typeof ProtectedIndexRoute
 }
 export interface FileRoutesById {
@@ -58,19 +66,21 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/pending-approval': typeof PendingApprovalRoute
   '/_protected/contractors': typeof ProtectedContractorsRoute
+  '/_protected/errors': typeof ProtectedErrorsRoute
   '/_protected/': typeof ProtectedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/pending-approval' | '/contractors'
+  fullPaths: '/' | '/login' | '/pending-approval' | '/contractors' | '/errors'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/pending-approval' | '/contractors' | '/'
+  to: '/login' | '/pending-approval' | '/contractors' | '/errors' | '/'
   id:
     | '__root__'
     | '/_protected'
     | '/login'
     | '/pending-approval'
     | '/_protected/contractors'
+    | '/_protected/errors'
     | '/_protected/'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedIndexRouteImport
       parentRoute: typeof ProtectedRoute
     }
+    '/_protected/errors': {
+      id: '/_protected/errors'
+      path: '/errors'
+      fullPath: '/errors'
+      preLoaderRoute: typeof ProtectedErrorsRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_protected/contractors': {
       id: '/_protected/contractors'
       path: '/contractors'
@@ -122,11 +139,13 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedRouteChildren {
   ProtectedContractorsRoute: typeof ProtectedContractorsRoute
+  ProtectedErrorsRoute: typeof ProtectedErrorsRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedContractorsRoute: ProtectedContractorsRoute,
+  ProtectedErrorsRoute: ProtectedErrorsRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
 }
 

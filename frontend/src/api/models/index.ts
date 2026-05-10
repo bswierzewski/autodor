@@ -9,6 +9,7 @@ export * from './createContractorCommand';
 export * from './createContractorResponse';
 export * from './createInvoiceCommand';
 export * from './createInvoicesCommand';
+export * from './createValidationModelErrorParams';
 export * from './excludeOrderCommand';
 export * from './excludeOrderItemCommand';
 export * from './generateDeliveryNoteCommand';

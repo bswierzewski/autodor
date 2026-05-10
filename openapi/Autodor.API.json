@@ -253,6 +253,300 @@
         }
       }
     },
+    "/api/errors/validation-model": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Validate an AsParameters query model with FluentValidation and return problem details on failure",
+        "description": "GET_api_errors_validation_model",
+        "operationId": "CreateValidationModelError",
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Quantity",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/unauthorized": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 401 problem details response",
+        "description": "GET_api_errors_unauthorized",
+        "operationId": "GetUnauthorizedError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/secured": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Require a fake role-derived permission to demonstrate authorization errors",
+        "description": "GET_api_errors_secured",
+        "operationId": "GetSecuredError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/not-found": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 404 problem details response",
+        "description": "GET_api_errors_not_found",
+        "operationId": "GetNotFoundError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/internal-server-error": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 500 problem details response",
+        "description": "GET_api_errors_internal_server_error",
+        "operationId": "GetInternalServerError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/forbidden": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 403 problem details response",
+        "description": "GET_api_errors_forbidden",
+        "operationId": "GetForbiddenError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/domain-exception": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 400 domain rule violation problem details response",
+        "description": "GET_api_errors_domain_exception",
+        "operationId": "GetDomainExceptionError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/bad-request": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 400 validation problem details response",
+        "description": "GET_api_errors_bad_request",
+        "operationId": "GetBadRequestError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/orders/{id}": {
       "get": {
         "tags": [
@@ -1084,6 +1378,9 @@
   "tags": [
     {
       "name": "Contractors"
+    },
+    {
+      "name": "Errors"
     },
     {
       "name": "Orders"

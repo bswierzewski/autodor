@@ -24,6 +24,9 @@
     <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors.Contracts/Autodor.Modules.Contractors.Contracts.csproj" />
     <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
   </Folder>
+  <Folder Name="/backend/src/Modules/Errors/">
+    <Project Path="backend/src/Modules/Errors/Autodor.Modules.Errors/Autodor.Modules.Errors.csproj" />
+  </Folder>
   <Folder Name="/backend/src/Modules/Invoicing/">
     <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing.Contracts/Autodor.Modules.Invoicing.Contracts.csproj" />
     <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing/Autodor.Modules.Invoicing.csproj" />

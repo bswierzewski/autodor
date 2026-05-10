@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useGetOrders } from "#/api/orders/orders";
 
@@ -21,8 +21,14 @@ function HomePage() {
 	const { data, isLoading, isError } = useGetOrders({ from, to });
 
 	return (
-		<div>
-			<div>
+		<div className="space-y-6 p-6">
+			<div className="flex items-center gap-4">
+				<h1 className="text-2xl font-semibold">Autodor</h1>
+				<Link className="link link-primary" to="/errors">
+					Go to errors
+				</Link>
+			</div>
+			<div className="space-y-4">
 				<input
 					id="from"
 					type="date"
@@ -37,7 +43,7 @@ function HomePage() {
 					min={from}
 					onChange={(e) => setTo(e.target.value)}
 				/>
-				<pre>
+				<pre className="overflow-auto rounded-box bg-base-200 p-4 text-sm">
 					{isLoading
 						? "Loading..."
 						: isError
