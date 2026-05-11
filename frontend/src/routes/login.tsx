@@ -3,12 +3,15 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
 	beforeLoad: ({ context }) => {
-		if (context.auth.isSignedIn && context.auth.isApproved) {
+		if (!context.auth.isSignedIn) {
+			return;
+		}
+
+		if (context.auth.isApproved) {
 			throw redirect({ to: "/" });
 		}
-		if (context.auth.isSignedIn && !context.auth.isApproved) {
-			throw redirect({ to: "/pending-approval" });
-		}
+
+		throw redirect({ to: "/pending" });
 	},
 	component: SignInPage,
 });

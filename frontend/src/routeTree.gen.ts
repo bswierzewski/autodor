@@ -9,16 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PendingApprovalRouteImport } from './routes/pending-approval'
+import { Route as PendingRouteImport } from './routes/pending'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
-import { Route as ProtectedErrorsRouteImport } from './routes/_protected/errors'
-import { Route as ProtectedContractorsRouteImport } from './routes/_protected/contractors'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppErrorsRouteImport } from './routes/_app/errors'
+import { Route as AppContractorsRouteImport } from './routes/_app/contractors'
 
-const PendingApprovalRoute = PendingApprovalRouteImport.update({
-  id: '/pending-approval',
-  path: '/pending-approval',
+const PendingRoute = PendingRouteImport.update({
+  id: '/pending',
+  path: '/pending',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -26,77 +26,77 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedRoute = ProtectedRouteImport.update({
-  id: '/_protected',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ProtectedRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const ProtectedErrorsRoute = ProtectedErrorsRouteImport.update({
+const AppErrorsRoute = AppErrorsRouteImport.update({
   id: '/errors',
   path: '/errors',
-  getParentRoute: () => ProtectedRoute,
+  getParentRoute: () => AppRoute,
 } as any)
-const ProtectedContractorsRoute = ProtectedContractorsRouteImport.update({
+const AppContractorsRoute = AppContractorsRouteImport.update({
   id: '/contractors',
   path: '/contractors',
-  getParentRoute: () => ProtectedRoute,
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof ProtectedIndexRoute
+  '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
-  '/pending-approval': typeof PendingApprovalRoute
-  '/contractors': typeof ProtectedContractorsRoute
-  '/errors': typeof ProtectedErrorsRoute
+  '/pending': typeof PendingRoute
+  '/contractors': typeof AppContractorsRoute
+  '/errors': typeof AppErrorsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/pending-approval': typeof PendingApprovalRoute
-  '/contractors': typeof ProtectedContractorsRoute
-  '/errors': typeof ProtectedErrorsRoute
-  '/': typeof ProtectedIndexRoute
+  '/pending': typeof PendingRoute
+  '/contractors': typeof AppContractorsRoute
+  '/errors': typeof AppErrorsRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_protected': typeof ProtectedRouteWithChildren
+  '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/pending-approval': typeof PendingApprovalRoute
-  '/_protected/contractors': typeof ProtectedContractorsRoute
-  '/_protected/errors': typeof ProtectedErrorsRoute
-  '/_protected/': typeof ProtectedIndexRoute
+  '/pending': typeof PendingRoute
+  '/_app/contractors': typeof AppContractorsRoute
+  '/_app/errors': typeof AppErrorsRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/pending-approval' | '/contractors' | '/errors'
+  fullPaths: '/' | '/login' | '/pending' | '/contractors' | '/errors'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/pending-approval' | '/contractors' | '/errors' | '/'
+  to: '/login' | '/pending' | '/contractors' | '/errors' | '/'
   id:
     | '__root__'
-    | '/_protected'
+    | '/_app'
     | '/login'
-    | '/pending-approval'
-    | '/_protected/contractors'
-    | '/_protected/errors'
-    | '/_protected/'
+    | '/pending'
+    | '/_app/contractors'
+    | '/_app/errors'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  ProtectedRoute: typeof ProtectedRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
-  PendingApprovalRoute: typeof PendingApprovalRoute
+  PendingRoute: typeof PendingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/pending-approval': {
-      id: '/pending-approval'
-      path: '/pending-approval'
-      fullPath: '/pending-approval'
-      preLoaderRoute: typeof PendingApprovalRouteImport
+    '/pending': {
+      id: '/pending'
+      path: '/pending'
+      fullPath: '/pending'
+      preLoaderRoute: typeof PendingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -106,57 +106,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected': {
-      id: '/_protected'
+    '/_app': {
+      id: '/_app'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/': {
-      id: '/_protected/'
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedIndexRouteImport
-      parentRoute: typeof ProtectedRoute
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_protected/errors': {
-      id: '/_protected/errors'
+    '/_app/errors': {
+      id: '/_app/errors'
       path: '/errors'
       fullPath: '/errors'
-      preLoaderRoute: typeof ProtectedErrorsRouteImport
-      parentRoute: typeof ProtectedRoute
+      preLoaderRoute: typeof AppErrorsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_protected/contractors': {
-      id: '/_protected/contractors'
+    '/_app/contractors': {
+      id: '/_app/contractors'
       path: '/contractors'
       fullPath: '/contractors'
-      preLoaderRoute: typeof ProtectedContractorsRouteImport
-      parentRoute: typeof ProtectedRoute
+      preLoaderRoute: typeof AppContractorsRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface ProtectedRouteChildren {
-  ProtectedContractorsRoute: typeof ProtectedContractorsRoute
-  ProtectedErrorsRoute: typeof ProtectedErrorsRoute
-  ProtectedIndexRoute: typeof ProtectedIndexRoute
+interface AppRouteChildren {
+  AppContractorsRoute: typeof AppContractorsRoute
+  AppErrorsRoute: typeof AppErrorsRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
-const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedContractorsRoute: ProtectedContractorsRoute,
-  ProtectedErrorsRoute: ProtectedErrorsRoute,
-  ProtectedIndexRoute: ProtectedIndexRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppContractorsRoute: AppContractorsRoute,
+  AppErrorsRoute: AppErrorsRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
-const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
-  ProtectedRouteChildren,
-)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  ProtectedRoute: ProtectedRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
-  PendingApprovalRoute: PendingApprovalRoute,
+  PendingRoute: PendingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

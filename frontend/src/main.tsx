@@ -1,6 +1,6 @@
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/react";
 import ReactDOM from "react-dom/client";
-import { LoadingScreen } from "./components/LoadingScreen";
+import { LoadingScreen } from "./components/layouts/LoadingScreen";
 import { AppQueryProvider } from "./providers/AppQueryProvider";
 import { AppRouterProvider } from "./providers/AppRouterProvider";
 

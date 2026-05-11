@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import {
 	useCreateValidationModelError,
 	useGetBadRequestError,
@@ -10,17 +9,13 @@ import {
 	useGetUnauthorizedError,
 } from "#/api/errors/errors";
 
-export const Route = createFileRoute("/_protected/errors")({
-	component: ErrorsPage,
-});
-
 type ErrorPanelState = {
 	label: string;
 	value: unknown;
 	isLoading: boolean;
 };
 
-function ErrorsPage() {
+export function ErrorsPage() {
 	const validationModel = useCreateValidationModelError(
 		{
 			Email: "not-an-email",
