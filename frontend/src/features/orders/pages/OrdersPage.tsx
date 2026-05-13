@@ -20,7 +20,7 @@ export function OrdersPage() {
 		<div className="space-y-6 p-6">
 			<div className="flex items-center gap-4">
 				<h1 className="text-2xl font-semibold">Autodor</h1>
-				<Link className="link link-primary" to="/errors">
+				<Link to="/errors">
 					Go to errors
 				</Link>
 			</div>
@@ -39,7 +39,7 @@ export function OrdersPage() {
 					min={from}
 					onChange={(e) => setTo(e.target.value)}
 				/>
-				<pre className="overflow-auto rounded-box bg-base-200 p-4 text-sm">
+				<pre className="overflow-auto text-sm">
 					{isLoading
 						? "Loading..."
 						: isError
