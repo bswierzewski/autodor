@@ -1,4 +1,6 @@
+import { UserButton, useUser } from "@clerk/react";
 import { PackageIcon, UsersThreeIcon } from "@phosphor-icons/react";
+import { Link } from "@tanstack/react-router";
 
 const navItems = [
 	{ label: "Zamówienia", to: "/", icon: PackageIcon },
@@ -6,5 +8,52 @@ const navItems = [
 ] as const;
 
 export function Navbar() {
-	return <div>Navbar</div>;
+	const { user } = useUser();
+	const firstName = user?.firstName ?? user?.fullName?.split(" ")[0] ?? "Użytkownik";
+	const lastName = user?.lastName ?? user?.fullName?.split(" ").slice(1).join(" ") ?? "";
+
+	return (
+		<header className="flex items-center justify-between gap-6 rounded-2xl border border-white/70 bg-white/85 px-5 py-4 shadow-sm backdrop-blur">
+			<div className="shrink-0">
+				<span className="text-lg font-black tracking-[0.32em] text-slate-900">
+					AUTODOR
+				</span>
+			</div>
+			<div className="flex items-center gap-4 sm:gap-6">
+				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
+					{navItems.map(({ label, to, icon: Icon }) => (
+						<Link
+							key={to}
+							to={to}
+							aria-label={label}
+							className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950"
+							activeProps={{
+								className:
+									"flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm",
+							}}
+						>
+							<Icon size={18} weight="duotone" />
+							<span className="hidden sm:inline">{label}</span>
+						</Link>
+					))}
+				</nav>
+				<div aria-hidden="true" className="hidden h-10 w-px bg-slate-200 sm:block" />
+				<div className="flex items-center gap-3">
+					<UserButton
+						appearance={{
+							elements: {
+								avatarBox: "h-10 w-10 ring-2 ring-white shadow-sm",
+							},
+						}}
+					/>
+					<div className="hidden text-right sm:block">
+						<div className="text-sm font-semibold leading-tight text-slate-900">{firstName}</div>
+						{lastName ? (
+							<div className="text-sm leading-tight text-slate-600">{lastName}</div>
+						) : null}
+					</div>
+				</div>
+			</div>
+		</header>
+	);
 }
