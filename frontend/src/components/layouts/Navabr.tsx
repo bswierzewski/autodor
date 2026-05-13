@@ -13,11 +13,9 @@ export function Navbar() {
 	const lastName = user?.lastName ?? user?.fullName?.split(" ").slice(1).join(" ") ?? "";
 
 	return (
-		<header className="flex items-center justify-between gap-6 rounded-2xl border border-white/70 bg-white/85 px-5 py-4 shadow-sm backdrop-blur">
+		<header className="flex items-center justify-between gap-6 rounded-b-2xl border border-white/70 bg-white/85 px-5 py-4 shadow-sm backdrop-blur">
 			<div className="shrink-0">
-				<span className="text-lg font-black tracking-[0.32em] text-slate-900">
-					AUTODOR
-				</span>
+				<span className="text-lg font-black tracking-[0.2em] text-slate-900">AUTODOR</span>
 			</div>
 			<div className="flex items-center gap-4 sm:gap-6">
 				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
@@ -37,7 +35,7 @@ export function Navbar() {
 						</Link>
 					))}
 				</nav>
-				<div aria-hidden="true" className="hidden h-10 w-px bg-slate-200 sm:block" />
+				<div aria-hidden="true" className="h-10 w-px bg-slate-200" />
 				<div className="flex items-center gap-3">
 					<UserButton
 						appearance={{
@@ -48,9 +46,7 @@ export function Navbar() {
 					/>
 					<div className="hidden text-right sm:block">
 						<div className="text-sm font-semibold leading-tight text-slate-900">{firstName}</div>
-						{lastName ? (
-							<div className="text-sm leading-tight text-slate-600">{lastName}</div>
-						) : null}
+						{lastName ? <div className="text-sm leading-tight text-slate-600">{lastName}</div> : null}
 					</div>
 				</div>
 			</div>

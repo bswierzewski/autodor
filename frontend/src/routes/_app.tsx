@@ -1,5 +1,5 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Box, Container } from "@mantine/core";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import { Navbar } from "../components/layouts/Navabr";
 
@@ -24,10 +24,10 @@ function AppLayout() {
 				background: "linear-gradient(180deg, #f6f8fc 0%, #eef2f8 100%)",
 			}}
 		>
-			<Box px="lg" py="md">
+			<Box>
 				<Navbar />
 			</Box>
-			<Container fluid px="lg" pb="lg">
+			<Container fluid px="lg" pt="md" pb="lg">
 				<Outlet />
 			</Container>
 		</Box>
