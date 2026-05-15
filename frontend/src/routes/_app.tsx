@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { Navbar } from "../components/layouts/Navabr";
+import { Navbar } from "../components/layouts/Navbar";
 
 export const Route = createFileRoute("/_app")({
 	beforeLoad: ({ context }) => {
@@ -19,9 +19,6 @@ function AppLayout() {
 	return (
 		<div
 			className="min-h-screen"
-			style={{
-				background: "linear-gradient(180deg, #f6f8fc 0%, #eef2f8 100%)",
-			}}
 		>
 			<div>
 				<Navbar />

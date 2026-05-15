@@ -13,9 +13,9 @@ export function Navbar() {
 	const lastName = user?.lastName ?? user?.fullName?.split(" ").slice(1).join(" ") ?? "";
 
 	return (
-		<header className="flex items-center justify-between gap-6 rounded-b-2xl border border-white/70 bg-white/85 px-5 py-4 shadow-sm backdrop-blur">
+		<header className="flex items-center justify-between gap-6 rounded-b-2xl border px-5 py-4 shadow-sm backdrop-blur">
 			<div className="shrink-0">
-				<span className="text-lg font-black tracking-[0.2em] text-slate-900">AUTODOR</span>
+				<span className="text-lg font-black tracking-[0.2em]">AUTODOR</span>
 			</div>
 			<div className="flex items-center gap-4 sm:gap-6">
 				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
@@ -24,10 +24,9 @@ export function Navbar() {
 							key={to}
 							to={to}
 							aria-label={label}
-							className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950"
+							className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors"
 							activeProps={{
-								className:
-									"flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm",
+								className: "flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium shadow-sm",
 							}}
 						>
 							<Icon size={18} weight="duotone" />
@@ -35,18 +34,12 @@ export function Navbar() {
 						</Link>
 					))}
 				</nav>
-				<div aria-hidden="true" className="h-10 w-px bg-slate-200" />
+				<div aria-hidden="true" className="h-10 w-px border-l" />
 				<div className="flex items-center gap-3">
-					<UserButton
-						appearance={{
-							elements: {
-								avatarBox: "h-10 w-10 ring-2 ring-white shadow-sm",
-							},
-						}}
-					/>
+					<UserButton />
 					<div className="hidden text-right sm:block">
-						<div className="text-sm font-semibold leading-tight text-slate-900">{firstName}</div>
-						{lastName ? <div className="text-sm leading-tight text-slate-600">{lastName}</div> : null}
+						<div className="text-sm font-semibold leading-tight">{firstName}</div>
+						{lastName ? <div className="text-sm leading-tight">{lastName}</div> : null}
 					</div>
 				</div>
 			</div>
