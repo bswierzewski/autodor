@@ -1,8 +1,24 @@
 {
-	"cssVariables.lookupFiles": [
-		"**/*.css",
-		"**/*.scss",
-		"**/*.sass",
-		"**/*.less"
-	]
+	"biome.lsp.bin": "./node_modules/@biomejs/cli-win32-x64/biome.exe",
+	"tailwindCSS.experimental.configFile": "src/styles.css",
+	"css.lint.unknownAtRules": "ignore",
+	"cssVariables.lookupFiles": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less"],
+	"files.associations": {
+		"**/*.css": "tailwindcss"
+	},
+	"files.readonlyInclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"files.watcherExclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"search.exclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"[javascript][javascriptreact][typescript][typescriptreact][json][jsonc][css]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit"
+	}
 }
