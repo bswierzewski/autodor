@@ -1,5 +1,5 @@
 import { createRouter } from "@tanstack/react-router";
-import type { AuthContext } from "../hooks/useAuth";
+import type { AuthContext } from "../hooks/use-auth";
 import { routeTree } from "../routeTree.gen";
 
 export type RouterContext = {

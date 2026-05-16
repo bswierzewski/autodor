@@ -7,7 +7,7 @@ import { Toaster } from "./components/ui/sonner";
 
 import { queryClient } from "./config/query-client";
 import { router } from "./config/router";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "./hooks/use-auth";
 
 import "./styles.css";
 

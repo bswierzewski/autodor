@@ -2,12 +2,16 @@ import { UserButton } from "@clerk/react";
 import { PackageIcon, UsersThreeIcon } from "@phosphor-icons/react";
 import { Link } from "@tanstack/react-router";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
+
 const navItems = [
 	{ label: "Zamówienia", to: "/", icon: PackageIcon, exact: true },
 	{ label: "Klienci", to: "/contractors", icon: UsersThreeIcon, exact: false },
 ] as const;
 
 export function Navbar() {
+	const showUserName = useMediaQuery("(min-width: 640px)");
+
 	return (
 		<header className="flex items-center justify-between gap-6 rounded-b-2xl border px-5 py-4 shadow-sm">
 			<div className="shrink-0">
@@ -41,7 +45,7 @@ export function Navbar() {
 								},
 							},
 						}}
-						showName
+						showName={showUserName}
 					/>
 				</div>
 			</div>
