@@ -17,5 +17,9 @@ export const Route = createFileRoute("/login")({
 });
 
 function SignInPage() {
-	return <SignIn />;
+	return (
+		<div className="flex min-h-screen items-center justify-center px-4">
+			<SignIn />
+		</div>
+	);
 }
