@@ -12,7 +12,7 @@ import * as zod from 'zod';
  * @summary Update contractor details
  */
 export const UpdateContractorParams = zod.object({
-  "id": zod.uuid()
+  "id": zod.string()
 })
 
 export const UpdateContractorBody = zod.object({

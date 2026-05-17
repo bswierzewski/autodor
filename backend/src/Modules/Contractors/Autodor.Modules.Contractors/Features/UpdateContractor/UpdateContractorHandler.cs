@@ -15,22 +15,21 @@ public class UpdateContractorHandler
     [EndpointName("UpdateContractor")]
     [EndpointSummary("Update contractor details")]
     public static async Task Handle(
-        Guid id,
-        UpdateContractorCommand command,
+        [AsParameters] UpdateContractorRequest request,
         ContractorsDbContext dbContext,
         CancellationToken ct)
     {
         var contractor = await dbContext.Contractors
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(id), ct);
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(request.Id), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with ID {id} was not found");
+            throw new NotFoundException($"Contractor with ID {request.Id} was not found");
 
         contractor.UpdateDetails(
-            command.Name,
-            new TaxId(command.NIP),
-            new Address(command.Street, command.City, command.ZipCode),
-            new Email(command.Email)
+            request.Command!.Name,
+            new TaxId(request.Command.NIP),
+            new Address(request.Command.Street, request.Command.City, request.Command.ZipCode),
+            new Email(request.Command.Email)
         );
     }
 }
