@@ -1,4 +1,4 @@
-import { DotsThreeOutlineVerticalIcon } from "@phosphor-icons/react";
+import { DotsThreeOutlineVerticalIcon, MagnifyingGlassIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -13,7 +13,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "#/components/ui/empty";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "#/components/ui/empty";
 import { Label } from "#/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
 
@@ -40,6 +40,7 @@ export function OrdersPage() {
 	const today = normalizeDate(new Date());
 	const weekAgo = dayjs(today).subtract(7, "day").toDate();
 
+	const [query, setQuery] = useState("");
 	const [fromDate, setFromDate] = useState(weekAgo);
 	const [toDate, setToDate] = useState(today);
 	const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
@@ -66,7 +67,13 @@ export function OrdersPage() {
 		},
 	});
 	const orders = data?.orders ?? [];
-	const visibleOrderIds = orders.map((order) => order.id);
+	const normalizedQuery = query.trim().toLowerCase();
+	const filteredOrders = orders.filter((order) => {
+		const searchableValue = [order.number, order.customerNumber, order.person].join(" ").toLowerCase();
+
+		return searchableValue.includes(normalizedQuery);
+	});
+	const visibleOrderIds = filteredOrders.map((order) => order.id);
 	const allVisibleSelected = visibleOrderIds.length > 0 && visibleOrderIds.every((id) => selectedOrderIds.includes(id));
 	const someVisibleSelected = visibleOrderIds.some((id) => selectedOrderIds.includes(id));
 
@@ -99,6 +106,36 @@ export function OrdersPage() {
 
 	return (
 		<div className="space-y-6">
+			<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+				<label className="relative block w-full">
+					<MagnifyingGlassIcon
+						className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted-foreground"
+						size={18}
+					/>
+					<input
+						className="h-11 w-full rounded-2xl border border-border bg-background pl-11 pr-12 text-sm outline-none transition focus:border-foreground/30"
+						placeholder="Szukaj po numerze, nr klienta lub osobie"
+						type="text"
+						value={query}
+						onChange={(event) => setQuery(event.target.value)}
+					/>
+					{query ? (
+						<button
+							className="absolute top-1/2 right-3 flex size-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+							onClick={() => setQuery("")}
+							type="button"
+						>
+							<XIcon size={14} />
+							<span className="sr-only">Wyczyść wyszukiwanie zamówień</span>
+						</button>
+					) : null}
+				</label>
+				<Button className="h-11 w-full rounded-2xl px-4 lg:w-auto" type="button">
+					<PlusIcon size={16} />
+					Wystaw fakture
+				</Button>
+			</div>
+
 			<div className="grid gap-4 sm:grid-cols-2">
 				<div className="grid gap-2">
 					<Label htmlFor="orders-date-from">Od</Label>
@@ -149,6 +186,20 @@ export function OrdersPage() {
 						</EmptyHeader>
 					</Empty>
 				</div>
+			) : filteredOrders.length === 0 ? (
+				<div className="rounded-3xl border border-dashed border-border bg-card p-6 shadow-sm">
+					<Empty>
+						<EmptyHeader>
+							<EmptyTitle>Brak zamówień dla podanych filtrów</EmptyTitle>
+							<EmptyDescription>Zmień frazę wyszukiwania aby zobaczyć wyniki.</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							<Button type="button" variant="outline" onClick={() => setQuery("")}>
+								Wyczyść filtry
+							</Button>
+						</EmptyContent>
+					</Empty>
+				</div>
 			) : (
 				<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
 					<Table>
@@ -171,7 +222,7 @@ export function OrdersPage() {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{orders.map((order) => (
+							{filteredOrders.map((order) => (
 								<TableRow
 									className={order.isExcluded ? "bg-destructive/5 hover:bg-destructive/10" : undefined}
 									data-state={selectedOrderIds.includes(order.id) ? "selected" : undefined}
