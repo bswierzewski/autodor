@@ -1,9 +1,12 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
 // Add PostgreSQL database container
+var postgresPassword = builder.AddParameter("postgres-password", "autodor_local_password", secret: true);
+
 var postgres = builder.AddPostgres("postgres")
     .WithImage("postgres", "18-alpine")
-    //.WithDataVolume() // Persist data between restarts
+    .WithPassword(postgresPassword)
+    .WithDataVolume() // Persist data between restarts
     .WithPgWeb(); // GUI for managing the database
 
 // Add database
