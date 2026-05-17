@@ -28,6 +28,7 @@ import type {
   ExcludeOrderItemCommand,
   GenerateDeliveryNoteCommand,
   GetOrderParams,
+  GetOrderResponse,
   GetOrdersParams,
   GetOrdersResponse,
   HttpValidationProblemDetails,
@@ -62,9 +63,9 @@ export const getGetOrderUrl = (id: string,
  * @summary Get order by ID and date
  */
 export const getOrder = async (id: string,
-    params?: GetOrderParams, options?: RequestInit): Promise<IResult> => {
+    params?: GetOrderParams, options?: RequestInit): Promise<GetOrderResponse> => {
 
-  return customFetch<IResult>(getGetOrderUrl(id,params),
+  return customFetch<GetOrderResponse>(getGetOrderUrl(id,params),
   {
     ...options,
     method: 'GET'

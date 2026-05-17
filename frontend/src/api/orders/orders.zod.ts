@@ -19,8 +19,23 @@ export const GetOrderQueryParams = zod.object({
   "date": zod.iso.datetime({"offset":true}).optional()
 })
 
-export const GetOrderResponse = zod.looseObject({
+export const getOrderResponseItemsItemQuantityRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
+export const getOrderResponseItemsItemPriceRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
 
+
+export const GetOrderResponse = zod.object({
+  "id": zod.string(),
+  "number": zod.string().nullable(),
+  "date": zod.iso.datetime({"offset":true}),
+  "person": zod.string().nullable(),
+  "customerNumber": zod.string().nullable(),
+  "items": zod.array(zod.object({
+  "productDisplayName": zod.string(),
+  "quantity": zod.union([zod.number(),zod.stringFormat('int32', getOrderResponseItemsItemQuantityRegExpTwo)]),
+  "price": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseItemsItemPriceRegExpTwo)]),
+  "isExcluded": zod.boolean()
+})),
+  "isExcluded": zod.boolean()
 })
 
 /**

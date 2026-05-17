@@ -12,7 +12,7 @@ public static class GetOrderHandler
     [Tags("Orders")]
     [EndpointName("GetOrder")]
     [EndpointSummary("Get order by ID and date")]
-    public static async Task<IResult> Handle(
+    public static async Task<GetOrderResponse> Handle(
         [AsParameters] GetOrderQuery query,
         IOrderService orderService,
         CancellationToken ct)
@@ -23,7 +23,7 @@ public static class GetOrderHandler
         if (order is null)
             throw new NotFoundException($"Order with ID '{query.OrderId}' was not found");
 
-        var response = new GetOrderResponse(
+        return new GetOrderResponse(
             order.Id!,
             order.Number,
             order.Date,
@@ -37,7 +37,5 @@ public static class GetOrderHandler
             )).ToList(),
             IsExcluded: order.IsExcluded
         );
-
-        return Results.Ok(response);
     }
 }

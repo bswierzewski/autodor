@@ -608,7 +608,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IResult"
+                  "$ref": "#/components/schemas/GetOrderResponse"
                 }
               }
             }
@@ -1211,6 +1211,54 @@
           }
         }
       },
+      "GetOrderResponse": {
+        "required": [
+          "id",
+          "number",
+          "date",
+          "person",
+          "customerNumber",
+          "items",
+          "isExcluded"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "number": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "person": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "customerNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            }
+          },
+          "isExcluded": {
+            "type": "boolean"
+          }
+        }
+      },
       "GetOrdersResponse": {
         "required": [
           "orders"
@@ -1284,6 +1332,39 @@
       },
       "IResult": {
         "type": "object"
+      },
+      "OrderItemResponse": {
+        "required": [
+          "productDisplayName",
+          "quantity",
+          "price",
+          "isExcluded"
+        ],
+        "type": "object",
+        "properties": {
+          "productDisplayName": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "price": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isExcluded": {
+            "type": "boolean"
+          }
+        }
       },
       "OrderSummaryResponse": {
         "required": [
