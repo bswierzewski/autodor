@@ -13,6 +13,7 @@ import { useGetContractors } from "#/api/contractors/contractors";
 import { Button } from "#/components/ui/button";
 import { Drawer, DrawerContent, DrawerTitle } from "#/components/ui/drawer";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "#/components/ui/empty";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
 import { ContractorForm } from "#/features/contractors/components/ContractorForm";
 import { DeleteContractorDialog } from "#/features/contractors/components/DeleteContractorDialog";
 import { useMediaQuery } from "#/hooks/use-media-query";
@@ -107,17 +108,16 @@ function ContractorsPage() {
 							</Empty>
 						</div>
 					) : (
-						<div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-							{filteredContractors.map((contractor) => {
-								return (
+						<>
+							{/* Mobile: cards */}
+							<div className="grid gap-4 lg:hidden">
+								{filteredContractors.map((contractor) => (
 									<article
 										className="rounded-3xl border bg-card p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
 										key={contractor.id}
 									>
 										<div className="flex items-start justify-between gap-4">
-											<div>
-												<p className="text-lg font-semibold tracking-tight">{contractor.name}</p>
-											</div>
+											<p className="text-lg font-semibold tracking-tight">{contractor.name}</p>
 											<div className="flex items-center gap-2">
 												<Button size="icon-sm" type="button" variant="outline" onClick={() => openEdit(contractor.id)}>
 													<PencilSimpleLineIcon size={16} />
@@ -148,9 +148,55 @@ function ContractorsPage() {
 											</div>
 										</div>
 									</article>
-								);
-							})}
-						</div>
+								))}
+							</div>
+
+							{/* Desktop: table */}
+							<div className="hidden rounded-3xl border bg-card shadow-sm overflow-hidden lg:block">
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead className="pl-5">Nazwa</TableHead>
+											<TableHead>NIP</TableHead>
+											<TableHead>Adres</TableHead>
+											<TableHead>Email</TableHead>
+											<TableHead className="w-24 pr-5" />
+										</TableRow>
+									</TableHeader>
+									<TableBody>
+										{filteredContractors.map((contractor) => (
+											<TableRow key={contractor.id}>
+												<TableCell className="pl-5 font-medium">{contractor.name}</TableCell>
+												<TableCell className="text-muted-foreground">{contractor.nip}</TableCell>
+												<TableCell className="text-muted-foreground">
+													{contractor.street}, {contractor.zipCode} {contractor.city}
+												</TableCell>
+												<TableCell className="text-muted-foreground">{contractor.email}</TableCell>
+												<TableCell className="pr-5">
+													<div className="flex items-center justify-end gap-2">
+														<Button
+															size="icon-sm"
+															type="button"
+															variant="outline"
+															onClick={() => openEdit(contractor.id)}
+														>
+															<PencilSimpleLineIcon size={16} />
+															<span className="sr-only">Edytuj kontrahenta {contractor.name}</span>
+														</Button>
+														<DeleteContractorDialog contractor={contractor}>
+															<Button size="icon-sm" type="button" variant="destructive">
+																<TrashIcon size={16} />
+																<span className="sr-only">Usuń kontrahenta {contractor.name}</span>
+															</Button>
+														</DeleteContractorDialog>
+													</div>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</div>
+						</>
 					)}
 				</div>
 			</section>
