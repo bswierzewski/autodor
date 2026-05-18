@@ -58,6 +58,10 @@ if (executionMode != ApplicationExecutionMode.OpenApi)
 // Use global exception handler
 app.UseExceptionHandler();
 
+// Serve static files and default documents for SPA support
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -79,6 +83,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapModuleEndpoints();
+
+// Fallback to index.html for SPA support
+app.MapFallbackToFile("index.html");
 
 if (executionMode != ApplicationExecutionMode.OpenApi)
     await app.ApplyMigrations();

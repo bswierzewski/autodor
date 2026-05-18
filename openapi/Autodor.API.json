@@ -1001,48 +1001,6 @@
           }
         }
       }
-    },
-    "/api/system/version": {
-      "get": {
-        "tags": [
-          "System"
-        ],
-        "summary": "Get API version and build information",
-        "description": "GET_api_system_version",
-        "operationId": "GetVersion",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetVersionResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -1315,20 +1273,6 @@
           }
         }
       },
-      "GetVersionResponse": {
-        "required": [
-          "sha"
-        ],
-        "type": "object",
-        "properties": {
-          "sha": {
-            "type": [
-              "null",
-              "string"
-            ]
-          }
-        }
-      },
       "HttpValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -1543,9 +1487,6 @@
     },
     {
       "name": "Invoicing"
-    },
-    {
-      "name": "System"
     }
   ]
 }

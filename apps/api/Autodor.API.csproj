@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)\..\..\openapi</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--project autodor.api</OpenApiGenerateDocumentsOptions>
   </PropertyGroup>
 
   <ItemGroup>
