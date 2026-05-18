@@ -62,6 +62,7 @@ app.UseExceptionHandler();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// Enable authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
