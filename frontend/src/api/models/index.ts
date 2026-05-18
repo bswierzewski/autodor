@@ -20,6 +20,7 @@ export * from './getOrderParams';
 export * from './getOrderResponse';
 export * from './getOrdersParams';
 export * from './getOrdersResponse';
+export * from './getVersionResponse';
 export * from './httpValidationProblemDetails';
 export * from './httpValidationProblemDetailsErrors';
 export * from './iResult';

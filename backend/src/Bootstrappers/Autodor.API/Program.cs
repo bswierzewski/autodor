@@ -57,10 +57,6 @@ if (executionMode != ApplicationExecutionMode.OpenApi)
 
 // Use global exception handler
 app.UseExceptionHandler();
-// Serve the bundled SPA assets copied into wwwroot during the production image build.
-app.UseDefaultFiles();
-// Expose the generated JS/CSS/font files and index.html as static content.
-app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -83,9 +79,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapModuleEndpoints();
-
-// Let client-side routes like /orders or /contractors/123 resolve to the SPA shell.
-app.MapFallbackToFile("index.html");
 
 if (executionMode != ApplicationExecutionMode.OpenApi)
     await app.ApplyMigrations();
