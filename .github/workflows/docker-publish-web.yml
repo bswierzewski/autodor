@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - slice
     paths:
       - 'frontend/**'
 
@@ -32,7 +33,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -42,5 +43,5 @@ jobs:
           push: true
           tags: ${{ steps.image.outputs.name }}:latest,${{ steps.image.outputs.name }}:${{ github.sha }}
           build-args: |
-            VITE_CLERK_PUBLISHABLE_KEY=${{ vars.VITE_CLERK_PUBLISHABLE_KEY }}
+            VITE_CLERK_PUBLISHABLE_KEY=${{ vars.CLERK_PUBLISHABLE_KEY }}
             VITE_APP_GIT_SHA=${{ github.sha }}
