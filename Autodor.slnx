@@ -1,41 +1,41 @@
 <Solution>
-  <Folder Name="/Solution Items/">
+  <Folder Name="/scripts/">
+    <File Path="scripts\add-migrations.ps1" />
+  </Folder>
+  <Folder Name="/apps/">
+    <Project Path="apps/apphost/Autodor.AppHost.csproj" />
+    <Project Path="apps/api/Autodor.API.csproj" />
+  </Folder>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/building-blocks/">
+    <Project Path="backend/building-blocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
+    <Project Path="backend/building-blocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
+    <Project Path="backend/building-blocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
+    <Project Path="backend/building-blocks/BuildingBlocks.Soap/BuildingBlocks.Soap.csproj" />
+    <Project Path="backend/building-blocks/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+  </Folder>
+  <Folder Name="/backend/modules/" />
+  <Folder Name="/backend/modules/contractors/">
+    <Project Path="backend/modules/contractors/Autodor.Modules.Contractors.Contracts/Autodor.Modules.Contractors.Contracts.csproj" />
+    <Project Path="backend/modules/contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
+  </Folder>
+  <Folder Name="/backend/modules/errors/">
+    <Project Path="backend/modules/errors/Autodor.Modules.Errors/Autodor.Modules.Errors.csproj" />
+  </Folder>
+  <Folder Name="/backend/modules/invoicing/">
+    <Project Path="backend/modules/invoicing/Autodor.Modules.Invoicing.Contracts/Autodor.Modules.Invoicing.Contracts.csproj" />
+    <Project Path="backend/modules/invoicing/Autodor.Modules.Invoicing/Autodor.Modules.Invoicing.csproj" />
+  </Folder>
+  <Folder Name="/backend/modules/orders/">
+    <Project Path="backend/modules/orders/Autodor.Modules.Orders.Contracts/Autodor.Modules.Orders.Contracts.csproj" />
+    <Project Path="backend/modules/orders/Autodor.Modules.Orders/Autodor.Modules.Orders.csproj" />
+  </Folder>
+  <Folder Name="/solution-items/">
     <File Path="backend\.gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/scripts/">
-    <File Path="scripts\add-migrations.ps1" />
-  </Folder>
-  <Folder Name="/aspire/">
-    <Project Path="aspire/Autodor.AppHost/Autodor.AppHost.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/" />
-  <Folder Name="/backend/src/BuildingBlocks/">
-    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
-    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
-    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
-    <Project Path="backend/src/BuildingBlocks/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/Bootstrappers/">
-    <Project Path="backend/src/Bootstrappers/Autodor.API/Autodor.API.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/Modules/Contractors/">
-    <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors.Contracts/Autodor.Modules.Contractors.Contracts.csproj" />
-    <Project Path="backend/src/Modules/Contractors/Autodor.Modules.Contractors/Autodor.Modules.Contractors.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/Modules/Errors/">
-    <Project Path="backend/src/Modules/Errors/Autodor.Modules.Errors/Autodor.Modules.Errors.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/Modules/Invoicing/">
-    <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing.Contracts/Autodor.Modules.Invoicing.Contracts.csproj" />
-    <Project Path="backend/src/Modules/Invoicing/Autodor.Modules.Invoicing/Autodor.Modules.Invoicing.csproj" />
-  </Folder>
-  <Folder Name="/backend/src/Modules/Orders/">
-    <Project Path="backend/src/Modules/Orders/Autodor.Modules.Orders/Autodor.Modules.Orders.csproj" />
-    <Project Path="backend/src/Modules/Orders/Autodot.Modules.Orders.Contracts/Autodot.Modules.Orders.Contracts.csproj" />
-  </Folder>
-  <Folder Name="/backend/tests/">
-    <Project Path="backend/tests/Autodor.Tests.Integration/Autodor.Tests.Integration.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/integration/Autodor.Tests.Integration.csproj" />
   </Folder>
 </Solution>

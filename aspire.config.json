@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "aspire/Autodor.AppHost/Autodor.AppHost.csproj"
+    "path": "apps/apphost/Autodor.AppHost.csproj"
   }
 }

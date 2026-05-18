@@ -1,4 +1,4 @@
-[submodule "backend/src/BuildingBlocks"]
-	path = backend/src/BuildingBlocks
-	url = https://github.com/bswierzewski/building_blocks.git
+[submodule "backend/building-blocks"]
+	path = backend/building-blocks
+	url = https://github.com/bswierzewski/building-blocks.git
 	branch = main

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)\..\..\openapi</OpenApiDocumentsDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" PrivateAssets="all" />
+    <PackageReference Include="Scalar.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend\building-blocks\BuildingBlocks.Hosting\BuildingBlocks.Hosting.csproj" />
+    <ProjectReference Include="..\..\backend\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\backend\modules\errors\Autodor.Modules.Errors\Autodor.Modules.Errors.csproj" />
+    <ProjectReference Include="..\..\backend\modules\orders\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+    <ProjectReference Include="..\..\backend\modules\invoicing\Autodor.Modules.Invoicing\Autodor.Modules.Invoicing.csproj" />
+    <ProjectReference Include="..\..\backend\modules\contractors\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
+  </ItemGroup>
+
+</Project>

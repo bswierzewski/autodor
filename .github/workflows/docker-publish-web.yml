@@ -7,7 +7,7 @@ on:
       - main
       - slice
     paths:
-      - 'frontend/**'
+      - 'apps/web/**'
 
 permissions:
   contents: read
@@ -38,8 +38,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./apps/web
+          file: ./apps/web/Dockerfile
           push: true
           tags: ${{ steps.image.outputs.name }}:latest,${{ steps.image.outputs.name }}:${{ github.sha }}
           build-args: |

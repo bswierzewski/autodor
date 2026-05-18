@@ -4,7 +4,7 @@
     <AutodorRootPackageCatalogImported>true</AutodorRootPackageCatalogImported>
   </PropertyGroup>
 
-  <Import Project="backend\src\BuildingBlocks\Directory.Packages.props" Condition="Exists('backend\src\BuildingBlocks\Directory.Packages.props')" />
+  <Import Project="backend\building-blocks\Directory.Packages.props" Condition="Exists('backend\building-blocks\Directory.Packages.props')" />
 
   <ItemGroup>
     <!-- Aspire / hosting -->

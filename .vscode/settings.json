@@ -1,6 +1,6 @@
 {
-	"biome.lsp.bin": "./frontend/node_modules/@biomejs/cli-win32-x64/biome.exe",
-	"tailwindCSS.experimental.configFile": "frontend/src/styles.css",
+	"biome.lsp.bin": "./apps/web/node_modules/@biomejs/cli-win32-x64/biome.exe",
+	"tailwindCSS.experimental.configFile": "apps/web/src/styles.css",
 	"css.lint.unknownAtRules": "ignore",
 	"files.associations": {
 		"**/*.css": "tailwindcss"

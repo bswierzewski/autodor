@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\building-blocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
+		<ProjectReference Include="..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\contractors\Autodor.Modules.Contractors.Contracts\Autodor.Modules.Contractors.Contracts.csproj" />
+		<ProjectReference Include="..\..\orders\Autodor.Modules.Orders.Contracts\Autodor.Modules.Orders.Contracts.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="WolverineFx.FluentValidation" />
+		<PackageReference Include="WolverineFx.Http" />
+	</ItemGroup>
+
+</Project>
+

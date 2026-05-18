@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <NoWarn>$(NoWarn);xUnit1051;CS9113</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Alba" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Moq" />
+        <PackageReference Include="Respawn" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="xunit.v3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+        <Using Include="FluentAssertions" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\backend\building-blocks\BuildingBlocks.Tests\BuildingBlocks.Tests.csproj" />
+        <ProjectReference Include="..\..\backend\modules\orders\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+        <ProjectReference Include="..\..\backend\modules\invoicing\Autodor.Modules.Invoicing\Autodor.Modules.Invoicing.csproj" />
+        <ProjectReference Include="..\..\backend\modules\contractors\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
+        <ProjectReference Include="..\..\apps\api\Autodor.API.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -5,11 +5,12 @@ ARG GIT_SHA=local
 
 WORKDIR /src
 COPY Directory.Build.props Directory.Packages.props global.json Autodor.slnx ./
+COPY apps/ ./apps/
 COPY backend/ ./backend/
 
-RUN dotnet restore backend/src/Bootstrappers/Autodor.API/Autodor.API.csproj
+RUN dotnet restore apps/api/Autodor.API.csproj
 
-RUN dotnet publish backend/src/Bootstrappers/Autodor.API/Autodor.API.csproj \
+RUN dotnet publish apps/api/Autodor.API.csproj \
     -c Release \
     -o /app/publish \
     /p:UseAppHost=false \

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\building-blocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
+		<ProjectReference Include="..\..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+		<ProjectReference Include="..\Autodor.Modules.Contractors.Contracts\Autodor.Modules.Contractors.Contracts.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+		<PackageReference Include="WolverineFx.FluentValidation" />
+		<PackageReference Include="WolverineFx.Http" />
+	</ItemGroup>
+
+</Project>
+

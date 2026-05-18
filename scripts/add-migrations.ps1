@@ -6,8 +6,8 @@ $backendDir = Join-Path (Split-Path -Parent $scriptDir) "backend"
 Set-Location $backendDir
 
 $contexts = @(
-    @{ Context = 'ContractorsDbContext'; Project = 'src/Modules/Contractors/Autodor.Modules.Contractors' }
-    @{ Context = 'OrdersDbContext';      Project = 'src/Modules/Orders/Autodor.Modules.Orders' }
+    @{ Context = 'ContractorsDbContext'; Project = 'modules/contractors/Autodor.Modules.Contractors' }
+    @{ Context = 'OrdersDbContext';      Project = 'modules/orders/Autodor.Modules.Orders' }
 )
 
 Write-Host "`n========================================" -ForegroundColor Cyan
