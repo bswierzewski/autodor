@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  autodor:
+    image: ghcr.io/bswierzewski/autodor:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    expose:
+      - "8080"
+    labels:
+      caddy: mtp.bswierzewski.fun
+      caddy.encode: zstd gzip
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+    networks:
+      - internal
+      - edge
+
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:2.9-alpine
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  internal:
+    name: autodor_internal
+  edge:
+    name: autodor_edge
