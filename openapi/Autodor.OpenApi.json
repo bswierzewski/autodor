@@ -1,104 +1,34 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "Autodor.API | v1",
+    "title": "Autodor.OpenApi | v1",
     "version": "1.0.0"
   },
   "paths": {
-    "/api/contractors/{id}": {
-      "put": {
+    "/api/contractors": {
+      "post": {
         "tags": [
           "Contractors"
         ],
-        "summary": "Update contractor details",
-        "description": "PUT_api_contractors_id",
-        "operationId": "UpdateContractor",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "summary": "Create a new contractor",
+        "operationId": "CreateContractor",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateContractorCommand"
+                "$ref": "#/components/schemas/CreateContractorCommand"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "204": {
-            "description": "No Content",
-            "content": {
-              "application/json": {
-                "schema": { }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Contractors"
-        ],
-        "summary": "Get contractor by ID",
-        "description": "GET_api_contractors_id",
-        "operationId": "GetContractor",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetContractorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                  "$ref": "#/components/schemas/CreateContractorResponse"
                 }
               }
             }
@@ -115,53 +45,11 @@
           }
         }
       },
-      "delete": {
-        "tags": [
-          "Contractors"
-        ],
-        "summary": "Delete contractor",
-        "description": "DELETE_api_contractors_id",
-        "operationId": "DeleteContractor",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content",
-            "content": {
-              "application/json": {
-                "schema": { }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/contractors": {
       "get": {
         "tags": [
           "Contractors"
         ],
         "summary": "Get all contractors, optionally filtered by NIPs",
-        "description": "GET_api_contractors",
         "operationId": "GetContractors",
         "parameters": [
           {
@@ -189,12 +77,77 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "default": {
+            "description": "An error occurred",
             "content": {
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contractors/{id}": {
+      "delete": {
+        "tags": [
+          "Contractors"
+        ],
+        "summary": "Delete contractor",
+        "operationId": "DeleteContractor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Contractors"
+        ],
+        "summary": "Get contractor by ID",
+        "operationId": "GetContractor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractorResponse"
                 }
               }
             }
@@ -211,53 +164,36 @@
           }
         }
       },
-      "post": {
+      "put": {
         "tags": [
           "Contractors"
         ],
-        "summary": "Create a new contractor",
-        "description": "POST_api_contractors",
-        "operationId": "CreateContractor",
+        "summary": "Update contractor details",
+        "operationId": "UpdateContractor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateContractorCommand"
+                "$ref": "#/components/schemas/UpdateContractorCommand"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateContractorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
+            "description": "OK"
           },
           "default": {
             "description": "An error occurred",
@@ -272,212 +208,13 @@
         }
       }
     },
-    "/api/errors/validation-model": {
+    "/api/errors/bad-request": {
       "get": {
         "tags": [
           "Errors"
         ],
-        "summary": "Validate an AsParameters query model with FluentValidation and return problem details on failure",
-        "description": "GET_api_errors_validation_model",
-        "operationId": "CreateValidationModelError",
-        "parameters": [
-          {
-            "name": "Name",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Email",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Quantity",
-            "in": "query",
-            "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/errors/unauthorized": {
-      "get": {
-        "tags": [
-          "Errors"
-        ],
-        "summary": "Return a 401 problem details response",
-        "description": "GET_api_errors_unauthorized",
-        "operationId": "GetUnauthorizedError",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/errors/secured": {
-      "get": {
-        "tags": [
-          "Errors"
-        ],
-        "summary": "Require a fake role-derived permission to demonstrate authorization errors",
-        "description": "GET_api_errors_secured",
-        "operationId": "GetSecuredError",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/errors/not-found": {
-      "get": {
-        "tags": [
-          "Errors"
-        ],
-        "summary": "Return a 404 problem details response",
-        "description": "GET_api_errors_not_found",
-        "operationId": "GetNotFoundError",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/errors/internal-server-error": {
-      "get": {
-        "tags": [
-          "Errors"
-        ],
-        "summary": "Return a 500 problem details response",
-        "description": "GET_api_errors_internal_server_error",
-        "operationId": "GetInternalServerError",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/errors/forbidden": {
-      "get": {
-        "tags": [
-          "Errors"
-        ],
-        "summary": "Return a 403 problem details response",
-        "description": "GET_api_errors_forbidden",
-        "operationId": "GetForbiddenError",
+        "summary": "Return a 400 validation problem details response",
+        "operationId": "GetBadRequestError",
         "responses": {
           "200": {
             "description": "OK",
@@ -508,7 +245,6 @@
           "Errors"
         ],
         "summary": "Return a 400 domain rule violation problem details response",
-        "description": "GET_api_errors_domain_exception",
         "operationId": "GetDomainExceptionError",
         "responses": {
           "200": {
@@ -534,14 +270,197 @@
         }
       }
     },
-    "/api/errors/bad-request": {
+    "/api/errors/forbidden": {
       "get": {
         "tags": [
           "Errors"
         ],
-        "summary": "Return a 400 validation problem details response",
-        "description": "GET_api_errors_bad_request",
-        "operationId": "GetBadRequestError",
+        "summary": "Return a 403 problem details response",
+        "operationId": "GetForbiddenError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/internal-server-error": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 500 problem details response",
+        "operationId": "GetInternalServerError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/not-found": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 404 problem details response",
+        "operationId": "GetNotFoundError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/secured": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Require a fake role-derived permission to demonstrate authorization errors",
+        "operationId": "GetSecuredError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/unauthorized": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Return a 401 problem details response",
+        "operationId": "GetUnauthorizedError",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/errors/validation-model": {
+      "get": {
+        "tags": [
+          "Errors"
+        ],
+        "summary": "Validate an AsParameters query model with FluentValidation and return problem details on failure",
+        "operationId": "CreateValidationModelError",
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Quantity",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -567,80 +486,11 @@
       }
     },
     "/api/orders/{id}": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Get order by ID and date",
-        "description": "GET_api_orders_id",
-        "operationId": "GetOrder",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetOrderResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
       "patch": {
         "tags": [
           "Orders"
         ],
         "summary": "Include or exclude order from invoicing",
-        "description": "PATCH_api_orders_id",
         "operationId": "UpdateOrderExclusion",
         "parameters": [
           {
@@ -664,24 +514,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IResult"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
+            "description": "OK"
           },
           "default": {
             "description": "An error occurred",
@@ -694,28 +527,26 @@
             }
           }
         }
-      }
-    },
-    "/api/orders": {
+      },
       "get": {
         "tags": [
           "Orders"
         ],
-        "summary": "Get all orders within date range",
-        "description": "GET_api_orders",
-        "operationId": "GetOrders",
+        "summary": "Get order by ID and date",
+        "operationId": "GetOrder",
         "parameters": [
           {
-            "name": "from",
-            "in": "query",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "string"
             }
           },
           {
-            "name": "to",
+            "name": "date",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -723,94 +554,12 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetOrdersResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/delivery-notes": {
-      "post": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Generate PDF delivery note for an order",
-        "description": "POST_api_delivery_notes",
-        "operationId": "GenerateDeliveryNote",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GenerateDeliveryNoteCommand"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IResult"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                  "$ref": "#/components/schemas/GetOrderResponse"
                 }
               }
             }
@@ -834,7 +583,6 @@
           "Orders"
         ],
         "summary": "Include or exclude order item from invoicing",
-        "description": "PATCH_api_orders_id_items_itemNumber",
         "operationId": "UpdateOrderItemExclusion",
         "parameters": [
           {
@@ -866,21 +614,89 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IResult"
-                }
-              }
-            }
+            "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
+          "default": {
+            "description": "An error occurred",
             "content": {
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delivery-notes": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Generate PDF delivery note for an order",
+        "operationId": "GenerateDeliveryNote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateDeliveryNoteCommand"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get all orders within date range",
+        "operationId": "GetOrders",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrdersResponse"
                 }
               }
             }
@@ -904,7 +720,6 @@
           "Invoicing"
         ],
         "summary": "Create a single invoice for selected orders",
-        "description": "POST_api_invoices",
         "operationId": "CreateInvoice",
         "requestBody": {
           "content": {
@@ -918,24 +733,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IResult"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
+            "description": "OK"
           },
           "default": {
             "description": "An error occurred",
@@ -956,7 +754,6 @@
           "Invoicing"
         ],
         "summary": "Create multiple invoices for date range",
-        "description": "POST_api_invoices_bulk",
         "operationId": "CreateInvoicesBulk",
         "requestBody": {
           "content": {
@@ -970,24 +767,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IResult"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
+            "description": "OK"
           },
           "default": {
             "description": "An error occurred",
@@ -1114,6 +894,9 @@
       "ExcludeOrderCommand": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "excluded": {
             "type": "boolean"
           }
@@ -1122,6 +905,12 @@
       "ExcludeOrderItemCommand": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
+          "itemNumber": {
+            "type": "string"
+          },
           "excluded": {
             "type": "boolean"
           }
@@ -1330,9 +1119,6 @@
         },
         "description": "RFC 7807 validation-style problem details returned by the API."
       },
-      "IResult": {
-        "type": "object"
-      },
       "OrderItemResponse": {
         "required": [
           "productDisplayName",
@@ -1436,6 +1222,7 @@
       },
       "UpdateContractorCommand": {
         "required": [
+          "id",
           "nip",
           "name",
           "street",
@@ -1445,6 +1232,10 @@
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "nip": {
             "type": "string"
           },

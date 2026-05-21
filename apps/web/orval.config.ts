@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 export default defineConfig({
 	api: {
 		input: {
-			target: "../../openapi/Autodor.API.json",
+			target: "../../openapi/Autodor.OpenApi.json",
 		},
 		output: {
 			target: "./src/api/generated.ts",
@@ -24,7 +24,7 @@ export default defineConfig({
 	},
 	zod: {
 		input: {
-			target: "../../openapi/Autodor.API.json",
+			target: "../../openapi/Autodor.OpenApi.json",
 		},
 		output: {
 			target: "./src/api/generated.ts",

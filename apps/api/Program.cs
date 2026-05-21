@@ -1,21 +1,20 @@
 using Autodor.API;
 using BuildingBlocks.Core.Interfaces;
-using BuildingBlocks.Hosting.Enums;
 using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Identity.Extensions;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi;
+using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
+using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var executionMode = builder.GetExecutionMode();
 
 // Add Aspire service defaults
-if (executionMode != ApplicationExecutionMode.OpenApi)
-    builder.AddServiceDefaults();
+builder.AddServiceDefaults();
 
 // Configure Serilog with Aspire and Wolverine integration
 builder.Host.UseSerilog(logging =>
@@ -32,28 +31,33 @@ builder.Services.AddProblemDetails(options =>
 });
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+// Register authentication and authorization services shared across all modules.
 builder.Services.AddIdentity(builder.Configuration);
 
+// Reuse the shared OpenAPI enrichments so the runtime document matches the API's
+// standardized error responses and bearer authentication requirements.
 builder.Services.AddOpenApi(options =>
 {
     options.AddProblemDetailsResponses();
     options.AddBearerSecurityScheme();
 });
 
+// Compose modules explicitly so runtime startup and OpenAPI generation share
+// the same set of handlers, services, and minimal API endpoints.
 builder.Services.ConfigureModules(builder.Configuration, out IModule[] modules);
 
-if (executionMode == ApplicationExecutionMode.OpenApi)
-    builder.ConfigureOpenApiWolverine(modules);
-else
-    builder.ConfigureWolverine(modules);
+// Wolverine uses the shared Postgres-backed data source in the runtime host so
+// handler execution, durability, and transactional messaging are wired together.
+var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
+builder.AddWolverine(modules, dataSource);
 
 // Configure CORS
 builder.Services.AddCors();
 
 var app = builder.Build();
 
-if (executionMode != ApplicationExecutionMode.OpenApi)
-    await app.InitializeModulesAsync(modules);
+// Run module-specific startup hooks after the container is built.
+await app.InitializeModulesAsync(modules);
 
 // Use global exception handler
 app.UseExceptionHandler();
@@ -83,13 +87,14 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+// Map all module-owned minimal APIs into the main application pipeline.
 app.MapModuleEndpoints();
 
 // Fallback to index.html for SPA support
 app.MapFallbackToFile("index.html");
 
-if (executionMode != ApplicationExecutionMode.OpenApi)
-    await app.ApplyMigrations();
+// Apply owned module schema migrations during application startup.
+await app.ApplyMigrations();
 
 app.Run();
 

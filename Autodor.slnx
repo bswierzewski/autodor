@@ -5,6 +5,7 @@
   <Folder Name="/apps/">
     <Project Path="apps/apphost/Autodor.AppHost.csproj" />
     <Project Path="apps/api/Autodor.API.csproj" />
+    <Project Path="apps/openapi/Autodor.OpenApi.csproj" />
   </Folder>
   <Folder Name="/backend/" />
   <Folder Name="/backend/building-blocks/">
