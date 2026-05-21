@@ -1,7 +1,10 @@
+# After upload: create .env from .env.example and fill in real secrets.
 services:
   postgres:
     image: postgres:18-alpine
+    container_name: postgres
     restart: unless-stopped
+    # Reads POSTGRES_DB=app_db and POSTGRES_USER=app_user from .env.
     env_file:
       - ./.env
     volumes:
@@ -11,11 +14,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
     networks:
       - internal
 
-  autodor:
+  app:
+    # Change to the image/tag you want to deploy on the VPS.
     image: ghcr.io/bswierzewski/autodor:latest
+    container_name: app
     restart: unless-stopped
     depends_on:
       postgres:
@@ -25,18 +32,23 @@ services:
     expose:
       - "8080"
     labels:
-      caddy: mtp.bswierzewski.fun
+      # Replace with the real public domain before first deployment.
+      caddy: app.example.com
       caddy.encode: zstd gzip
       caddy.reverse_proxy: "{{upstreams 8080}}"
+      com.centurylinklabs.watchtower.enable: "true"
     networks:
       - internal
       - edge
 
   caddy:
     image: lucaslorentz/caddy-docker-proxy:2.9-alpine
+    container_name: caddy
     restart: unless-stopped
     env_file:
       - ./.env
+    environment:
+      CADDY_INGRESS_NETWORKS: edge
     ports:
       - "80:80"
       - "443:443"
@@ -44,16 +56,60 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - caddy_data:/data
       - caddy_config:/config
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
     networks:
       - edge
 
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      TZ: UTC
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_ROLLING_RESTART: "true"
+      WATCHTOWER_SCHEDULE: 0 0 4 * * *
+      WATCHTOWER_TIMEOUT: 30s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - edge
+
+  postgres-backup:
+    image: prodrigestivill/postgres-backup-local:latest
+    container_name: postgres-backup
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      TZ: UTC
+      # Targets the database selected by POSTGRES_DB from .env, for example app_db.
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      SCHEDULE: "@daily"
+      BACKUP_ON_START: "TRUE"
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+      HEALTHCHECK_PORT: 8080
+    volumes:
+      - postgres_backups:/backups
+    networks:
+      - internal
+
 volumes:
   postgres_data:
+  postgres_backups:
   caddy_data:
   caddy_config:
 
 networks:
   internal:
-    name: autodor_internal
+    name: internal
   edge:
-    name: autodor_edge
+    name: edge
