@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.GetContractor;
 
-public class GetContractorHandler
+public static class GetContractorHandler
 {
     public static async Task<GetContractorResponse> Handle(
         GetContractorCommand command,

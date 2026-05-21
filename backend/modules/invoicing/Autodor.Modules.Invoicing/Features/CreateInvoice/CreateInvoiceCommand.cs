@@ -6,5 +6,5 @@ public record CreateInvoiceCommand(
     DateTime IssueDate,
     IEnumerable<DateTime> Dates,
     IEnumerable<string> OrderIds,
-    string ContractorNip
+    string ContractorNIP
 );

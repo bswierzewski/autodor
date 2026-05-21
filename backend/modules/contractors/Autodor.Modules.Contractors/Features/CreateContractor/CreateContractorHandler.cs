@@ -4,7 +4,7 @@ using Autodor.Modules.Contractors.Infrastructure.Persistence;
 
 namespace Autodor.Modules.Contractors.Features.CreateContractor;
 
-public class CreateContractorHandler
+public static class CreateContractorHandler
 {
     public static async Task<CreateContractorResponse> Handle(
         CreateContractorCommand command,

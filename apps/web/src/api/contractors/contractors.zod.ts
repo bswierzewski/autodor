@@ -73,12 +73,12 @@ export const UpdateContractorParams = zod.object({
 })
 
 export const UpdateContractorBody = zod.object({
-  "id": zod.uuid(),
-  "nip": zod.string(),
-  "name": zod.string(),
-  "street": zod.string(),
-  "city": zod.string(),
-  "zipCode": zod.string(),
-  "email": zod.string()
+  "id": zod.uuid().optional(),
+  "nip": zod.string().optional(),
+  "name": zod.string().optional(),
+  "street": zod.string().optional(),
+  "city": zod.string().optional(),
+  "zipCode": zod.string().optional(),
+  "email": zod.string().optional()
 })
 

@@ -15,5 +15,5 @@ export interface CreateInvoiceCommand {
   issueDate: string;
   dates: string[];
   orderIds: string[];
-  contractorNip: string;
+  contractorNIP: string;
 }

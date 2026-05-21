@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.UpdateContractor;
 
-public class UpdateContractorHandler
+public static class UpdateContractorHandler
 {
     public static async Task Handle(
         UpdateContractorCommand command,

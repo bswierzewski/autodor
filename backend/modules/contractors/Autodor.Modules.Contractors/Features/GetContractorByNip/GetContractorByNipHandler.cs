@@ -4,21 +4,21 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Autodor.Modules.Contractors.Features.GetContractorByNip;
+namespace Autodor.Modules.Contractors.Features.GetContractorByNIP;
 
-public static class GetContractorByNipHandler
+public static class GetContractorByNIPHandler
 {
     public static async Task<ContractorDto?> Handle(
-        GetContractorByNipQuery query, 
-        ContractorsDbContext dbContext
-        )
+        GetContractorByNIPQuery query,
+        ContractorsDbContext dbContext,
+        CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(query.Nip))
+        if (string.IsNullOrWhiteSpace(query.NIP))
             return null;
 
         return await dbContext.Contractors
             .AsNoTracking()
-            .Where(c => new TaxId(query.Nip) == c.NIP)
+            .Where(c => new TaxId(query.NIP) == c.NIP)
             .Select(c => new ContractorDto(
                 c.Id.Value,
                 c.Name,
@@ -28,6 +28,6 @@ public static class GetContractorByNipHandler
                 c.Address.ZipCode,
                 c.Email.Value
             ))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(ct);
     }
 }

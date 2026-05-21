@@ -835,7 +835,7 @@
           "issueDate",
           "dates",
           "orderIds",
-          "contractorNip"
+          "contractorNIP"
         ],
         "type": "object",
         "properties": {
@@ -869,7 +869,7 @@
               "type": "string"
             }
           },
-          "contractorNip": {
+          "contractorNIP": {
             "type": "string"
           }
         }
@@ -1221,15 +1221,6 @@
         }
       },
       "UpdateContractorCommand": {
-        "required": [
-          "id",
-          "nip",
-          "name",
-          "street",
-          "city",
-          "zipCode",
-          "email"
-        ],
         "type": "object",
         "properties": {
           "id": {

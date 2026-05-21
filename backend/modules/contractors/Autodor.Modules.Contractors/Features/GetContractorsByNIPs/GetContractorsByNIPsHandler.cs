@@ -10,7 +10,8 @@ public static class GetContractorsByNIPsHandler
 {
     public static async Task<IEnumerable<ContractorDto>> Handle(
         GetContractorsByNIPsQuery query,
-        ContractorsDbContext dbContext)
+        ContractorsDbContext dbContext,
+        CancellationToken ct)
     {
         if (!query.NIPs.Any())
             return [];
@@ -29,6 +30,6 @@ public static class GetContractorsByNIPsHandler
                 c.Address.ZipCode,
                 c.Email.Value
             ))
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 }

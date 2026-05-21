@@ -16,16 +16,18 @@ using Wolverine;
 
 namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
 
-public class CreateInvoicesHandler
+public static class CreateInvoicesHandler
 {
     public static async Task<IResult> Handle(
         CreateInvoicesCommand command,
         IMessageBus bus,
         IServiceProvider serviceProvider,
         IOptions<InvoicingOptions> options,
-        ILogger<CreateInvoicesHandler> logger,
+        ILoggerFactory loggerFactory,
         CancellationToken ct)
     {
+        var logger = loggerFactory.CreateLogger(typeof(CreateInvoicesHandler));
+
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}", command.DateFrom, command.DateTo);
 
         // Retrieve all orders within the specified date range (already filtered for exclusions by Orders module)
@@ -41,14 +43,14 @@ public class CreateInvoicesHandler
         logger.LogInformation("Found {OrderCount} orders for invoice creation", orders.Count);
 
         // Get unique contractor NIPs from orders for bulk contractor lookup
-        var contractorNIPs = orders
+        var contractorNips = orders
             .Select(o => o.CustomerNumber) // Order customer number is the NIP
             .Where(nip => !string.IsNullOrWhiteSpace(nip))
             .Distinct()
             .ToList();
 
         var contractors = await bus.InvokeAsync<IEnumerable<ContractorDto>>(
-            new GetContractorsByNIPsQuery(contractorNIPs), ct);
+            new GetContractorsByNIPsQuery(contractorNips), ct);
 
         var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);
 
@@ -63,11 +65,11 @@ public class CreateInvoicesHandler
 
         foreach (var contractorGroup in ordersByContractor)
         {
-            var contractorNIP = contractorGroup.Key;
+            var contractorNip = contractorGroup.Key;
 
-            if (!contractorDict.TryGetValue(contractorNIP, out var contractorDto))
+            if (!contractorDict.TryGetValue(contractorNip, out var contractorDto))
             {
-                logger.LogWarning("Contractor with NIP {NIP} not found, skipping", contractorNIP);
+                logger.LogWarning("Contractor with NIP {NIP} not found, skipping", contractorNip);
                 continue;
             }
 
@@ -108,7 +110,7 @@ public class CreateInvoicesHandler
                 invoicesCreated++;
 
                 logger.LogInformation("Created invoice for contractor {NIP} ({Name}) with {ItemCount} items",
-                    contractorNIP, contractorDto.Name, invoiceItems.Count);
+                    contractorNip, contractorDto.Name, invoiceItems.Count);
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
@@ -117,7 +119,7 @@ public class CreateInvoicesHandler
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to create invoice for contractor {NIP} ({Name})",
-                    contractorNIP, contractorDto.Name);
+                    contractorNip, contractorDto.Name);
             }
         }
 

@@ -21,7 +21,7 @@ public static class UpdateContractorEndpoint
         IMessageBus bus,
         CancellationToken ct)
     {
-        command = command with { Id = id };
+        command.Id = id;
         await bus.InvokeAsync(command, ct);
         return Results.NoContent();
     }

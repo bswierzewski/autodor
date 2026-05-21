@@ -44,7 +44,7 @@ public static class GenerateDeliveryNoteHandler
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
             throw new NotFoundException("Customer number is empty");
 
-        var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNipQuery(order.CustomerNumber), ct);
+        var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNIPQuery(order.CustomerNumber), ct);
 
         if (contractor is null)
             throw new NotFoundException($"Contractor with NIP '{order.CustomerNumber}' was not found");

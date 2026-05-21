@@ -19,7 +19,7 @@ export const CreateInvoiceBody = zod.object({
   "issueDate": zod.iso.datetime({"offset":true}),
   "dates": zod.array(zod.iso.datetime({"offset":true})),
   "orderIds": zod.array(zod.string()),
-  "contractorNip": zod.string()
+  "contractorNIP": zod.string()
 })
 
 /**

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.DeleteContractor;
 
-public class DeleteContractorHandler
+public static class DeleteContractorHandler
 {
     public static async Task Handle(
         DeleteContractorCommand command,

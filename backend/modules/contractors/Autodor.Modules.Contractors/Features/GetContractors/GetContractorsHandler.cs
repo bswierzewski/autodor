@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.GetContractors;
 
-public class GetContractorsHandler
+public static class GetContractorsHandler
 {
     public static async Task<List<GetContractorsResponse>> Handle(
         GetContractorsCommand command,
@@ -14,9 +14,9 @@ public class GetContractorsHandler
         var queryable = dbContext.Contractors.AsNoTracking();
 
         // Filter by NIPs if provided
-        if (command.Nips != null && command.Nips.Length > 0)
+        if (command.NIPs != null && command.NIPs.Length > 0)
         {
-            var taxIds = command.Nips.Select(nip => new TaxId(nip)).ToList();
+            var taxIds = command.NIPs.Select(nip => new TaxId(nip)).ToList();
             queryable = queryable.Where(c => taxIds.Contains(c.NIP));
         }
 

@@ -5,5 +5,5 @@ namespace Autodor.Modules.Contractors.Features.GetContractors;
 public class GetContractorsCommand
 {
     [FromQuery(Name = "nips")]
-    public string[]? Nips { get; set; }
+    public string[]? NIPs { get; set; }
 }

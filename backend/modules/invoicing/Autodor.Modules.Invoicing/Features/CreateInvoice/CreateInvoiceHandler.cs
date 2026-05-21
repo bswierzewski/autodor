@@ -16,18 +16,20 @@ using Wolverine;
 
 namespace Autodor.Modules.Invoicing.Features.CreateInvoice;
 
-public class CreateInvoiceHandler
+public static class CreateInvoiceHandler
 {
     public static async Task<IResult> Handle(
         CreateInvoiceCommand command,
         IMessageBus bus,
         IServiceProvider serviceProvider,
         IOptions<InvoicingOptions> options,
-        ILogger<CreateInvoiceHandler> logger,
+        ILoggerFactory loggerFactory,
         CancellationToken ct)
     {
-        logger.LogInformation("Creating invoice for contractor {ContractorNip} with {OrderCount} order IDs from {DateCount} dates",
-            command.ContractorNip, command.OrderIds.Count(), command.Dates.Count());
+        var logger = loggerFactory.CreateLogger(typeof(CreateInvoiceHandler));
+
+        logger.LogInformation("Creating invoice for contractor {ContractorNIP} with {OrderCount} order IDs from {DateCount} dates",
+            command.ContractorNIP, command.OrderIds.Count(), command.Dates.Count());
 
         // Retrieve all orders from specified dates (already filtered for exclusions by Orders module)
         var orders = await bus.InvokeAsync<IEnumerable<OrderDto>>(new GetOrdersByDatesQuery(command.Dates), ct);
@@ -44,12 +46,12 @@ public class CreateInvoiceHandler
 
         // Get contractor details for invoice generation
         var contractor = await bus.InvokeAsync<ContractorDto?>(
-            new GetContractorByNipQuery(command.ContractorNip), ct);
+            new GetContractorByNIPQuery(command.ContractorNIP), ct);
 
         if (contractor == null)
         {
-            logger.LogError("Contractor with NIP {ContractorNip} not found", command.ContractorNip);
-            throw new NotFoundException($"Contractor with NIP {command.ContractorNip} was not found");
+            logger.LogError("Contractor with NIP {ContractorNIP} not found", command.ContractorNIP);
+            throw new NotFoundException($"Contractor with NIP {command.ContractorNIP} was not found");
         }
 
         // Map contractor DTO to domain value object
@@ -87,7 +89,7 @@ public class CreateInvoiceHandler
 
         await invoiceService.CreateInvoiceAsync(invoice, ct);
 
-        logger.LogInformation("Successfully created invoice for contractor {ContractorNip}", command.ContractorNip);
+        logger.LogInformation("Successfully created invoice for contractor {ContractorNIP}", command.ContractorNIP);
 
         return Results.Ok();
     }
