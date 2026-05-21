@@ -15,7 +15,6 @@
 		<PackageReference Include="System.ServiceModel.Http" />
 		<PackageReference Include="System.ServiceModel.Primitives" />
 		<PackageReference Include="WolverineFx.FluentValidation" />
-		<PackageReference Include="WolverineFx.Http" />
 	</ItemGroup>
 
 	<ItemGroup>

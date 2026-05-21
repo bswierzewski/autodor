@@ -1,3 +1,8 @@
+using Autodor.Modules.Orders.Features.ExcludeOrder;
+using Autodor.Modules.Orders.Features.ExcludeOrderItem;
+using Autodor.Modules.Orders.Features.GenerateDeliveryNote;
+using Autodor.Modules.Orders.Features.GetOrder;
+using Autodor.Modules.Orders.Features.GetOrders;
 using Autodor.Modules.Orders.Infrastructure.BackgroundJobs;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Options;
@@ -8,18 +13,29 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceRef
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Soap.Builders;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders;
 
-public sealed class OrdersModule : IModule
+public sealed class OrdersModule : IEndpointModule
 {
     public string Name => "Orders";
+
+    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        ExcludeOrderEndpoint.Map(endpoints);
+        ExcludeOrderItemEndpoint.Map(endpoints);
+        GenerateDeliveryNoteEndpoint.Map(endpoints);
+        GetOrderEndpoint.Map(endpoints);
+        GetOrdersEndpoint.Map(endpoints);
+    }
 
     public void AddServices(IServiceCollection services, IConfiguration configuration)
     {

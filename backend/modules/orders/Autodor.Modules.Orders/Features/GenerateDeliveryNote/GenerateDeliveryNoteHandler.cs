@@ -4,23 +4,17 @@ using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Reflection;
 using Wolverine;
-using Wolverine.Http;
 
 namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
 
 public static class GenerateDeliveryNoteHandler
 {
-    [WolverinePost("/api/delivery-notes")]
-    [Tags("Orders")]
-    [EndpointName("GenerateDeliveryNote")]
-    [EndpointSummary("Generate PDF delivery note for an order")]
     public static async Task<IResult> Handle(
         GenerateDeliveryNoteCommand command,
         IOrderService orderService,

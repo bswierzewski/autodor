@@ -5,9 +5,9 @@ using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Identity.Extensions;
+using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
-using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);

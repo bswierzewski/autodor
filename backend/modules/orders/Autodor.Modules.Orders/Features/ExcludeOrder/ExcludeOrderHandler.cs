@@ -1,33 +1,26 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Wolverine.Http;
 
 namespace Autodor.Modules.Orders.Features.ExcludeOrder;
 
 public static class ExcludeOrderHandler
 {
-    [WolverinePatch("/api/orders/{id}")]
-    [Tags("Orders")]
-    [EndpointName("UpdateOrderExclusion")]
-    [EndpointSummary("Include or exclude order from invoicing")]
     public static async Task<IResult> Handle(
-        string id,
         ExcludeOrderCommand command,
         OrdersDbContext dbContext,
         CancellationToken ct)
     {
         var excludedOrder = await dbContext.ExcludedOrders
-            .FirstOrDefaultAsync(o => o.Id == id, ct);
+            .FirstOrDefaultAsync(o => o.Id == command.Id, ct);
 
         if (command.Excluded)
         {
             // Exclude order - add to excluded list if not already there
             if (excludedOrder is null)
             {
-                excludedOrder = new ExcludedOrder(id);
+                excludedOrder = new ExcludedOrder(command.Id);
                 await dbContext.ExcludedOrders.AddAsync(excludedOrder, ct);
             }
         }

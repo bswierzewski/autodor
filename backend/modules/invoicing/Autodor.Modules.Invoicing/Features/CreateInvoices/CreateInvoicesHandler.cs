@@ -13,16 +13,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Wolverine;
-using Wolverine.Http;
 
 namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
 
 public class CreateInvoicesHandler
 {
-    [WolverinePost("/api/invoices/bulk")]
-    [Tags("Invoicing")]
-    [EndpointName("CreateInvoicesBulk")]
-    [EndpointSummary("Create multiple invoices for date range")]
     public static async Task<IResult> Handle(
         CreateInvoicesCommand command,
         IMessageBus bus,

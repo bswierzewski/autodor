@@ -5,5 +5,7 @@ namespace Autodor.Modules.Orders.Features.ExcludeOrder;
 /// </summary>
 public class ExcludeOrderCommand
 {
+    public string Id { get; set; } = string.Empty;
+
     public bool Excluded { get; set; }
 }

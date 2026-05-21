@@ -1,3 +1,5 @@
+using Autodor.Modules.Invoicing.Features.CreateInvoice;
+using Autodor.Modules.Invoicing.Features.CreateInvoices;
 using Autodor.Modules.Invoicing.Domain.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma;
@@ -8,15 +10,23 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Options;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
 using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Invoicing;
 
-public sealed class InvoicingModule : IModule
+public sealed class InvoicingModule : IEndpointModule
 {
     public string Name => "Invoicing";
+
+    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        CreateInvoiceEndpoint.Map(endpoints);
+        CreateInvoicesEndpoint.Map(endpoints);
+    }
 
     public void AddServices(IServiceCollection services, IConfiguration configuration)
     {

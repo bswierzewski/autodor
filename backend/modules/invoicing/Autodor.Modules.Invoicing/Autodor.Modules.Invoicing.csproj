@@ -9,7 +9,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="WolverineFx.FluentValidation" />
-		<PackageReference Include="WolverineFx.Http" />
 	</ItemGroup>
 
 </Project>

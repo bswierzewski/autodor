@@ -1,23 +1,16 @@
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Wolverine.Http;
 
 namespace Autodor.Modules.Orders.Features.GetOrders;
 
 public static class GetOrdersHandler
 {
-    [WolverineGet("/api/orders")]
-    [Tags("Orders")]
-    [EndpointName("GetOrders")]
-    [EndpointSummary("Get all orders within date range")]
     public static async Task<GetOrdersResponse> Handle(
-        [AsParameters] GetOrdersQuery query,
+        GetOrdersCommand command,
         IOrderService orderService,
         CancellationToken ct)
     {
         // Fetch orders with exclusions marked (OrderService handles enrichment and marking)
-        var orders = await orderService.GetOrdersAsync(query.From, query.To, ct);
+        var orders = await orderService.GetOrdersAsync(command.From, command.To, ct);
 
         return new GetOrdersResponse(
             orders
