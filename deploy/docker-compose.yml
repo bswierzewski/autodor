@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     # Reads POSTGRES_DB=app_db and POSTGRES_USER=app_user from .env.
     env_file:
-      - ./.env
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -28,7 +28,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - ./.env
+      - .env
     expose:
       - "8080"
     labels:
@@ -46,7 +46,7 @@ services:
     container_name: caddy
     restart: unless-stopped
     env_file:
-      - ./.env
+      - .env
     environment:
       CADDY_INGRESS_NETWORKS: edge
     ports:
@@ -66,6 +66,7 @@ services:
     container_name: watchtower
     restart: unless-stopped
     environment:
+      DOCKER_API_VERSION: "1.40"
       TZ: UTC
       WATCHTOWER_LABEL_ENABLE: "true"
       WATCHTOWER_CLEANUP: "true"
@@ -85,7 +86,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - ./.env
+      - .env
     environment:
       TZ: UTC
       # Targets the database selected by POSTGRES_DB from .env, for example app_db.
@@ -98,13 +99,12 @@ services:
       BACKUP_KEEP_MONTHS: 6
       HEALTHCHECK_PORT: 8080
     volumes:
-      - postgres_backups:/backups
+      - ./backups:/backups
     networks:
       - internal
 
 volumes:
   postgres_data:
-  postgres_backups:
   caddy_data:
   caddy_config:
 

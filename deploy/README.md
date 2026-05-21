@@ -31,7 +31,9 @@ The commands below are intended to be run from the main project folder after log
 
 ## Backups
 
-The `postgres-backup` service creates logical PostgreSQL backups with `pg_dump` and stores them in the `postgres_backups` Docker volume mounted as `/backups` inside the container.
+The `postgres-backup` service creates logical PostgreSQL backups with `pg_dump` and stores them in the `./backups` directory next to `docker-compose.yml`, mounted as `/backups` inside the container.
+
+On the VPS, backup files are visible directly on the host in `./backups`.
 
 Current behavior:
 - a backup runs automatically once per day via `SCHEDULE: "@daily"`
@@ -55,6 +57,11 @@ docker compose exec postgres-backup /backup.sh
 List available backup files:
 ```bash
 docker compose exec postgres-backup sh -lc 'find /backups -type f | sort'
+```
+
+List backup files directly on the host:
+```bash
+find ./backups -maxdepth 2 \( -type f -o -type l \) | sort
 ```
 
 Check backup container logs:
@@ -100,7 +107,7 @@ If backups are not being created:
 - verify the database credentials in `.env`
 
 If the latest backup file is missing:
-- list `/backups/last`, `/backups/daily`, `/backups/weekly`, and `/backups/monthly`
+- list `./backups/last`, `./backups/daily`, `./backups/weekly`, and `./backups/monthly` on the host or `/backups/last`, `/backups/daily`, `/backups/weekly`, and `/backups/monthly` inside the container
 - trigger a manual backup with `docker compose exec postgres-backup /backup.sh`
 - re-check logs for authentication or connectivity failures
 
