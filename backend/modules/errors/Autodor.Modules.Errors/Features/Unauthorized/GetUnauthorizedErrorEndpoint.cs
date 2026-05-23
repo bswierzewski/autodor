@@ -11,6 +11,7 @@ public static class GetUnauthorizedErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/unauthorized", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetUnauthorizedError")
             .WithSummary("Return a 401 problem details response");

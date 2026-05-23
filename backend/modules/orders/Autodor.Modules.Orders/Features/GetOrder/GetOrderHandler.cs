@@ -1,10 +1,12 @@
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Core.Exceptions;
+using BuildingBlocks.Infrastructure.Middleware;
 
 namespace Autodor.Modules.Orders.Features.GetOrder;
 
 public static class GetOrderHandler
 {
+    [Authorize]
     public static async Task<GetOrderResponse> Handle(
         GetOrderCommand command,
         IOrderService orderService,

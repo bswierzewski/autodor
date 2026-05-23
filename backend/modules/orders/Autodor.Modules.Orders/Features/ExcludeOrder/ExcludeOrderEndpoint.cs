@@ -10,6 +10,7 @@ public static class ExcludeOrderEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPatch("/api/orders/{id}", Handle)
+            .RequireAuthorization()
             .WithTags("Orders")
             .WithName("UpdateOrderExclusion")
             .WithSummary("Include or exclude order from invoicing");

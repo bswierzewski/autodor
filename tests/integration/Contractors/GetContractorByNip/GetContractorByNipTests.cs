@@ -38,7 +38,7 @@ public class GetContractorByNipTests(DatabaseFixture databaseFixture) : Integrat
 
         // Act
         var response = await bus.InvokeAsync<ContractorDto?>(
-            new GetContractorByNipQuery("1234567890"),
+            new GetContractorByNIPQuery("1234567890"),
             CancellationToken.None);
 
         // Assert

@@ -1,11 +1,13 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using BuildingBlocks.Infrastructure.Middleware;
 
 namespace Autodor.Modules.Contractors.Features.CreateContractor;
 
 public static class CreateContractorHandler
 {
+    [Authorize]
     public static async Task<CreateContractorResponse> Handle(
         CreateContractorCommand command,
         ContractorsDbContext dbContext,

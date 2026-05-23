@@ -3,6 +3,7 @@ using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Core.Exceptions;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using QuestPDF.Fluent;
@@ -15,6 +16,7 @@ namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
 
 public static class GenerateDeliveryNoteHandler
 {
+    [Authorize]
     public static async Task<IResult> Handle(
         GenerateDeliveryNoteCommand command,
         IOrderService orderService,

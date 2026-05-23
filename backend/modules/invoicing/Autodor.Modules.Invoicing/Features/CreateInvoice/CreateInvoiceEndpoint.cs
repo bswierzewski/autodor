@@ -10,6 +10,7 @@ public static class CreateInvoiceEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/api/invoices", Handle)
+            .RequireAuthorization()
             .WithTags("Invoicing")
             .WithName("CreateInvoice")
             .WithSummary("Create a single invoice for selected orders");

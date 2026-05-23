@@ -36,14 +36,15 @@ public class UpdateContractorTests(DatabaseFixture databaseFixture) : Integratio
             await db.SaveChangesAsync();
         }
 
-        var request = new UpdateContractorCommand(
-            NIP: "9876543210",
-            Name: "New Company Name",
-            Street: "New Street 123",
-            City: "New City",
-            ZipCode: "11-111",
-            Email: "new@company.com"
-        );
+        var request = new UpdateContractorCommand
+        {
+            NIP = "9876543210",
+            Name = "New Company Name",
+            Street = "New Street 123",
+            City = "New City",
+            ZipCode = "11-111",
+            Email = "new@company.com"
+        };
 
         // Act
         await Host.Scenario(s =>
@@ -74,14 +75,15 @@ public class UpdateContractorTests(DatabaseFixture databaseFixture) : Integratio
         // Arrange
         var nonExistentId = Guid.NewGuid();
 
-        var request = new UpdateContractorCommand(
-            NIP: "9876543210",
-            Name: "New Company Name",
-            Street: "New Street 123",
-            City: "New City",
-            ZipCode: "11-111",
-            Email: "new@company.com"
-        );
+        var request = new UpdateContractorCommand
+        {
+            NIP = "9876543210",
+            Name = "New Company Name",
+            Street = "New Street 123",
+            City = "New City",
+            ZipCode = "11-111",
+            Email = "new@company.com"
+        };
 
         // Act & Assert
         await Host.Scenario(s =>

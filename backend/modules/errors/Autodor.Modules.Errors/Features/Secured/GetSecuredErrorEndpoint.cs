@@ -11,6 +11,7 @@ public static class GetSecuredErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/secured", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetSecuredError")
             .WithSummary("Require a fake role-derived permission to demonstrate authorization errors");

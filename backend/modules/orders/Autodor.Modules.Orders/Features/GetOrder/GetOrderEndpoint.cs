@@ -10,6 +10,7 @@ public static class GetOrderEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/orders/{id}", Handle)
+            .RequireAuthorization()
             .WithTags("Orders")
             .WithName("GetOrder")
             .WithSummary("Get order by ID and date");

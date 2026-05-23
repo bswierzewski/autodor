@@ -1,5 +1,6 @@
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace Autodor.Modules.Orders.Features.ExcludeOrder;
 
 public static class ExcludeOrderHandler
 {
+    [Authorize]
     public static async Task<IResult> Handle(
         ExcludeOrderCommand command,
         OrdersDbContext dbContext,

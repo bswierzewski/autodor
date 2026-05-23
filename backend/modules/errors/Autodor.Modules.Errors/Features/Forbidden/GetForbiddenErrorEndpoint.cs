@@ -11,6 +11,7 @@ public static class GetForbiddenErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/forbidden", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetForbiddenError")
             .WithSummary("Return a 403 problem details response");

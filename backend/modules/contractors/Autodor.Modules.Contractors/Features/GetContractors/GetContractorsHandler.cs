@@ -1,11 +1,13 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.GetContractors;
 
 public static class GetContractorsHandler
 {
+    [Authorize]
     public static async Task<List<GetContractorsResponse>> Handle(
         GetContractorsCommand command,
         ContractorsDbContext dbContext,

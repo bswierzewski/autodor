@@ -43,7 +43,7 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : IntegrationTe
             IssueDate: DateTime.Today,
             Dates: [new DateTime(2026, 2, 5)],
             OrderIds: ["3ff0615c-b902-f111-95f5-00155d0b7aef"],
-            ContractorNip: "1190712364"
+            ContractorNIP: "1190712364"
         );
 
         // Act
@@ -67,7 +67,7 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : IntegrationTe
             IssueDate: DateTime.Today,
             Dates: [DateTime.Today],
             OrderIds: ["ORDER-001"],
-            ContractorNip: "INVALID-NIP"
+            ContractorNIP: "INVALID-NIP"
         );
 
         // Act & Assert
@@ -88,7 +88,7 @@ public class CreateInvoiceTests(DatabaseFixture databaseFixture) : IntegrationTe
             IssueDate: DateTime.Today,
             Dates: [DateTime.Today],
             OrderIds: [],
-            ContractorNip: "1234567890"
+            ContractorNIP: "1234567890"
         );
 
         // Act & Assert

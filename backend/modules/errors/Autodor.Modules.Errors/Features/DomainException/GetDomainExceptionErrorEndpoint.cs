@@ -11,6 +11,7 @@ public static class GetDomainExceptionErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/domain-exception", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetDomainExceptionError")
             .WithSummary("Return a 400 domain rule violation problem details response");

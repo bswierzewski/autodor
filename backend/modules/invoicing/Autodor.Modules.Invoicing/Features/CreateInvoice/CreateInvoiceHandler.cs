@@ -7,6 +7,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ namespace Autodor.Modules.Invoicing.Features.CreateInvoice;
 
 public static class CreateInvoiceHandler
 {
+    [Authorize]
     public static async Task<IResult> Handle(
         CreateInvoiceCommand command,
         IMessageBus bus,

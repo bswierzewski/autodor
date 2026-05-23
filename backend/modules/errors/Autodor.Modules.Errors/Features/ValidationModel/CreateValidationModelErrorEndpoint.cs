@@ -10,6 +10,7 @@ public static class CreateValidationModelErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/validation-model", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("CreateValidationModelError")
             .WithSummary("Validate an AsParameters query model with FluentValidation and return problem details on failure");

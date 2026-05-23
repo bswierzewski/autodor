@@ -10,6 +10,7 @@ public static class CreateContractorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/api/contractors", Handle)
+            .RequireAuthorization()
             .WithTags("Contractors")
             .WithName("CreateContractor")
             .WithSummary("Create a new contractor");

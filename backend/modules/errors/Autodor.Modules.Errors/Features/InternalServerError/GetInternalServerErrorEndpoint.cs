@@ -11,6 +11,7 @@ public static class GetInternalServerErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/internal-server-error", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetInternalServerError")
             .WithSummary("Return a 500 problem details response");

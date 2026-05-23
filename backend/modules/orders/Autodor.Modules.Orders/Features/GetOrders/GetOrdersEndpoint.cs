@@ -10,6 +10,7 @@ public static class GetOrdersEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/orders", Handle)
+            .RequireAuthorization()
             .WithTags("Orders")
             .WithName("GetOrders")
             .WithSummary("Get all orders within date range");

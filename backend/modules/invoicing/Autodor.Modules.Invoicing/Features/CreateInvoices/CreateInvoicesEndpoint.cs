@@ -10,6 +10,7 @@ public static class CreateInvoicesEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPost("/api/invoices/bulk", Handle)
+            .RequireAuthorization()
             .WithTags("Invoicing")
             .WithName("CreateInvoicesBulk")
             .WithSummary("Create multiple invoices for date range");

@@ -11,6 +11,7 @@ public static class GetNotFoundErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/not-found", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetNotFoundError")
             .WithSummary("Return a 404 problem details response");

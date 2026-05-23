@@ -10,6 +10,7 @@ public static class UpdateContractorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapPut("/api/contractors/{id}", Handle)
+            .RequireAuthorization()
             .WithTags("Contractors")
             .WithName("UpdateContractor")
             .WithSummary("Update contractor details");

@@ -1,9 +1,11 @@
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
+using BuildingBlocks.Infrastructure.Middleware;
 
 namespace Autodor.Modules.Orders.Features.GetOrders;
 
 public static class GetOrdersHandler
 {
+    [Authorize]
     public static async Task<GetOrdersResponse> Handle(
         GetOrdersCommand command,
         IOrderService orderService,

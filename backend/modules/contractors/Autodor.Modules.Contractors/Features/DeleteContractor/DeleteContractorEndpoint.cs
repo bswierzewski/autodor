@@ -10,6 +10,7 @@ public static class DeleteContractorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapDelete("/api/contractors/{id}", Handle)
+            .RequireAuthorization()
             .WithTags("Contractors")
             .WithName("DeleteContractor")
             .WithSummary("Delete contractor");

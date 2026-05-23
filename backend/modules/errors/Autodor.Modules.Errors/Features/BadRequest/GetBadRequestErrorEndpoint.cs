@@ -11,6 +11,7 @@ public static class GetBadRequestErrorEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/errors/bad-request", Handle)
+            .RequireAuthorization()
             .WithTags("Errors")
             .WithName("GetBadRequestError")
             .WithSummary("Return a 400 validation problem details response");

@@ -1,12 +1,14 @@
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using BuildingBlocks.Core.Exceptions;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autodor.Modules.Contractors.Features.UpdateContractor;
 
 public static class UpdateContractorHandler
 {
+    [Authorize]
     public static async Task Handle(
         UpdateContractorCommand command,
         ContractorsDbContext dbContext,

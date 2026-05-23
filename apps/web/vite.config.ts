@@ -9,14 +9,9 @@ import { defineConfig } from "vite";
 const config = defineConfig({
 	resolve: { tsconfigPaths: true },
 	server: {
-		allowedHosts: ["host.docker.internal"],
+		allowedHosts: ["host.docker.internal", "aspire.dev.internal"],
 	},
-	plugins: [
-		devtools(),
-		tailwindcss(),
-		tanstackRouter({ target: "react", autoCodeSplitting: true }),
-		viteReact(),
-	],
+	plugins: [devtools(), tailwindcss(), tanstackRouter({ target: "react", autoCodeSplitting: true }), viteReact()],
 });
 
 export default config;

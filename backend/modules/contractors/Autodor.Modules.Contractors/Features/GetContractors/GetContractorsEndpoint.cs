@@ -10,6 +10,7 @@ public static class GetContractorsEndpoint
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapGet("/api/contractors", Handle)
+            .RequireAuthorization()
             .WithTags("Contractors")
             .WithName("GetContractors")
             .WithSummary("Get all contractors, optionally filtered by NIPs");
