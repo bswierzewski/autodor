@@ -79,17 +79,11 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 	const isSubmitting = form.state.isSubmitting;
 	const isFieldDisabled = isLoadingContractor || contractorQuery.isError;
 	const submitLabel = isEditMode ? "Zapisz zmiany" : "Dodaj kontrahenta";
-	const secondaryLabel = isEditMode ? "Anuluj" : "Czyść";
+	const secondaryLabel = "Anuluj";
 	const title = isEditMode ? "Edytuj kontrahenta" : "Dodaj kontrahenta";
 	const subtitle = isEditMode
 		? (contractorQuery.data?.name ?? "Zaktualizuj dane wybranego kontrahenta.")
 		: "Uzupełnij dane, aby dodać nowego kontrahenta do bazy.";
-
-	const handleClear = () => {
-		createMutation.reset();
-		updateMutation.reset();
-		form.reset(emptyFormValues);
-	};
 
 	const handleClose = () => {
 		createMutation.reset();
@@ -292,13 +286,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 				</div>
 
 				<footer className="mt-auto grid gap-3 border-t border-border/60 pt-5 sm:grid-cols-2">
-					<Button
-						className="h-11 w-full"
-						type="button"
-						variant="outline"
-						onClick={isEditMode ? handleClose : handleClear}
-						disabled={isSubmitting}
-					>
+					<Button className="h-11 w-full" type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
 						<XIcon size={16} />
 						{secondaryLabel}
 					</Button>

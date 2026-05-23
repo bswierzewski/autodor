@@ -20,7 +20,7 @@ import { useMediaQuery } from "#/hooks/use-media-query";
 
 function ContractorsPage() {
 	const [query, setQuery] = useState("");
-	const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [editingContractorId, setEditingContractorId] = useState<string | undefined>();
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
 	const contractorsQuery = useGetContractors();
@@ -28,17 +28,15 @@ function ContractorsPage() {
 
 	const openCreate = () => {
 		setEditingContractorId(undefined);
-		setIsMobileFormOpen(true);
+		setIsFormOpen(true);
 	};
 	const openEdit = (id: string) => {
 		setEditingContractorId(id);
-		if (!isDesktop) {
-			setIsMobileFormOpen(true);
-		}
+		setIsFormOpen(true);
 	};
 	const closeDialog = () => {
 		setEditingContractorId(undefined);
-		setIsMobileFormOpen(false);
+		setIsFormOpen(false);
 	};
 
 	const normalizedQuery = query.trim().toLowerCase();
@@ -51,7 +49,7 @@ function ContractorsPage() {
 	});
 
 	return (
-		<div className="space-y-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,32rem)] lg:items-start lg:gap-6 lg:space-y-0">
+		<div className="space-y-6">
 			<section className="grid gap-6">
 				<div className="space-y-4">
 					<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -78,7 +76,7 @@ function ContractorsPage() {
 								</button>
 							) : null}
 						</label>
-						<Button className="h-11 w-full rounded-2xl px-4 lg:hidden lg:w-auto" type="button" onClick={openCreate}>
+						<Button className="h-11 w-full rounded-2xl px-4 lg:w-auto" type="button" onClick={openCreate}>
 							<PlusIcon size={16} />
 							Dodaj kontrahenta
 						</Button>
@@ -159,8 +157,7 @@ function ContractorsPage() {
 							{/* Desktop: table */}
 							<div className="hidden space-y-3 lg:block">
 								<p className="text-sm text-muted-foreground">
-									Kliknij kontrahenta w tabeli, aby edytować go w panelu po prawej. Anulowanie wraca do formularza
-									dodawania.
+									Użyj akcji w ostatniej kolumnie, aby edytować lub usunąć kontrahenta.
 								</p>
 								<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
 									<Table>
@@ -170,24 +167,15 @@ function ContractorsPage() {
 												<TableHead>NIP</TableHead>
 												<TableHead>Adres</TableHead>
 												<TableHead>Email</TableHead>
-												<TableHead className="w-16 pr-5" />
+												<TableHead className="w-28 pr-5" />
 											</TableRow>
 										</TableHeader>
 										<TableBody>
 											{filteredContractors.map((contractor) => (
 												<TableRow
-													className="cursor-pointer transition-colors hover:bg-muted/40"
+													className="transition-colors hover:bg-muted/40"
 													data-state={editingContractorId === contractor.id ? "selected" : undefined}
 													key={contractor.id}
-													onClick={() => openEdit(contractor.id)}
-													onKeyDown={(event) => {
-														if (event.key === "Enter" || event.key === " ") {
-															event.preventDefault();
-															openEdit(contractor.id);
-														}
-													}}
-													role="button"
-													tabIndex={0}
 												>
 													<TableCell className="pl-5 font-medium">{contractor.name}</TableCell>
 													<TableCell className="text-muted-foreground">{contractor.nip}</TableCell>
@@ -196,14 +184,16 @@ function ContractorsPage() {
 													</TableCell>
 													<TableCell className="text-muted-foreground">{contractor.email}</TableCell>
 													<TableCell className="pr-5">
-														<div className="flex items-center justify-end">
+														<div className="flex items-center justify-end gap-2">
+															<Button size="icon-sm" type="button" variant="outline" onClick={() => openEdit(contractor.id)}>
+																<PencilSimpleLineIcon size={16} />
+																<span className="sr-only">Edytuj kontrahenta {contractor.name}</span>
+															</Button>
 															<DeleteContractorDialog contractor={contractor}>
 																<Button
 																	size="icon-sm"
 																	type="button"
 																	variant="destructive"
-																	onClick={(event) => event.stopPropagation()}
-																	onKeyDown={(event) => event.stopPropagation()}
 																>
 																	<TrashIcon size={16} />
 																	<span className="sr-only">Usuń kontrahenta {contractor.name}</span>
@@ -222,29 +212,25 @@ function ContractorsPage() {
 				</div>
 			</section>
 
-			<aside className="hidden lg:block">
-				<div className="sticky top-6 rounded-3xl border bg-card p-6 shadow-sm">
-					<ContractorForm
-						key={editingContractorId ?? "create"}
-						contractorId={editingContractorId}
-						onClose={closeDialog}
-					/>
-				</div>
-			</aside>
-
 			<Drawer
-				direction="bottom"
-				open={isMobileFormOpen}
+				direction={isDesktop ? "right" : "bottom"}
+				open={isFormOpen}
 				onOpenChange={(open) => {
 					if (!open) closeDialog();
 				}}
 			>
-				<DrawerContent className="px-4 pb-4">
+				<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
 					<DrawerTitle className="sr-only">
 						{editingContractorId ? "Edytuj kontrahenta" : "Dodaj kontrahenta"}
 					</DrawerTitle>
-					<div className="mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4">
-						{isMobileFormOpen ? (
+					<div
+						className={
+							isDesktop
+								? "h-full overflow-y-auto px-1 pb-2 pt-6"
+								: "mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4"
+						}
+					>
+						{isFormOpen ? (
 							<ContractorForm
 								key={editingContractorId ?? "create"}
 								contractorId={editingContractorId}
