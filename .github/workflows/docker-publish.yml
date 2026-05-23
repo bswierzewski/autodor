@@ -54,8 +54,18 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.image.outputs.name }}:latest,${{ steps.image.outputs.name }}:${{ github.sha }}
+          tags: ${{ steps.image.outputs.name }}:latest
           build-args: |
             GIT_SHA=${{ github.sha }}
             BUILD_TIME=${{ steps.metadata.outputs.build_time }}
-            VITE_CLERK_PUBLISHABLE_KEY=${{ vars.CLERK_PUBLISHABLE_KEY }}
+            VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+
+      - name: Delete old GHCR versions
+        uses: actions/delete-package-versions@v5
+        with:
+          owner: ${{ github.repository_owner }}
+          package-name: autodor
+          package-type: container
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GHCR_DELETE_TOKEN || github.token }}
