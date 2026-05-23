@@ -20,7 +20,7 @@ import { useMediaQuery } from "#/hooks/use-media-query";
 
 function ContractorsPage() {
 	const [query, setQuery] = useState("");
-	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
 	const [editingContractorId, setEditingContractorId] = useState<string | undefined>();
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
 	const contractorsQuery = useGetContractors();
@@ -28,13 +28,18 @@ function ContractorsPage() {
 
 	const openCreate = () => {
 		setEditingContractorId(undefined);
-		setIsFormOpen(true);
+		setIsMobileFormOpen(true);
 	};
 	const openEdit = (id: string) => {
 		setEditingContractorId(id);
-		setIsFormOpen(true);
+		if (!isDesktop) {
+			setIsMobileFormOpen(true);
+		}
 	};
-	const closeDialog = () => setIsFormOpen(false);
+	const closeDialog = () => {
+		setEditingContractorId(undefined);
+		setIsMobileFormOpen(false);
+	};
 
 	const normalizedQuery = query.trim().toLowerCase();
 	const filteredContractors = contractors.filter((contractor) => {
@@ -46,7 +51,7 @@ function ContractorsPage() {
 	});
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,32rem)] lg:items-start lg:gap-6 lg:space-y-0">
 			<section className="grid gap-6">
 				<div className="space-y-4">
 					<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -73,7 +78,7 @@ function ContractorsPage() {
 								</button>
 							) : null}
 						</label>
-						<Button className="h-11 w-full rounded-2xl px-4 lg:w-auto" type="button" onClick={openCreate}>
+						<Button className="h-11 w-full rounded-2xl px-4 lg:hidden lg:w-auto" type="button" onClick={openCreate}>
 							<PlusIcon size={16} />
 							Dodaj kontrahenta
 						</Button>
@@ -152,68 +157,100 @@ function ContractorsPage() {
 							</div>
 
 							{/* Desktop: table */}
-							<div className="hidden rounded-3xl border bg-card shadow-sm overflow-hidden lg:block">
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead className="pl-5">Nazwa</TableHead>
-											<TableHead>NIP</TableHead>
-											<TableHead>Adres</TableHead>
-											<TableHead>Email</TableHead>
-											<TableHead className="w-24 pr-5" />
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{filteredContractors.map((contractor) => (
-											<TableRow key={contractor.id}>
-												<TableCell className="pl-5 font-medium">{contractor.name}</TableCell>
-												<TableCell className="text-muted-foreground">{contractor.nip}</TableCell>
-												<TableCell className="text-muted-foreground">
-													{contractor.street}, {contractor.zipCode} {contractor.city}
-												</TableCell>
-												<TableCell className="text-muted-foreground">{contractor.email}</TableCell>
-												<TableCell className="pr-5">
-													<div className="flex items-center justify-end gap-2">
-														<Button
-															size="icon-sm"
-															type="button"
-															variant="outline"
-															onClick={() => openEdit(contractor.id)}
-														>
-															<PencilSimpleLineIcon size={16} />
-															<span className="sr-only">Edytuj kontrahenta {contractor.name}</span>
-														</Button>
-														<DeleteContractorDialog contractor={contractor}>
-															<Button size="icon-sm" type="button" variant="destructive">
-																<TrashIcon size={16} />
-																<span className="sr-only">Usuń kontrahenta {contractor.name}</span>
-															</Button>
-														</DeleteContractorDialog>
-													</div>
-												</TableCell>
+							<div className="hidden space-y-3 lg:block">
+								<p className="text-sm text-muted-foreground">
+									Kliknij kontrahenta w tabeli, aby edytować go w panelu po prawej. Anulowanie wraca do formularza
+									dodawania.
+								</p>
+								<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+									<Table>
+										<TableHeader>
+											<TableRow>
+												<TableHead className="pl-5">Nazwa</TableHead>
+												<TableHead>NIP</TableHead>
+												<TableHead>Adres</TableHead>
+												<TableHead>Email</TableHead>
+												<TableHead className="w-16 pr-5" />
 											</TableRow>
-										))}
-									</TableBody>
-								</Table>
+										</TableHeader>
+										<TableBody>
+											{filteredContractors.map((contractor) => (
+												<TableRow
+													className="cursor-pointer transition-colors hover:bg-muted/40"
+													data-state={editingContractorId === contractor.id ? "selected" : undefined}
+													key={contractor.id}
+													onClick={() => openEdit(contractor.id)}
+													onKeyDown={(event) => {
+														if (event.key === "Enter" || event.key === " ") {
+															event.preventDefault();
+															openEdit(contractor.id);
+														}
+													}}
+													role="button"
+													tabIndex={0}
+												>
+													<TableCell className="pl-5 font-medium">{contractor.name}</TableCell>
+													<TableCell className="text-muted-foreground">{contractor.nip}</TableCell>
+													<TableCell className="text-muted-foreground">
+														{contractor.street}, {contractor.zipCode} {contractor.city}
+													</TableCell>
+													<TableCell className="text-muted-foreground">{contractor.email}</TableCell>
+													<TableCell className="pr-5">
+														<div className="flex items-center justify-end">
+															<DeleteContractorDialog contractor={contractor}>
+																<Button
+																	size="icon-sm"
+																	type="button"
+																	variant="destructive"
+																	onClick={(event) => event.stopPropagation()}
+																	onKeyDown={(event) => event.stopPropagation()}
+																>
+																	<TrashIcon size={16} />
+																	<span className="sr-only">Usuń kontrahenta {contractor.name}</span>
+																</Button>
+															</DeleteContractorDialog>
+														</div>
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</div>
 							</div>
 						</>
 					)}
 				</div>
 			</section>
 
+			<aside className="hidden lg:block">
+				<div className="sticky top-6 rounded-3xl border bg-card p-6 shadow-sm">
+					<ContractorForm
+						key={editingContractorId ?? "create"}
+						contractorId={editingContractorId}
+						onClose={closeDialog}
+					/>
+				</div>
+			</aside>
+
 			<Drawer
-				direction={isDesktop ? "right" : "bottom"}
-				open={isFormOpen}
+				direction="bottom"
+				open={isMobileFormOpen}
 				onOpenChange={(open) => {
 					if (!open) closeDialog();
 				}}
 			>
-				<DrawerContent className="px-4 pb-4 data-[vaul-drawer-direction=right]:px-6 data-[vaul-drawer-direction=right]:pb-6">
+				<DrawerContent className="px-4 pb-4">
 					<DrawerTitle className="sr-only">
 						{editingContractorId ? "Edytuj kontrahenta" : "Dodaj kontrahenta"}
 					</DrawerTitle>
-					<div className="mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4 data-[vaul-drawer-direction=right]:max-w-none data-[vaul-drawer-direction=right]:px-0">
-						{isFormOpen ? <ContractorForm contractorId={editingContractorId} onClose={closeDialog} /> : null}
+					<div className="mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4">
+						{isMobileFormOpen ? (
+							<ContractorForm
+								key={editingContractorId ?? "create"}
+								contractorId={editingContractorId}
+								onClose={closeDialog}
+							/>
+						) : null}
 					</div>
 				</DrawerContent>
 			</Drawer>

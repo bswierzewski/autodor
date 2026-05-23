@@ -130,9 +130,13 @@ export function OrdersPage() {
 						</button>
 					) : null}
 				</label>
-				<Button className="h-11 w-full rounded-2xl px-4 lg:w-auto" type="button">
+				<Button
+					className="h-11 w-full rounded-2xl px-4 lg:w-auto"
+					disabled={selectedOrderIds.length === 0}
+					type="button"
+				>
 					<PlusIcon size={16} />
-					Wystaw fakture
+					Wystaw
 				</Button>
 			</div>
 

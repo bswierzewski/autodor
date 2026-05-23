@@ -9,7 +9,8 @@ import {
 	useGetContractor,
 	useUpdateContractor,
 } from "#/api/contractors/contractors";
-import { CreateContractorBody, UpdateContractorBody } from "#/api/contractors/contractors.zod";
+import { CreateContractorBody } from "#/api/contractors/contractors.zod";
+import type { CreateContractorCommand } from "#/api/models/createContractorCommand";
 import { Button } from "#/components/ui/button";
 import { Field, FieldError, FieldLabel } from "#/components/ui/field";
 import { Spinner } from "#/components/ui/spinner";
@@ -20,6 +21,15 @@ type ContractorFormProps = {
 	onClose: () => void;
 };
 
+const emptyFormValues: CreateContractorCommand = {
+	name: "",
+	nip: "",
+	street: "",
+	city: "",
+	zipCode: "",
+	email: "",
+};
+
 export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 	const queryClient = useQueryClient();
 	const isEditMode = contractorId !== undefined;
@@ -28,22 +38,26 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 			enabled: isEditMode,
 		},
 	});
+	const contractorData = contractorQuery.data;
 	const createMutation = useCreateContractor();
 	const updateMutation = useUpdateContractor();
 	const mutation = isEditMode ? updateMutation : createMutation;
 	const mutationError = mutation.error ?? null;
+	const formValues = contractorData
+		? {
+				name: contractorData.name,
+				nip: contractorData.nip,
+				street: contractorData.street,
+				city: contractorData.city,
+				zipCode: contractorData.zipCode,
+				email: contractorData.email,
+			}
+		: emptyFormValues;
 
 	const form = useForm({
-		defaultValues: {
-			name: contractorQuery.data?.name ?? "",
-			nip: contractorQuery.data?.nip ?? "",
-			street: contractorQuery.data?.street ?? "",
-			city: contractorQuery.data?.city ?? "",
-			zipCode: contractorQuery.data?.zipCode ?? "",
-			email: contractorQuery.data?.email ?? "",
-		},
+		defaultValues: formValues,
 		validators: {
-			onSubmit: isEditMode ? UpdateContractorBody : CreateContractorBody,
+			onSubmit: CreateContractorBody,
 		},
 		onSubmit: async ({ value }) => {
 			try {
@@ -65,10 +79,17 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 	const isSubmitting = form.state.isSubmitting;
 	const isFieldDisabled = isLoadingContractor || contractorQuery.isError;
 	const submitLabel = isEditMode ? "Zapisz zmiany" : "Dodaj kontrahenta";
+	const secondaryLabel = isEditMode ? "Anuluj" : "Czyść";
 	const title = isEditMode ? "Edytuj kontrahenta" : "Dodaj kontrahenta";
 	const subtitle = isEditMode
 		? (contractorQuery.data?.name ?? "Zaktualizuj dane wybranego kontrahenta.")
 		: "Uzupełnij dane, aby dodać nowego kontrahenta do bazy.";
+
+	const handleClear = () => {
+		createMutation.reset();
+		updateMutation.reset();
+		form.reset(emptyFormValues);
+	};
 
 	const handleClose = () => {
 		createMutation.reset();
@@ -132,7 +153,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -158,7 +179,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -185,7 +206,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -211,7 +232,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -237,7 +258,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -263,7 +284,7 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 											isInvalid && "border-destructive/40 focus:border-destructive/40",
 										)}
 									/>
-									<FieldError errors={field.state.meta.errors as Array<{ message?: string }>} />
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
@@ -271,9 +292,15 @@ export function ContractorForm({ contractorId, onClose }: ContractorFormProps) {
 				</div>
 
 				<footer className="mt-auto grid gap-3 border-t border-border/60 pt-5 sm:grid-cols-2">
-					<Button className="h-11 w-full" type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
+					<Button
+						className="h-11 w-full"
+						type="button"
+						variant="outline"
+						onClick={isEditMode ? handleClose : handleClear}
+						disabled={isSubmitting}
+					>
 						<XIcon size={16} />
-						Anuluj
+						{secondaryLabel}
 					</Button>
 					<Button className="h-11 w-full" type="submit" disabled={isFieldDisabled || isSubmitting}>
 						{isSubmitting ? <Spinner className="size-4" /> : null}
