@@ -306,9 +306,6 @@ export function OrdersPage() {
 							))}
 						</div>
 
-						<p className="hidden text-sm text-muted-foreground lg:block">
-							Zaznacz zamówienia w tabeli, a następnie użyj przycisku Wystaw, aby otworzyć formularz z prawej strony.
-						</p>
 						<div className="hidden overflow-hidden rounded-3xl border bg-card shadow-sm lg:block">
 							<Table>
 								<TableHeader>
