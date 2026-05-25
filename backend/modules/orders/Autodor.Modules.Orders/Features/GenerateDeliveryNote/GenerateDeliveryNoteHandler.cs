@@ -5,6 +5,7 @@ using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -17,7 +18,7 @@ namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
 public static class GenerateDeliveryNoteHandler
 {
     [Authorize]
-    public static async Task<IResult> Handle(
+    public static async Task<FileContentHttpResult> Handle(
         GenerateDeliveryNoteCommand command,
         IOrderService orderService,
         IMessageBus bus,
@@ -56,7 +57,7 @@ public static class GenerateDeliveryNoteHandler
 
         // Return PDF file
         var fileName = $"WZ_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-        return Results.File(pdfBytes, "application/pdf", fileName);
+        return TypedResults.File(pdfBytes, "application/pdf", fileName);
     }
 
     private static Document CreateDocument(Order order, List<OrderItem> items, ContractorDto contractor)

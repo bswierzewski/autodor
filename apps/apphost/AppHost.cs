@@ -24,19 +24,19 @@ var api = builder.AddProject<Projects.Autodor_API>("api")
     });
 
 // Add Frontend project (Vite + React)
-var app = builder.AddViteApp("app", "../web")
+var web = builder.AddViteApp("web", "../web")
     .WithHttpHealthCheck("/");
 
 builder.AddYarp("gateway")
     .WithHttpsEndpoint()
     .WithHttpsDeveloperCertificate()
     .WaitFor(api)
-    .WaitFor(app)
+    .WaitFor(web)
     .WithHttpHealthCheck("/")
     .WithConfiguration(yarp =>
     {
         yarp.AddRoute("/api/{**catch-all}", api);
-        yarp.AddRoute("/{**catch-all}", app);
+        yarp.AddRoute("/{**catch-all}", web);
     });
 
 builder.Build().Run();

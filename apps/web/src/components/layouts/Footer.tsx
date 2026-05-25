@@ -21,7 +21,7 @@ export function Footer() {
 			<div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto">
 				<p className="min-w-max whitespace-nowrap text-xs text-muted-foreground/90">
 					<span>
-						Copyright © <span className="font-medium text-foreground">bswierzewski</span>
+						Copyright © {currentYear} <span className="font-medium text-foreground">bswierzewski</span>
 					</span>
 				</p>
 				<p className="min-w-max whitespace-nowrap text-xs text-muted-foreground/90">

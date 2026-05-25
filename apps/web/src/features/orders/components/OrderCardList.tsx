@@ -3,6 +3,7 @@ import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
+type PrintOrderPdf = (orderId: string, date: string) => void;
 
 const currencyFormatter = new Intl.NumberFormat("pl-PL", {
 	style: "currency",
@@ -22,10 +23,11 @@ function formatCurrency(value: number | string): string {
 type OrderCardListProps = {
 	orders: OrderSummaryResponse[];
 	isPending: boolean;
+	onPrintOrderPdf: PrintOrderPdf;
 	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrderCardList({ orders, isPending, onToggleOrderExclusion }: OrderCardListProps) {
+export function OrderCardList({ orders, isPending, onPrintOrderPdf, onToggleOrderExclusion }: OrderCardListProps) {
 	return (
 		<div className="grid gap-4">
 			{orders.map((order) => (
@@ -47,6 +49,7 @@ export function OrderCardList({ orders, isPending, onToggleOrderExclusion }: Ord
 							<OrderActions
 								isPending={isPending}
 								order={order}
+								onPrintOrderPdf={onPrintOrderPdf}
 								onToggleOrderExclusion={onToggleOrderExclusion}
 							/>
 						</div>

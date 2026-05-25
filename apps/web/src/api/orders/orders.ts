@@ -311,9 +311,9 @@ export const useUpdateOrderItemExclusion = <TError = HttpValidationProblemDetail
 /**
  * @summary Generate PDF delivery note for an order
  */
-export const generateDeliveryNote = async (generateDeliveryNoteCommand: GenerateDeliveryNoteCommand, options?: RequestInit): Promise<void> => {
+export const generateDeliveryNote = async (generateDeliveryNoteCommand: GenerateDeliveryNoteCommand, options?: RequestInit): Promise<Blob> => {
 
-  return customFetch<void>(getGenerateDeliveryNoteUrl(),
+  return customFetch<Blob>(getGenerateDeliveryNoteUrl(),
   {
     ...options,
     method: 'POST',

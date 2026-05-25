@@ -1,4 +1,4 @@
-import { DotsThreeOutlineVerticalIcon } from "@phosphor-icons/react";
+import { ArrowClockwiseIcon, DotsThreeOutlineVerticalIcon, PrinterIcon, XIcon } from "@phosphor-icons/react";
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Button } from "#/components/ui/button";
 import {
@@ -9,14 +9,16 @@ import {
 } from "#/components/ui/dropdown-menu";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
+type PrintOrderPdf = (orderId: string, date: string) => void;
 
 type OrderActionsProps = {
 	order: OrderSummaryResponse;
 	isPending: boolean;
+	onPrintOrderPdf: PrintOrderPdf;
 	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrderActions({ order, isPending, onToggleOrderExclusion }: OrderActionsProps) {
+export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderExclusion }: OrderActionsProps) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -26,11 +28,16 @@ export function OrderActions({ order, isPending, onToggleOrderExclusion }: Order
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
+				<DropdownMenuItem disabled={isPending} onSelect={() => onPrintOrderPdf(order.id, order.date)}>
+					<PrinterIcon size={16} />
+					Drukuj PDF
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					disabled={isPending}
 					onSelect={() => onToggleOrderExclusion(order.id, !order.isExcluded)}
 					variant={order.isExcluded ? "default" : "destructive"}
 				>
+					{order.isExcluded ? <ArrowClockwiseIcon size={16} /> : <XIcon size={16} />}
 					{order.isExcluded ? "Przywróć do fakturowania" : "Wyłącz z fakturowania"}
 				</DropdownMenuItem>
 			</DropdownMenuContent>

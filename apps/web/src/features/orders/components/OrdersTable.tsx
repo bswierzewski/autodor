@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
+type PrintOrderPdf = (orderId: string, date: string) => void;
 
 const currencyFormatter = new Intl.NumberFormat("pl-PL", {
 	style: "currency",
@@ -23,10 +24,11 @@ function formatCurrency(value: number | string): string {
 type OrdersTableProps = {
 	orders: OrderSummaryResponse[];
 	isPending: boolean;
+	onPrintOrderPdf: PrintOrderPdf;
 	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrdersTable({ orders, isPending, onToggleOrderExclusion }: OrdersTableProps) {
+export function OrdersTable({ orders, isPending, onPrintOrderPdf, onToggleOrderExclusion }: OrdersTableProps) {
 	return (
 		<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
 			<Table>
@@ -62,6 +64,7 @@ export function OrdersTable({ orders, isPending, onToggleOrderExclusion }: Order
 								<OrderActions
 									isPending={isPending}
 									order={order}
+									onPrintOrderPdf={onPrintOrderPdf}
 									onToggleOrderExclusion={onToggleOrderExclusion}
 								/>
 							</TableCell>

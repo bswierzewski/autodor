@@ -3,13 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getGetOrdersQueryKey, useGetOrders, useUpdateOrderExclusion } from "#/api/orders/orders";
+import { getGetOrdersQueryKey, useGenerateDeliveryNote, useGetOrders, useUpdateOrderExclusion } from "#/api/orders/orders";
 import { OrderCardList } from "#/features/orders/components/OrderCardList";
 import { OrdersEmptyState } from "#/features/orders/components/OrdersEmptyState";
 import { OrdersFilters } from "#/features/orders/components/OrdersFilters";
 import { OrdersFilteredEmptyState } from "#/features/orders/components/OrdersFilteredEmptyState";
 import { OrdersTable } from "#/features/orders/components/OrdersTable";
 import { useMediaQuery } from "#/hooks/use-media-query";
+import { downloadBlob } from "#/lib/utils";
 
 export const Route = createFileRoute("/_app/")({
 	component: OrdersRoute,
@@ -31,7 +32,27 @@ function OrdersRoute() {
 	const to = formatDate(toDate);
 	const queryClient = useQueryClient();
 
-	const { data, isLoading, isError } = useGetOrders({ from, to });
+	const generateDeliveryNoteMutation = useGenerateDeliveryNote({
+		mutation: {
+			onSuccess: (pdf, variables) => {
+				downloadBlob(pdf, `WZ_${variables.data.orderId}.pdf`);
+				toast.success("PDF został pobrany.");
+			},
+			onError: () => {
+				toast.error("Nie udało się wygenerować pliku PDF.");
+			},
+		},
+	});
+
+	const printOrderPdf = (orderId: string, date: string) => {
+		generateDeliveryNoteMutation.mutate({
+			data: {
+				orderId,
+				date,
+			},
+		});
+	};
+	
 	const updateOrderExclusionMutation = useUpdateOrderExclusion({
 		mutation: {
 			onSuccess: async (_, variables) => {
@@ -49,13 +70,6 @@ function OrdersRoute() {
 			},
 		},
 	});
-	const orders = data?.orders ?? [];
-	const isUpdatingOrderExclusion = updateOrderExclusionMutation.isPending;
-	const filteredOrders = orders.filter((order) => {
-		const searchableValue = [order.number, order.customerNumber, order.person].join(" ").toLowerCase();
-
-		return searchableValue.includes(query);
-	});
 
 	const toggleOrderExclusion = (orderId: string, excluded: boolean) => {
 		updateOrderExclusionMutation.mutate({
@@ -63,6 +77,15 @@ function OrdersRoute() {
 			data: { excluded },
 		});
 	};
+
+	const { data, isLoading, isError } = useGetOrders({ from, to });
+	const orders = data?.orders ?? [];
+	const isPending = updateOrderExclusionMutation.isPending || generateDeliveryNoteMutation.isPending;
+	const filteredOrders = orders.filter((order) => {
+		const searchableValue = [order.number, order.customerNumber, order.person].join(" ").toLowerCase();
+
+		return searchableValue.includes(query);
+	});
 
 	return (
 		<div className="space-y-6">
@@ -93,13 +116,15 @@ function OrdersRoute() {
 					<div className="space-y-3">
 						{isDesktop ? (
 							<OrdersTable
-								isPending={isUpdatingOrderExclusion}
+								isPending={isPending}
+								onPrintOrderPdf={printOrderPdf}
 								onToggleOrderExclusion={toggleOrderExclusion}
 								orders={filteredOrders}
 							/>
 						) : (
 							<OrderCardList
-								isPending={isUpdatingOrderExclusion}
+								isPending={isPending}
+								onPrintOrderPdf={printOrderPdf}
 								onToggleOrderExclusion={toggleOrderExclusion}
 								orders={filteredOrders}
 							/>
