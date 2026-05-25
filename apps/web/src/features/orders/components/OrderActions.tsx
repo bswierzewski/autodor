@@ -6,7 +6,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
 
@@ -36,12 +35,10 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 						Podgląd zamówienia
 					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuSeparator />
 				<DropdownMenuItem disabled={isPending} onSelect={() => onPrintOrderPdf(order.id, order.date)}>
 					<PrinterIcon size={16} />
 					Drukuj PDF
 				</DropdownMenuItem>
-				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={isPending}
 					onSelect={() => onToggleOrderExclusion(order.id, !order.isExcluded)}
