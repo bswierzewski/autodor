@@ -10,7 +10,7 @@ public static class GetBadRequestErrorHandler
     {
         throw new ValidationException(new Dictionary<string, string[]>
         {
-            ["request"] = ["This is a simulated bad request error."]
+            ["request"] = ["To jest symulowany błąd nieprawidłowego żądania."]
         });
     }
 }

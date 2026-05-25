@@ -19,7 +19,7 @@ public static class GetContractorHandler
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with ID {command.Id} was not found");
+            throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
 
         return new GetContractorResponse(
             contractor.Id.Value,

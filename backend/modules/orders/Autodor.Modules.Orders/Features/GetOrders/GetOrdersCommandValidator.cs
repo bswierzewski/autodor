@@ -8,16 +8,16 @@ public class GetOrdersCommandValidator : AbstractValidator<GetOrdersCommand>
     {
         RuleFor(x => x.From)
             .NotEqual(default(DateTime))
-            .WithMessage("From date is required")
+            .WithMessage("Pole from jest wymagane")
             .GreaterThan(DateTime.MinValue)
-            .WithMessage("From date must be a valid date");
+            .WithMessage("Pole from musi zawierać prawidłową datę");
 
         RuleFor(x => x.To)
             .NotEqual(default(DateTime))
-            .WithMessage("To date is required")
+            .WithMessage("Pole to jest wymagane")
             .GreaterThan(DateTime.MinValue)
-            .WithMessage("To date must be a valid date")
+            .WithMessage("Pole to musi zawierać prawidłową datę")
             .GreaterThanOrEqualTo(x => x.From)
-            .WithMessage("To date must be greater than or equal to From date");
+            .WithMessage("Pole to musi być większe lub równe polu from");
     }
 }

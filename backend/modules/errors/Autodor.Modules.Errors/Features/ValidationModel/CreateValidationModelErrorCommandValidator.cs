@@ -8,18 +8,18 @@ public class CreateValidationModelErrorCommandValidator : AbstractValidator<Crea
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name is required.")
+            .WithMessage("Pole name jest wymagane.")
             .MinimumLength(3)
-            .WithMessage("Name must be at least 3 characters long.");
+            .WithMessage("Pole name musi mieć co najmniej 3 znaki.");
 
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("Email is required.")
+            .WithMessage("Pole email jest wymagane.")
             .EmailAddress()
-            .WithMessage("Email must be a valid email address.");
+            .WithMessage("Pole email musi zawierać prawidłowy adres e-mail.");
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("Quantity must be greater than zero.");
+            .WithMessage("Pole quantity musi być większe od zera.");
     }
 }

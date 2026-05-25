@@ -18,7 +18,7 @@ public static class DeleteContractorHandler
             .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with ID {command.Id} was not found");
+            throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
 
         dbContext.Contractors.Remove(contractor);
     }

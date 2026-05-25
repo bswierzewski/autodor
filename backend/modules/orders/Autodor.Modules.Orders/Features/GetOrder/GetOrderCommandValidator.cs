@@ -8,12 +8,12 @@ public class GetOrderCommandValidator : AbstractValidator<GetOrderCommand>
     {
         RuleFor(x => x.Id)
             .NotEmpty()
-            .WithMessage("Order ID is required");
+            .WithMessage("Pole id zamówienia jest wymagane");
 
         RuleFor(x => x.Date)
             .NotEqual(default(DateTime))
-            .WithMessage("Date is required")
+            .WithMessage("Pole date jest wymagane")
             .GreaterThan(DateTime.MinValue)
-            .WithMessage("Date must be a valid date");
+            .WithMessage("Pole date musi zawierać prawidłową datę");
     }
 }

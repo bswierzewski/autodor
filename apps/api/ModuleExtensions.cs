@@ -5,7 +5,6 @@ using Autodor.Modules.Invoicing;
 using Autodor.Modules.Orders;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Core.Interfaces;
-using BuildingBlocks.Infrastructure.Middleware;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 

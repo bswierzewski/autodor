@@ -1,4 +1,3 @@
-using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Infrastructure.Middleware;
 
 namespace Autodor.Modules.Errors.Features.DomainException;
@@ -9,6 +8,6 @@ public static class GetDomainExceptionErrorHandler
     public static string Handle(GetDomainExceptionErrorCommand command)
     {
         throw new BuildingBlocks.Core.Exceptions.DomainException(
-            "This is a simulated domain rule violation.");
+            "To jest symulowane naruszenie reguły biznesowej.");
     }
 }

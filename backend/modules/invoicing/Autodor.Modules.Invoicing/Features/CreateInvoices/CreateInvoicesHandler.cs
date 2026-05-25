@@ -9,7 +9,6 @@ using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -39,7 +38,7 @@ public static class CreateInvoicesHandler
         if (orders.Count == 0)
         {
             logger.LogWarning("No orders found for bulk invoice creation in date range {DateFrom} to {DateTo}", command.DateFrom, command.DateTo);
-            throw new NotFoundException("No orders found for bulk invoice creation");
+            throw new NotFoundException("Nie znaleziono zamówień do zbiorczego tworzenia faktur.");
         }
 
         logger.LogInformation("Found {OrderCount} orders for invoice creation", orders.Count);

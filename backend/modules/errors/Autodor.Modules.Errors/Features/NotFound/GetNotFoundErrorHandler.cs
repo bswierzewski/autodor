@@ -8,6 +8,6 @@ public static class GetNotFoundErrorHandler
     [Authorize]
     public static string Handle(GetNotFoundErrorCommand command)
     {
-        throw new NotFoundException("This is a simulated not found error.");
+        throw new NotFoundException("To jest symulowany błąd braku zasobu.");
     }
 }

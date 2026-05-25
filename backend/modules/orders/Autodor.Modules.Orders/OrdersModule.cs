@@ -12,7 +12,6 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
-using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;

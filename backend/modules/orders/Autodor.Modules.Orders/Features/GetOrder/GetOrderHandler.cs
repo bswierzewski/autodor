@@ -16,7 +16,7 @@ public static class GetOrderHandler
         var order = await orderService.GetOrderAsync(command.Id, command.Date, ct);
 
         if (order is null)
-            throw new NotFoundException($"Order with ID '{command.Id}' was not found");
+            throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.Id}'.");
 
         return new GetOrderResponse(
             order.Id!,

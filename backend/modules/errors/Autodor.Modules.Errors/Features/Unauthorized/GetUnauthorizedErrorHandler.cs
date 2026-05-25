@@ -7,6 +7,6 @@ public static class GetUnauthorizedErrorHandler
     [Authorize]
     public static string Handle(GetUnauthorizedErrorCommand command)
     {
-        throw new UnauthorizedAccessException("This is a simulated unauthorized error.");
+        throw new UnauthorizedAccessException("To jest symulowany błąd braku autoryzacji.");
     }
 }

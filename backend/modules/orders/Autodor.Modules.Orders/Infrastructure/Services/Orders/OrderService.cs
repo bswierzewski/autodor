@@ -4,7 +4,6 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.M
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
-using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Core.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Frozen;

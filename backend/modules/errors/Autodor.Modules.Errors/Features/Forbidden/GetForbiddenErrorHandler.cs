@@ -8,6 +8,6 @@ public static class GetForbiddenErrorHandler
     [Authorize]
     public static string Handle(GetForbiddenErrorCommand command)
     {
-        throw new ForbiddenAccessException("This is a simulated forbidden error.");
+        throw new ForbiddenAccessException("To jest symulowany błąd braku dostępu.");
     }
 }

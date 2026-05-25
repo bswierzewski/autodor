@@ -38,12 +38,12 @@ public class IFirmaAuthenticationHandler(IOptions<IFirmaOptions> options) : Dele
             _ when path.Contains("abonent") => ("abonent", GetKey(_options.ApiKeys.Abonent)),
             _ when path.Contains("rachunek") => ("rachunek", GetKey(_options.ApiKeys.Rachunek)),
             _ when path.Contains("wydatek") => ("wydatek", GetKey(_options.ApiKeys.Wydatek)),
-            _ => throw new InvalidOperationException($"Cannot determine API key for path: {path}")
+            _ => throw new InvalidOperationException($"Nie można ustalić klucza API dla ścieżki: {path}")
         };
     }
 
     private static string GetKey(string? key) =>
         string.IsNullOrWhiteSpace(key)
-            ? throw new InvalidOperationException("API Key is missing in configuration.")
+            ? throw new InvalidOperationException("Brakuje klucza API w konfiguracji.")
             : key;
 }

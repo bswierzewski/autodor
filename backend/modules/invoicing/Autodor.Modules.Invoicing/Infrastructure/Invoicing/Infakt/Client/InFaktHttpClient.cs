@@ -12,7 +12,7 @@ public class InFaktHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     public async Task<Models.Responses.Invoice> CreateInvoiceAsync(Models.Requests.Invoice invoice, CancellationToken ct = default)
     {
         if (invoice is null)
-            throw CreateValidationException(nameof(invoice), "Invoice cannot be null.");
+            throw CreateValidationException(nameof(invoice), "Faktura nie może być pusta.");
 
         return await PostAsync<InvoiceRoot, Models.Responses.Invoice>("invoices.json", new InvoiceRoot(invoice), ct);
     }
@@ -20,7 +20,7 @@ public class InFaktHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     public async Task<Models.Responses.Client> CreateClientAsync(Models.Requests.Client client, CancellationToken ct = default)
     {
         if (client is null)
-            throw CreateValidationException(nameof(client), "Client cannot be null.");
+            throw CreateValidationException(nameof(client), "Klient nie może być pusty.");
 
         return await PostAsync<ClientRoot, Models.Responses.Client>("clients.json", new ClientRoot(client), ct);
     }
@@ -28,7 +28,7 @@ public class InFaktHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     public async Task<Models.Responses.Client> GetClientAsync(int clientId, CancellationToken ct = default)
     {
         if (clientId <= 0)
-            throw CreateValidationException(nameof(clientId), "Client ID must be greater than zero.");
+            throw CreateValidationException(nameof(clientId), "Identyfikator klienta musi być większy od zera.");
 
         return await GetAsync<Models.Responses.Client>($"clients/{clientId}.json", ct);
     }
@@ -36,10 +36,10 @@ public class InFaktHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     public async Task<Models.Responses.Client> UpdateClientAsync(int clientId, Models.Requests.Client client, CancellationToken ct = default)
     {
         if (clientId <= 0)
-            throw CreateValidationException(nameof(clientId), "Client ID must be greater than zero.");
+            throw CreateValidationException(nameof(clientId), "Identyfikator klienta musi być większy od zera.");
 
         if (client is null)
-            throw CreateValidationException(nameof(client), "Client cannot be null.");
+            throw CreateValidationException(nameof(client), "Klient nie może być pusty.");
 
         return await PutAsync<ClientRoot, Models.Responses.Client>($"clients/{clientId}.json", new ClientRoot(client), ct);
     }
@@ -59,7 +59,7 @@ public class InFaktHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
         var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>(ct);
 
         if (errorResponse?.Errors is null || errorResponse.Errors.Count == 0)
-            return new Exception(errorResponse?.Error ?? "Unknown error from InFakt API");
+            return new Exception(errorResponse?.Error ?? "Nieznany błąd z API InFakt.");
 
         var errors = errorResponse.Errors.ToDictionary(
             field => field.Key,

@@ -9,7 +9,6 @@ using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -43,7 +42,7 @@ public static class CreateInvoiceHandler
         if (filteredOrders.Count == 0)
         {
             logger.LogWarning("No orders found for the specified order IDs");
-            throw new NotFoundException("No orders found for the specified order IDs");
+            throw new NotFoundException("Nie znaleziono zamówień dla podanych identyfikatorów.");
         }
 
         // Get contractor details for invoice generation
@@ -53,7 +52,7 @@ public static class CreateInvoiceHandler
         if (contractor == null)
         {
             logger.LogError("Contractor with NIP {ContractorNIP} not found", command.ContractorNIP);
-            throw new NotFoundException($"Contractor with NIP {command.ContractorNIP} was not found");
+            throw new NotFoundException($"Nie znaleziono kontrahenta o numerze NIP {command.ContractorNIP}.");
         }
 
         // Map contractor DTO to domain value object

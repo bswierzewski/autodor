@@ -9,12 +9,12 @@ public class IFirmaHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     public async Task<ResponseRoot> CreateInvoiceAsync(Models.Requests.Invoice invoice, CancellationToken ct = default)
     {
         if (invoice is null)
-            throw CreateValidationException(nameof(invoice), "Invoice cannot be null.");
+            throw CreateValidationException(nameof(invoice), "Faktura nie może być pusta.");
 
         var result = await PostAsync<Models.Requests.Invoice, ResponseRoot>("fakturakraj.json", invoice, ct);
 
         if (!result.Response.IsSuccess)
-            throw new Exception(result.Response.Message ?? "Unknown error from iFirma API.");
+            throw new Exception(result.Response.Message ?? "Nieznany błąd z API iFirma.");
 
         return result;
     }
@@ -22,7 +22,7 @@ public class IFirmaHttpClient(HttpClient httpClient) : BaseHttpClient(httpClient
     protected override async Task<Exception> ParseExceptionAsync(HttpResponseMessage response, CancellationToken ct)
     {
         var content = await response.Content.ReadAsStringAsync(ct);
-        return new Exception($"IFirma API error: {content}");
+        return new Exception($"Błąd API iFirma: {content}");
     }
 
     private static ValidationException CreateValidationException(string key, string message)

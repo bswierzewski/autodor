@@ -30,26 +30,26 @@ public static class GenerateDeliveryNoteHandler
         var order = await orderService.GetOrderAsync(command.OrderId, command.Date, ct);
 
         if (order is null)
-            throw new NotFoundException($"Order with ID '{command.OrderId}' was not found");
+            throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.OrderId}'.");
 
         // Business logic: Filter out excluded order
         if (order.IsExcluded)
-            throw new NotFoundException($"Order with ID '{command.OrderId}' is excluded");
+            throw new NotFoundException($"Zamówienie o identyfikatorze '{command.OrderId}' jest wykluczone.");
 
         // Business logic: Filter out excluded items
         var nonExcludedItems = order.Items.Where(i => !i.IsExcluded).ToList();
 
         if (nonExcludedItems.Count == 0)
-            throw new NotFoundException("Order has no items after exclusions are applied");
+            throw new NotFoundException("Po zastosowaniu wykluczeń zamówienie nie zawiera żadnych pozycji.");
 
         // Fetch contractor by NIP (CustomerNumber)
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
-            throw new NotFoundException("Customer number is empty");
+            throw new NotFoundException("Numer klienta jest pusty.");
 
         var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNIPQuery(order.CustomerNumber), ct);
 
         if (contractor is null)
-            throw new NotFoundException($"Contractor with NIP '{order.CustomerNumber}' was not found");
+            throw new NotFoundException($"Nie znaleziono kontrahenta o numerze NIP '{order.CustomerNumber}'.");
 
         // Generate PDF with non-excluded items
         var pdfBytes = CreateDocument(order, nonExcludedItems, contractor).GeneratePdf();

@@ -9,7 +9,6 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Options;
 using Autodor.Modules.Invoicing.Infrastructure.Options;
-using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using Microsoft.AspNetCore.Routing;
