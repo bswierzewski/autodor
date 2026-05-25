@@ -17,6 +17,7 @@ public record GetOrderResponse(
 /// Response DTO for Order Item
 /// </summary>
 public record OrderItemResponse(
+    string ItemNumber,
     string ProductDisplayName,
     int Quantity,
     decimal Price,

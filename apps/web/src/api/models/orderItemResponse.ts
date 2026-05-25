@@ -6,6 +6,7 @@
  */
 
 export interface OrderItemResponse {
+  itemNumber: string;
   productDisplayName: string;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   quantity: number | string;

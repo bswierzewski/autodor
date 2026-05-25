@@ -15,6 +15,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppErrorsRouteImport } from './routes/_app/errors'
 import { Route as AppContractorsIndexRouteImport } from './routes/_app/contractors/index'
+import { Route as AppOrdersOrderIdRouteImport } from './routes/_app/orders/$orderId'
 import { Route as AppContractorsCreateRouteImport } from './routes/_app/contractors/create'
 import { Route as AppContractorsContractorIdEditRouteImport } from './routes/_app/contractors/$contractorId/edit'
 
@@ -47,6 +48,11 @@ const AppContractorsIndexRoute = AppContractorsIndexRouteImport.update({
   path: '/contractors/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrdersOrderIdRoute = AppOrdersOrderIdRouteImport.update({
+  id: '/orders/$orderId',
+  path: '/orders/$orderId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppContractorsCreateRoute = AppContractorsCreateRouteImport.update({
   id: '/contractors/create',
   path: '/contractors/create',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/pending': typeof PendingRoute
   '/errors': typeof AppErrorsRoute
   '/contractors/create': typeof AppContractorsCreateRoute
+  '/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/contractors/': typeof AppContractorsIndexRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/errors': typeof AppErrorsRoute
   '/': typeof AppIndexRoute
   '/contractors/create': typeof AppContractorsCreateRoute
+  '/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/contractors': typeof AppContractorsIndexRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/_app/errors': typeof AppErrorsRoute
   '/_app/': typeof AppIndexRoute
   '/_app/contractors/create': typeof AppContractorsCreateRoute
+  '/_app/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/_app/contractors/': typeof AppContractorsIndexRoute
   '/_app/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/pending'
     | '/errors'
     | '/contractors/create'
+    | '/orders/$orderId'
     | '/contractors/'
     | '/contractors/$contractorId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/errors'
     | '/'
     | '/contractors/create'
+    | '/orders/$orderId'
     | '/contractors'
     | '/contractors/$contractorId/edit'
   id:
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/_app/errors'
     | '/_app/'
     | '/_app/contractors/create'
+    | '/_app/orders/$orderId'
     | '/_app/contractors/'
     | '/_app/contractors/$contractorId/edit'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContractorsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/orders/$orderId': {
+      id: '/_app/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof AppOrdersOrderIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/contractors/create': {
       id: '/_app/contractors/create'
       path: '/contractors/create'
@@ -190,6 +209,7 @@ interface AppRouteChildren {
   AppErrorsRoute: typeof AppErrorsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppContractorsCreateRoute: typeof AppContractorsCreateRoute
+  AppOrdersOrderIdRoute: typeof AppOrdersOrderIdRoute
   AppContractorsIndexRoute: typeof AppContractorsIndexRoute
   AppContractorsContractorIdEditRoute: typeof AppContractorsContractorIdEditRoute
 }
@@ -198,6 +218,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppErrorsRoute: AppErrorsRoute,
   AppIndexRoute: AppIndexRoute,
   AppContractorsCreateRoute: AppContractorsCreateRoute,
+  AppOrdersOrderIdRoute: AppOrdersOrderIdRoute,
   AppContractorsIndexRoute: AppContractorsIndexRoute,
   AppContractorsContractorIdEditRoute: AppContractorsContractorIdEditRoute,
 }

@@ -1229,6 +1229,7 @@
       },
       "OrderItemResponse": {
         "required": [
+          "itemNumber",
           "productDisplayName",
           "quantity",
           "price",
@@ -1236,6 +1237,9 @@
         ],
         "type": "object",
         "properties": {
+          "itemNumber": {
+            "type": "string"
+          },
           "productDisplayName": {
             "type": "string"
           },

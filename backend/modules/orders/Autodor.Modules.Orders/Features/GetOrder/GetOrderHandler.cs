@@ -25,6 +25,7 @@ public static class GetOrderHandler
             order.Person,
             order.CustomerNumber,
             order.Items.Select(i => new OrderItemResponse(
+                i.PartNumber,
                 i.ProductDisplayName,
                 i.Quantity,
                 i.Price,

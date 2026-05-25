@@ -1,25 +1,10 @@
-import dayjs from "dayjs";
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
+import { formatCurrency, formatDate } from "#/lib/formatters";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
 type PrintOrderPdf = (orderId: string, date: string) => void;
-
-const currencyFormatter = new Intl.NumberFormat("pl-PL", {
-	style: "currency",
-	currency: "PLN",
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2,
-});
-
-function formatDate(date: Date | string): string {
-	return dayjs(date).format("YYYY-MM-DD");
-}
-
-function formatCurrency(value: number | string): string {
-	return currencyFormatter.format(Number(value));
-}
 
 type OrdersTableProps = {
 	orders: OrderSummaryResponse[];

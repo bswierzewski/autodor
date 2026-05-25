@@ -41,6 +41,7 @@ export const GetOrderResponse = zod.object({
   "person": zod.string().nullable(),
   "customerNumber": zod.string().nullable(),
   "items": zod.array(zod.object({
+  "itemNumber": zod.string(),
   "productDisplayName": zod.string(),
   "quantity": zod.union([zod.number(),zod.stringFormat('int32', getOrderResponseItemsItemQuantityRegExpTwo)]),
   "price": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseItemsItemPriceRegExpTwo)]),

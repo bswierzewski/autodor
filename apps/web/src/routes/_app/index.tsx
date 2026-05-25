@@ -10,15 +10,12 @@ import { OrdersFilters } from "#/features/orders/components/OrdersFilters";
 import { OrdersFilteredEmptyState } from "#/features/orders/components/OrdersFilteredEmptyState";
 import { OrdersTable } from "#/features/orders/components/OrdersTable";
 import { useMediaQuery } from "#/hooks/use-media-query";
+import { formatDate } from "#/lib/formatters";
 import { downloadBlob } from "#/lib/utils";
 
 export const Route = createFileRoute("/_app/")({
 	component: OrdersRoute,
 });
-
-function formatDate(date: Date | string): string {
-	return dayjs(date).format("YYYY-MM-DD");
-}
 
 function OrdersRoute() {
 	const today = dayjs().startOf("day").toDate();

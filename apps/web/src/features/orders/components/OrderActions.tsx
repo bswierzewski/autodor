@@ -1,10 +1,12 @@
-import { ArrowClockwiseIcon, DotsThreeOutlineVerticalIcon, PrinterIcon, XIcon } from "@phosphor-icons/react";
+import { ArrowClockwiseIcon, DotsThreeOutlineVerticalIcon, EyeIcon, PrinterIcon, XIcon } from "@phosphor-icons/react";
+import { Link } from "@tanstack/react-router";
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Button } from "#/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
 
@@ -28,10 +30,18 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
+				<DropdownMenuItem asChild>
+					<Link params={{ orderId: order.id }} search={{ date: order.date }} to="/orders/$orderId">
+						<EyeIcon size={16} />
+						Podgląd zamówienia
+					</Link>
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
 				<DropdownMenuItem disabled={isPending} onSelect={() => onPrintOrderPdf(order.id, order.date)}>
 					<PrinterIcon size={16} />
 					Drukuj PDF
 				</DropdownMenuItem>
+				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={isPending}
 					onSelect={() => onToggleOrderExclusion(order.id, !order.isExcluded)}
