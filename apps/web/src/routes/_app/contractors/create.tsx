@@ -1,7 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Drawer, DrawerContent, DrawerTitle } from "#/components/ui/drawer";
-import { CreateContractorForm } from "#/features/contractors/components/CreateContractorForm";
-import { useMediaQuery } from "#/hooks/use-media-query";
+import { getGetContractorsQueryKey, useCreateContractor } from "#/api/contractors/contractors";
+import { ContractorForm, emptyContractorFormValues } from "#/features/contractors/components/ContractorForm";
+import { getProblemDetailsMessages } from "#/lib/api-errors";
 
 export const Route = createFileRoute("/_app/contractors/create")({
 	component: ContractorCreateRoute,
@@ -9,30 +10,30 @@ export const Route = createFileRoute("/_app/contractors/create")({
 
 function ContractorCreateRoute() {
 	const navigate = useNavigate();
-	const isDesktop = useMediaQuery("(min-width: 1024px)");
+	const queryClient = useQueryClient();
+	const createMutation = useCreateContractor();
+	const errorMessages = getProblemDetailsMessages(createMutation.error, "Nie udało się dodać kontrahenta.");
+
+	const handleClose = () => {
+		createMutation.reset();
+		void navigate({ to: "/contractors" });
+	};
 
 	return (
-		<Drawer
-			direction={isDesktop ? "right" : "bottom"}
-			open
-			onOpenChange={(open) => {
-				if (!open) {
-					void navigate({ to: "/contractors" });
-				}
+		<ContractorForm
+			description="Uzupełnij dane, aby dodać nowego kontrahenta do bazy."
+			errorMessages={errorMessages}
+			initialValues={emptyContractorFormValues}
+			isPending={createMutation.isPending}
+			onCancel={handleClose}
+			onSubmit={async (value) => {
+				await createMutation.mutateAsync({ data: value });
+				await queryClient.invalidateQueries({ queryKey: getGetContractorsQueryKey() });
+				await navigate({ to: "/contractors" });
 			}}
-		>
-			<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
-				<DrawerTitle className="sr-only">Dodaj kontrahenta</DrawerTitle>
-				<div
-					className={
-						isDesktop
-							? "h-full overflow-y-auto px-1 pb-2 pt-6"
-							: "mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4"
-					}
-				>
-					<CreateContractorForm />
-				</div>
-			</DrawerContent>
-		</Drawer>
+			submitLabel="Dodaj kontrahenta"
+			submittingLabel="Dodawanie..."
+			title="Dodaj kontrahenta"
+		/>
 	);
 }

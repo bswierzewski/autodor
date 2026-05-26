@@ -14,7 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppErrorsRouteImport } from './routes/_app/errors'
-import { Route as AppContractorsIndexRouteImport } from './routes/_app/contractors/index'
+import { Route as AppContractorsRouteRouteImport } from './routes/_app/contractors/route'
 import { Route as AppOrdersOrderIdRouteImport } from './routes/_app/orders/$orderId'
 import { Route as AppContractorsCreateRouteImport } from './routes/_app/contractors/create'
 import { Route as AppContractorsContractorIdEditRouteImport } from './routes/_app/contractors/$contractorId/edit'
@@ -43,9 +43,9 @@ const AppErrorsRoute = AppErrorsRouteImport.update({
   path: '/errors',
   getParentRoute: () => AppRoute,
 } as any)
-const AppContractorsIndexRoute = AppContractorsIndexRouteImport.update({
-  id: '/contractors/',
-  path: '/contractors/',
+const AppContractorsRouteRoute = AppContractorsRouteRouteImport.update({
+  id: '/contractors',
+  path: '/contractors',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOrdersOrderIdRoute = AppOrdersOrderIdRouteImport.update({
@@ -54,35 +54,35 @@ const AppOrdersOrderIdRoute = AppOrdersOrderIdRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const AppContractorsCreateRoute = AppContractorsCreateRouteImport.update({
-  id: '/contractors/create',
-  path: '/contractors/create',
-  getParentRoute: () => AppRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AppContractorsRouteRoute,
 } as any)
 const AppContractorsContractorIdEditRoute =
   AppContractorsContractorIdEditRouteImport.update({
-    id: '/contractors/$contractorId/edit',
-    path: '/contractors/$contractorId/edit',
-    getParentRoute: () => AppRoute,
+    id: '/$contractorId/edit',
+    path: '/$contractorId/edit',
+    getParentRoute: () => AppContractorsRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/contractors': typeof AppContractorsRouteRouteWithChildren
   '/errors': typeof AppErrorsRoute
   '/contractors/create': typeof AppContractorsCreateRoute
   '/orders/$orderId': typeof AppOrdersOrderIdRoute
-  '/contractors/': typeof AppContractorsIndexRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/contractors': typeof AppContractorsRouteRouteWithChildren
   '/errors': typeof AppErrorsRoute
   '/': typeof AppIndexRoute
   '/contractors/create': typeof AppContractorsCreateRoute
   '/orders/$orderId': typeof AppOrdersOrderIdRoute
-  '/contractors': typeof AppContractorsIndexRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
 export interface FileRoutesById {
@@ -90,11 +90,11 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/_app/contractors': typeof AppContractorsRouteRouteWithChildren
   '/_app/errors': typeof AppErrorsRoute
   '/_app/': typeof AppIndexRoute
   '/_app/contractors/create': typeof AppContractorsCreateRoute
   '/_app/orders/$orderId': typeof AppOrdersOrderIdRoute
-  '/_app/contractors/': typeof AppContractorsIndexRoute
   '/_app/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
 export interface FileRouteTypes {
@@ -103,31 +103,31 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/pending'
+    | '/contractors'
     | '/errors'
     | '/contractors/create'
     | '/orders/$orderId'
-    | '/contractors/'
     | '/contractors/$contractorId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/pending'
+    | '/contractors'
     | '/errors'
     | '/'
     | '/contractors/create'
     | '/orders/$orderId'
-    | '/contractors'
     | '/contractors/$contractorId/edit'
   id:
     | '__root__'
     | '/_app'
     | '/login'
     | '/pending'
+    | '/_app/contractors'
     | '/_app/errors'
     | '/_app/'
     | '/_app/contractors/create'
     | '/_app/orders/$orderId'
-    | '/_app/contractors/'
     | '/_app/contractors/$contractorId/edit'
   fileRoutesById: FileRoutesById
 }
@@ -174,11 +174,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppErrorsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/contractors/': {
-      id: '/_app/contractors/'
+    '/_app/contractors': {
+      id: '/_app/contractors'
       path: '/contractors'
-      fullPath: '/contractors/'
-      preLoaderRoute: typeof AppContractorsIndexRouteImport
+      fullPath: '/contractors'
+      preLoaderRoute: typeof AppContractorsRouteRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/orders/$orderId': {
@@ -190,37 +190,46 @@ declare module '@tanstack/react-router' {
     }
     '/_app/contractors/create': {
       id: '/_app/contractors/create'
-      path: '/contractors/create'
+      path: '/create'
       fullPath: '/contractors/create'
       preLoaderRoute: typeof AppContractorsCreateRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppContractorsRouteRoute
     }
     '/_app/contractors/$contractorId/edit': {
       id: '/_app/contractors/$contractorId/edit'
-      path: '/contractors/$contractorId/edit'
+      path: '/$contractorId/edit'
       fullPath: '/contractors/$contractorId/edit'
       preLoaderRoute: typeof AppContractorsContractorIdEditRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppContractorsRouteRoute
     }
   }
 }
 
-interface AppRouteChildren {
-  AppErrorsRoute: typeof AppErrorsRoute
-  AppIndexRoute: typeof AppIndexRoute
+interface AppContractorsRouteRouteChildren {
   AppContractorsCreateRoute: typeof AppContractorsCreateRoute
-  AppOrdersOrderIdRoute: typeof AppOrdersOrderIdRoute
-  AppContractorsIndexRoute: typeof AppContractorsIndexRoute
   AppContractorsContractorIdEditRoute: typeof AppContractorsContractorIdEditRoute
 }
 
+const AppContractorsRouteRouteChildren: AppContractorsRouteRouteChildren = {
+  AppContractorsCreateRoute: AppContractorsCreateRoute,
+  AppContractorsContractorIdEditRoute: AppContractorsContractorIdEditRoute,
+}
+
+const AppContractorsRouteRouteWithChildren =
+  AppContractorsRouteRoute._addFileChildren(AppContractorsRouteRouteChildren)
+
+interface AppRouteChildren {
+  AppContractorsRouteRoute: typeof AppContractorsRouteRouteWithChildren
+  AppErrorsRoute: typeof AppErrorsRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppOrdersOrderIdRoute: typeof AppOrdersOrderIdRoute
+}
+
 const AppRouteChildren: AppRouteChildren = {
+  AppContractorsRouteRoute: AppContractorsRouteRouteWithChildren,
   AppErrorsRoute: AppErrorsRoute,
   AppIndexRoute: AppIndexRoute,
-  AppContractorsCreateRoute: AppContractorsCreateRoute,
   AppOrdersOrderIdRoute: AppOrdersOrderIdRoute,
-  AppContractorsIndexRoute: AppContractorsIndexRoute,
-  AppContractorsContractorIdEditRoute: AppContractorsContractorIdEditRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
