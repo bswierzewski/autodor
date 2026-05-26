@@ -1,6 +1,7 @@
 using Autodor.Modules.Invoicing.Features.CreateInvoice;
 using Autodor.Modules.Invoicing.Features.CreateInvoices;
 using Autodor.Modules.Invoicing.Domain.Enums;
+using Autodor.Modules.Invoicing.Infrastructure.Email;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client;
@@ -24,7 +25,6 @@ public sealed class InvoicingModule : IEndpointModule
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         CreateInvoiceEndpoint.Map(endpoints);
-        CreateInvoicesEndpoint.Map(endpoints);
     }
 
     public void AddServices(IServiceCollection services, IConfiguration configuration)
@@ -32,6 +32,7 @@ public sealed class InvoicingModule : IEndpointModule
         services.AddValidatedOptions<InvoicingOptions>(configuration, InvoicingOptions.SectionName);
         services.AddValidatedOptions<InFaktOptions>(configuration, InFaktOptions.SectionName);
         services.AddValidatedOptions<IFirmaOptions>(configuration, IFirmaOptions.SectionName);
+        services.AddValidatedOptions<SmtpOptions>(configuration, SmtpOptions.SectionName);
 
         // Register both HTTP clients (always available for testing and flexibility)
         services.AddInFaktHttpClient();
@@ -40,5 +41,8 @@ public sealed class InvoicingModule : IEndpointModule
         // Register both invoice service implementations as keyed services
         services.AddKeyedScoped<IInvoiceService, InFaktInvoiceService>(InvoiceProvider.InFakt);
         services.AddKeyedScoped<IInvoiceService, IFirmaInvoiceService>(InvoiceProvider.IFirma);
+
+        services.AddSingleton<IEmailSender, MailKitEmailSender>();
+        services.AddHostedService<CreateInvoicesScheduler>();
     }
 }

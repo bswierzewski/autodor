@@ -7,8 +7,6 @@ using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
-using BuildingBlocks.Infrastructure.Middleware;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,8 +16,7 @@ namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
 
 public static class CreateInvoicesHandler
 {
-    [Authorize]
-    public static async Task<IResult> Handle(
+    public static async Task<CreateInvoicesResult> Handle(
         CreateInvoicesCommand command,
         IMessageBus bus,
         IServiceProvider serviceProvider,
@@ -31,9 +28,10 @@ public static class CreateInvoicesHandler
 
         logger.LogInformation("Creating bulk invoices for date range {DateFrom} to {DateTo}", command.DateFrom, command.DateTo);
 
-        // Retrieve all orders within the specified date range (already filtered for exclusions by Orders module)
-        var query = new GetOrdersByDateRangeQuery(command.DateFrom, command.DateTo);
-        var orders = (await bus.InvokeAsync<IEnumerable<OrderDto>>(query, ct)).ToList();
+        // Fetch all orders that fall within the requested billing period.
+        // The query crosses module boundaries via the Wolverine message bus.
+        var orders = (await bus.InvokeAsync<IEnumerable<OrderDto>>(
+            new GetOrdersByDateRangeQuery(command.DateFrom, command.DateTo), ct)).ToList();
 
         if (orders.Count == 0)
         {
@@ -41,91 +39,99 @@ public static class CreateInvoicesHandler
             throw new NotFoundException("Nie znaleziono zamówień do zbiorczego tworzenia faktur.");
         }
 
-        logger.LogInformation("Found {OrderCount} orders for invoice creation", orders.Count);
-
-        // Get unique contractor NIPs from orders for bulk contractor lookup
-        var contractorNips = orders
-            .Select(o => o.CustomerNumber) // Order customer number is the NIP
-            .Where(nip => !string.IsNullOrWhiteSpace(nip))
-            .Distinct()
-            .ToList();
-
-        var contractors = await bus.InvokeAsync<IEnumerable<ContractorDto>>(
-            new GetContractorsByNIPsQuery(contractorNips), ct);
-
-        var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);
-
-        // Group orders by contractor NIP for individual invoice creation
+        // Group orders by the contractor's NIP (tax ID) so that each contractor
+        // receives exactly one consolidated invoice covering all their orders in the period.
+        // Orders without a CustomerNumber are silently skipped — they cannot be matched
+        // to a contractor and therefore cannot be invoiced.
         var ordersByContractor = orders
             .Where(o => !string.IsNullOrWhiteSpace(o.CustomerNumber))
-            .GroupBy(o => o.CustomerNumber) // Group by contractor number (which is NIP)
+            .GroupBy(o => o.CustomerNumber)
             .ToList();
 
+        // Resolve contractor details for all NIPs in a single cross-module query
+        // instead of querying one by one inside the loop (avoids N+1 calls).
+        var contractors = await bus.InvokeAsync<IEnumerable<ContractorDto>>(
+            new GetContractorsByNIPsQuery(ordersByContractor.Select(g => g.Key).ToList()), ct);
+
+        // Index contractors by NIP for O(1) look-ups inside ProcessContractorAsync.
+        var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);
+
+        // Resolve the correct invoice provider (InFakt / iFirma) based on configuration.
+        // The keyed service allows switching providers without changing handler logic.
         var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
-        var invoicesCreated = 0;
 
-        foreach (var contractorGroup in ordersByContractor)
+        // Process each contractor sequentially to stay within external API rate limits.
+        // Each result records whether the invoice was created or failed, so a single
+        // contractor error does not abort the entire batch.
+        var details = new List<InvoiceSummaryEntry>(ordersByContractor.Count);
+        foreach (var group in ordersByContractor)
+            details.Add(await ProcessContractorAsync(group, contractorDict, invoiceService, command.DateTo, logger, ct));
+
+        var result = new CreateInvoicesResult(details.AsReadOnly());
+
+        logger.LogInformation("Bulk invoicing complete: {Created} created, {Skipped} failed",
+            result.InvoicesCreated, result.InvoicesSkipped);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Builds and submits a single consolidated invoice for one contractor group.
+    /// Returns an <see cref="InvoiceSummaryEntry"/> regardless of success or failure
+    /// so the caller can continue processing the remaining contractors.
+    /// </summary>
+    private static async Task<InvoiceSummaryEntry> ProcessContractorAsync(
+        IGrouping<string, OrderDto> group,
+        Dictionary<string, ContractorDto> contractorDict,
+        IInvoiceService invoiceService,
+        DateTime saleDate,
+        ILogger logger,
+        CancellationToken ct)
+    {
+        var nip = group.Key;
+
+        // If the contractor module returned no record for this NIP, record the failure
+        // and continue — the scheduler / operator will see the gap in the summary email.
+        if (!contractorDict.TryGetValue(nip, out var contractorDto))
         {
-            var contractorNip = contractorGroup.Key;
-
-            if (!contractorDict.TryGetValue(contractorNip, out var contractorDto))
-            {
-                logger.LogWarning("Contractor with NIP {NIP} not found, skipping", contractorNip);
-                continue;
-            }
-
-            // Map contractor DTO to domain value object
-            var invoiceContractor = new Contractor(
-                Name: contractorDto.Name,
-                City: contractorDto.City,
-                Street: contractorDto.Street,
-                NIP: contractorDto.NIP,
-                ZipCode: contractorDto.ZipCode,
-                Email: contractorDto.Email
-            );
-
-            // Collect all items from this contractor's orders (already filtered for exclusions by Orders module)
-            var invoiceItems = contractorGroup
-                .SelectMany(order => order.Items)
-                .Select(item => new InvoiceItem
-                {
-                    Name = item.Name,
-                    Quantity = item.Quantity,
-                    UnitPrice = Math.Round(item.Price, 2)
-                })
-                .ToList();
-
-            var invoice = new Invoice
-            {
-                Number = null, // Auto-generated by invoice service
-                IssueDate = DateTime.Today,
-                SaleDate = command.DateTo, // Last date in the range
-                PaymentDue = DateTime.Today.AddDays(14), // Standard 14-day payment terms
-                Contractor = invoiceContractor,
-                Items = invoiceItems.AsReadOnly()
-            };
-
-            try
-            {
-                await invoiceService.CreateInvoiceAsync(invoice, ct);
-                invoicesCreated++;
-
-                logger.LogInformation("Created invoice for contractor {NIP} ({Name}) with {ItemCount} items",
-                    contractorNip, contractorDto.Name, invoiceItems.Count);
-            }
-            catch (OperationCanceledException) when (ct.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to create invoice for contractor {NIP} ({Name})",
-                    contractorNip, contractorDto.Name);
-            }
+            logger.LogWarning("Contractor with NIP {NIP} not found, skipping", nip);
+            return new InvoiceSummaryEntry(nip, "(nieznany)", 0, false, "Nie znaleziono kontrahenta");
         }
 
-        logger.LogInformation("Successfully created {InvoiceCount} invoices", invoicesCreated);
+        // Flatten all line items across every order for this contractor.
+        // Prices are rounded to 2 decimal places to match external API expectations.
+        var items = group
+            .SelectMany(o => o.Items)
+            .Select(i => new InvoiceItem { Name = i.Name, Quantity = i.Quantity, UnitPrice = Math.Round(i.Price, 2) })
+            .ToList();
 
-        return Results.Ok(new { InvoicesCreated = invoicesCreated });
+        var invoice = new Invoice
+        {
+            Number = null,                              // assigned by the external provider
+            IssueDate = DateTime.Today,
+            SaleDate = saleDate,                        // last day of the billing period
+            PaymentDue = DateTime.Today.AddDays(14),
+            Contractor = new Contractor(contractorDto.Name, contractorDto.City, contractorDto.Street,
+                contractorDto.NIP, contractorDto.ZipCode, contractorDto.Email),
+            Items = items.AsReadOnly()
+        };
+
+        try
+        {
+            await invoiceService.CreateInvoiceAsync(invoice, ct);
+            logger.LogInformation("Created invoice for {NIP} ({Name}) with {Count} items", nip, contractorDto.Name, items.Count);
+            return new InvoiceSummaryEntry(nip, contractorDto.Name, items.Count, true, null);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            // Propagate cancellation immediately — do not swallow it as a regular failure.
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Record the error and let the batch continue with the next contractor.
+            logger.LogError(ex, "Failed to create invoice for {NIP} ({Name})", nip, contractorDto.Name);
+            return new InvoiceSummaryEntry(nip, contractorDto.Name, items.Count, false, ex.Message);
+        }
     }
 }
