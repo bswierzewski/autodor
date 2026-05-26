@@ -16,7 +16,6 @@ import type {
 
 import type {
   CreateInvoiceCommand,
-  CreateInvoicesCommand,
   HttpValidationProblemDetails
 } from '../models';
 
@@ -96,74 +95,4 @@ export const useCreateInvoice = <TError = HttpValidationProblemDetails,
         TContext
       > => {
       return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
-    }
-    export const getCreateInvoicesBulkUrl = () => {
-
-
-
-
-  return `/api/invoices/bulk`
-}
-
-/**
- * @summary Create multiple invoices for date range
- */
-export const createInvoicesBulk = async (createInvoicesCommand: CreateInvoicesCommand, options?: RequestInit): Promise<void> => {
-
-  return customFetch<void>(getCreateInvoicesBulkUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createInvoicesCommand,)
-  }
-);}
-
-
-
-
-export const getCreateInvoicesBulkMutationOptions = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext> => {
-
-const mutationKey = ['createInvoicesBulk'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoicesBulk>>, {data: CreateInvoicesCommand}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createInvoicesBulk(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateInvoicesBulkMutationResult = NonNullable<Awaited<ReturnType<typeof createInvoicesBulk>>>
-    export type CreateInvoicesBulkMutationBody = CreateInvoicesCommand
-    export type CreateInvoicesBulkMutationError = HttpValidationProblemDetails
-
-    /**
- * @summary Create multiple invoices for date range
- */
-export const useCreateInvoicesBulk = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoicesBulk>>, TError,{data: CreateInvoicesCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createInvoicesBulk>>,
-        TError,
-        {data: CreateInvoicesCommand},
-        TContext
-      > => {
-      return useMutation(getCreateInvoicesBulkMutationOptions(options), queryClient);
     }

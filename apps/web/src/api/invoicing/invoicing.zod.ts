@@ -22,11 +22,3 @@ export const CreateInvoiceBody = zod.object({
   "contractorNIP": zod.string()
 })
 
-/**
- * @summary Create multiple invoices for date range
- */
-export const CreateInvoicesBulkBody = zod.object({
-  "dateFrom": zod.iso.datetime({"offset":true}),
-  "dateTo": zod.iso.datetime({"offset":true})
-})
-

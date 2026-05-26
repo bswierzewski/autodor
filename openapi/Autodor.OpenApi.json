@@ -850,45 +850,6 @@
           }
         ]
       }
-    },
-    "/api/invoices/bulk": {
-      "post": {
-        "tags": [
-          "Invoicing"
-        ],
-        "summary": "Create multiple invoices for date range",
-        "operationId": "CreateInvoicesBulk",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateInvoicesCommand"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      }
     }
   },
   "components": {
@@ -979,23 +940,6 @@
           },
           "contractorNIP": {
             "type": "string"
-          }
-        }
-      },
-      "CreateInvoicesCommand": {
-        "required": [
-          "dateFrom",
-          "dateTo"
-        ],
-        "type": "object",
-        "properties": {
-          "dateFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dateTo": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },
