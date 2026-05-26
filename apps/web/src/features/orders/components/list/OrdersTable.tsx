@@ -1,6 +1,8 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
+import { Checkbox } from "#/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
 import { formatCurrency, formatDate } from "#/lib/formatters";
+import { cn } from "#/lib/utils";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
@@ -9,16 +11,38 @@ type PrintOrderPdf = (orderId: string, date: string) => void;
 type OrdersTableProps = {
 	orders: OrderSummaryResponse[];
 	isPending: boolean;
+	selectedOrderIds: ReadonlySet<string>;
+	onToggleSelect: (id: string) => void;
+	onToggleSelectAll: (checked: boolean) => void;
 	onPrintOrderPdf: PrintOrderPdf;
 	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrdersTable({ orders, isPending, onPrintOrderPdf, onToggleOrderExclusion }: OrdersTableProps) {
+export function OrdersTable({
+	orders,
+	isPending,
+	selectedOrderIds,
+	onToggleSelect,
+	onToggleSelectAll,
+	onPrintOrderPdf,
+	onToggleOrderExclusion,
+}: OrdersTableProps) {
+	const selectedCount = orders.filter((o) => selectedOrderIds.has(o.id)).length;
+	const allSelected = selectedCount === orders.length && orders.length > 0;
+	const someSelected = selectedCount > 0 && !allSelected;
+
 	return (
 		<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
 			<Table>
 				<TableHeader>
 					<TableRow>
+						<TableHead className="w-12 pl-5">
+							<Checkbox
+								aria-label="Zaznacz wszystkie"
+								checked={allSelected ? true : someSelected ? "indeterminate" : false}
+								onCheckedChange={(checked) => onToggleSelectAll(!!checked)}
+							/>
+						</TableHead>
 						<TableHead>Numer</TableHead>
 						<TableHead>Data</TableHead>
 						<TableHead>Osoba</TableHead>
@@ -31,21 +55,24 @@ export function OrdersTable({ orders, isPending, onPrintOrderPdf, onToggleOrderE
 				<TableBody>
 					{orders.map((order) => (
 						<TableRow
-							className={[
-								"cursor-pointer",
-								order.isExcluded ? "bg-destructive/5 hover:bg-destructive/10" : "",
-							]
-								.filter(Boolean)
-								.join(" ")}
+							className={cn("cursor-pointer", order.isExcluded && "bg-destructive/5 hover:bg-destructive/10")}
 							key={order.id}
+							onClick={() => onToggleSelect(order.id)}
 						>
-							<TableCell className="pl-5 font-medium">{order.number ?? "-"}</TableCell>
+							<TableCell className="pl-5" onClick={(e) => e.stopPropagation()}>
+								<Checkbox
+									aria-label={`Zaznacz zamówienie ${order.number ?? order.id}`}
+									checked={selectedOrderIds.has(order.id)}
+									onCheckedChange={() => onToggleSelect(order.id)}
+								/>
+							</TableCell>
+							<TableCell className="font-medium">{order.number ?? "-"}</TableCell>
 							<TableCell className="text-muted-foreground">{formatDate(order.date)}</TableCell>
 							<TableCell className="text-muted-foreground">{order.person ?? "-"}</TableCell>
 							<TableCell className="text-muted-foreground">{order.customerNumber ?? "-"}</TableCell>
 							<TableCell className="text-right">{order.itemsCount}</TableCell>
 							<TableCell className="text-right font-medium">{formatCurrency(order.totalAmount)}</TableCell>
-							<TableCell className="pr-5 text-right" onClick={(event) => event.stopPropagation()}>
+							<TableCell className="pr-5 text-right" onClick={(e) => e.stopPropagation()}>
 								<OrderActions
 									isPending={isPending}
 									order={order}

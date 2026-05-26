@@ -1,4 +1,5 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
+import { Checkbox } from "#/components/ui/checkbox";
 import { formatCurrency, formatDate } from "#/lib/formatters";
 import { OrderActions } from "./OrderActions";
 
@@ -8,11 +9,20 @@ type PrintOrderPdf = (orderId: string, date: string) => void;
 type OrderCardListProps = {
 	orders: OrderSummaryResponse[];
 	isPending: boolean;
+	selectedOrderIds: ReadonlySet<string>;
+	onToggleSelect: (id: string) => void;
 	onPrintOrderPdf: PrintOrderPdf;
 	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrderCardList({ orders, isPending, onPrintOrderPdf, onToggleOrderExclusion }: OrderCardListProps) {
+export function OrderCardList({
+	orders,
+	isPending,
+	selectedOrderIds,
+	onToggleSelect,
+	onPrintOrderPdf,
+	onToggleOrderExclusion,
+}: OrderCardListProps) {
 	return (
 		<div className="grid gap-4">
 			{orders.map((order) => (
@@ -20,15 +30,25 @@ export function OrderCardList({ orders, isPending, onPrintOrderPdf, onToggleOrde
 					className={[
 						"rounded-3xl border bg-card p-5 shadow-sm transition",
 						order.isExcluded ? "border-destructive/30 bg-destructive/5" : "",
+						selectedOrderIds.has(order.id) ? "border-primary/40 bg-primary/5" : "",
 					]
 						.filter(Boolean)
 						.join(" ")}
 					key={order.id}
 				>
 					<div className="flex items-start justify-between gap-3">
-						<div className="min-w-0">
-							<p className="truncate text-base font-semibold tracking-tight">{order.number ?? order.id}</p>
-							<p className="text-sm text-muted-foreground">{formatDate(order.date)}</p>
+						<div className="flex min-w-0 items-start gap-3">
+							<div className="mt-0.5">
+								<Checkbox
+									aria-label={`Zaznacz zamówienie ${order.number ?? order.id}`}
+									checked={selectedOrderIds.has(order.id)}
+									onCheckedChange={() => onToggleSelect(order.id)}
+								/>
+							</div>
+							<div className="min-w-0">
+								<p className="truncate text-base font-semibold tracking-tight">{order.number ?? order.id}</p>
+								<p className="text-sm text-muted-foreground">{formatDate(order.date)}</p>
+							</div>
 						</div>
 						<div>
 							<OrderActions

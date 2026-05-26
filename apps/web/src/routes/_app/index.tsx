@@ -1,3 +1,4 @@
+import { ReceiptIcon } from "@phosphor-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
@@ -9,6 +10,9 @@ import {
 	useGetOrders,
 	useUpdateOrderExclusion,
 } from "#/api/orders/orders";
+import { Button } from "#/components/ui/button";
+import { Drawer, DrawerContent, DrawerTitle } from "#/components/ui/drawer";
+import { CreateInvoiceForm } from "#/features/orders/components/invoice/CreateInvoiceForm";
 import { OrderCardList } from "#/features/orders/components/list/OrderCardList";
 import { OrdersEmptyState } from "#/features/orders/components/list/OrdersEmptyState";
 import { OrdersFilteredEmptyState } from "#/features/orders/components/list/OrdersFilteredEmptyState";
@@ -33,6 +37,29 @@ function OrdersRoute() {
 	const from = formatDate(fromDate);
 	const to = formatDate(toDate);
 	const queryClient = useQueryClient();
+
+	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
+	const [isInvoiceDrawerOpen, setIsInvoiceDrawerOpen] = useState(false);
+
+	const toggleOrderSelection = (id: string) => {
+		setSelectedOrderIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	};
+
+	const toggleSelectAll = (checked: boolean) => {
+		if (checked) {
+			setSelectedOrderIds(new Set(filteredOrders.map((o) => o.id)));
+		} else {
+			setSelectedOrderIds(new Set());
+		}
+	};
 
 	const generateDeliveryNoteMutation = useGenerateDeliveryNote({
 		mutation: {
@@ -89,6 +116,8 @@ function OrdersRoute() {
 		return searchableValue.includes(query);
 	});
 
+	const selectedOrders = orders.filter((o) => selectedOrderIds.has(o.id));
+
 	return (
 		<div className="space-y-6">
 			<section className="grid gap-6">
@@ -116,24 +145,68 @@ function OrdersRoute() {
 					<OrdersFilteredEmptyState onClearFilters={() => setQuery("")} />
 				) : (
 					<div className="space-y-3">
+						<div className="flex justify-end gap-2">
+							{selectedOrderIds.size > 0 && (
+								<Button size="sm" variant="outline" onClick={() => setSelectedOrderIds(new Set())}>
+									Wyczyść
+								</Button>
+							)}
+							<Button disabled={selectedOrderIds.size === 0} size="sm" onClick={() => setIsInvoiceDrawerOpen(true)}>
+								<ReceiptIcon />
+								Wystaw fakturę
+							</Button>
+						</div>
 						{isDesktop ? (
 							<OrdersTable
 								isPending={isPending}
 								onPrintOrderPdf={printOrderPdf}
 								onToggleOrderExclusion={toggleOrderExclusion}
+								onToggleSelect={toggleOrderSelection}
+								onToggleSelectAll={toggleSelectAll}
 								orders={filteredOrders}
+								selectedOrderIds={selectedOrderIds}
 							/>
 						) : (
 							<OrderCardList
 								isPending={isPending}
 								onPrintOrderPdf={printOrderPdf}
 								onToggleOrderExclusion={toggleOrderExclusion}
+								onToggleSelect={toggleOrderSelection}
 								orders={filteredOrders}
+								selectedOrderIds={selectedOrderIds}
 							/>
 						)}
 					</div>
 				)}
 			</section>
+
+			<Drawer
+				direction={isDesktop ? "right" : "bottom"}
+				open={isInvoiceDrawerOpen}
+				onOpenChange={(open) => {
+					if (!open) setIsInvoiceDrawerOpen(false);
+				}}
+			>
+				<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
+					<DrawerTitle className="sr-only">Wystaw fakturę</DrawerTitle>
+					<div
+						className={
+							isDesktop
+								? "h-full overflow-y-auto px-1 pb-2 pt-6"
+								: "mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4"
+						}
+					>
+						<CreateInvoiceForm
+							selectedOrders={selectedOrders}
+							onCancel={() => setIsInvoiceDrawerOpen(false)}
+							onSuccess={() => {
+								setIsInvoiceDrawerOpen(false);
+								setSelectedOrderIds(new Set());
+							}}
+						/>
+					</div>
+				</DrawerContent>
+			</Drawer>
 		</div>
 	);
 }
