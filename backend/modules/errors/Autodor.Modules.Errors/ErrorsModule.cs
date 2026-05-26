@@ -27,6 +27,7 @@ public sealed class ErrorsModule : IEndpointModule
         GetNotFoundErrorEndpoint.Map(endpoints);
         GetSecuredErrorEndpoint.Map(endpoints);
         GetUnauthorizedErrorEndpoint.Map(endpoints);
+
         CreateValidationModelErrorEndpoint.Map(endpoints);
     }
 
