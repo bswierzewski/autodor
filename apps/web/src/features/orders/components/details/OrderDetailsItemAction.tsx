@@ -11,16 +11,18 @@ type OrderDetailsItemActionProps = {
 };
 
 export function OrderDetailsItemAction({ item, isPending, onToggleOrderItemExclusion }: OrderDetailsItemActionProps) {
+	const actionLabel = item.isExcluded ? "Przywróć" : "Wyklucz";
+
 	return (
 		<Button
+			aria-label={actionLabel}
 			disabled={isPending}
-			size="sm"
+			size="icon-sm"
 			type="button"
 			variant={item.isExcluded ? "secondary" : "destructive"}
 			onClick={() => onToggleOrderItemExclusion(item.itemNumber, !item.isExcluded)}
 		>
 			{item.isExcluded ? <ArrowClockwiseIcon size={16} /> : <XIcon size={16} />}
-			{item.isExcluded ? "Przywróć" : "Wyklucz"}
 		</Button>
 	);
 }

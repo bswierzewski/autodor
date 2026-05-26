@@ -1,9 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { getGetOrderQueryKey, getGetOrdersQueryKey, useGetOrder, useUpdateOrderItemExclusion } from "#/api/orders/orders";
-import { OrderDetailsItemsTable } from "#/features/orders/components/details/order/orderDetails/OrderDetailsItemsTable";
-import { OrderDetailsSummaryCard } from "#/features/orders/components/details/order/orderDetails/OrderDetailsSummaryCard";
+import {
+	getGetOrderQueryKey,
+	getGetOrdersQueryKey,
+	useGetOrder,
+	useUpdateOrderItemExclusion,
+} from "#/api/orders/orders";
+import { OrderDetailsItemsTable } from "#/features/orders/components/details/OrderDetailsItemsTable";
+import { OrderDetailsSummaryCard } from "#/features/orders/components/details/OrderDetailsSummaryCard";
 
 type OrderDetailsSearch = {
 	date: string;
@@ -48,8 +53,12 @@ function OrderDetailsRoute() {
 			data: { excluded },
 		});
 	};
-    
-	const { data: order, isError, isLoading } = useGetOrder(
+
+	const {
+		data: order,
+		isError,
+		isLoading,
+	} = useGetOrder(
 		orderId,
 		{ date },
 		{
@@ -92,9 +101,13 @@ function OrderDetailsRoute() {
 	}
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4">
 			<OrderDetailsSummaryCard order={order} />
-			<OrderDetailsItemsTable isPending={isPending} items={order.items} onToggleOrderItemExclusion={toggleOrderItemExclusion} />
+			<OrderDetailsItemsTable
+				isPending={isPending}
+				items={order.items}
+				onToggleOrderItemExclusion={toggleOrderItemExclusion}
+			/>
 		</div>
 	);
 }
