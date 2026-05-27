@@ -45,7 +45,7 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 					variant={order.isExcluded ? "default" : "destructive"}
 				>
 					{order.isExcluded ? <ArrowClockwiseIcon size={16} /> : <XIcon size={16} />}
-					{order.isExcluded ? "Przywróć do fakturowania" : "Wyłącz z fakturowania"}
+					{order.isExcluded ? "Przywróć" : "Wyłącz"}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
