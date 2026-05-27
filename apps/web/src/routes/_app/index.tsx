@@ -122,6 +122,16 @@ function OrdersRoute() {
 		<div className="space-y-6">
 			<section className="grid gap-6">
 				<OrdersFilters
+					actions={
+						<Button
+							className="h-11 w-full rounded-2xl px-4 lg:w-auto"
+							disabled={selectedOrders.length === 0}
+							onClick={() => setIsInvoiceDrawerOpen(true)}
+						>
+							<ReceiptIcon size={16} />
+							Wystaw fakturę
+						</Button>
+					}
 					fromDate={fromDate}
 					onClearQuery={() => setQuery("")}
 					onFromDateChange={setFromDate}
@@ -145,17 +155,6 @@ function OrdersRoute() {
 					<OrdersFilteredEmptyState onClearFilters={() => setQuery("")} />
 				) : (
 					<div className="space-y-3">
-						<div className="flex justify-end gap-2">
-							{selectedOrderIds.size > 0 && (
-								<Button size="sm" variant="outline" onClick={() => setSelectedOrderIds(new Set())}>
-									Wyczyść
-								</Button>
-							)}
-							<Button disabled={selectedOrderIds.size === 0} size="sm" onClick={() => setIsInvoiceDrawerOpen(true)}>
-								<ReceiptIcon />
-								Wystaw fakturę
-							</Button>
-						</div>
 						{isDesktop ? (
 							<OrdersTable
 								isPending={isPending}

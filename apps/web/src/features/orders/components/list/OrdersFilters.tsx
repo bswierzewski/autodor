@@ -1,5 +1,6 @@
 import { MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import dayjs from "dayjs";
+import type { ReactNode } from "react";
 import { DatePickerField } from "#/components/common/DatePickerField";
 import { Label } from "#/components/ui/label";
 
@@ -11,6 +12,7 @@ type OrdersFiltersProps = {
 	onClearQuery: () => void;
 	onFromDateChange: (date: Date) => void;
 	onToDateChange: (date: Date) => void;
+	actions?: ReactNode;
 };
 
 export function OrdersFilters({
@@ -21,6 +23,7 @@ export function OrdersFilters({
 	onClearQuery,
 	onFromDateChange,
 	onToDateChange,
+	actions,
 }: OrdersFiltersProps) {
 	return (
 		<>
@@ -50,37 +53,40 @@ export function OrdersFilters({
 				</label>
 			</div>
 
-			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="grid gap-2">
-					<Label htmlFor="orders-date-from">Od</Label>
-					<DatePickerField
-						id="orders-date-from"
-						value={fromDate}
-						onChange={(date) => {
-							if (!date) {
-								return;
-							}
+			<div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+				<div className="grid gap-4 sm:grid-cols-2 lg:flex-1">
+					<div className="grid gap-2">
+						<Label htmlFor="orders-date-from">Od</Label>
+						<DatePickerField
+							id="orders-date-from"
+							value={fromDate}
+							onChange={(date) => {
+								if (!date) {
+									return;
+								}
 
-							onFromDateChange(date);
-						}}
-						disabled={(date) => dayjs(date).isAfter(toDate, "day")}
-					/>
-				</div>
-				<div className="grid gap-2">
-					<Label htmlFor="orders-date-to">Do</Label>
-					<DatePickerField
-						id="orders-date-to"
-						value={toDate}
-						onChange={(date) => {
-							if (!date) {
-								return;
-							}
+								onFromDateChange(date);
+							}}
+							disabled={(date) => dayjs(date).isAfter(toDate, "day")}
+						/>
+					</div>
+					<div className="grid gap-2">
+						<Label htmlFor="orders-date-to">Do</Label>
+						<DatePickerField
+							id="orders-date-to"
+							value={toDate}
+							onChange={(date) => {
+								if (!date) {
+									return;
+								}
 
-							onToDateChange(date);
-						}}
-						disabled={(date) => dayjs(date).isBefore(fromDate, "day")}
-					/>
+								onToDateChange(date);
+							}}
+							disabled={(date) => dayjs(date).isBefore(fromDate, "day")}
+						/>
+					</div>
 				</div>
+				{actions ? <div className="flex justify-end lg:shrink-0">{actions}</div> : null}
 			</div>
 		</>
 	);

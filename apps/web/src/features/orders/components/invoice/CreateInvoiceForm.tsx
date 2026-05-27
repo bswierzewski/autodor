@@ -172,25 +172,16 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 					</form.Field>
 				</FieldGroup>
 
-				<div className="mt-auto flex flex-col gap-3">
-					<Button disabled={isSubmitting} type="submit">
-						{isSubmitting ? (
-							<>
-								<Spinner />
-								Wystawianie...
-							</>
-						) : (
-							<>
-								<CheckIcon />
-								Wystaw fakturę
-							</>
-						)}
-					</Button>
-					<Button disabled={isSubmitting} type="button" variant="outline" onClick={onCancel}>
-						<XIcon />
+				<footer className="mt-auto grid gap-3 border-t border-border/60 pt-5 sm:grid-cols-2">
+					<Button className="h-11 w-full" type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+						<XIcon size={16} />
 						Anuluj
 					</Button>
-				</div>
+					<Button className="h-11 w-full" type="submit" disabled={isSubmitting}>
+						{isSubmitting ? <Spinner className="size-4" /> : <CheckIcon size={16} />}
+						{isSubmitting ? "Wystawianie..." : "Wystaw fakturę"}
+					</Button>
+				</footer>
 			</form>
 		</section>
 	);
