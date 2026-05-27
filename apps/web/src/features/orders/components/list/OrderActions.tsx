@@ -32,12 +32,12 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 				<DropdownMenuItem asChild>
 					<Link params={{ orderId: order.id }} search={{ date: order.date }} to="/orders/$orderId">
 						<EyeIcon size={16} />
-						Podgląd zamówienia
+						Podgląd
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem disabled={isPending} onSelect={() => onPrintOrderPdf(order.id, order.date)}>
 					<PrinterIcon size={16} />
-					Drukuj PDF
+					Pobierz
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					disabled={isPending}
