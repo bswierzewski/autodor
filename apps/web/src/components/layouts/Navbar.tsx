@@ -1,16 +1,28 @@
 import { UserButton } from "@clerk/react";
 import { PackageIcon, UsersThreeIcon } from "@phosphor-icons/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 
 const navItems = [
-	{ label: "Zamówienia", to: "/", icon: PackageIcon, exact: true },
-	{ label: "Klienci", to: "/contractors", icon: UsersThreeIcon, exact: false },
+	{
+		label: "Zamówienia",
+		to: "/",
+		icon: PackageIcon,
+		isActive: (pathname: string) => pathname === "/" || pathname.startsWith("/orders/"),
+	},
+	{
+		label: "Klienci",
+		to: "/contractors",
+		icon: UsersThreeIcon,
+		isActive: (pathname: string) => pathname === "/contractors" || pathname.startsWith("/contractors/"),
+	},
 ] as const;
 
 export function Navbar() {
 	const showUserName = useMediaQuery("(min-width: 640px)");
+	const pathname = useRouterState({ select: (state) => state.location.pathname });
 
 	return (
 		<header className="flex items-center justify-between gap-6 rounded-b-2xl border px-5 py-4 shadow-sm">
@@ -19,16 +31,16 @@ export function Navbar() {
 			</div>
 			<div className="flex items-center gap-4 sm:gap-6">
 				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
-					{navItems.map(({ label, to, icon: Icon, exact }) => (
+					{navItems.map(({ label, to, icon: Icon, isActive }) => (
 						<Link
 							key={to}
 							to={to}
-							activeOptions={exact ? { exact: true } : undefined}
 							aria-label={label}
-							className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium"
-							activeProps={{
-								className: "text-secondary bg-primary border shadow-sm",
-							}}
+							aria-current={isActive(pathname) ? "page" : undefined}
+							className={cn(
+								"flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium",
+								isActive(pathname) && "text-secondary bg-primary border shadow-sm",
+							)}
 						>
 							<Icon size={18} weight="duotone" />
 							<span className="hidden sm:inline">{label}</span>
