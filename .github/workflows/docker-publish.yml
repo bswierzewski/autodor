@@ -59,3 +59,8 @@ jobs:
             GIT_SHA=${{ github.sha }}
             BUILD_TIME=${{ steps.metadata.outputs.build_time }}
             VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+
+      - name: Trigger Dokploy webhook
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        run: curl --fail --silent --show-error --location --request POST "$DOKPLOY_WEBHOOK_URL"
