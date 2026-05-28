@@ -58,8 +58,8 @@ export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps)
 					<div className="space-y-3">
 						<h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Kontrahent</h2>
 						<dl>
-							<DetailRow label="Nazwa" value={contractor?.name ?? contractorNip ?? "Brak numeru klienta"} multiline />
-							<DetailRow label="Nr klienta" value={contractor?.nip ?? contractorNip ?? "-"} />
+							<DetailRow label="Nazwa" value={contractor?.name ?? contractorNip ?? "Brak NIP"} multiline />
+							<DetailRow label="NIP" value={contractor?.nip ?? contractorNip ?? "-"} />
 							<DetailRow
 								label="Adres"
 								multiline

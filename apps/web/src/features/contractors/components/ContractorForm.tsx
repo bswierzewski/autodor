@@ -2,7 +2,7 @@ import { CheckIcon, XIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import * as zod from "zod";
 import { Button } from "#/components/ui/button";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "#/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
 import { Spinner } from "#/components/ui/spinner";
 

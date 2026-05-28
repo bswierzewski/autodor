@@ -1,6 +1,6 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Checkbox } from "#/components/ui/checkbox";
-import { formatCurrency, formatDate } from "#/lib/formatters";
+import { formatCurrency } from "#/lib/formatters";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
@@ -41,7 +41,7 @@ export function OrderCardList({
 					>
 						<label className="block cursor-pointer" htmlFor={checkboxId}>
 							<div className="flex items-start gap-3 pr-12">
-								<div className="flex min-w-0 items-start gap-3">
+								<div className="flex min-w-0 flex-1 items-start gap-3">
 									<div className="mt-0.5">
 										<Checkbox
 											aria-label={`Zaznacz zamówienie ${order.number ?? order.id}`}
@@ -50,29 +50,19 @@ export function OrderCardList({
 											onCheckedChange={() => onToggleSelect(order.id)}
 										/>
 									</div>
-									<div className="min-w-0">
-										<p className="truncate text-base font-semibold tracking-tight">{order.number ?? order.id}</p>
-										<p className="text-sm text-muted-foreground">{formatDate(order.date)}</p>
+									<div className="grid min-w-0 flex-1 gap-1">
+										<p className="min-w-0 truncate text-base font-semibold">{order.number ?? order.id}</p>
+										<div className="grid min-w-0 w-full grid-cols-2 gap-3 text-sm">
+											<div className="min-w-0">
+												<p className="text-muted-foreground">NIP:</p>
+												<p className="truncate font-medium">{order.customerNumber ?? "-"}</p>
+											</div>
+											<div className="min-w-0 text-right">
+												<p className="text-muted-foreground">Kwota:</p>
+												<p className="truncate font-medium">{formatCurrency(order.totalAmount)}</p>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-
-							<div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-								<div>
-									<p className="text-muted-foreground">Osoba</p>
-									<p className="font-medium">{order.person ?? "-"}</p>
-								</div>
-								<div>
-									<p className="text-muted-foreground">Nr klienta</p>
-									<p className="font-medium">{order.customerNumber ?? "-"}</p>
-								</div>
-								<div>
-									<p className="text-muted-foreground">Pozycje</p>
-									<p className="font-medium">{order.itemsCount}</p>
-								</div>
-								<div>
-									<p className="text-muted-foreground">Kwota</p>
-									<p className="font-medium">{formatCurrency(order.totalAmount)}</p>
 								</div>
 							</div>
 						</label>
