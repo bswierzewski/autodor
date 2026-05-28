@@ -1,17 +1,8 @@
-import dayjs from "dayjs";
-import { formatDate } from "../../lib/formatters";
-
 const buildInfo = import.meta.env as ImportMetaEnv & {
 	readonly VITE_APP_GIT_SHA?: string;
-	readonly VITE_APP_BUILD_TIME?: string;
 };
 
 const buildShaShort = buildInfo.VITE_APP_GIT_SHA?.trim()?.slice(0, 7) ?? "";
-const buildTime = buildInfo.VITE_APP_BUILD_TIME?.trim() ?? "";
-const buildTimeLabel =
-	buildTime && dayjs(buildTime).isValid()
-		? `${formatDate(buildTime)} ${dayjs(buildTime).format("HH:mm:ss")}`
-		: "";
 const currentYear = new Date().getFullYear();
 
 export function Footer() {
@@ -24,10 +15,6 @@ export function Footer() {
 					</span>
 				</p>
 				<p className="min-w-max whitespace-nowrap text-xs text-muted-foreground/90">
-					<time className="font-mono" dateTime={buildTime || undefined}>
-						{buildTimeLabel}
-					</time>
-					<span>{" | "}</span>
 					<span className="font-mono">{buildShaShort}</span>
 				</p>
 			</div>

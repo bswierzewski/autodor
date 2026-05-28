@@ -23,7 +23,14 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button className="ml-auto" size="icon-sm" type="button" variant="ghost">
+				<Button
+					className="ml-auto"
+					size="icon-sm"
+					type="button"
+					variant="ghost"
+					onClick={(event) => event.stopPropagation()}
+					onKeyDown={(event) => event.stopPropagation()}
+				>
 					<DotsThreeOutlineVerticalIcon size={16} />
 					<span className="sr-only">Otwórz menu akcji dla zamówienia {order.number ?? order.id}</span>
 				</Button>
