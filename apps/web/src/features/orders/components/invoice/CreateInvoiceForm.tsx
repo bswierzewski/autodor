@@ -2,6 +2,7 @@ import { CheckIcon, XIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import dayjs from "dayjs";
 import { toast } from "sonner";
+import * as zod from "zod";
 import { useCreateInvoice } from "#/api/invoicing/invoicing";
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { DatePickerField } from "#/components/common/DatePickerField";
@@ -10,6 +11,13 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "#/components/ui/field
 import { Input } from "#/components/ui/input";
 import { Spinner } from "#/components/ui/spinner";
 import { getProblemDetailsMessages } from "#/lib/api-errors";
+
+const createInvoiceFormSchema = zod.object({
+	invoiceNumber: zod.string(),
+	issueDate: zod.date(),
+	saleDate: zod.date(),
+	contractorNIP: zod.string().trim().min(1, "NIP kontrahenta jest wymagany"),
+});
 
 type CreateInvoiceFormProps = {
 	selectedOrders: OrderSummaryResponse[];
@@ -35,6 +43,9 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 			issueDate: today,
 			saleDate: today,
 			contractorNIP: "",
+		},
+		validators: {
+			onSubmit: createInvoiceFormSchema,
 		},
 		onSubmit: async ({ value }) => {
 			const rawNumber = value.invoiceNumber.trim();
@@ -100,10 +111,7 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 						)}
 					</form.Field>
 
-					<form.Field
-						name="issueDate"
-						validators={{ onChange: ({ value }) => (!value ? "Data wystawienia jest wymagana" : undefined) }}
-					>
+					<form.Field name="issueDate">
 						{(field) => {
 							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
@@ -116,16 +124,13 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 											if (date) field.handleChange(date);
 										}}
 									/>
-									{isInvalid ? <FieldError>{field.state.meta.errors.join(", ")}</FieldError> : null}
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
 					</form.Field>
 
-					<form.Field
-						name="saleDate"
-						validators={{ onChange: ({ value }) => (!value ? "Data sprzedaży jest wymagana" : undefined) }}
-					>
+					<form.Field name="saleDate">
 						{(field) => {
 							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
@@ -138,18 +143,13 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 											if (date) field.handleChange(date);
 										}}
 									/>
-									{isInvalid ? <FieldError>{field.state.meta.errors.join(", ")}</FieldError> : null}
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}
 					</form.Field>
 
-					<form.Field
-						name="contractorNIP"
-						validators={{
-							onChange: ({ value }) => (!value.trim() ? "NIP kontrahenta jest wymagany" : undefined),
-						}}
-					>
+					<form.Field name="contractorNIP">
 						{(field) => {
 							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
@@ -165,7 +165,7 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 										placeholder="np. 1234567890"
 										value={field.state.value}
 									/>
-									{isInvalid ? <FieldError>{field.state.meta.errors.join(", ")}</FieldError> : null}
+									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
 						}}

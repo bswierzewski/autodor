@@ -1,28 +1,30 @@
 import { CheckIcon, XIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
-import { CreateContractorBody } from "#/api/contractors/contractors.zod";
+import * as zod from "zod";
 import { Button } from "#/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
 import { Spinner } from "#/components/ui/spinner";
 
-export type ContractorFormValues = {
-	name: string;
-	nip: string;
-	street: string;
-	city: string;
-	zipCode: string;
-	email: string;
-};
+const contractorFormSchema = zod.object({
+	name: zod.string().trim().min(1, "Nazwa jest wymagana."),
+	nip: zod.string().trim().min(1, "NIP jest wymagany."),
+	street: zod.string().trim().min(1, "Ulica jest wymagana."),
+	city: zod.string().trim().min(1, "Miasto jest wymagane."),
+	zipCode: zod.string().trim().min(1, "Kod pocztowy jest wymagany."),
+	email: zod.string().trim().min(1, "Adres e-mail jest wymagany."),
+});
 
-export const emptyContractorFormValues: ContractorFormValues = {
+export type ContractorFormValues = zod.infer<typeof contractorFormSchema>;
+
+export const emptyContractorFormValues = {
 	name: "",
 	nip: "",
 	street: "",
 	city: "",
 	zipCode: "",
 	email: "",
-};
+} satisfies ContractorFormValues;
 
 type ContractorFormProps = {
 	description: string;
@@ -50,7 +52,7 @@ export function ContractorForm({
 	const form = useForm({
 		defaultValues: initialValues,
 		validators: {
-			onSubmit: CreateContractorBody,
+			onSubmit: contractorFormSchema,
 		},
 		onSubmit: async ({ value }) => {
 			await onSubmit(value);
@@ -101,7 +103,6 @@ export function ContractorForm({
 										placeholder="AUTODOR Sp. z o.o."
 										value={field.state.value}
 									/>
-									<FieldDescription>Pełna nazwa kontrahenta widoczna na dokumentach.</FieldDescription>
 									<FieldError errors={field.state.meta.errors} />
 								</Field>
 							);
