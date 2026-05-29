@@ -27,7 +27,7 @@ export function Navbar() {
 	return (
 		<header className="flex items-center justify-between gap-6 rounded-b-2xl border px-5 py-4 shadow-sm">
 			<div className="shrink-0">
-				<span className="text-lg font-black tracking-[0.2em]">AUTODOR</span>
+				<span className="text-lg font-black">AUTODOR</span>
 			</div>
 			<div className="flex items-center gap-4 sm:gap-6">
 				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
