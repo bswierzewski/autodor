@@ -66,7 +66,7 @@ export function OrderCardList({
 							</div>
 
 							<label className="block cursor-pointer" htmlFor={checkboxId}>
-								<div className="grid min-w-0 gap-2 rounded-2xl bg-muted/40 px-4 py-3 text-sm">
+								<div className="grid min-w-0 gap-2 rounded-2xl bg-muted/40 text-sm">
 									<div className="grid min-w-0 grid-cols-2 gap-3">
 										<p className="min-w-0 truncate text-muted-foreground">
 											Data: <span className="font-medium text-foreground">{formatDate(order.date)}</span>
