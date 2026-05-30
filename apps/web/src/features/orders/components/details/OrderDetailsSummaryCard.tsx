@@ -6,19 +6,16 @@ type OrderDetailsSummaryCardProps = {
 	order: GetOrderResponse;
 };
 
-type DetailRowProps = {
+type DetailItemProps = {
 	label: string;
 	value: string | number;
-	multiline?: boolean;
 };
 
-function DetailRow({ label, value, multiline = false }: DetailRowProps) {
+function DetailItem({ label, value }: DetailItemProps) {
 	return (
-		<div className="flex flex-col gap-1 border-b border-border/60 py-3 last:border-b-0 last:pb-0 first:pt-0 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-			<dt className="text-sm text-muted-foreground">{label}</dt>
-			<dd className={multiline ? "text-sm font-medium sm:max-w-88 sm:text-right" : "font-medium sm:text-right"}>
-				{value}
-			</dd>
+		<div className="grid gap-1.5">
+			<dt className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">{label}</dt>
+			<dd className="min-w-0 wrap-break-word text-sm font-medium leading-snug text-foreground">{value}</dd>
 		</div>
 	);
 }
@@ -36,33 +33,29 @@ export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps)
 
 	return (
 		<section className="rounded-3xl border bg-card p-6 shadow-sm">
-			<div className="space-y-6">
+			<div className="space-y-3">
 				<div>
-					<p className="text-sm text-muted-foreground">Zamówienie</p>
 					<h1 className="text-2xl font-semibold tracking-tight">{order.number ?? order.id}</h1>
 				</div>
 
-				<div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+				<div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
 					<div className="space-y-3">
-						<h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-							Szczegóły zamówienia
-						</h2>
-						<dl>
-							<DetailRow label="Data" value={formatDate(order.date)} />
-							<DetailRow label="Pozycje" value={order.items.length} />
-							<DetailRow label="Kwota" value={formatCurrency(totalAmount)} />
-							<DetailRow label="Wykluczone pozycje" value={excludedItemsCount} />
+						<h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Zamówienie</h3>
+						<dl className="grid gap-3">
+							<DetailItem label="Data" value={formatDate(order.date)} />
+							<DetailItem label="Pozycje" value={order.items.length} />
+							<DetailItem label="Kwota" value={formatCurrency(totalAmount)} />
+							<DetailItem label="Wykluczone pozycje" value={excludedItemsCount} />
 						</dl>
 					</div>
 
 					<div className="space-y-3">
-						<h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Kontrahent</h2>
-						<dl>
-							<DetailRow label="Nazwa" value={contractor?.name ?? contractorNip ?? "Brak NIP"} multiline />
-							<DetailRow label="NIP" value={contractor?.nip ?? contractorNip ?? "-"} />
-							<DetailRow
+						<h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Kontrahent</h3>
+						<dl className="grid gap-3">
+							<DetailItem label="Nazwa" value={contractor?.name ?? contractorNip ?? "Brak NIP"} />
+							<DetailItem label="NIP" value={contractor?.nip ?? contractorNip ?? "-"} />
+							<DetailItem
 								label="Adres"
-								multiline
 								value={
 									contractor
 										? `${contractor.street}, ${contractor.zipCode} ${contractor.city}`
@@ -71,9 +64,8 @@ export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps)
 											: "-"
 								}
 							/>
-							<DetailRow
+							<DetailItem
 								label="Email"
-								multiline
 								value={contractor?.email ?? (contractorQuery.isLoading ? "Ładowanie danych kontrahenta..." : "-")}
 							/>
 						</dl>
