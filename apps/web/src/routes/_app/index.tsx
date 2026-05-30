@@ -113,7 +113,7 @@ function OrdersRoute() {
 	const filteredOrders = orders.filter((order) => {
 		const searchableValue = [order.number, order.customerNumber, order.person].join(" ").toLowerCase();
 
-		return searchableValue.includes(query);
+		return searchableValue.includes(query.trim().toLowerCase());
 	});
 
 	const selectedOrders = orders.filter((o) => selectedOrderIds.has(o.id));

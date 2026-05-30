@@ -1,10 +1,11 @@
 import { useClerk, useUser } from "@clerk/react";
 import { ArrowClockwiseIcon, HourglassMediumIcon, SignOutIcon } from "@phosphor-icons/react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { UserStatus } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/pending")({
 	beforeLoad: ({ context }) => {
@@ -22,12 +23,17 @@ export const Route = createFileRoute("/pending")({
 function PendingPage() {
 	const { signOut } = useClerk();
 	const { user } = useUser();
+	const navigate = useNavigate();
 	const [isChecking, setIsChecking] = useState(false);
 
 	const handleCheckStatus = async () => {
 		setIsChecking(true);
 		try {
-			await user?.reload();
+			const reloadedUser = await user?.reload();
+
+			if (reloadedUser?.publicMetadata?.status === UserStatus.Approved) {
+				await navigate({ to: "/" });
+			}
 		} finally {
 			setIsChecking(false);
 		}
