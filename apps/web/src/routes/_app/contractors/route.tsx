@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/r
 import { useState } from "react";
 import { useGetContractors } from "#/api/contractors/contractors";
 import type { GetContractorsResponse } from "#/api/models";
-import { Drawer, DrawerContent, DrawerTitle } from "#/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "#/components/ui/drawer";
 import { ContractorsCardList } from "#/features/contractors/components/ContractorsCardList";
 import { ContractorsEmptyState } from "#/features/contractors/components/ContractorsEmptyState";
 import { ContractorsFilters } from "#/features/contractors/components/ContractorsFilters";
@@ -38,8 +38,8 @@ function ContractorsRoute() {
 	};
 
 	return (
-		<div className="space-y-6">
-			<section className="grid gap-6">
+		<div className="space-y-4">
+			<section className="grid gap-4">
 				<div className="space-y-4">
 					<ContractorsFilters query={query} onClearQuery={() => setQuery("")} onQueryChange={setQuery} />
 
@@ -72,13 +72,8 @@ function ContractorsRoute() {
 			>
 				<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
 					<DrawerTitle className="sr-only">{drawerTitle}</DrawerTitle>
-					<div
-						className={
-							isDesktop
-								? "h-full overflow-y-auto px-1 pb-2 pt-6"
-								: "mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4"
-						}
-					>
+					<DrawerDescription className="sr-only">Formularz kontrahenta.</DrawerDescription>
+					<div className="pt-4">
 						<Outlet />
 					</div>
 				</DrawerContent>

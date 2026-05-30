@@ -12,7 +12,13 @@ export function ContractorActions({ contractor }: ContractorActionsProps) {
 	return (
 		<div className="flex items-center gap-2">
 			<Button asChild size="icon-sm" type="button" variant="outline">
-				<Link params={{ contractorId: contractor.id }} to="/contractors/$contractorId/edit">
+				<Link
+					onClick={(event) => {
+						event.currentTarget.blur();
+					}}
+					params={{ contractorId: contractor.id }}
+					to="/contractors/$contractorId/edit"
+				>
 					<PencilSimpleLineIcon size={16} />
 					<span className="sr-only">Edytuj kontrahenta {contractor.name}</span>
 				</Link>

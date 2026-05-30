@@ -13,9 +13,7 @@ export function ContractorsEmptyState({ hasContractors, onClearFilters }: Contra
 		<div className="rounded-3xl border border-dashed border-border bg-card p-6 shadow-sm">
 			<Empty>
 				<EmptyHeader>
-					<EmptyTitle>
-						{hasContractors ? "Brak kontrahentów dla podanych filtrów" : "Brak kontrahentów"}
-					</EmptyTitle>
+					<EmptyTitle>{hasContractors ? "Brak kontrahentów dla podanych filtrów" : "Brak kontrahentów"}</EmptyTitle>
 					<EmptyDescription>
 						{hasContractors
 							? "Zmień frazę wyszukiwania aby zobaczyć wyniki."
@@ -29,7 +27,12 @@ export function ContractorsEmptyState({ hasContractors, onClearFilters }: Contra
 						</Button>
 					) : (
 						<Button asChild type="button">
-							<Link to="/contractors/create">
+							<Link
+								onClick={(event) => {
+									event.currentTarget.blur();
+								}}
+								to="/contractors/create"
+							>
 								<PlusIcon size={16} />
 								Dodaj kontrahenta
 							</Link>

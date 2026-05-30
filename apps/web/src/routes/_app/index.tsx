@@ -11,7 +11,7 @@ import {
 	useUpdateOrderExclusion,
 } from "#/api/orders/orders";
 import { Button } from "#/components/ui/button";
-import { Drawer, DrawerContent, DrawerTitle } from "#/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "#/components/ui/drawer";
 import { CreateInvoiceForm } from "#/features/orders/components/invoice/CreateInvoiceForm";
 import { OrderCardList } from "#/features/orders/components/list/OrderCardList";
 import { OrdersEmptyState } from "#/features/orders/components/list/OrdersEmptyState";
@@ -119,14 +119,17 @@ function OrdersRoute() {
 	const selectedOrders = orders.filter((o) => selectedOrderIds.has(o.id));
 
 	return (
-		<div className="space-y-6">
-			<section className="grid gap-6">
+		<div className="space-y-4">
+			<section className="grid gap-4">
 				<OrdersFilters
 					actions={
 						<Button
-							className="h-11 w-full rounded-2xl px-4 lg:w-auto"
+							className="h-11 w-full rounded-2xl px-4 lg:w-56"
 							disabled={selectedOrders.length === 0}
-							onClick={() => setIsInvoiceDrawerOpen(true)}
+							onClick={(event) => {
+								event.currentTarget.blur();
+								setIsInvoiceDrawerOpen(true);
+							}}
 						>
 							<ReceiptIcon size={16} />
 							Wystaw fakturę
@@ -188,13 +191,10 @@ function OrdersRoute() {
 			>
 				<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
 					<DrawerTitle className="sr-only">Wystaw fakturę</DrawerTitle>
-					<div
-						className={
-							isDesktop
-								? "h-full overflow-y-auto px-1 pb-2 pt-6"
-								: "mx-auto w-full max-w-2xl overflow-y-auto px-1 pb-2 pt-4"
-						}
-					>
+					<DrawerDescription className="sr-only">
+						Formularz do wystawienia faktury dla wybranych zamówień.
+					</DrawerDescription>
+					<div className="mt-2">
 						<CreateInvoiceForm
 							selectedOrders={selectedOrders}
 							onCancel={() => setIsInvoiceDrawerOpen(false)}

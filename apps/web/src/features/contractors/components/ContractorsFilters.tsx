@@ -34,8 +34,13 @@ export function ContractorsFilters({ query, onQueryChange, onClearQuery }: Contr
 					</button>
 				) : null}
 			</label>
-			<Button asChild className="h-11 w-full rounded-2xl px-4 lg:w-auto" type="button">
-				<Link to="/contractors/create">
+			<Button asChild className="h-11 w-full rounded-2xl px-4 lg:w-56" type="button">
+				<Link
+					onClick={(event) => {
+						event.currentTarget.blur();
+					}}
+					to="/contractors/create"
+				>
 					<PlusIcon size={16} />
 					Dodaj kontrahenta
 				</Link>
