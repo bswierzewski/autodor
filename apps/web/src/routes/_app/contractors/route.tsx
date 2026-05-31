@@ -73,7 +73,7 @@ function ContractorsRoute() {
 				<DrawerContent className={isDesktop ? "px-6 pb-6 [&>div:first-child]:hidden" : "px-4 pb-4"}>
 					<DrawerTitle className="sr-only">{drawerTitle}</DrawerTitle>
 					<DrawerDescription className="sr-only">Formularz kontrahenta.</DrawerDescription>
-					<div className="pt-4">
+					<div className="min-h-0 flex-1 overflow-y-auto pt-4">
 						<Outlet />
 					</div>
 				</DrawerContent>

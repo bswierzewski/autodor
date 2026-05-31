@@ -194,7 +194,7 @@ function OrdersRoute() {
 					<DrawerDescription className="sr-only">
 						Formularz do wystawienia faktury dla wybranych zamówień.
 					</DrawerDescription>
-					<div className="mt-2">
+					<div className="mt-2 min-h-0 flex-1 overflow-y-auto">
 						<CreateInvoiceForm
 							selectedOrders={selectedOrders}
 							onCancel={() => setIsInvoiceDrawerOpen(false)}
