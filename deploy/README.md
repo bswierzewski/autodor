@@ -413,10 +413,9 @@ Operational notes:
 
 - keep image manifests intact in GHCR,
 - avoid cleanup rules that delete required image versions immediately after push,
-- use immutable image tags for rollbacks even if `latest` remains the default deploy tag,
+- when Dokploy is triggered directly from GitHub `registry_package` webhooks, prefer publishing only `latest` to avoid duplicate deploy triggers and tag mismatch errors,
 - when multiple Dokploy services consume the same image, add multiple GitHub repository webhooks that point to each Dokploy service trigger,
 - keep publishing the `latest` tag if Dokploy services should always pull the newest image automatically,
-- also publish immutable tags such as `sha-<commit>` so older releases stay available for rollback,
 - prune GHCR to the last few package versions instead of deleting `latest`; the newest kept package version will continue to carry the `latest` tag.
 
 ## 21. Post-Deployment Verification Checklist
