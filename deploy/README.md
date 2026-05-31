@@ -407,13 +407,17 @@ Recommended approach:
 
 - build the production image in GitHub Actions,
 - push the image to GHCR,
-- trigger Dokploy deployment through its webhook or deployment trigger.
+- trigger Dokploy deployment through GitHub repository webhooks after the image is published.
 
 Operational notes:
 
 - keep image manifests intact in GHCR,
 - avoid cleanup rules that delete required image versions immediately after push,
-- use immutable image tags for rollbacks even if `latest` remains the default deploy tag.
+- use immutable image tags for rollbacks even if `latest` remains the default deploy tag,
+- when multiple Dokploy services consume the same image, add multiple GitHub repository webhooks that point to each Dokploy service trigger,
+- keep publishing the `latest` tag if Dokploy services should always pull the newest image automatically,
+- also publish immutable tags such as `sha-<commit>` so older releases stay available for rollback,
+- prune GHCR to the last few package versions instead of deleting `latest`; the newest kept package version will continue to carry the `latest` tag.
 
 ## 21. Post-Deployment Verification Checklist
 

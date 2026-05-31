@@ -39,7 +39,9 @@ jobs:
 
       - name: Compute build metadata
         id: metadata
-        run: echo "build_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "build_time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(git rev-parse --short=12 \"$GITHUB_SHA\")" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v4
@@ -54,13 +56,22 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.image.outputs.name }}:latest
+          tags: |
+            ${{ steps.image.outputs.name }}:latest
+            ${{ steps.image.outputs.name }}:sha-${{ steps.metadata.outputs.short_sha }}
+          labels: |
+            org.opencontainers.image.created=${{ steps.metadata.outputs.build_time }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
           build-args: |
             GIT_SHA=${{ github.sha }}
             BUILD_TIME=${{ steps.metadata.outputs.build_time }}
             VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
 
-      - name: Trigger Dokploy webhook
-        env:
-          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
-        run: curl --fail --silent --show-error --location --request POST "$DOKPLOY_WEBHOOK_URL"
+      - name: Prune old GHCR versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: autodor
+          package-type: container
+          min-versions-to-keep: 5
+          token: ${{ github.token }}
