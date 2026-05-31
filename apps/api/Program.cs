@@ -54,7 +54,6 @@ builder.AddWolverine(modules, dataSource);
 // Configure CORS
 builder.Services.AddCors();
 
-// Build the application
 var app = builder.Build();
 
 // Run module-specific startup hooks after the container is built.
