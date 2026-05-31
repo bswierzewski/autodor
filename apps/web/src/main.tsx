@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "./components/ui/empty";
 import { Toaster } from "./components/ui/sonner";
 import { Spinner } from "./components/ui/spinner";
-
+import { ENV } from "./config/env.ts";
 import { queryClient } from "./config/query-client";
 import { router } from "./config/router";
 import { useAuth } from "./hooks/use-auth";
@@ -30,7 +30,7 @@ if (!rootElement.innerHTML) {
 
 	root.render(
 		<ClerkProvider
-			publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? ""}
+			publishableKey={ENV.VITE_CLERK_PUBLISHABLE_KEY}
 			signInFallbackRedirectUrl="/"
 			signUpFallbackRedirectUrl="/"
 		>

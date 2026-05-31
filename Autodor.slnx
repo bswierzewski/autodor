@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/scripts/">
     <File Path="scripts\add-migrations.ps1" />
+    <File Path="scripts\generate-env.ps1" />
   </Folder>
   <Folder Name="/apps/">
     <Project Path="apps/apphost/Autodor.AppHost.csproj" />

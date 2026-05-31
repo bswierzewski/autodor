@@ -1,8 +1,6 @@
-const buildInfo = import.meta.env as ImportMetaEnv & {
-	readonly VITE_APP_GIT_SHA?: string;
-};
+import { ENV } from "../../config/env.ts";
 
-const buildShaShort = buildInfo.VITE_APP_GIT_SHA?.trim()?.slice(0, 7) ?? "";
+const buildShaShort = ENV.VITE_APP_GIT_SHA.trim().slice(0, 7);
 const currentYear = new Date().getFullYear();
 
 export function Footer() {
