@@ -3,9 +3,7 @@ name: Docker Publish
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - slice
+    branches: [main, slice]
 
 permissions:
   contents: read
@@ -16,97 +14,70 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/autodor
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short,prefix=
 
-      - name: Compute image and deploy metadata
-        id: metadata
-        run: |
-          short_sha="$(echo "${GITHUB_SHA}" | cut -c1-7)"
-          image_name="$(echo 'ghcr.io/${{ github.repository_owner }}/autodor' | tr '[:upper:]' '[:lower:]')"
-          commit_message="$(git log -1 --pretty=%s | tr '\n' ' ' | sed 's/\\/\\\\/g; s/"/\\"/g')"
+      - uses: docker/setup-buildx-action@v4
 
-          echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
-          echo "image_name=$image_name" >> "$GITHUB_OUTPUT"
-          echo "commit_message=$commit_message" >> "$GITHUB_OUTPUT"
-
-          {
-            echo "tags<<EOF"
-            if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-              echo "${image_name}:latest"
-            fi
-            echo "${image_name}:${short_sha}"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v4
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image
-        uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
-          context: .
-          file: ./Dockerfile
           push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: |
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-          build-args: |
-            GIT_SHA=${{ github.sha }}
-          secrets: |
-            vite_clerk_publishable_key=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: GIT_SHA=${{ github.sha }}
+          secrets: vite_clerk_publishable_key=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
 
-      - name: Trigger Dokploy deploy for latest image
-        if: github.ref == 'refs/heads/main'
+      - name: Trigger Dokploy
         env:
-          DOKPLOY_API_URL: ${{ secrets.DOKPLOY_API_URL }}
-          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
-          DOKPLOY_APP_IDS: ${{ secrets.DOKPLOY_APP_IDS }}
-          SHORT_SHA: ${{ steps.metadata.outputs.short_sha }}
-          COMMIT_MESSAGE: ${{ steps.metadata.outputs.commit_message }}
+          URL: ${{ secrets.DOKPLOY_API_URL }}
+          KEY: ${{ secrets.DOKPLOY_API_KEY }}
+          APPS: ${{ secrets.DOKPLOY_APP_IDS }}
         run: |
           set -euo pipefail
 
-          : "${DOKPLOY_API_URL:?Missing DOKPLOY_API_URL secret}"
-          : "${DOKPLOY_API_KEY:?Missing DOKPLOY_API_KEY secret}"
-          : "${DOKPLOY_APP_IDS:?Missing DOKPLOY_APP_IDS secret}"
+          : "${URL:?Missing DOKPLOY_API_URL secret}"
+          : "${KEY:?Missing DOKPLOY_API_KEY secret}"
+          : "${APPS:?Missing DOKPLOY_APP_IDS secret}"
 
-          dokploy_api_url="${DOKPLOY_API_URL%/}"
+          msg="$(git log -1 --pretty=%s)"
+          IFS=',' read -ra app_array <<< "$APPS"
 
-          echo "Triggering Dokploy deploy for latest image across configured apps..."
-
-          for raw_app_id in $(echo "$DOKPLOY_APP_IDS" | tr ',' ' '); do
+          for raw_app_id in "${app_array[@]}"; do
             app_id="$(echo "$raw_app_id" | xargs)"
+            [[ -z "$app_id" ]] && continue
 
-            if [[ -z "$app_id" ]]; then
-              continue
-            fi
-
-            echo "Deploying application $app_id"
-
+            jq -n \
+              --arg id "$app_id" \
+              --arg desc "Deploy latest [${GITHUB_SHA:0:7}]: $msg" \
+              '{applicationId: $id, title: "CI deploy", description: $desc}' | \
             curl --fail-with-body --silent --show-error \
-              -X POST "${dokploy_api_url}/api/application.deploy" \
-              -H "x-api-key: ${DOKPLOY_API_KEY}" \
+              -X POST "${URL%/}/api/application.deploy" \
+              -H "x-api-key: $KEY" \
               -H "Content-Type: application/json" \
-              -d "{\"applicationId\":\"${app_id}\",\"title\":\"CI deploy\",\"description\":\"Deploy latest [${SHORT_SHA}]: ${COMMIT_MESSAGE}\"}"
-
-            echo
+              -d @-
           done
 
-      - name: Prune old GHCR versions
-        uses: actions/delete-package-versions@v5
+      - uses: snok/container-retention-policy@v3.1.0
         with:
-          package-name: autodor
-          package-type: container
-          min-versions-to-keep: 5
-          token: ${{ github.token }}
+          account: user
+          image-names: autodor
+          image-tags: "*"
+          tag-selection: both
+          keep-n-most-recent: 5
+          cut-off: 1m
+          token: ${{ secrets.GITHUB_TOKEN }}
