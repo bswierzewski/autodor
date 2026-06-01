@@ -42,36 +42,6 @@ jobs:
           build-args: GIT_SHA=${{ github.sha }}
           secrets: vite_clerk_publishable_key=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
 
-      - name: Trigger Dokploy
-        env:
-          URL: ${{ secrets.DOKPLOY_API_URL }}
-          KEY: ${{ secrets.DOKPLOY_API_KEY }}
-          APPS: ${{ secrets.DOKPLOY_APP_IDS }}
-        run: |
-          set -euo pipefail
-
-          : "${URL:?Missing DOKPLOY_API_URL secret}"
-          : "${KEY:?Missing DOKPLOY_API_KEY secret}"
-          : "${APPS:?Missing DOKPLOY_APP_IDS secret}"
-
-          msg="$(git log -1 --pretty=%s)"
-          IFS=',' read -ra app_array <<< "$APPS"
-
-          for raw_app_id in "${app_array[@]}"; do
-            app_id="$(echo "$raw_app_id" | xargs)"
-            [[ -z "$app_id" ]] && continue
-
-            jq -n \
-              --arg id "$app_id" \
-              --arg desc "Deploy latest [${GITHUB_SHA:0:7}]: $msg" \
-              '{applicationId: $id, title: "CI deploy", description: $desc}' | \
-            curl --fail-with-body --silent --show-error \
-              -X POST "${URL%/}/api/application.deploy" \
-              -H "x-api-key: $KEY" \
-              -H "Content-Type: application/json" \
-              -d @-
-          done
-
       - uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
@@ -81,3 +51,49 @@ jobs:
           keep-n-most-recent: 5
           cut-off: 1m
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  trigger-webhooks:
+    needs: publish
+    runs-on: ubuntu-latest
+    strategy:
+      # Let the other webhooks continue even if one of them fails.
+      fail-fast: false
+      matrix:
+        # List webhook secret names here instead of storing them in one combined secret.
+        secret_name:
+          - WEBHOOK_URL_MTP
+          - WEBHOOK_URL_DOR
+
+    steps:
+      # Resolve a single webhook URL from the current matrix entry and trigger Dokploy.
+      - name: Trigger Dokploy webhook (${{ matrix.secret_name }})
+        env:
+          WEBHOOK_URL: ${{ secrets[matrix.secret_name] }}          
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'Wyzwalanie ręczne (workflow_dispatch)' }}
+        run: |
+          set -euo pipefail
+
+          # If a secret is intentionally left empty, skip it without failing the workflow.
+          if [[ -z "$WEBHOOK_URL" ]]; then
+            echo "Secret ${{ matrix.secret_name }} is empty. Skipping."
+            exit 0
+          fi
+
+          short_sha="${GITHUB_SHA:0:7}"
+
+          # Send the same payload shape Dokploy expects from a GitHub push webhook.
+          payload="$(jq -n \
+            --arg ref "$GITHUB_REF" \
+            --arg id "$short_sha" \
+            --arg msg "$COMMIT_MESSAGE" \
+            '{ref: $ref, head_commit: {id: $id, message: $msg}}')"
+
+          echo "Triggering webhook for ${{ matrix.secret_name }}..."
+
+          curl --fail-with-body --silent --show-error \
+            -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: push" \
+            -d "$payload"
+
+          echo "Successfully triggered Dokploy webhook for ${{ matrix.secret_name }}."
