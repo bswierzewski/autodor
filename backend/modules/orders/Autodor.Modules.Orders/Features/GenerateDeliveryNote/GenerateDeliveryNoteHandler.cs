@@ -159,13 +159,13 @@ public static class GenerateDeliveryNoteHandler
             // Items
             foreach (var item in items)
             {
-                var totalPrice = item.Price * item.Quantity;
-                var vatAmount = Math.Round(totalPrice * 0.23M, 2);
-                var grossAmount = Math.Round(totalPrice * 1.23M, 2);
+                var netAmount = item.Price;
+                var vatAmount = Math.Round(netAmount * 0.23M, 2);
+                var grossAmount = Math.Round(netAmount + vatAmount, 2);
 
                 table.Cell().Element(CellStyle).Text(item.ProductDisplayName);
                 table.Cell().Element(CellStyle).AlignRight().Text(item.Quantity.ToString());
-                table.Cell().Element(CellStyle).AlignRight().Text($"{totalPrice:F2} zł");
+                table.Cell().Element(CellStyle).AlignRight().Text($"{netAmount:F2} zł");
                 table.Cell().Element(CellStyle).AlignRight().Text($"{vatAmount:F2} zł");
                 table.Cell().Element(CellStyle).AlignRight().Text($"{grossAmount:F2} zł");
 

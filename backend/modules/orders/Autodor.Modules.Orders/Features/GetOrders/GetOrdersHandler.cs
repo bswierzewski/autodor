@@ -16,6 +16,7 @@ public static class GetOrdersHandler
 
         return new GetOrdersResponse(
             orders
+                .OrderByDescending(o => o.Date)
                 .Select(o => new OrderSummaryResponse(
                     o.Id!,
                     o.Number,
