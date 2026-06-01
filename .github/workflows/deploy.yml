@@ -63,9 +63,11 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
           build-args: |
             GIT_SHA=${{ github.sha }}
-            VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          secrets: |
+            vite_clerk_publishable_key=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
 
       - name: Trigger Dokploy deploy for latest image
+        if: github.ref == 'refs/heads/main'
         env:
           DOKPLOY_API_URL: ${{ secrets.DOKPLOY_API_URL }}
           DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
@@ -79,6 +81,8 @@ jobs:
           : "${DOKPLOY_API_KEY:?Missing DOKPLOY_API_KEY secret}"
           : "${DOKPLOY_APP_IDS:?Missing DOKPLOY_APP_IDS secret}"
 
+          dokploy_api_url="${DOKPLOY_API_URL%/}"
+
           echo "Triggering Dokploy deploy for latest image across configured apps..."
 
           for raw_app_id in $(echo "$DOKPLOY_APP_IDS" | tr ',' ' '); do
@@ -91,10 +95,10 @@ jobs:
             echo "Deploying application $app_id"
 
             curl --fail-with-body --silent --show-error \
-              -X POST "${DOKPLOY_API_URL}/api/trpc/applications.deployApplication" \
-              -H "Authorization: Bearer ${DOKPLOY_API_KEY}" \
+              -X POST "${dokploy_api_url}/api/application.deploy" \
+              -H "x-api-key: ${DOKPLOY_API_KEY}" \
               -H "Content-Type: application/json" \
-              -d "{\"0\":{\"json\":{\"applicationId\":\"${app_id}\",\"description\":\"Deploy [${SHORT_SHA}]: ${COMMIT_MESSAGE}\"}}}"
+              -d "{\"applicationId\":\"${app_id}\",\"title\":\"CI deploy\",\"description\":\"Deploy latest [${SHORT_SHA}]: ${COMMIT_MESSAGE}\"}"
 
             echo
           done

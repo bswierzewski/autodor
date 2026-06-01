@@ -1,9 +1,9 @@
-# Build the SPA assets that will be embedded into the API container.
-FROM node:22-alpine AS web-build
+# syntax=docker/dockerfile:1.7
 
-ARG VITE_CLERK_PUBLISHABLE_KEY
+# Build the SPA assets that will be embedded into the API container.
+FROM node:26-alpine AS web-build
+
 ARG GIT_SHA=local
-ARG BUILD_TIME
 
 WORKDIR /src/apps/web
 # Copy dependency manifests first to maximize Docker layer cache reuse.
@@ -13,11 +13,10 @@ RUN npm ci
 # Copy the full frontend source and produce the static bundle.
 COPY apps/web/ ./
 
-ENV VITE_CLERK_PUBLISHABLE_KEY=${VITE_CLERK_PUBLISHABLE_KEY}
 ENV VITE_APP_GIT_SHA=${GIT_SHA}
-ENV VITE_APP_BUILD_TIME=${BUILD_TIME}
 
-RUN npm run build
+RUN --mount=type=secret,id=vite_clerk_publishable_key \
+    sh -c 'if [ -f /run/secrets/vite_clerk_publishable_key ]; then export VITE_CLERK_PUBLISHABLE_KEY="$(cat /run/secrets/vite_clerk_publishable_key)"; fi; npm run build'
 
 # Restore and publish the ASP.NET API with the git SHA embedded in assembly metadata.
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS api-publish
