@@ -12,9 +12,15 @@ var postgres = builder.AddPostgres("postgres")
 // Add database
 var database = postgres.AddDatabase("db");
 
+// Run module-owned database migrations before the API starts accepting traffic.
+var migrator = builder.AddProject<Projects.Autodor_Migrator>("migrator")
+    .WithReference(database, "Default")
+    .WaitFor(database);
+
 // Add API project
 var api = builder.AddProject<Projects.Autodor_API>("api")
     .WithReference(database, "Default")
+    .WaitForCompletion(migrator)
     .WaitFor(database)
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
