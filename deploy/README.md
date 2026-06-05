@@ -190,6 +190,7 @@ Recommended structure:
 Inside the project you will add:
 
 - one PostgreSQL database,
+- one migration job or one-off service,
 - one application service,
 - optional shared environment variables,
 - domains,
@@ -255,6 +256,25 @@ DNS Round Robin
 ```
 
 This is required on Mikr.us-style LXC environments where the default Swarm VIP networking can cause internal service resolution problems.
+
+## 13.1 Add the Migration Job
+
+This repository now publishes a dedicated migrator image alongside the API image.
+
+Recommended image configuration:
+
+- Docker Image: `ghcr.io/<github-namespace>/<project-name>-migrator:latest`
+- Registry: the GHCR registry created earlier
+- Do not expose any public port
+
+Recommended behavior:
+
+- run the migrator as a one-off job before each API deployment,
+- use the same `ConnectionStrings__Default` value as the API,
+- fail the rollout if the migrator exits with a non-zero code,
+- do not keep the migrator as a long-running public service.
+
+If Dokploy requires a build target instead of a prebuilt image, use the repository root `Dockerfile` with the `migrator` target.
 
 ## 14. Configure Environment Variables
 

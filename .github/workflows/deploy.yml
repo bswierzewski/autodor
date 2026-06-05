@@ -18,10 +18,18 @@ jobs:
         with:
           submodules: recursive
 
-      - id: meta
+      - id: meta_api
         uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository_owner }}/autodor
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short,prefix=
+
+      - id: meta_migrator
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/autodor-migrator
           tags: |
             type=raw,value=latest
             type=sha,format=short,prefix=
@@ -37,15 +45,33 @@ jobs:
       - uses: docker/build-push-action@v7
         with:
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta_api.outputs.tags }}
+          labels: ${{ steps.meta_api.outputs.labels }}
           build-args: GIT_SHA=${{ github.sha }}
           secrets: vite_clerk_publishable_key=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+
+      - uses: docker/build-push-action@v7
+        with:
+          push: true
+          target: migrator
+          tags: ${{ steps.meta_migrator.outputs.tags }}
+          labels: ${{ steps.meta_migrator.outputs.labels }}
+          build-args: GIT_SHA=${{ github.sha }}
 
       - uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
           image-names: autodor
+          image-tags: "*"
+          tag-selection: both
+          keep-n-most-recent: 5
+          cut-off: 1m
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: snok/container-retention-policy@v3.1.0
+        with:
+          account: user
+          image-names: autodor-migrator
           image-tags: "*"
           tag-selection: both
           keep-n-most-recent: 5
