@@ -6,9 +6,14 @@
   <Folder Name="/apps/">
     <Project Path="apps/apphost/Autodor.AppHost.csproj" />
     <Project Path="apps/api/Autodor.API.csproj" />
+    <Project Path="apps/migrator/Autodor.Migrator.csproj" />
     <Project Path="apps/openapi/Autodor.OpenApi.csproj" />
   </Folder>
+  <Folder Name="/apps/migrator/" />
   <Folder Name="/backend/" />
+  <Folder Name="/backend/bootstrap/">
+    <Project Path="backend/bootstrap/Autodor.Bootstrap/Autodor.Bootstrap.csproj" />
+  </Folder>
   <Folder Name="/backend/building-blocks/">
     <Project Path="backend/building-blocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
     <Project Path="backend/building-blocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />

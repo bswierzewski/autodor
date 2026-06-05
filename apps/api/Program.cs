@@ -1,4 +1,4 @@
-using Autodor.API;
+using Autodor.Bootstrap;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
@@ -44,7 +44,8 @@ builder.Services.AddOpenApi(options =>
 
 // Compose modules explicitly so runtime startup and OpenAPI generation share
 // the same set of handlers, services, and minimal API endpoints.
-builder.Services.ConfigureModules(builder.Configuration, out IModule[] modules);
+IModule[] modules = ModuleCatalog.CreateModules();
+builder.Services.RegisterModules(builder.Configuration, modules);
 
 // Wolverine uses the shared Postgres-backed data source in the runtime host so
 // handler execution, durability, and transactional messaging are wired together.
@@ -57,7 +58,7 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Run module-specific startup hooks after the container is built.
-await app.InitializeModulesAsync(modules);
+await app.Services.InitializeModulesAsync();
 
 // Use global exception handler
 app.UseExceptionHandler();
@@ -92,9 +93,6 @@ app.MapModuleEndpoints();
 
 // Fallback to index.html for SPA support
 app.MapFallbackToFile("index.html");
-
-// Apply owned module schema migrations during application startup.
-await app.ApplyMigrations();
 
 app.Run();
 

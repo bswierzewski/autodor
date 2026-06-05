@@ -12,6 +12,7 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.Services.Orders;
+using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
@@ -23,7 +24,7 @@ using QuestPDF.Infrastructure;
 
 namespace Autodor.Modules.Orders;
 
-public sealed class OrdersModule : IEndpointModule
+public sealed class OrdersModule : IModuleEndpoint, IModuleMigration
 {
     public string Name => "Orders";
 
@@ -67,4 +68,7 @@ public sealed class OrdersModule : IEndpointModule
 
         services.AddHostedService<ProductsSyncWorker>();
     }
+
+    public Task MigrateAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+        => services.MigrateDatabaseAsync<OrdersDbContext>(cancellationToken);
 }

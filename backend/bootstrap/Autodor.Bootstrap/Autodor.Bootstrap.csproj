@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <!-- Bootstrap needs the ASP.NET Core shared framework because module composition exposes web-facing contracts. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Keep composition references explicit so runtime hosts and tooling share the same module catalog. -->
+    <ProjectReference Include="..\..\building-blocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
+    <ProjectReference Include="..\..\building-blocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\contractors\Autodor.Modules.Contractors\Autodor.Modules.Contractors.csproj" />
+    <ProjectReference Include="..\..\modules\errors\Autodor.Modules.Errors\Autodor.Modules.Errors.csproj" />
+    <ProjectReference Include="..\..\modules\invoicing\Autodor.Modules.Invoicing\Autodor.Modules.Invoicing.csproj" />
+    <ProjectReference Include="..\..\modules\orders\Autodor.Modules.Orders\Autodor.Modules.Orders.csproj" />
+  </ItemGroup>
+
+</Project>

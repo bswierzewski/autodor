@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Errors;
 
-public sealed class ErrorsModule : IEndpointModule
+public sealed class ErrorsModule : IModuleEndpoint
 {
     public string Name => "Errors";
 

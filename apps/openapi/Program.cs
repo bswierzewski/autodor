@@ -1,4 +1,4 @@
-using Autodor.API;
+using Autodor.Bootstrap;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Identity.Extensions;
@@ -31,7 +31,9 @@ builder.Services.AddOpenApi(options =>
 
 // Module composition is shared with the runtime host to keep the generated document aligned
 // with the actual API surface.
-builder.Services.ConfigureModules(builder.Configuration, out IModule[] modules);
+IModule[] modules = ModuleCatalog.CreateModules();
+
+builder.Services.RegisterModules(builder.Configuration, modules);
 
 // Wolverine still needs to discover handlers and endpoint metadata from module assemblies,
 // but this OpenAPI host intentionally skips the Postgres-backed runtime wiring.

@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Invoicing;
 
-public sealed class InvoicingModule : IEndpointModule
+public sealed class InvoicingModule : IModuleEndpoint
 {
     public string Name => "Invoicing";
 

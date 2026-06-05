@@ -4,6 +4,7 @@ using Autodor.Modules.Contractors.Features.GetContractor;
 using Autodor.Modules.Contractors.Features.GetContractors;
 using Autodor.Modules.Contractors.Features.UpdateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using Microsoft.AspNetCore.Routing;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Modules.Contractors;
 
-public sealed class ContractorsModule : IEndpointModule
+public sealed class ContractorsModule : IModuleEndpoint, IModuleMigration
 {
     public string Name => "Contractors";
 
@@ -29,4 +30,7 @@ public sealed class ContractorsModule : IEndpointModule
     {
         services.AddPostgres<ContractorsDbContext>(ContractorsDbContext.Schema);
     }
+
+    public Task MigrateAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+        => services.MigrateDatabaseAsync<ContractorsDbContext>(cancellationToken);
 }
