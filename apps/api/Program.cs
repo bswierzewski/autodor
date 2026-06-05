@@ -42,9 +42,10 @@ builder.Services.AddOpenApi(options =>
     options.AddBearerSecurityScheme();
 });
 
-// Compose modules explicitly so runtime startup and OpenAPI generation share
-// the same set of handlers, services, and minimal API endpoints.
+// Create the explicit module set shared by the runtime host and OpenAPI tooling.
 IModule[] modules = ModuleCatalog.CreateModules();
+
+// Register module services and infrastructure capabilities in the application container.
 builder.Services.RegisterModules(builder.Configuration, modules);
 
 // Wolverine uses the shared Postgres-backed data source in the runtime host so

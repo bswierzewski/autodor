@@ -29,10 +29,10 @@ builder.Services.AddOpenApi(options =>
     options.AddBearerSecurityScheme();
 });
 
-// Module composition is shared with the runtime host to keep the generated document aligned
-// with the actual API surface.
+// Create the explicit module set shared with the runtime host.
 IModule[] modules = ModuleCatalog.CreateModules();
 
+// Register module services and infrastructure capabilities so endpoint discovery matches runtime.
 builder.Services.RegisterModules(builder.Configuration, modules);
 
 // Wolverine still needs to discover handlers and endpoint metadata from module assemblies,

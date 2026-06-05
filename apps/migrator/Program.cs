@@ -3,8 +3,11 @@ using BuildingBlocks.Infrastructure.Modules.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Reuse the shared module catalog so the migrator targets the same schemas as the runtime hosts.
-builder.Services.RegisterModules(builder.Configuration, ModuleCatalog.CreateModules());
+// Create the explicit module set shared with the runtime hosts.
+var modules = ModuleCatalog.CreateModules();
+
+// Register module services and migration capabilities in the container used by the migrator.
+builder.Services.RegisterModules(builder.Configuration, modules);
 
 var app = builder.Build();
 
