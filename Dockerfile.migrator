@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1.7
+
+# Restore and publish the migrator with the git SHA embedded in assembly metadata.
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-publish
+
+ARG GIT_SHA=local
+
+WORKDIR /src
+COPY Directory.Build.props Directory.Packages.props global.json Autodor.slnx ./
+COPY apps/ ./apps/
+COPY backend/ ./backend/
+
+RUN dotnet restore apps/migrator/Autodor.Migrator.csproj
+
+RUN dotnet publish apps/migrator/Autodor.Migrator.csproj \
+    -c Release \
+    -o /app/migrator \
+    /p:UseAppHost=false \
+    /p:SourceRevisionId=${GIT_SHA}
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+WORKDIR /app
+
+COPY --from=dotnet-publish /app/migrator ./
+
+ENTRYPOINT ["dotnet", "Autodor.Migrator.dll"]
