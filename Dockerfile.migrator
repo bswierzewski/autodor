@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-# Restore and publish the migrator with the git SHA embedded in assembly metadata.
+# Restore and publish the migrator with the git SHA embedded in assembly.
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-publish
 
 ARG GIT_SHA=local
