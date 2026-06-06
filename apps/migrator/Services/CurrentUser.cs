@@ -1,11 +1,11 @@
 using BuildingBlocks.Core.Interfaces;
 
-namespace Autodor.Migrator;
+namespace Autodor.Migrator.Services;
 
 /// <summary>
 /// Migrator implementation of ICurrentUser used during database migrations when no user context is available.
 /// </summary>
-public sealed class MigratorCurrentUser : ICurrentUser
+public sealed class CurrentUser : ICurrentUser
 {
     public string Id => "Migrator";
 

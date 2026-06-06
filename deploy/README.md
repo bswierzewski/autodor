@@ -232,7 +232,7 @@ Create an Application service that deploys the prebuilt GHCR image.
 
 Example image configuration:
 
-- Docker Image: `ghcr.io/<github-namespace>/<project-name>:latest`
+- Docker Image: `ghcr.io/<github-namespace>/autodor-app:latest`
 - Registry: the GHCR registry created earlier
 - Exposed container port in domain configuration: `8080`
 
@@ -263,7 +263,7 @@ This repository now publishes a dedicated migrator image alongside the API image
 
 Recommended image configuration:
 
-- Docker Image: `ghcr.io/<github-namespace>/<project-name>-migrator:latest`
+- Docker Image: `ghcr.io/<github-namespace>/autodor-migrator:latest`
 - Registry: the GHCR registry created earlier
 - Do not expose any public port
 
@@ -274,7 +274,26 @@ Recommended behavior:
 - fail the rollout if the migrator exits with a non-zero code,
 - do not keep the migrator as a long-running public service.
 
-If Dokploy requires a build target instead of a prebuilt image, use the repository root `Dockerfile` with the `migrator` target.
+Required Dokploy settings for the migrator:
+
+- `Advanced` -> `Swarm Settings` -> `Restart Policy` -> `Condition: none`
+- `Advanced` -> `Mode` -> `ReplicatedJob`
+- `Advanced` -> `Mode` -> `TotalCompletions: 1`
+- `Advanced` -> `Mode` -> `MaxConcurrent: 1`
+
+These settings are important. Without them Dokploy may treat the migrator like a normal long-running application and keep restarting it after it exits successfully.
+
+Webhook behavior:
+
+- keep a single Dokploy webhook for the migrator deployment,
+- trigger it only from CI after publishing the `autodor-migrator:latest` image,
+- use one shared webhook because both application instances use the same database migration job.
+
+This repository currently stores that webhook in GitHub Actions as:
+
+- `WEBOOK_ULR_MIGRATOR`
+
+If Dokploy requires a build target instead of a prebuilt image, use `Dockerfile.migrator`.
 
 ## 14. Configure Environment Variables
 
@@ -425,9 +444,23 @@ Once the Dokploy panel is available on `dokploy.bswierzewski.fun`, configure CI/
 
 Recommended approach:
 
-- build the production image in GitHub Actions,
-- push the image to GHCR,
-- trigger Dokploy deployment through GitHub repository webhooks after the image is published.
+- build the production images in GitHub Actions,
+- push the images to GHCR,
+- trigger Dokploy deployment through GitHub repository webhooks after the matching image is published.
+
+Repository-specific CI/CD layout:
+
+- `deploy-app.yml` publishes `ghcr.io/<github-namespace>/autodor-app` with tags `latest` and `<short-sha>`
+- `deploy-migrator.yml` publishes `ghcr.io/<github-namespace>/autodor-migrator` with tags `latest` and `<short-sha>`
+- both workflows prune GHCR to the last 5 versions
+- `deploy-app.yml` triggers only application webhooks
+- `deploy-migrator.yml` triggers only the shared migrator webhook `WEBOOK_ULR_MIGRATOR`
+
+Change detection rules used in CI:
+
+- the app workflow runs for changes in `apps/api/**`, `apps/web/**`, `backend/**`, build metadata files, and the app workflow files
+- the migrator workflow runs for changes in `apps/migrator/**`, `backend/**/Migrations/**`, build metadata files, and the migrator workflow files
+- changes limited to migration folders do not need frontend changes, but backend changes outside migration folders still rebuild the app because the API and migrator compile shared backend modules
 
 Operational notes:
 

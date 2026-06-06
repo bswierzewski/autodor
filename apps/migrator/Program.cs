@@ -1,5 +1,5 @@
 using Autodor.Bootstrap;
-using Autodor.Migrator;
+using Autodor.Migrator.Services;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
@@ -12,7 +12,7 @@ builder.Services.TryAddSingleton(TimeProvider.System);
 
 // Register a migrator implementation of ICurrentUser for scenarios where no user context is available (e.g., migrations).
 // This ensures that services like AuditableEntityInterceptor can be instantiated even when running outside of an HTTP context.
-builder.Services.TryAddScoped<ICurrentUser, MigratorCurrentUser>();
+builder.Services.TryAddScoped<ICurrentUser, CurrentUser>();
 
 // Create the explicit module set shared with the runtime hosts.
 var modules = ModuleCatalog.CreateModules();
