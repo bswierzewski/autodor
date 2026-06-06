@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add time provider
+builder.Services.TryAddSingleton(TimeProvider.System);
+
 // Register a migrator implementation of ICurrentUser for scenarios where no user context is available (e.g., migrations).
 // This ensures that services like AuditableEntityInterceptor can be instantiated even when running outside of an HTTP context.
 builder.Services.TryAddScoped<ICurrentUser, MigratorCurrentUser>();
