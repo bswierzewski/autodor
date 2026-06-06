@@ -36,6 +36,12 @@ RUN dotnet publish apps/api/Autodor.API.csproj \
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
+# Npgsql relies on the system Kerberos/GSSAPI library on Linux; without it the app fails
+# at startup with "Cannot load library libgssapi_krb5.so.2" in minimal runtime images.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
