@@ -69,13 +69,13 @@ jobs:
     steps:
       - name: Trigger Dokploy webhook
         env:
-          WEBHOOK_URL: ${{ secrets.WEBOOK_ULR_MIGRATOR }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL_MIGRATOR }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'Wyzwalanie ręczne (workflow_dispatch)' }}
         run: |
           set -euo pipefail
 
           if [[ -z "$WEBHOOK_URL" ]]; then
-            echo "Secret WEBOOK_ULR_MIGRATOR is empty. Skipping."
+            echo "Secret WEBHOOK_URL_MIGRATOR is empty. Skipping."
             exit 0
           fi
 
