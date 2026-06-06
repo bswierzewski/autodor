@@ -2,6 +2,7 @@ using Autodor.Bootstrap;
 using Autodor.Migrator;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
+using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,9 @@ builder.Services.TryAddScoped<ICurrentUser, MigratorCurrentUser>();
 
 // Create the explicit module set shared with the runtime hosts.
 var modules = ModuleCatalog.CreateModules();
+
+// Register the shared Postgres data source required by module DbContexts during migration execution.
+builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
 
 // Register module services and migration capabilities in the container used by the migrator.
 builder.Services.RegisterModules(builder.Configuration, modules);
