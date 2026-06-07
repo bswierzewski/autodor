@@ -493,7 +493,7 @@ Repository-specific CI/CD layout:
 
 Change detection rules used in CI:
 
-- the app workflow runs for changes in `apps/web/**`, `apps/web/Dockerfile`, and the app workflow file
+- the app workflow runs for changes in `apps/app/**`, `apps/app/Dockerfile`, and the app workflow file
 - the api workflow runs for changes in `apps/api/**`, `backend/**`, build metadata files, `apps/api/Dockerfile`, and the api workflow file
 - the migrator workflow runs for changes in `apps/migrator/**`, `backend/**/Migrations/**`, build metadata files, and the migrator workflow files
 - backend changes no longer force a frontend rebuild unless the web app or nginx configuration changed

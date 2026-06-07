@@ -7,8 +7,8 @@ on:
   push:
     branches: [main, slice]
     paths:
-      - 'apps/web/Dockerfile'
-      - 'apps/web/**'
+      - 'apps/app/Dockerfile'
+      - 'apps/app/**'
       - '.github/workflows/app.yml'
 
 permissions:
@@ -21,7 +21,7 @@ concurrency:
 
 env:
   IMAGE_NAME: autodor-app
-  IMAGE_FILE: ./apps/web/Dockerfile
+  IMAGE_FILE: ./apps/app/Dockerfile
 
 jobs:
   build_image:
