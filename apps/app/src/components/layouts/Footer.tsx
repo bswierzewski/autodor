@@ -47,7 +47,7 @@ export function Footer() {
 							<QuestionMark size={14} weight="bold" />
 						</button>
 					</PopoverTrigger>
-					<PopoverContent align="end" className="w-auto p-3">
+					<PopoverContent align="end" className="w-auto p-3 text-xs text-muted-foreground">
 						<div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 whitespace-nowrap">
 							<span>APP:</span>
 							<span>{appSha}</span>
