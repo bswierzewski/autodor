@@ -1,5 +1,6 @@
 using Autodor.Bootstrap;
 using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Identity.Extensions;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
@@ -29,6 +30,9 @@ builder.Services.AddOpenApi(options =>
     options.AddBearerSecurityScheme();
 });
 
+// Register the shared health checks so system endpoints are valid in this host too.
+builder.AddDefaultHealthChecks();
+
 // Create the explicit module set shared with the runtime host.
 IModule[] modules = ModuleCatalog.CreateModules();
 
@@ -43,6 +47,9 @@ var app = builder.Build();
 
 // Expose the generated document endpoint for the build-time generator.
 app.MapOpenApi();
+
+// Map shared system endpoints so they are included in the generated OpenAPI document.
+app.MapDefaultEndpoints();
 
 // Map all module-owned minimal APIs so they appear in the generated OpenAPI document.
 app.MapModuleEndpoints();

@@ -22,7 +22,7 @@ var api = builder.AddProject<Projects.Autodor_API>("api")
     .WithReference(database, "Default")
     .WaitForCompletion(migrator)
     .WaitFor(database)
-    .WithHttpHealthCheck("/health")
+    .WithHttpHealthCheck("/api/health")
     .WithUrlForEndpoint("http", url =>
     {
         url.DisplayText = "Scalar";

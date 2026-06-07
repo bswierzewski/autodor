@@ -1,69 +1,87 @@
-name: Publish Migrator Image
+name: Deploy migrator
+
+run-name: Deploy migrator from ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
   push:
     branches: [main, slice]
     paths:
-      - 'Dockerfile.migrator'
+      - 'apps/migrator/Dockerfile'
       - 'apps/migrator/**'
       - 'backend/**/Migrations/**'
       - 'Directory.Build.props'
       - 'Directory.Packages.props'
       - 'global.json'
       - 'Autodor.slnx'
-      - '.github/workflows/deploy-migrator.yml'
+      - '.github/workflows/migrator.yml'
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: deploy-migrator-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: autodor-migrator
+  IMAGE_FILE: ./apps/migrator/Dockerfile
+
 jobs:
-  publish:
+  build_image:
+    name: Build migrator image
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
-      - id: meta
+      - name: Generate image metadata
+        id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ghcr.io/${{ github.repository_owner }}/autodor-migrator
+          images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
             type=sha,format=short,prefix=
 
-      - uses: docker/setup-buildx-action@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
 
-      - uses: docker/login-action@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v7
+      - name: Build and push image
+        uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./Dockerfile.migrator
+          file: ${{ env.IMAGE_FILE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: GIT_SHA=${{ github.sha }}
 
-      - uses: snok/container-retention-policy@v3.1.0
+      - name: Retain recent container images
+        uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
-          image-names: autodor-migrator
+          image-names: ${{ env.IMAGE_NAME }}
           image-tags: "*"
           tag-selection: both
           keep-n-most-recent: 5
           cut-off: 1m
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  trigger-webhooks:
-    needs: publish
+  deploy:
+    name: Deploy migrator
+    needs: build_image
     runs-on: ubuntu-latest
 
     steps:

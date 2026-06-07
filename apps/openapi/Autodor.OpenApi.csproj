@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\backend\bootstrap\Autodor.Bootstrap\Autodor.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\backend\building-blocks\BuildingBlocks.Hosting\BuildingBlocks.Hosting.csproj" />
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,8 @@ At the end of this process you will have:
 - Dokploy installed on the server,
 - the Dokploy panel published at `dokploy.bswierzewski.fun`,
 - a PostgreSQL database managed by Dokploy,
-- an application deployed from a private GHCR image,
+- frontend applications deployed from a private GHCR image,
+- backend API services deployed from a private GHCR image,
 - production environment variables configured in Dokploy,
 - S3 storage configured for file storage and backups,
 - automated database backups,
@@ -191,7 +192,8 @@ Inside the project you will add:
 
 - one PostgreSQL database,
 - one migration job or one-off service,
-- one application service,
+- one frontend application service per tenant or brand,
+- one backend API service per tenant or brand,
 - optional shared environment variables,
 - domains,
 - backup configuration.
@@ -226,22 +228,29 @@ Recommended settings:
 
 Save the connection details because the application will need them in its environment variables.
 
-## 13. Add the Application Service
+## 13. Add the Frontend Application Service
 
-Create an Application service that deploys the prebuilt GHCR image.
+Create an Application service that deploys the prebuilt frontend GHCR image.
 
 Example image configuration:
 
 - Docker Image: `ghcr.io/<github-namespace>/autodor-app:latest`
 - Registry: the GHCR registry created earlier
-- Exposed container port in domain configuration: `8080`
+- Exposed container port in domain configuration: `80`
 
 Important repository-specific requirement:
 
 - this repository's final container listens on port `8080`,
-- the frontend is already embedded into the API image,
+- the frontend is served by `nginx`,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY` as a build-time value if you build from source in Dokploy,
-- if you deploy a prebuilt image, the value must already be present during image build in CI.
+- if you deploy a prebuilt image, the value must already be present during image build in CI,
+- the frontend proxies `/api` to a single internal API service.
+
+Required frontend service environment variables:
+
+```env
+API_URL=http://autodor-api:8080
+```
 
 Critical Mikr.us compatibility setting:
 
@@ -257,7 +266,37 @@ DNS Round Robin
 
 This is required on Mikr.us-style LXC environments where the default Swarm VIP networking can cause internal service resolution problems.
 
-## 13.1 Add the Migration Job
+## 13.1 Add the API Service
+
+Create one Dokploy Application service from the shared API image for each tenant or brand.
+
+Recommended image configuration:
+
+- Docker Image: `ghcr.io/<github-namespace>/autodor-api:latest`
+- Registry: the GHCR registry created earlier
+- Exposed container port: `8080`
+- Public domains: none in the default setup
+
+Recommended behavior:
+
+- the frontend and API for one tenant can share the same PostgreSQL database as other tenants,
+- services can reuse the same shared secrets,
+- differences between tenants such as `DOR` and `MTP` should be expressed through service-level environment variables,
+- the frontend should be the public entrypoint and should proxy `/api` only to its paired backend.
+
+If the backend behavior needs to differ per service, add an explicit application setting such as:
+
+```env
+Application__Variant=DOR
+```
+
+or:
+
+```env
+Application__Variant=MTP
+```
+
+## 13.2 Add the Migration Job
 
 This repository now publishes a dedicated migrator image alongside the API image.
 
@@ -293,7 +332,7 @@ This repository currently stores that webhook in GitHub Actions as:
 
 - `WEBOOK_ULR_MIGRATOR`
 
-If Dokploy requires a build target instead of a prebuilt image, use `Dockerfile.migrator`.
+If Dokploy requires a build target instead of a prebuilt image, use `apps/migrator/Dockerfile`.
 
 ## 14. Configure Environment Variables
 
@@ -325,23 +364,23 @@ The application reads `ConnectionStrings:Default` at startup, so missing this va
 
 ## 15. Add Production Domains for the Application
 
-Once the application service exists, add the public domains in Dokploy.
+Once the frontend application service exists, add the public domain in Dokploy.
 
 Typical setup:
 
-- primary domain: `bswierzewski.fun`
-- optional subdomain: `www.bswierzewski.fun`
-- optional API subdomain if you separate traffic later
+- one domain per frontend service, for example `dor.bswierzewski.fun`
 
 For each application domain:
 
 - Host: the public hostname,
-- Container Port: `8080`,
+- Container Port: `80`,
 - HTTPS: enabled,
 - Certificate: `letsencrypt`,
 - Path: empty unless you intentionally publish under a subpath.
 
 Dokploy applies application domain changes without requiring a full redeploy, but you should still verify the application after every domain change.
+
+Do not attach the public domain directly to the paired API service in the default setup. Let the frontend `nginx` container own the domain and forward `/api` to its internal backend service.
 
 ## 16. Configure S3 Destinations
 
@@ -450,17 +489,20 @@ Recommended approach:
 
 Repository-specific CI/CD layout:
 
-- `deploy-app.yml` publishes `ghcr.io/<github-namespace>/autodor-app` with tags `latest` and `<short-sha>`
-- `deploy-migrator.yml` publishes `ghcr.io/<github-namespace>/autodor-migrator` with tags `latest` and `<short-sha>`
-- both workflows prune GHCR to the last 5 versions
-- `deploy-app.yml` triggers only application webhooks
-- `deploy-migrator.yml` triggers only the shared migrator webhook `WEBOOK_ULR_MIGRATOR`
+- `app.yml` publishes `ghcr.io/<github-namespace>/autodor-app` with tags `latest` and `<short-sha>`
+- `api.yml` publishes `ghcr.io/<github-namespace>/autodor-api` with tags `latest` and `<short-sha>`
+- `migrator.yml` publishes `ghcr.io/<github-namespace>/autodor-migrator` with tags `latest` and `<short-sha>`
+- all workflows prune GHCR to the last 5 versions
+- `app.yml` triggers app webhooks `WEBHOOK_URL_APP_MTP` and `WEBHOOK_URL_APP_DOR`
+- `api.yml` triggers API webhooks
+- `migrator.yml` triggers only the shared migrator webhook `WEBOOK_ULR_MIGRATOR`
 
 Change detection rules used in CI:
 
-- the app workflow runs for changes in `apps/api/**`, `apps/web/**`, `backend/**`, build metadata files, and the app workflow files
+- the app workflow runs for changes in `apps/web/**`, `apps/web/Dockerfile`, and the app workflow file
+- the api workflow runs for changes in `apps/api/**`, `backend/**`, build metadata files, `apps/api/Dockerfile`, and the api workflow file
 - the migrator workflow runs for changes in `apps/migrator/**`, `backend/**/Migrations/**`, build metadata files, and the migrator workflow files
-- changes limited to migration folders do not need frontend changes, but backend changes outside migration folders still rebuild the app because the API and migrator compile shared backend modules
+- backend changes no longer force a frontend rebuild unless the web app or nginx configuration changed
 
 Operational notes:
 
@@ -531,8 +573,10 @@ If you want the shortest safe sequence, follow this order:
 This repository currently expects the following production behavior:
 
 - production deployment is Dokploy-first,
-- the application should be routed to container port `8080`,
-- the frontend is bundled into the API image,
+- the frontend should be routed to container port `80`,
+- the API should be routed to container port `8080`,
+- the frontend is a separate `nginx` image,
+- the API is a separate ASP.NET image,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY`,
 - Dokploy-managed Postgres backups are preferred over custom backup containers,
 - on Mikr.us/LXC, `DNS Round Robin` is the safer Swarm endpoint mode for the application.

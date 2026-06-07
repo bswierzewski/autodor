@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './applicationHealthResponse';
+export * from './applicationVersionResponse';
 export * from './createContractorCommand';
 export * from './createContractorResponse';
 export * from './createInvoiceCommand';

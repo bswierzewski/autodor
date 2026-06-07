@@ -1,9 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-# Restore and publish the migrator with the git SHA embedded in assembly.
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-publish
-
-ARG GIT_SHA=local
 
 WORKDIR /src
 COPY Directory.Build.props Directory.Packages.props global.json Autodor.slnx ./
@@ -15,10 +12,11 @@ RUN dotnet restore apps/migrator/Autodor.Migrator.csproj
 RUN dotnet publish apps/migrator/Autodor.Migrator.csproj \
     -c Release \
     -o /app/migrator \
-    /p:UseAppHost=false \
-    /p:SourceRevisionId=${GIT_SHA}
+    /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+ARG GIT_SHA
 
 # Npgsql relies on the system Kerberos/GSSAPI library on Linux; without it the migrator
 # fails at startup with "Cannot load library libgssapi_krb5.so.2" in minimal runtime images.
@@ -27,6 +25,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+ENV GIT_SHA=${GIT_SHA}
 
 COPY --from=dotnet-publish /app/migrator ./
 

@@ -53,9 +53,6 @@ builder.Services.RegisterModules(builder.Configuration, modules);
 var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
 builder.AddWolverine(modules, dataSource);
 
-// Configure CORS
-builder.Services.AddCors();
-
 var app = builder.Build();
 
 // Run module-specific startup hooks after the container is built.
@@ -63,10 +60,6 @@ await app.Services.InitializeModulesAsync();
 
 // Use global exception handler
 app.UseExceptionHandler();
-
-// Serve static files and default documents for SPA support
-app.UseDefaultFiles();
-app.UseStaticFiles();
 
 // Enable authentication and authorization
 app.UseAuthentication();
@@ -78,22 +71,12 @@ app.MapDefaultEndpoints();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors(policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
 
 // Map all module-owned minimal APIs into the main application pipeline.
 app.MapModuleEndpoints();
-
-// Fallback to index.html for SPA support
-app.MapFallbackToFile("index.html");
 
 app.Run();
 
