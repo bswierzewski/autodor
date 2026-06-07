@@ -42,7 +42,7 @@ Connect to the server over SSH and perform the basic operating system setup.
 Notes:
 
 - Dokploy uses port `3000` for its initial local admin service during installation, but on Mikr.us this port is not exposed publicly and should be treated as SSH-tunnel-only access.
-- The application in this repository listens on container port `8080`, but that port does not need to be exposed publicly because Traefik in Dokploy will route traffic to it internally.
+- The API container uses the standard ASP.NET container port `8080`, but that port does not need to be exposed publicly because Traefik in Dokploy will route traffic to it internally.
 - Dokploy's official recommendation is at least 2 GB RAM and 30 GB disk. If the Mikr.us plan is smaller, expect tighter build and storage limits.
 
 ## 4. Add the Domain to Cloudflare
@@ -236,21 +236,15 @@ Example image configuration:
 
 - Docker Image: `ghcr.io/<github-namespace>/autodor-app:latest`
 - Registry: the GHCR registry created earlier
-- Exposed container port in domain configuration: `80`
+- Domain container port: `80`
 
 Important repository-specific requirement:
 
-- this repository's final container listens on port `8080`,
+- this repository's frontend container listens on port `80`,
 - the frontend is served by `nginx`,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY` as a build-time value if you build from source in Dokploy,
 - if you deploy a prebuilt image, the value must already be present during image build in CI,
-- the frontend proxies `/api` to a single internal API service.
-
-Required frontend service environment variables:
-
-```env
-API_URL=http://autodor-api:8080
-```
+- Dokploy routes `/api` directly to the paired API service.
 
 Critical Mikr.us compatibility setting:
 
@@ -274,8 +268,8 @@ Recommended image configuration:
 
 - Docker Image: `ghcr.io/<github-namespace>/autodor-api:latest`
 - Registry: the GHCR registry created earlier
-- Exposed container port: `8080`
-- Public domains: none in the default setup
+- Domain container port: `8080`
+- Public domain: same hostname as the paired frontend, with `Path: /api` and `Strip Path` disabled
 
 Recommended behavior:
 
@@ -380,7 +374,7 @@ For each application domain:
 
 Dokploy applies application domain changes without requiring a full redeploy, but you should still verify the application after every domain change.
 
-Do not attach the public domain directly to the paired API service in the default setup. Let the frontend `nginx` container own the domain and forward `/api` to its internal backend service.
+Attach the same public hostname to the paired API service with `Path: /api`, `Container Port: 8080`, and `Strip Path` disabled. This keeps browser requests to `/api/*` on the API container while the frontend service handles the rest of the domain.
 
 ## 16. Configure S3 Destinations
 
@@ -520,7 +514,7 @@ Verify all of the following before considering the deployment complete:
 - `https://dokploy.bswierzewski.fun` opens correctly,
 - `https://bswierzewski.fun` opens correctly,
 - TLS certificate is valid,
-- the Dokploy application routes traffic to container port `8080`,
+- Dokploy routes frontend traffic to container port `80` and API traffic to container port `8080`,
 - the application can connect to PostgreSQL,
 - required background jobs and scheduled tasks are enabled if expected,
 - SMTP works,
@@ -538,7 +532,7 @@ Avoid these frequent problems:
 - AAAA records missing or pointing to the wrong Mikr.us IPv6,
 - Clerk CNAME records accidentally proxied through Cloudflare,
 - Dokploy panel domain configured before DNS resolves correctly,
-- application domain using the wrong container port instead of `8080`,
+- Dokploy domain using the wrong container port for frontend (`80`) or API (`8080`),
 - private GHCR token missing package read permissions,
 - missing `VITE_CLERK_PUBLISHABLE_KEY` during frontend image build,
 - Swarm endpoint mode left at the default instead of `DNS Round Robin` on Mikr.us,
@@ -577,6 +571,7 @@ This repository currently expects the following production behavior:
 - the API should be routed to container port `8080`,
 - the frontend is a separate `nginx` image,
 - the API is a separate ASP.NET image,
+- Dokploy routes `/api` directly to the paired API service,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY`,
 - Dokploy-managed Postgres backups are preferred over custom backup containers,
 - on Mikr.us/LXC, `DNS Round Robin` is the safer Swarm endpoint mode for the application.
