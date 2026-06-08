@@ -12,6 +12,10 @@ on:
       - '.github/workflows/app.yml'
       - '.github/workflows/_deploy-service.yml'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   deploy:
     uses: ./.github/workflows/_deploy-service.yml
