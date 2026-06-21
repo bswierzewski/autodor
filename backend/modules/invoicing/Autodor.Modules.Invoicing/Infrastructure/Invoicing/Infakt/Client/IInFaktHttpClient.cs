@@ -11,11 +11,19 @@ namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 public interface IInFaktHttpClient
 {
     /// <summary>
-    /// Creates an invoice in InFakt.
+    /// Enqueues asynchronous invoice creation in InFakt.
     /// </summary>
-    [Post("/invoices.json")]
-    Task<Models.Responses.Invoice> CreateInvoiceAsync(
+    [Post("/async/invoices.json")]
+    Task<InvoiceProcessingResponse> CreateInvoiceAsync(
         [Body] InvoiceRoot invoice,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the current status of an asynchronous invoice creation task.
+    /// </summary>
+    [Get("/async/invoices/status/{taskReferenceNumber}.json")]
+    Task<InvoiceProcessingResponse> GetInvoiceProcessingStatusAsync(
+        string taskReferenceNumber,
         CancellationToken cancellationToken = default);
 
     /// <summary>

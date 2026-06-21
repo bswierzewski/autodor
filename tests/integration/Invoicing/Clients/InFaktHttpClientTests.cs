@@ -145,7 +145,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
     }
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
-    public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateInvoice()
+    public async Task CreateInvoiceAsync_WithValidInvoice_ShouldEnqueueInvoiceCreation()
     {
         // Arrange
         var invoice = new Invoice
@@ -177,8 +177,9 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Assert
         result.Should().NotBeNull();
-        result.Id.Should().NotBeNull();
-        result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
+        result.TaskReferenceNumber.Should().NotBeNullOrWhiteSpace();
+        result.ProcessingCode.Should().Be(100);
+        result.ProcessingDescription.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
