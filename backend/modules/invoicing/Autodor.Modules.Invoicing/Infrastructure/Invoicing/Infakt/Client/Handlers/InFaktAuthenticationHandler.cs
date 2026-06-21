@@ -1,7 +1,7 @@
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Options;
 using Microsoft.Extensions.Options;
 
-namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client
+namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Handlers
 {
     public class InFaktAuthenticationHandler(IOptions<InFaktOptions> options) : DelegatingHandler
     {

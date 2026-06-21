@@ -60,7 +60,7 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IIFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
         // Assert
@@ -119,7 +119,7 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IIFirmaHttpClient>();
         var result = await client.CreateInvoiceAsync(invoice);
 
         // Assert
@@ -164,7 +164,7 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IIFirmaHttpClient>();
         var action = () => client.CreateInvoiceAsync(invoice);
 
         // Assert
@@ -217,7 +217,7 @@ public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<IFirmaHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IIFirmaHttpClient>();
         var action = () => client.CreateInvoiceAsync(invoice);
 
         // Assert

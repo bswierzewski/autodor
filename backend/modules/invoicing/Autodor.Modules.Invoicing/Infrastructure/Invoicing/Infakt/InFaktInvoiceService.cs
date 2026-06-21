@@ -7,7 +7,7 @@ using InFaktClient = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.C
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt;
 
-public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
+public class InFaktInvoiceService(IInFaktHttpClient httpClient) : IInvoiceService
 {
     public async Task CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
@@ -35,7 +35,7 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
             if (RequiresUpdate(existingClient, contractor))
             {
                 var updatedClient = contractor.ToInFaktClient();
-                await httpClient.UpdateClientAsync(existingClient.Id!.Value, updatedClient, cancellationToken);
+                await httpClient.UpdateClientAsync(existingClient.Id!.Value, new(updatedClient), cancellationToken);
             }
 
             return;
@@ -43,7 +43,7 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
 
         // Client doesn't exist - create new one
         var newClient = contractor.ToInFaktClient();
-        await httpClient.CreateClientAsync(newClient, cancellationToken);
+        await httpClient.CreateClientAsync(new(newClient), cancellationToken);
     }
 
     private static bool RequiresUpdate(
@@ -61,6 +61,6 @@ public class InFaktInvoiceService(InFaktHttpClient httpClient) : IInvoiceService
     private async Task CreateInvoiceInternalAsync(Invoice invoice, CancellationToken cancellationToken)
     {
         var inFaktInvoice = invoice.ToInFaktInvoice();
-        await httpClient.CreateInvoiceAsync(inFaktInvoice, cancellationToken);
+        await httpClient.CreateInvoiceAsync(new(inFaktInvoice), cancellationToken);
     }
 }

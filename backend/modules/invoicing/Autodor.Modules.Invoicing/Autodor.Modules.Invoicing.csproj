@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MailKit" />
+		<PackageReference Include="Refit.HttpClientFactory" />
 		<PackageReference Include="WolverineFx.FluentValidation" />
 	</ItemGroup>
 

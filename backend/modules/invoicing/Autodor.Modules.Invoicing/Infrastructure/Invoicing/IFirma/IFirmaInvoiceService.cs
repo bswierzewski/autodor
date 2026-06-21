@@ -4,7 +4,7 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Extensions;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma;
 
-public class IFirmaInvoiceService(IFirmaHttpClient httpClient) : IInvoiceService
+public class IFirmaInvoiceService(IIFirmaHttpClient httpClient) : IInvoiceService
 {
     public async Task CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {

@@ -21,7 +21,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
         var result = await client.GetClientsAsync(query);
 
         // Assert
@@ -40,7 +40,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
         var result = await client.GetClientsAsync(query);
 
         // Assert
@@ -63,8 +63,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         };
 
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var createdClientResult = await client.CreateClientAsync(newClient);
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var createdClientResult = await client.CreateClientAsync(new(newClient));
         createdClientResult.Id.Should().NotBeNull();
 
         // Act
@@ -96,8 +96,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var infaktClient = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var result = await infaktClient.CreateClientAsync(client);
+        var infaktClient = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var result = await infaktClient.CreateClientAsync(new(client));
 
         // Assert
         result.Should().NotBeNull();
@@ -120,8 +120,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         };
 
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var createdClientResult = await client.CreateClientAsync(newClient);
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var createdClientResult = await client.CreateClientAsync(new(newClient));
         createdClientResult.Id.Should().NotBeNull();
 
         // Update the client data
@@ -135,7 +135,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         };
 
         // Act
-        var result = await client.UpdateClientAsync(createdClientResult.Id!.Value, updatedClient);
+        var result = await client.UpdateClientAsync(createdClientResult.Id!.Value, new(updatedClient));
 
         // Assert
         result.Should().NotBeNull();
@@ -172,8 +172,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var result = await client.CreateInvoiceAsync(invoice);
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var result = await client.CreateInvoiceAsync(new(invoice));
 
         // Assert
         result.Should().NotBeNull();
@@ -181,7 +181,7 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
         result.Status.Should().BeOneOf("draft", "sent", "printed", "paid");
     }
 
-    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    [Fact]
     public async Task CreateInvoiceAsync_WithInvalidInvoice_ShouldReturnError()
     {
         // Arrange
@@ -209,16 +209,16 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var action = () => client.CreateInvoiceAsync(invoice);
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var action = () => client.CreateInvoiceAsync(new(invoice));
 
         // Assert
         await action.Should().ThrowAsync<ValidationException>();
     }
 
-    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
+    [Fact]
     public async Task CreateInvoiceAsync_WithMissingRequiredField_ShouldReturnError()
-    {
+   {
         // Arrange - Missing required Services field
         var invoice = new Invoice
         {
@@ -234,8 +234,8 @@ public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : Integratio
 
         // Act
         await using var scope = Host.Services.CreateAsyncScope();
-        var client = scope.ServiceProvider.GetRequiredService<InFaktHttpClient>();
-        var action = () => client.CreateInvoiceAsync(invoice);
+        var client = scope.ServiceProvider.GetRequiredService<IInFaktHttpClient>();
+        var action = () => client.CreateInvoiceAsync(new(invoice));
 
         // Assert
         var exception = await action.Should().ThrowAsync<ValidationException>();
