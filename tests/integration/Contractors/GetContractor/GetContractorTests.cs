@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Contractors.GetContractor;
 
 [Collection(SharedCollection.Name)]
-public class GetContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetContractorTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Disabled by default")]
@@ -38,7 +38,7 @@ public class GetContractorTests(DatabaseFixture databaseFixture) : IntegrationTe
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.Get.Url($"/contractors/{contractorId.Value}");
+            s.Get.Url($"/api/contractors/{contractorId.Value}");
             s.StatusCodeShouldBe(200);
         });
 
@@ -60,7 +60,7 @@ public class GetContractorTests(DatabaseFixture databaseFixture) : IntegrationTe
         // Act & Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url($"/contractors/{nonExistentId}");
+            s.Get.Url($"/api/contractors/{nonExistentId}");
             s.StatusCodeShouldBe(404);
         });
     }

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Orders.Products;
 
 [Collection(SharedCollection.Name)]
-public class ProductsServiceTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class ProductsServiceTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     /// <summary>

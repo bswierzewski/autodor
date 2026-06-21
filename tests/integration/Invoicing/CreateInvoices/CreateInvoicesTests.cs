@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Invoicing.CreateInvoices;
 
 [Collection(SharedCollection.Name)]
-public class CreateInvoicesTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class CreateInvoicesTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
     protected override async Task OnInitializeAsync(IServiceProvider services)
     {
@@ -52,7 +52,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : IntegrationT
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoices/bulk");
+            s.Post.Json(command).ToUrl("/api/invoices/bulk");
             s.StatusCodeShouldBe(200);
         });
 
@@ -74,7 +74,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : IntegrationT
         // Act & Assert
         await Host.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoices/bulk");
+            s.Post.Json(command).ToUrl("/api/invoices/bulk");
             s.StatusCodeShouldBe(404); // No orders found
         });
     }
@@ -91,7 +91,7 @@ public class CreateInvoicesTests(DatabaseFixture databaseFixture) : IntegrationT
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.Post.Json(command).ToUrl("/invoices/bulk");
+            s.Post.Json(command).ToUrl("/api/invoices/bulk");
             s.StatusCodeShouldBe(200);
         });
 

@@ -7,7 +7,7 @@ using System.Net;
 namespace Autodor.Tests.Integration.Orders.GetOrder;
 
 [Collection(SharedCollection.Name)]
-public class GetOrderTests(DatabaseFixture databaseFixture, ITestOutputHelper output) : IntegrationTestBase<Program>(databaseFixture)
+public class GetOrderTests(AutodorDatabaseFixture databaseFixture, ITestOutputHelper output) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Manual test - requires real API connection and valid order ID")]
@@ -20,7 +20,7 @@ public class GetOrderTests(DatabaseFixture databaseFixture, ITestOutputHelper ou
         // Act && Assert
         var response = await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders/{orderId}?date={orderDate:yyyy-MM-dd}");
+            s.Get.Url($"/api/orders/{orderId}?date={orderDate:yyyy-MM-dd}");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output);
     }
@@ -34,7 +34,7 @@ public class GetOrderTests(DatabaseFixture databaseFixture, ITestOutputHelper ou
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders/{orderId}");
+            s.Get.Url($"/api/orders/{orderId}");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         }).PrintBody(output);
     }

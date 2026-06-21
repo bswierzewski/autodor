@@ -7,7 +7,7 @@ using System.Net;
 namespace Autodor.Tests.Integration.Orders.GetOrders;
 
 [Collection(SharedCollection.Name)]
-public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper output) : IntegrationTestBase<Program>(databaseFixture)
+public class GetOrdersTests(AutodorDatabaseFixture databaseFixture, ITestOutputHelper output) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Manual test - requires real API connection and valid date range")]
@@ -20,7 +20,7 @@ public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper o
         // Act && Assert
         var response = await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
+            s.Get.Url($"/api/orders?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output);
     }
@@ -34,7 +34,7 @@ public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper o
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders?to={to:yyyy-MM-dd}");
+            s.Get.Url($"/api/orders?to={to:yyyy-MM-dd}");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         }).PrintBody(output);
     }
@@ -48,7 +48,7 @@ public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper o
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders?from={from:yyyy-MM-dd}");
+            s.Get.Url($"/api/orders?from={from:yyyy-MM-dd}");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         }).PrintBody(output);
     }
@@ -63,7 +63,7 @@ public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper o
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url($"/orders?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
+            s.Get.Url($"/api/orders?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         }).PrintBody(output);
     }
@@ -74,7 +74,7 @@ public class GetOrdersTests(DatabaseFixture databaseFixture, ITestOutputHelper o
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Get.Url("/orders");
+            s.Get.Url("/api/orders");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         }).PrintBody(output);
     }

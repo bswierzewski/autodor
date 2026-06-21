@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Contractors.CreateContractor;
 
 [Collection(SharedCollection.Name)]
-public class CreateContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class CreateContractorTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
     [Fact]
     public async Task Should_Create_Contractor_When_User_Is_Authenticated()

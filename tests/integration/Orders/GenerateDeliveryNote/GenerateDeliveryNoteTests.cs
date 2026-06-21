@@ -15,7 +15,7 @@ using System.Net;
 namespace Autodor.Tests.Integration.Orders.GenerateDeliveryNote;
 
 [Collection(SharedCollection.Name)]
-public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOutputHelper output)
+public class GenerateDeliveryNoteTests(AutodorDatabaseFixture databaseFixture, ITestOutputHelper output)
     : IntegrationTestBase<Program>(databaseFixture)
 {
     private Mock<Modules.Orders.Infrastructure.ExternalServices.Products.IProductsClient> ProductsClientMock { get; } = new();
@@ -71,7 +71,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
             {
                 OrderId = orderId,
                 Date = orderDate
-            }).ToUrl("/delivery-notes");
+            }).ToUrl("/api/delivery-notes");
 
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         });
@@ -109,7 +109,7 @@ public class GenerateDeliveryNoteTests(DatabaseFixture databaseFixture, ITestOut
             {
                 OrderId = orderId,
                 Date = orderDate
-            }).ToUrl("/delivery-notes");
+            }).ToUrl("/api/delivery-notes");
 
             s.StatusCodeShouldBe(HttpStatusCode.NotFound);
         }).PrintBody(output);

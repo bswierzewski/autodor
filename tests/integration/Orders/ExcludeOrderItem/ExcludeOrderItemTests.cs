@@ -9,7 +9,7 @@ using System.Net;
 namespace Autodor.Tests.Integration.Orders.ExcludeOrderItem;
 
 [Collection(SharedCollection.Name)]
-public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class ExcludeOrderItemTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Disabled by default")]
@@ -22,7 +22,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{itemNumber}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{itemNumber}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -47,7 +47,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 1 - First call should exclude the order item
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{itemNumber}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{itemNumber}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -63,7 +63,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 2 - Second call should restore the order item (remove from excluded list)
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{itemNumber}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{itemNumber}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -79,7 +79,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 3 - Third call should exclude the order item again
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{itemNumber}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{itemNumber}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -99,7 +99,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Post.Url("/orders/ /items/ITEM-123/exclude");
+            s.Post.Url("/api/orders/ /items/ITEM-123/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         });
     }
@@ -110,7 +110,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act && Assert
         await Host.Scenario(s =>
         {
-            s.Post.Url("/orders/ORDER-123/items/ /exclude");
+            s.Post.Url("/api/orders/ORDER-123/items/ /exclude");
             s.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         });
     }
@@ -126,7 +126,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 1 - Exclude only the first item
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{item1Number}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{item1Number}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -147,7 +147,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 2 - Restore the first item (toggle off)
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{item1Number}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{item1Number}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -168,7 +168,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 3 - Exclude the second item this time
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{item2Number}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{item2Number}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 
@@ -189,7 +189,7 @@ public class ExcludeOrderItemTests(DatabaseFixture databaseFixture) : Integratio
         // Act 4 - Exclude both items
         await Host.Scenario(s =>
         {
-            s.Post.Url($"/orders/{orderId}/items/{item1Number}/exclude");
+            s.Post.Url($"/api/orders/{orderId}/items/{item1Number}/exclude");
             s.StatusCodeShouldBe(HttpStatusCode.NoContent);
         });
 

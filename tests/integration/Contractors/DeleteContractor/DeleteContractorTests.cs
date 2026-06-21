@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Contractors.DeleteContractor;
 
 [Collection(SharedCollection.Name)]
-public class DeleteContractorTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class DeleteContractorTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Disabled by default")]
@@ -38,7 +38,7 @@ public class DeleteContractorTests(DatabaseFixture databaseFixture) : Integratio
         // Act
         await Host.Scenario(s =>
         {
-            s.Delete.Url($"/contractors/{contractorId.Value}");
+            s.Delete.Url($"/api/contractors/{contractorId.Value}");
             s.StatusCodeShouldBe(204);
         });
 
@@ -61,7 +61,7 @@ public class DeleteContractorTests(DatabaseFixture databaseFixture) : Integratio
         // Act & Assert
         await Host.Scenario(s =>
         {
-            s.Delete.Url($"/contractors/{nonExistentId}");
+            s.Delete.Url($"/api/contractors/{nonExistentId}");
             s.StatusCodeShouldBe(404);
         });
     }

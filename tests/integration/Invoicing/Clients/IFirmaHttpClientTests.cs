@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Invoicing.Clients;
 
 [Collection(SharedCollection.Name)]
-public class IFirmaHttpClientTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class IFirmaHttpClientTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]

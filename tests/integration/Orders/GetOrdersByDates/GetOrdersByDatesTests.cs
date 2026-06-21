@@ -9,7 +9,7 @@ using Wolverine;
 namespace Autodor.Tests.Integration.Orders.GetOrdersByDates;
 
 [Collection(SharedCollection.Name)]
-public class GetOrdersByDatesTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetOrdersByDatesTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
     [Fact(Skip = "Manual test - requires real API connection and valid order dates")]
     public async Task GetOrdersByDates_WhenOrdersExist_ShouldReturnOrders()

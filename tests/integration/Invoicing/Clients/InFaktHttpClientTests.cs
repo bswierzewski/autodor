@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Invoicing.Clients;
 
 [Collection(SharedCollection.Name)]
-public class InFaktHttpClientTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
 
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]

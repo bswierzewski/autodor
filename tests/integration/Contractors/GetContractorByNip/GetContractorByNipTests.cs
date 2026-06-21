@@ -12,7 +12,7 @@ using Wolverine;
 namespace Autodor.Tests.Integration.Contractors.GetContractorByNip;
 
 [Collection(SharedCollection.Name)]
-public class GetContractorByNipTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetContractorByNipTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
     [Fact(Skip = "Manual test - skipped by default")]
     public async Task Should_Get_Contractor_By_Nip()

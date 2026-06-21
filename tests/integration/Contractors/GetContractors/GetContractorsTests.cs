@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autodor.Tests.Integration.Contractors.GetContractors;
 
 [Collection(SharedCollection.Name)]
-public class GetContractorsTests(DatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetContractorsTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
 {
     protected override async Task OnInitializeAsync(IServiceProvider services)
     {
@@ -48,7 +48,7 @@ public class GetContractorsTests(DatabaseFixture databaseFixture) : IntegrationT
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.Get.Url("/contractors");
+            s.Get.Url("/api/contractors");
             s.StatusCodeShouldBe(200);
         });
 
@@ -66,7 +66,7 @@ public class GetContractorsTests(DatabaseFixture databaseFixture) : IntegrationT
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.Get.Url("/contractors?NIPs=1111111111");
+            s.Get.Url("/api/contractors?NIPs=1111111111");
             s.StatusCodeShouldBe(200);
         });
 
