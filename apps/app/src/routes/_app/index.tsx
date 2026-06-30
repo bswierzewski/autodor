@@ -1,9 +1,10 @@
 import { ReceiptIcon } from "@phosphor-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import {
 	getGetOrdersQueryKey,
 	useGenerateDeliveryNote,
@@ -22,24 +23,49 @@ import { useMediaQuery } from "#/hooks/use-media-query";
 import { formatDate } from "#/lib/formatters";
 import { downloadBlob } from "#/lib/utils";
 
+function getDefaultDateRange() {
+	const to = dayjs().startOf("day");
+
+	return {
+		from: formatDate(to.subtract(7, "day").toDate()),
+		to: formatDate(to.toDate()),
+	};
+}
+
+const defaultDateRange = getDefaultDateRange();
+const ordersSearchSchema = z
+	.object({
+		from: z.iso.date().catch(defaultDateRange.from),
+		to: z.iso.date().catch(defaultDateRange.to),
+		query: z.string().optional().catch(undefined),
+	})
+	.transform((search) =>
+		dayjs(search.from).isAfter(search.to, "day") ? { ...search, ...defaultDateRange } : search,
+	);
+
+type OrdersSearch = z.infer<typeof ordersSearchSchema>;
+
 export const Route = createFileRoute("/_app/")({
+	validateSearch: ordersSearchSchema,
 	component: OrdersRoute,
 });
 
 function OrdersRoute() {
-	const today = dayjs().startOf("day").toDate();
-	const weekAgo = dayjs(today).subtract(7, "day").toDate();
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
-
-	const [query, setQuery] = useState("");
-	const [fromDate, setFromDate] = useState(weekAgo);
-	const [toDate, setToDate] = useState(today);
-	const from = formatDate(fromDate);
-	const to = formatDate(toDate);
+	const navigate = useNavigate({ from: Route.fullPath });
+	const { from, to, query = "" } = Route.useSearch();
+	const fromDate = dayjs(from).toDate();
+	const toDate = dayjs(to).toDate();
 	const queryClient = useQueryClient();
 
 	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
 	const [isInvoiceDrawerOpen, setIsInvoiceDrawerOpen] = useState(false);
+	const updateSearch = (updates: Partial<OrdersSearch>) => {
+		void navigate({
+			replace: true,
+			search: (previous) => ({ ...previous, ...updates }),
+		});
+	};
 
 	const toggleOrderSelection = (id: string) => {
 		setSelectedOrderIds((prev) => {
@@ -136,10 +162,10 @@ function OrdersRoute() {
 						</Button>
 					}
 					fromDate={fromDate}
-					onClearQuery={() => setQuery("")}
-					onFromDateChange={setFromDate}
-					onQueryChange={setQuery}
-					onToDateChange={setToDate}
+					onClearQuery={() => updateSearch({ query: undefined })}
+					onFromDateChange={(date) => updateSearch({ from: formatDate(date) })}
+					onQueryChange={(value) => updateSearch({ query: value || undefined })}
+					onToDateChange={(date) => updateSearch({ to: formatDate(date) })}
 					query={query}
 					toDate={toDate}
 				/>
@@ -155,7 +181,7 @@ function OrdersRoute() {
 				) : orders.length === 0 ? (
 					<OrdersEmptyState />
 				) : filteredOrders.length === 0 ? (
-					<OrdersFilteredEmptyState onClearFilters={() => setQuery("")} />
+					<OrdersFilteredEmptyState onClearFilters={() => updateSearch({ query: undefined })} />
 				) : (
 					<div className="space-y-3">
 						{isDesktop ? (
