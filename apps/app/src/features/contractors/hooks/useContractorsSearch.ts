@@ -10,7 +10,7 @@ type ContractorsSearch = z.infer<typeof contractorsSearchSchema>;
 const routeApi = getRouteApi("/_app/contractors");
 
 export function useContractorsSearch() {
-	const navigate = useNavigate({ from: routeApi.fullPath });
+	const navigate = useNavigate({ from: "/contractors" });
 	const search = routeApi.useSearch();
 
 	const updateSearch = (updates: Partial<ContractorsSearch>) => {

@@ -32,7 +32,7 @@ type OrdersSearch = z.infer<typeof ordersSearchSchema>;
 const routeApi = getRouteApi("/_app/");
 
 export function useOrdersSearch() {
-	const navigate = useNavigate({ from: routeApi.fullPath });
+	const navigate = useNavigate({ from: "/" });
 	const search = routeApi.useSearch();
 
 	const updateSearch = (updates: Partial<OrdersSearch>) => {
