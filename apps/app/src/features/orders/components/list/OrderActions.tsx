@@ -52,7 +52,7 @@ export function OrderActions({ order, isPending, onPrintOrderPdf, onToggleOrderE
 					variant={order.isExcluded ? "default" : "destructive"}
 				>
 					{order.isExcluded ? <ArrowClockwiseIcon size={16} /> : <XIcon size={16} />}
-					{order.isExcluded ? "Przywróć" : "Wyłącz"}
+					{order.isExcluded ? "Przywróć" : "Pomiń"}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

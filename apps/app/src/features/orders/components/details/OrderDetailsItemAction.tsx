@@ -11,7 +11,7 @@ type OrderDetailsItemActionProps = {
 };
 
 export function OrderDetailsItemAction({ item, isPending, onToggleOrderItemExclusion }: OrderDetailsItemActionProps) {
-	const actionLabel = item.isExcluded ? "Przywróć" : "Wyklucz";
+	const actionLabel = item.isExcluded ? "Przywróć" : "Pomiń";
 
 	return (
 		<Button

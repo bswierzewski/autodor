@@ -90,7 +90,7 @@ function OrdersRoute() {
 				});
 				toast.success(
 					variables.data.excluded
-						? "Zamówienie zostało wyłączone z fakturowania."
+						? "Zamówienie zostało pominięte przy fakturowaniu."
 						: "Zamówienie zostało przywrócone do fakturowania.",
 				);
 			},

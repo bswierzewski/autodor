@@ -3,6 +3,7 @@ import { Checkbox } from "#/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
 import { formatCurrency, formatDate } from "#/lib/formatters";
 import { cn } from "#/lib/utils";
+import { formatOrderItemsCount } from "#/features/orders/lib/ordersFormatters";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
@@ -70,7 +71,7 @@ export function OrdersTable({
 							<TableCell className="text-muted-foreground">{formatDate(order.date)}</TableCell>
 							<TableCell className="text-muted-foreground">{order.person ?? "-"}</TableCell>
 							<TableCell className="text-muted-foreground">{order.customerNumber ?? "-"}</TableCell>
-							<TableCell className="text-right">{order.itemsCount}</TableCell>
+							<TableCell className="text-right">{formatOrderItemsCount(order)}</TableCell>
 							<TableCell className="text-right font-medium">{formatCurrency(order.totalAmount)}</TableCell>
 							<TableCell className="pr-5 text-right" onClick={(e) => e.stopPropagation()}>
 								<OrderActions

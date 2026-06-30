@@ -1,6 +1,7 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Checkbox } from "#/components/ui/checkbox";
 import { formatCurrency, formatDate } from "#/lib/formatters";
+import { formatOrderItemsCount } from "#/features/orders/lib/ordersFormatters";
 import { OrderActions } from "./OrderActions";
 
 type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
@@ -80,7 +81,7 @@ export function OrderCardList({
 											Kwota: <span className="font-medium text-foreground">{formatCurrency(order.totalAmount)}</span>
 										</p>
 										<p className="min-w-0 truncate text-right text-muted-foreground">
-											Pozycje: <span className="font-medium text-foreground">{order.itemsCount}</span>
+											Pozycje: <span className="font-medium text-foreground">{formatOrderItemsCount(order)}</span>
 										</p>
 									</div>
 								</div>

@@ -43,9 +43,9 @@ export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps)
 						<h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Zamówienie</h3>
 						<dl className="grid gap-3">
 							<DetailItem label="Data" value={formatDate(order.date)} />
-							<DetailItem label="Pozycje" value={order.items.length} />
 							<DetailItem label="Kwota" value={formatCurrency(totalAmount)} />
-							<DetailItem label="Wykluczone pozycje" value={excludedItemsCount} />
+							<DetailItem label="Pozycje" value={order.items.length} />
+							<DetailItem label="Pominięte pozycje" value={excludedItemsCount} />
 						</dl>
 					</div>
 

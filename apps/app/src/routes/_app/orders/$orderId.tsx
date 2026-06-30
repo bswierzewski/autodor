@@ -36,7 +36,7 @@ function OrderDetailsRoute() {
 
 				toast.success(
 					variables.data.excluded
-						? `Pozycja ${variables.itemNumber} została wyłączona z fakturowania.`
+						? `Pozycja ${variables.itemNumber} została pominięta przy fakturowaniu.`
 						: `Pozycja ${variables.itemNumber} została przywrócona do fakturowania.`,
 				);
 			},
