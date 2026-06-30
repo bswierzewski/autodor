@@ -1,15 +1,12 @@
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Orders.DistributorsSales;
 
-[Collection(SharedCollection.Name)]
-public class DistributorsSalesServiceTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class DistributorsSalesServiceTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     /// <summary>
     /// Manual test to verify real API integration.
     /// To run: Remove the Skip parameter and execute this test manually.

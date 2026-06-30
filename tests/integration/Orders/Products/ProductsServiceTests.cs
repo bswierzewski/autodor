@@ -1,15 +1,12 @@
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Orders.Products;
 
-[Collection(SharedCollection.Name)]
-public class ProductsServiceTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class ProductsServiceTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     /// <summary>
     /// Manual test to verify real API integration and caching.
     /// To run: Remove the Skip parameter and execute this test manually.

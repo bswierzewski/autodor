@@ -3,8 +3,6 @@ using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Filters;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Extensions;
-using Polly;
-using Polly.Retry;
 using InFaktClient = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Responses.Client;
 using InvoiceProcessingResponse = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Responses.InvoiceProcessingResponse;
 
@@ -23,19 +21,6 @@ public class InFaktInvoiceService(IInFaktHttpClient httpClient) : IInvoiceServic
 
     private const int MaxStatusChecks = 30;
     private static readonly TimeSpan StatusCheckDelay = TimeSpan.FromSeconds(1);
-
-    // Resilience pipeline for polling invoice processing status
-    private static readonly ResiliencePipeline<InvoiceProcessingResponse> PollingPipeline =
-        new ResiliencePipelineBuilder<InvoiceProcessingResponse>()
-            .AddRetry(new RetryStrategyOptions<InvoiceProcessingResponse>
-            {
-                ShouldHandle = new PredicateBuilder<InvoiceProcessingResponse>()
-                    .HandleResult(response => IsPending(response.ProcessingCode)),
-                MaxRetryAttempts = MaxStatusChecks,
-                Delay = StatusCheckDelay,
-                BackoffType = DelayBackoffType.Constant
-            })
-            .Build();
 
     public async Task CreateInvoiceAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
@@ -98,12 +83,32 @@ public class InFaktInvoiceService(IInFaktHttpClient httpClient) : IInvoiceServic
                 ? processingResponse.TaskReferenceNumber
                 : throw new InvalidOperationException("InFakt nie zwrócił numeru referencyjnego zadania tworzenia faktury.");
 
-            processingResponse = await PollingPipeline.ExecuteAsync(
-                async ct => await httpClient.GetInvoiceProcessingStatusAsync(taskReferenceNumber, ct),
-                cancellationToken);
+            processingResponse = await WaitForInvoiceProcessingAsync(taskReferenceNumber, cancellationToken);
         }
 
         EnsureSuccess(processingResponse);
+    }
+
+    private async Task<InvoiceProcessingResponse> WaitForInvoiceProcessingAsync(
+        string taskReferenceNumber,
+        CancellationToken cancellationToken)
+    {
+        for (var check = 1; check <= MaxStatusChecks; check++)
+        {
+            var response = await httpClient.GetInvoiceProcessingStatusAsync(
+                taskReferenceNumber,
+                cancellationToken);
+
+            if (!IsPending(response.ProcessingCode))
+                return response;
+
+            if (check < MaxStatusChecks)
+                await Task.Delay(StatusCheckDelay, cancellationToken);
+        }
+
+        throw new TimeoutException(
+            $"InFakt nie zakończył tworzenia faktury po {MaxStatusChecks} sprawdzeniach. " +
+            $"Zadanie: {taskReferenceNumber}.");
     }
 
     private static void EnsureSuccess(InvoiceProcessingResponse response)

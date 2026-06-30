@@ -3,16 +3,13 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Fi
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests;
 using Autodor.Tests.Integration.Shared;
 using BuildingBlocks.Core.Exceptions;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Invoicing.Clients;
 
-[Collection(SharedCollection.Name)]
-public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
     public async Task GetClientsAsync_WithEmptyFilter_ShouldReturnClientList()
     {
@@ -219,7 +216,7 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture) : Int
 
     [Fact]
     public async Task CreateInvoiceAsync_WithMissingRequiredField_ShouldReturnError()
-   {
+    {
         // Arrange - Missing required Services field
         var invoice = new Invoice
         {

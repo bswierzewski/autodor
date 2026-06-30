@@ -1,15 +1,13 @@
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Wolverine;
 
 namespace Autodor.Tests.Integration.Orders.GetOrdersByDates;
 
-[Collection(SharedCollection.Name)]
-public class GetOrdersByDatesTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetOrdersByDatesTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
     [Fact(Skip = "Manual test - requires real API connection and valid order dates")]
     public async Task GetOrdersByDates_WhenOrdersExist_ShouldReturnOrders()

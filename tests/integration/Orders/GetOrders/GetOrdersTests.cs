@@ -1,15 +1,12 @@
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Tests.Integration.Extensions;
 using System.Net;
 
 namespace Autodor.Tests.Integration.Orders.GetOrders;
 
-[Collection(SharedCollection.Name)]
-public class GetOrdersTests(AutodorDatabaseFixture databaseFixture, ITestOutputHelper output) : IntegrationTestBase<Program>(databaseFixture)
+public class GetOrdersTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture, ITestOutputHelper output) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     [Fact(Skip = "Manual test - requires real API connection and valid date range")]
     public async Task GetOrders_WhenOrdersExist_ShouldReturnOk()
     {

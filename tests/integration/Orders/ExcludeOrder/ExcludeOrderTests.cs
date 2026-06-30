@@ -1,6 +1,5 @@
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,10 +7,8 @@ using System.Net;
 
 namespace Autodor.Tests.Integration.Orders.ExcludeOrder;
 
-[Collection(SharedCollection.Name)]
-public class ExcludeOrderTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class ExcludeOrderTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     [Fact(Skip = "Disabled by default")]
     public async Task ExcludeOrder_WithValidOrderId_ShouldExcludeOrder()
     {

@@ -4,15 +4,13 @@ using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Wolverine;
 
 namespace Autodor.Tests.Integration.Contractors.GetContractorByNip;
 
-[Collection(SharedCollection.Name)]
-public class GetContractorByNipTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class GetContractorByNipTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
     [Fact(Skip = "Manual test - skipped by default")]
     public async Task Should_Get_Contractor_By_Nip()

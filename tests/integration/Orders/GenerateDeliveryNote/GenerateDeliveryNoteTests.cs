@@ -1,9 +1,9 @@
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Tests.Integration.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,21 +14,20 @@ using System.Net;
 
 namespace Autodor.Tests.Integration.Orders.GenerateDeliveryNote;
 
-[Collection(SharedCollection.Name)]
-public class GenerateDeliveryNoteTests(AutodorDatabaseFixture databaseFixture, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(databaseFixture)
+public class GenerateDeliveryNoteTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture, ITestOutputHelper output)
+    : IntegrationTest(databaseFixture, hostFixture)
 {
-    private Mock<Modules.Orders.Infrastructure.ExternalServices.Products.IProductsClient> ProductsClientMock { get; } = new();
-
-    protected override void OnConfigureServices(IServiceCollection services)
+    protected override void ConfigureServices(IServiceCollection services)
     {
-        services.RemoveAll<Modules.Orders.Infrastructure.ExternalServices.Products.IProductsClient>();
-        services.AddSingleton(ProductsClientMock.Object);
+        var productsClientMock = new Mock<IProductsClient>();
+
+        services.RemoveAll<IProductsClient>();
+        services.AddSingleton(productsClientMock);
+        services.AddSingleton(productsClientMock.Object);
     }
 
-    protected override async Task OnInitializeAsync(IServiceProvider services)
+    protected override async Task BeforeEachAsync()
     {
-
         // Setup mock products client with test data
         var testProducts = new Dictionary<string, Product>
         {
@@ -37,12 +36,14 @@ public class GenerateDeliveryNoteTests(AutodorDatabaseFixture databaseFixture, I
             ["3202RWT2"] = new Product { Number = "3202RWT2", Name = "Zestaw sprzęgła kompletny" }
         }.ToFrozenDictionary();
 
-        ProductsClientMock
+        var productsClientMock = Services.GetRequiredService<Mock<IProductsClient>>();
+        productsClientMock.Reset();
+        productsClientMock
             .Setup(x => x.GetProductsAsync())
             .ReturnsAsync(testProducts);
 
         // Seed test contractor in database
-        await using var scope = services.CreateAsyncScope();
+        await using var scope = Services.CreateAsyncScope();
         var contractorsDb = scope.ServiceProvider.GetRequiredService<ContractorsDbContext>();
 
         var contractor = new Contractor(

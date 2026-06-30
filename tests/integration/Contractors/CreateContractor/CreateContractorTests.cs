@@ -2,7 +2,6 @@ using Autodor.Modules.Contractors.Features.CreateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
 using BuildingBlocks.Tests.Integration.Extensions;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Tests.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Contractors.CreateContractor;
 
-[Collection(SharedCollection.Name)]
-public class CreateContractorTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
     [Fact]
     public async Task Should_Create_Contractor_When_User_Is_Authenticated()

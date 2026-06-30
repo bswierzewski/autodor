@@ -2,16 +2,13 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Enums;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Invoicing.Clients;
 
-[Collection(SharedCollection.Name)]
-public class IFirmaHttpClientTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class IFirmaHttpClientTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-
     [Fact(Skip = "Manual test - requires real IFirma API connection and valid credentials")]
     public async Task CreateInvoiceAsync_WithValidInvoice_ShouldCreateAndReturnInvoice()
     {

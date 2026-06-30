@@ -3,16 +3,14 @@ using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Invoicing.Features.CreateInvoices;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autodor.Tests.Integration.Invoicing.CreateInvoices;
 
-[Collection(SharedCollection.Name)]
-public class CreateInvoicesTests(AutodorDatabaseFixture databaseFixture) : IntegrationTestBase<Program>(databaseFixture)
+public class CreateInvoicesTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-    protected override async Task OnInitializeAsync(IServiceProvider services)
+    protected override async Task BeforeEachAsync()
     {
         await SeedDataAsync();
     }
