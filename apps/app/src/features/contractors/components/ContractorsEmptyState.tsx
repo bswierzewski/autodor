@@ -31,6 +31,7 @@ export function ContractorsEmptyState({ hasContractors, onClearFilters }: Contra
 								onClick={(event) => {
 									event.currentTarget.blur();
 								}}
+								search={true}
 								to="/contractors/create"
 							>
 								<PlusIcon size={16} />

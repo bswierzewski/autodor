@@ -17,6 +17,7 @@ export function ContractorActions({ contractor }: ContractorActionsProps) {
 						event.currentTarget.blur();
 					}}
 					params={{ contractorId: contractor.id }}
+					search={true}
 					to="/contractors/$contractorId/edit"
 				>
 					<PencilSimpleLineIcon size={16} />

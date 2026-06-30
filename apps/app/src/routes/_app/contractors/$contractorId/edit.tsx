@@ -35,7 +35,7 @@ function ContractorEditRoute() {
 
 	const handleClose = () => {
 		updateMutation.reset();
-		void navigate({ to: "/contractors" });
+		void navigate({ to: "/contractors", search: true });
 	};
 
 	return (
@@ -50,7 +50,7 @@ function ContractorEditRoute() {
 				await updateMutation.mutateAsync({ id: contractorId, data: value });
 				await routeQueryClient.invalidateQueries({ queryKey: getGetContractorQueryKey(contractorId) });
 				await routeQueryClient.invalidateQueries({ queryKey: getGetContractorsQueryKey() });
-				await navigate({ to: "/contractors" });
+				await navigate({ to: "/contractors", search: true });
 			}}
 			submitLabel="Zapisz zmiany"
 			submittingLabel="Zapisywanie..."

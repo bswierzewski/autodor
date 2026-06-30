@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useGetContractors } from "#/api/contractors/contractors";
 import type { GetContractorsResponse } from "#/api/models";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "#/components/ui/drawer";
@@ -7,16 +6,18 @@ import { ContractorsCardList } from "#/features/contractors/components/Contracto
 import { ContractorsEmptyState } from "#/features/contractors/components/ContractorsEmptyState";
 import { ContractorsFilters } from "#/features/contractors/components/ContractorsFilters";
 import { ContractorsTable } from "#/features/contractors/components/ContractorsTable";
+import { contractorsSearchSchema, useContractorsSearch } from "#/features/contractors/hooks/useContractorsSearch";
 import { useMediaQuery } from "#/hooks/use-media-query";
 
 export const Route = createFileRoute("/_app/contractors")({
+	validateSearch: contractorsSearchSchema,
 	component: ContractorsRoute,
 });
 
 function ContractorsRoute() {
-	const [query, setQuery] = useState("");
+	const { query, updateSearch } = useContractorsSearch();
 	const matchRoute = useMatchRoute();
-	const navigate = useNavigate();
+	const navigate = useNavigate({ from: Route.fullPath });
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
 	const contractorsQuery = useGetContractors();
 	const contractors: GetContractorsResponse[] = contractorsQuery.data ?? [];
@@ -34,14 +35,18 @@ function ContractorsRoute() {
 	const drawerTitle = isEditDrawerRoute ? "Edytuj kontrahenta" : "Dodaj kontrahenta";
 
 	const handleCloseDrawer = () => {
-		void navigate({ to: "/contractors" });
+		void navigate({ to: "/contractors", search: true });
 	};
 
 	return (
 		<div className="space-y-4">
 			<section className="grid gap-4">
 				<div className="space-y-4">
-					<ContractorsFilters query={query} onClearQuery={() => setQuery("")} onQueryChange={setQuery} />
+					<ContractorsFilters
+						query={query}
+						onClearQuery={() => updateSearch({ query: undefined })}
+						onQueryChange={(value) => updateSearch({ query: value || undefined })}
+					/>
 
 					{contractorsQuery.isLoading ? (
 						<div className="rounded-3xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground shadow-sm">
@@ -52,7 +57,10 @@ function ContractorsRoute() {
 							Nie udało się pobrać listy kontrahentów.
 						</div>
 					) : filteredContractors.length === 0 ? (
-						<ContractorsEmptyState hasContractors={contractors.length > 0} onClearFilters={() => setQuery("")} />
+						<ContractorsEmptyState
+							hasContractors={contractors.length > 0}
+							onClearFilters={() => updateSearch({ query: undefined })}
+						/>
 					) : isDesktop ? (
 						<ContractorsTable contractors={filteredContractors} />
 					) : (

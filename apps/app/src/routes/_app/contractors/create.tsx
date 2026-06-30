@@ -16,7 +16,7 @@ function ContractorCreateRoute() {
 
 	const handleClose = () => {
 		createMutation.reset();
-		void navigate({ to: "/contractors" });
+		void navigate({ to: "/contractors", search: true });
 	};
 
 	return (
@@ -29,7 +29,7 @@ function ContractorCreateRoute() {
 			onSubmit={async (value) => {
 				await createMutation.mutateAsync({ data: value });
 				await queryClient.invalidateQueries({ queryKey: getGetContractorsQueryKey() });
-				await navigate({ to: "/contractors" });
+				await navigate({ to: "/contractors", search: true });
 			}}
 			submitLabel="Dodaj kontrahenta"
 			submittingLabel="Dodawanie..."
