@@ -26,7 +26,7 @@ export function Footer() {
 						Copyright © {currentYear} <span className="font-medium text-foreground">bswierzewski</span>
 					</span>
 				</p>
-				<p className="whitespace-nowrap text-xs text-muted-foreground/90">SHA: {sha}</p>
+				<p className="whitespace-nowrap text-xs text-muted-foreground/90">{sha}</p>
 			</div>
 		</footer>
 	);
