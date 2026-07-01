@@ -8,13 +8,6 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Get the running application version information.
- */
-export const GetApplicationVersionResponse = zod.object({
-  "gitSha": zod.string()
-})
-
-/**
  * @summary Get the application health status.
  */
 export const GetApplicationHealthResponse = zod.object({

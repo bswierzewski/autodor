@@ -5,37 +5,6 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/version": {
-      "get": {
-        "tags": [
-          "System"
-        ],
-        "summary": "Get the running application version information.",
-        "operationId": "GetApplicationVersion",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApplicationVersionResponse"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "An error occurred",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/health": {
       "get": {
         "tags": [
@@ -974,17 +943,6 @@
         "type": "object",
         "properties": {
           "status": {
-            "type": "string"
-          }
-        }
-      },
-      "ApplicationVersionResponse": {
-        "required": [
-          "gitSha"
-        ],
-        "type": "object",
-        "properties": {
-          "gitSha": {
             "type": "string"
           }
         }

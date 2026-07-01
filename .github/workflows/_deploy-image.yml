@@ -1,4 +1,4 @@
-name: Deploy service
+name: Deploy image
 
 on:
   workflow_call:
@@ -71,7 +71,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            GIT_SHA=${{ github.sha }}
             ${{ inputs.build_args }}
             ${{ inputs.build_arg_secret_name && format('{0}={1}', inputs.build_arg_secret_name, secrets[inputs.build_arg_secret_name]) || '' }}
 

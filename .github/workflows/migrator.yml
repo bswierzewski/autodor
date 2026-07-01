@@ -15,7 +15,7 @@ on:
       - 'global.json'
       - 'Autodor.slnx'
       - '.github/workflows/migrator.yml'
-      - '.github/workflows/_deploy-service.yml'
+      - '.github/workflows/_deploy-image.yml'
 
 permissions:
   contents: read
@@ -23,10 +23,10 @@ permissions:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/_deploy-service.yml
+    uses: ./.github/workflows/_deploy-image.yml
     with:
       service_name: migrator
-      image_name: autodor-migrator
+      image_name: autodor/migrator
       image_file: ./apps/migrator/Dockerfile
       webhook_secret_names_json: '["WEBHOOK_URL_MIGRATOR"]'
     secrets: inherit

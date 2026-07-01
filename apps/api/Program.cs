@@ -1,4 +1,5 @@
 using Autodor.Bootstrap;
+using Autodor.API.Extensions;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
@@ -15,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add Aspire service defaults
 builder.AddServiceDefaults();
+
+if (!builder.Environment.IsDevelopment())
+    builder.Services.AddFrontend();
 
 // Configure Serilog with Aspire and Wolverine integration
 builder.Host.UseSerilog(logging =>
@@ -77,6 +81,9 @@ if (app.Environment.IsDevelopment())
 
 // Map all module-owned minimal APIs into the main application pipeline.
 app.MapModuleEndpoints();
+
+if (!app.Environment.IsDevelopment())
+    app.UseFrontend();
 
 app.Run();
 

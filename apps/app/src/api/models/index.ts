@@ -6,7 +6,6 @@
  */
 
 export * from './applicationHealthResponse';
-export * from './applicationVersionResponse';
 export * from './createContractorCommand';
 export * from './createContractorResponse';
 export * from './createInvoiceCommand';

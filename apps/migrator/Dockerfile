@@ -16,8 +16,6 @@ RUN dotnet publish apps/migrator/Autodor.Migrator.csproj \
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
-ARG GIT_SHA
-
 # Npgsql relies on the system Kerberos/GSSAPI library on Linux; without it the migrator
 # fails at startup with "Cannot load library libgssapi_krb5.so.2" in minimal runtime images.
 RUN apt-get update \
@@ -25,7 +23,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-ENV GIT_SHA=${GIT_SHA}
 
 COPY --from=dotnet-publish /app/migrator ./
 

@@ -14,8 +14,7 @@ At the end of this process you will have:
 - Dokploy installed on the server,
 - the Dokploy panel published at `dokploy.bswierzewski.fun`,
 - a PostgreSQL database managed by Dokploy,
-- frontend applications deployed from a private GHCR image,
-- backend API services deployed from a private GHCR image,
+- application services (frontend and API) deployed from one private GHCR image,
 - production environment variables configured in Dokploy,
 - S3 storage configured for file storage and backups,
 - automated database backups,
@@ -42,7 +41,7 @@ Connect to the server over SSH and perform the basic operating system setup.
 Notes:
 
 - Dokploy uses port `3000` for its initial local admin service during installation, but on Mikr.us this port is not exposed publicly and should be treated as SSH-tunnel-only access.
-- The API container uses the standard ASP.NET container port `8080`, but that port does not need to be exposed publicly because Traefik in Dokploy will route traffic to it internally.
+- The application container uses the standard ASP.NET container port `8080`, but that port does not need to be exposed publicly because Traefik in Dokploy will route traffic to it internally.
 - Dokploy's official recommendation is at least 2 GB RAM and 30 GB disk. If the Mikr.us plan is smaller, expect tighter build and storage limits.
 
 ## 4. Add the Domain to Cloudflare
@@ -192,8 +191,7 @@ Inside the project you will add:
 
 - one PostgreSQL database,
 - one migration job or one-off service,
-- one frontend application service per tenant or brand,
-- one backend API service per tenant or brand,
+- one application service per tenant or brand,
 - optional shared environment variables,
 - domains,
 - backup configuration.
@@ -228,23 +226,22 @@ Recommended settings:
 
 Save the connection details because the application will need them in its environment variables.
 
-## 13. Add the Frontend Application Service
+## 13. Add the Application Service
 
-Create an Application service that deploys the prebuilt frontend GHCR image.
+Create one Dokploy Application service from the shared application image for each tenant or brand. The ASP.NET process serves both the API and the prebuilt frontend.
 
 Example image configuration:
 
-- Docker Image: `ghcr.io/<github-namespace>/autodor-app:latest`
+- Docker Image: `ghcr.io/<github-namespace>/autodor/runtime:latest`
 - Registry: the GHCR registry created earlier
-- Domain container port: `80`
+- Domain container port: `8080`
 
 Important repository-specific requirement:
 
-- this repository's frontend container listens on port `80`,
-- the frontend is served by `nginx`,
+- the application container listens on port `8080`,
+- ASP.NET serves the Vite build and handles `/api` routes in the same process,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY` as a build-time value if you build from source in Dokploy,
-- if you deploy a prebuilt image, the value must already be present during image build in CI,
-- Dokploy routes `/api` directly to the paired API service.
+- if you deploy a prebuilt image, the value must already be present during image build in CI.
 
 Critical Mikr.us compatibility setting:
 
@@ -260,23 +257,11 @@ DNS Round Robin
 
 This is required on Mikr.us-style LXC environments where the default Swarm VIP networking can cause internal service resolution problems.
 
-## 13.1 Add the API Service
-
-Create one Dokploy Application service from the shared API image for each tenant or brand.
-
-Recommended image configuration:
-
-- Docker Image: `ghcr.io/<github-namespace>/autodor-api:latest`
-- Registry: the GHCR registry created earlier
-- Domain container port: `8080`
-- Public domain: same hostname as the paired frontend, with `Path: /api` and `Strip Path` disabled
-
 Recommended behavior:
 
-- the frontend and API for one tenant can share the same PostgreSQL database as other tenants,
+- application services for multiple tenants can share the same PostgreSQL database,
 - services can reuse the same shared secrets,
-- differences between tenants such as `DOR` and `MTP` should be expressed through service-level environment variables,
-- the frontend should be the public entrypoint and should proxy `/api` only to its paired backend.
+- differences between tenants such as `DOR` and `MTP` should be expressed through service-level environment variables.
 
 If the backend behavior needs to differ per service, add an explicit application setting such as:
 
@@ -290,19 +275,19 @@ or:
 Application__Variant=MTP
 ```
 
-## 13.2 Add the Migration Job
+## 13.1 Add the Migration Job
 
-This repository now publishes a dedicated migrator image alongside the API image.
+This repository publishes a dedicated migrator image alongside the application image.
 
 Recommended image configuration:
 
-- Docker Image: `ghcr.io/<github-namespace>/autodor-migrator:latest`
+- Docker Image: `ghcr.io/<github-namespace>/autodor/migrator:latest`
 - Registry: the GHCR registry created earlier
 - Do not expose any public port
 
 Recommended behavior:
 
-- run the migrator as a one-off job before each API deployment,
+- run the migrator as a one-off job before each application deployment,
 - use the same `ConnectionStrings__Default` value as the API,
 - fail the rollout if the migrator exits with a non-zero code,
 - do not keep the migrator as a long-running public service.
@@ -319,12 +304,12 @@ These settings are important. Without them Dokploy may treat the migrator like a
 Webhook behavior:
 
 - keep a single Dokploy webhook for the migrator deployment,
-- trigger it only from CI after publishing the `autodor-migrator:latest` image,
+- trigger it only from CI after publishing the `autodor/migrator:latest` image,
 - use one shared webhook because both application instances use the same database migration job.
 
 This repository currently stores that webhook in GitHub Actions as:
 
-- `WEBOOK_ULR_MIGRATOR`
+- `WEBHOOK_URL_MIGRATOR`
 
 If Dokploy requires a build target instead of a prebuilt image, use `apps/migrator/Dockerfile`.
 
@@ -358,23 +343,23 @@ The application reads `ConnectionStrings:Default` at startup, so missing this va
 
 ## 15. Add Production Domains for the Application
 
-Once the frontend application service exists, add the public domain in Dokploy.
+Once the application service exists, add the public domain in Dokploy.
 
 Typical setup:
 
-- one domain per frontend service, for example `dor.bswierzewski.fun`
+- one domain per application service, for example `dor.bswierzewski.fun`
 
 For each application domain:
 
 - Host: the public hostname,
-- Container Port: `80`,
+- Container Port: `8080`,
 - HTTPS: enabled,
 - Certificate: `letsencrypt`,
 - Path: empty unless you intentionally publish under a subpath.
 
 Dokploy applies application domain changes without requiring a full redeploy, but you should still verify the application after every domain change.
 
-Attach the same public hostname to the paired API service with `Path: /api`, `Container Port: 8080`, and `Strip Path` disabled. This keeps browser requests to `/api/*` on the API container while the frontend service handles the rest of the domain.
+The same service handles both application routes and `/api/*`; no separate path-based Dokploy route is required.
 
 ## 16. Configure S3 Destinations
 
@@ -483,20 +468,17 @@ Recommended approach:
 
 Repository-specific CI/CD layout:
 
-- `app.yml` publishes `ghcr.io/<github-namespace>/autodor-app` with tags `latest` and `<short-sha>`
-- `api.yml` publishes `ghcr.io/<github-namespace>/autodor-api` with tags `latest` and `<short-sha>`
-- `migrator.yml` publishes `ghcr.io/<github-namespace>/autodor-migrator` with tags `latest` and `<short-sha>`
+- `deploy.yml` publishes `ghcr.io/<github-namespace>/autodor/runtime` with tags `latest` and `<short-sha>`
+- `migrator.yml` publishes `ghcr.io/<github-namespace>/autodor/migrator` with tags `latest` and `<short-sha>`
+- both workflows reuse `_deploy-image.yml` for image publishing, retention, and Dokploy webhook delivery
 - all workflows prune GHCR to the last 5 versions
-- `app.yml` triggers app webhooks `WEBHOOK_URL_APP_MTP` and `WEBHOOK_URL_APP_DOR`
-- `api.yml` triggers API webhooks
-- `migrator.yml` triggers only the shared migrator webhook `WEBOOK_ULR_MIGRATOR`
+- `deploy.yml` triggers application webhooks `WEBHOOK_URL_MTP` and `WEBHOOK_URL_DOR`
+- `migrator.yml` triggers only the shared migrator webhook `WEBHOOK_URL_MIGRATOR`
 
 Change detection rules used in CI:
 
-- the app workflow runs for changes in `apps/app/**`, `apps/app/Dockerfile`, and the app workflow file
-- the api workflow runs for changes in `apps/api/**`, `backend/**`, build metadata files, `apps/api/Dockerfile`, and the api workflow file
+- the application workflow runs for frontend, API, backend, root `Dockerfile`, or build metadata changes
 - the migrator workflow runs for changes in `apps/migrator/**`, `backend/**/Migrations/**`, build metadata files, and the migrator workflow files
-- backend changes no longer force a frontend rebuild unless the web app or nginx configuration changed
 
 Operational notes:
 
@@ -514,7 +496,7 @@ Verify all of the following before considering the deployment complete:
 - `https://dokploy.bswierzewski.fun` opens correctly,
 - `https://bswierzewski.fun` opens correctly,
 - TLS certificate is valid,
-- Dokploy routes frontend traffic to container port `80` and API traffic to container port `8080`,
+- Dokploy routes all application traffic to container port `8080`,
 - the application can connect to PostgreSQL,
 - required background jobs and scheduled tasks are enabled if expected,
 - SMTP works,
@@ -532,7 +514,7 @@ Avoid these frequent problems:
 - AAAA records missing or pointing to the wrong Mikr.us IPv6,
 - Clerk CNAME records accidentally proxied through Cloudflare,
 - Dokploy panel domain configured before DNS resolves correctly,
-- Dokploy domain using the wrong container port for frontend (`80`) or API (`8080`),
+- Dokploy domain using a container port other than `8080`,
 - private GHCR token missing package read permissions,
 - missing `VITE_CLERK_PUBLISHABLE_KEY` during frontend image build,
 - Swarm endpoint mode left at the default instead of `DNS Round Robin` on Mikr.us,
@@ -567,11 +549,9 @@ If you want the shortest safe sequence, follow this order:
 This repository currently expects the following production behavior:
 
 - production deployment is Dokploy-first,
-- the frontend should be routed to container port `80`,
-- the API should be routed to container port `8080`,
-- the frontend is a separate `nginx` image,
-- the API is a separate ASP.NET image,
-- Dokploy routes `/api` directly to the paired API service,
+- frontend and API traffic should be routed to the single ASP.NET container on port `8080`,
+- the production frontend is built into the root `Dockerfile` and served from ASP.NET `wwwroot`,
+- local development remains split between Vite and the API through the Aspire AppHost gateway,
 - the frontend build needs `VITE_CLERK_PUBLISHABLE_KEY`,
 - Dokploy-managed Postgres backups are preferred over custom backup containers,
 - on Mikr.us/LXC, `DNS Round Robin` is the safer Swarm endpoint mode for the application.

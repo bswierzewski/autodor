@@ -1,0 +1,35 @@
+name: Deploy Autodor
+
+run-name: Deploy Autodor from ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, slice]
+    paths:
+      - 'Dockerfile'
+      - 'apps/api/**'
+      - 'apps/app/**'
+      - 'backend/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'Autodor.slnx'
+      - '.github/workflows/deploy.yml'
+      - '.github/workflows/_deploy-image.yml'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-image.yml
+    with:
+      service_name: runtime
+      image_name: autodor/runtime
+      image_file: ./Dockerfile
+      webhook_secret_names_json: '["WEBHOOK_URL_MTP","WEBHOOK_URL_DOR"]'
+      build_args: GIT_SHA=${{ github.sha }}
+      build_arg_secret_name: VITE_CLERK_PUBLISHABLE_KEY
+    secrets: inherit
