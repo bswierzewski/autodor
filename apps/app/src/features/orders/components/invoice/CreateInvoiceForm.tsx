@@ -27,6 +27,8 @@ type CreateInvoiceFormProps = {
 
 export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: CreateInvoiceFormProps) {
 	const today = dayjs().startOf("day").toDate();
+	const selectedNIPs = selectedOrders.map((order) => order.customerNumber?.trim() ?? "");
+	const contractorNIP = selectedNIPs[0] && selectedNIPs.every((nip) => nip === selectedNIPs[0]) ? selectedNIPs[0] : "";
 
 	const createInvoiceMutation = useCreateInvoice({
 		mutation: {
@@ -42,7 +44,7 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 			invoiceNumber: "",
 			issueDate: today,
 			saleDate: today,
-			contractorNIP: "",
+			contractorNIP,
 		},
 		validators: {
 			onSubmit: createInvoiceFormSchema,

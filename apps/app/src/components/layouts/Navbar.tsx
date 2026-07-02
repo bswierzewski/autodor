@@ -13,7 +13,7 @@ const navItems = [
 		isActive: (pathname: string) => pathname === "/" || pathname.startsWith("/orders/"),
 	},
 	{
-		label: "Klienci",
+		label: "Kontrahenci",
 		to: "/contractors",
 		icon: UsersThreeIcon,
 		isActive: (pathname: string) => pathname === "/contractors" || pathname.startsWith("/contractors/"),

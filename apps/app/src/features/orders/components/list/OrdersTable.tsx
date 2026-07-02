@@ -32,8 +32,8 @@ export function OrdersTable({ orders, selectedOrderIds, onToggleSelect, onToggle
 						</TableHead>
 						<TableHead>Numer</TableHead>
 						<TableHead>Data</TableHead>
-						<TableHead>Osoba</TableHead>
-						<TableHead>Nr klienta</TableHead>
+						<TableHead>Kontrahent</TableHead>
+						<TableHead>NIP</TableHead>
 						<TableHead className="text-right">Pozycje</TableHead>
 						<TableHead className="text-right">Kwota</TableHead>
 						<TableHead className="w-14 pr-5 text-right">Akcje</TableHead>
