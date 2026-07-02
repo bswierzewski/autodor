@@ -36,7 +36,9 @@ public class DistributorsSalesClient(
                     languageId: _options.LanguageId
                 );
             },
-            SoapCallContext.ForOperation("GetListOfOrdersV3"));
+            SoapCallContext.ForCache(
+                nameof(GetOrdersAsync),
+                DateOnly.FromDateTime(date)));
 
         var responseBody = response.Body.GetListOfOrdersV3Result;
 

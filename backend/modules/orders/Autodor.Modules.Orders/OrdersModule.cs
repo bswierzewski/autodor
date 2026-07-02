@@ -59,10 +59,11 @@ public sealed class OrdersModule : IModuleEndpoint, IModuleMigration
                 .AddResilience()
                 .AddLogging());
 
-        // Orders import should be resilient and observable, but should not reuse stale responses.
+        // Orders can change during the day, so keep their cached responses short-lived.
         services.AddScoped<IDistributorsSalesClient, DistributorsSalesClient>();
         services.AddSoap(() => new DistributorsSalesServiceClient(DistributorsSalesServiceClient.EndpointConfiguration.BasicHttpBinding_IDistributorsSalesService_soap),
             soap => soap
+                .AddCache(TimeSpan.FromMinutes(15))
                 .AddResilience()
                 .AddLogging());
 
