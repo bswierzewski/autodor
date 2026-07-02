@@ -1,15 +1,8 @@
 import { ReceiptIcon } from "@phosphor-icons/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { toast } from "sonner";
-import {
-	getGetOrdersQueryKey,
-	useGenerateDeliveryNote,
-	useGetOrders,
-	useUpdateOrderExclusion,
-} from "#/api/orders/orders";
+import { useGetOrders } from "#/api/orders/orders";
 import { Button } from "#/components/ui/button";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "#/components/ui/drawer";
 import { CreateInvoiceForm } from "#/features/orders/components/invoice/CreateInvoiceForm";
@@ -21,7 +14,6 @@ import { OrdersTable } from "#/features/orders/components/list/OrdersTable";
 import { ordersSearchSchema, useOrdersSearch } from "#/features/orders/hooks/useOrdersSearch";
 import { useMediaQuery } from "#/hooks/use-media-query";
 import { formatDate } from "#/lib/formatters";
-import { downloadBlob } from "#/lib/utils";
 
 export const Route = createFileRoute("/_app/")({
 	validateSearch: ordersSearchSchema,
@@ -33,7 +25,6 @@ function OrdersRoute() {
 	const { from, to, query, updateSearch } = useOrdersSearch();
 	const fromDate = dayjs(from).toDate();
 	const toDate = dayjs(to).toDate();
-	const queryClient = useQueryClient();
 
 	const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
 	const [isInvoiceDrawerOpen, setIsInvoiceDrawerOpen] = useState(false);
@@ -58,55 +49,8 @@ function OrdersRoute() {
 		}
 	};
 
-	const generateDeliveryNoteMutation = useGenerateDeliveryNote({
-		mutation: {
-			onSuccess: (pdf, variables) => {
-				downloadBlob(pdf, `WZ_${variables.data.orderId}.pdf`);
-				toast.success("PDF został pobrany.");
-			},
-			onError: () => {
-				toast.error("Nie udało się wygenerować pliku PDF.");
-			},
-		},
-	});
-
-	const printOrderPdf = (orderId: string, date: string) => {
-		generateDeliveryNoteMutation.mutate({
-			data: {
-				orderId,
-				date,
-			},
-		});
-	};
-
-	const updateOrderExclusionMutation = useUpdateOrderExclusion({
-		mutation: {
-			onSuccess: async (_, variables) => {
-				await queryClient.invalidateQueries({
-					queryKey: getGetOrdersQueryKey({ from, to }),
-				});
-				toast.success(
-					variables.data.excluded
-						? "Zamówienie zostało pominięte przy fakturowaniu."
-						: "Zamówienie zostało przywrócone do fakturowania.",
-				);
-			},
-			onError: () => {
-				toast.error("Nie udało się zmienić statusu zamówienia.");
-			},
-		},
-	});
-
-	const toggleOrderExclusion = (orderId: string, excluded: boolean) => {
-		updateOrderExclusionMutation.mutate({
-			id: orderId,
-			data: { excluded },
-		});
-	};
-
 	const { data, isLoading, isError } = useGetOrders({ from, to });
 	const orders = data?.orders ?? [];
-	const isPending = updateOrderExclusionMutation.isPending || generateDeliveryNoteMutation.isPending;
 	const filteredOrders = orders.filter((order) => {
 		const searchableValue = [order.number, order.customerNumber, order.person].join(" ").toLowerCase();
 
@@ -157,9 +101,6 @@ function OrdersRoute() {
 					<div className="space-y-3">
 						{isDesktop ? (
 							<OrdersTable
-								isPending={isPending}
-								onPrintOrderPdf={printOrderPdf}
-								onToggleOrderExclusion={toggleOrderExclusion}
 								onToggleSelect={toggleOrderSelection}
 								onToggleSelectAll={toggleSelectAll}
 								orders={filteredOrders}
@@ -167,9 +108,6 @@ function OrdersRoute() {
 							/>
 						) : (
 							<OrderCardList
-								isPending={isPending}
-								onPrintOrderPdf={printOrderPdf}
-								onToggleOrderExclusion={toggleOrderExclusion}
 								onToggleSelect={toggleOrderSelection}
 								orders={filteredOrders}
 								selectedOrderIds={selectedOrderIds}

@@ -1,28 +1,19 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Checkbox } from "#/components/ui/checkbox";
-import { formatCurrency, formatDate } from "#/lib/formatters";
 import { formatOrderItemsCount } from "#/features/orders/lib/ordersFormatters";
+import { formatCurrency, formatDate } from "#/lib/formatters";
 import { OrderActions } from "./OrderActions";
-
-type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
-type PrintOrderPdf = (orderId: string, date: string) => void;
 
 type OrderCardListProps = {
 	orders: OrderSummaryResponse[];
-	isPending: boolean;
 	selectedOrderIds: ReadonlySet<string>;
 	onToggleSelect: (id: string) => void;
-	onPrintOrderPdf: PrintOrderPdf;
-	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
 export function OrderCardList({
 	orders,
-	isPending,
 	selectedOrderIds,
 	onToggleSelect,
-	onPrintOrderPdf,
-	onToggleOrderExclusion,
 }: OrderCardListProps) {
 	return (
 		<div className="grid gap-4">
@@ -57,12 +48,7 @@ export function OrderCardList({
 								</label>
 
 								<div className="shrink-0">
-									<OrderActions
-										isPending={isPending}
-										order={order}
-										onPrintOrderPdf={onPrintOrderPdf}
-										onToggleOrderExclusion={onToggleOrderExclusion}
-									/>
+									<OrderActions order={order} />
 								</div>
 							</div>
 

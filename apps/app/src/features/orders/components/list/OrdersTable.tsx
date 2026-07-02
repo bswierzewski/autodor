@@ -1,33 +1,19 @@
 import type { OrderSummaryResponse } from "#/api/models/orderSummaryResponse";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/components/ui/table";
+import { formatOrderItemsCount } from "#/features/orders/lib/ordersFormatters";
 import { formatCurrency, formatDate } from "#/lib/formatters";
 import { cn } from "#/lib/utils";
-import { formatOrderItemsCount } from "#/features/orders/lib/ordersFormatters";
 import { OrderActions } from "./OrderActions";
-
-type ToggleOrderExclusion = (orderId: string, excluded: boolean) => void;
-type PrintOrderPdf = (orderId: string, date: string) => void;
 
 type OrdersTableProps = {
 	orders: OrderSummaryResponse[];
-	isPending: boolean;
 	selectedOrderIds: ReadonlySet<string>;
 	onToggleSelect: (id: string) => void;
 	onToggleSelectAll: (checked: boolean) => void;
-	onPrintOrderPdf: PrintOrderPdf;
-	onToggleOrderExclusion: ToggleOrderExclusion;
 };
 
-export function OrdersTable({
-	orders,
-	isPending,
-	selectedOrderIds,
-	onToggleSelect,
-	onToggleSelectAll,
-	onPrintOrderPdf,
-	onToggleOrderExclusion,
-}: OrdersTableProps) {
+export function OrdersTable({ orders, selectedOrderIds, onToggleSelect, onToggleSelectAll }: OrdersTableProps) {
 	const selectedCount = orders.filter((o) => selectedOrderIds.has(o.id)).length;
 	const allSelected = selectedCount === orders.length && orders.length > 0;
 	const someSelected = selectedCount > 0 && !allSelected;
@@ -74,12 +60,7 @@ export function OrdersTable({
 							<TableCell className="text-right">{formatOrderItemsCount(order)}</TableCell>
 							<TableCell className="text-right font-medium">{formatCurrency(order.totalAmount)}</TableCell>
 							<TableCell className="pr-5 text-right" onClick={(e) => e.stopPropagation()}>
-								<OrderActions
-									isPending={isPending}
-									order={order}
-									onPrintOrderPdf={onPrintOrderPdf}
-									onToggleOrderExclusion={onToggleOrderExclusion}
-								/>
+								<OrderActions order={order} />
 							</TableCell>
 						</TableRow>
 					))}

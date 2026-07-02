@@ -3,15 +3,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#
 import { formatCurrency } from "#/lib/formatters";
 import { OrderDetailsItemAction } from "./OrderDetailsItemAction";
 
-type ToggleOrderItemExclusion = (itemNumber: string, excluded: boolean) => void;
-
 type OrderDetailsItemsTableProps = {
+	orderId: string;
+	orderDate: string;
 	items: OrderItemResponse[];
-	isPending: boolean;
-	onToggleOrderItemExclusion: ToggleOrderItemExclusion;
 };
 
-export function OrderDetailsItemsTable({ items, isPending, onToggleOrderItemExclusion }: OrderDetailsItemsTableProps) {
+export function OrderDetailsItemsTable({ orderId, orderDate, items }: OrderDetailsItemsTableProps) {
 	return (
 		<div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
 			<Table className="[&_td]:px-5 [&_th]:px-5">
@@ -42,11 +40,7 @@ export function OrderDetailsItemsTable({ items, isPending, onToggleOrderItemExcl
 									{formatCurrency(lineTotal)}
 								</TableCell>
 								<TableCell className="text-right">
-									<OrderDetailsItemAction
-										isPending={isPending}
-										item={item}
-										onToggleOrderItemExclusion={onToggleOrderItemExclusion}
-									/>
+									<OrderDetailsItemAction item={item} orderDate={orderDate} orderId={orderId} />
 								</TableCell>
 							</TableRow>
 						);

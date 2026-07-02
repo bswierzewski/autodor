@@ -1,12 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
-import {
-	getGetOrderQueryKey,
-	getGetOrdersQueryKey,
-	useGetOrder,
-	useUpdateOrderItemExclusion,
-} from "#/api/orders/orders";
+import { useGetOrder } from "#/api/orders/orders";
 import { OrderDetailsItemsTable } from "#/features/orders/components/details/OrderDetailsItemsTable";
 import { OrderDetailsSummaryCard } from "#/features/orders/components/details/OrderDetailsSummaryCard";
 
@@ -24,35 +17,6 @@ export const Route = createFileRoute("/_app/orders/$orderId")({
 function OrderDetailsRoute() {
 	const { orderId } = Route.useParams();
 	const { date } = Route.useSearch();
-	const queryClient = useQueryClient();
-
-	const updateOrderItemExclusionMutation = useUpdateOrderItemExclusion({
-		mutation: {
-			onSuccess: async (_, variables) => {
-				await Promise.all([
-					queryClient.invalidateQueries({ queryKey: getGetOrdersQueryKey() }),
-					queryClient.invalidateQueries({ queryKey: getGetOrderQueryKey(orderId, { date }) }),
-				]);
-
-				toast.success(
-					variables.data.excluded
-						? `Pozycja ${variables.itemNumber} została pominięta przy fakturowaniu.`
-						: `Pozycja ${variables.itemNumber} została przywrócona do fakturowania.`,
-				);
-			},
-			onError: () => {
-				toast.error("Nie udało się zmienić statusu pozycji zamówienia.");
-			},
-		},
-	});
-
-	const toggleOrderItemExclusion = (itemNumber: string, excluded: boolean) => {
-		updateOrderItemExclusionMutation.mutate({
-			id: orderId,
-			itemNumber,
-			data: { excluded },
-		});
-	};
 
 	const {
 		data: order,
@@ -67,8 +31,6 @@ function OrderDetailsRoute() {
 			},
 		},
 	);
-
-	const isPending = updateOrderItemExclusionMutation.isPending;
 
 	if (!date) {
 		return (
@@ -103,11 +65,7 @@ function OrderDetailsRoute() {
 	return (
 		<div className="space-y-4">
 			<OrderDetailsSummaryCard order={order} />
-			<OrderDetailsItemsTable
-				isPending={isPending}
-				items={order.items}
-				onToggleOrderItemExclusion={toggleOrderItemExclusion}
-			/>
+			<OrderDetailsItemsTable items={order.items} orderDate={date} orderId={orderId} />
 		</div>
 	);
 }
