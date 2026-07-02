@@ -26,9 +26,12 @@ export function Navbar() {
 
 	return (
 		<header className="flex items-center justify-between gap-6 rounded-b-2xl border px-5 py-4 shadow-sm">
-			<div className="shrink-0">
-				<span className="text-lg font-black">AUTODOR</span>
-			</div>
+			<Link
+				className="shrink-0 rounded-sm text-lg font-black outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+				to="/"
+			>
+				AUTODOR
+			</Link>
 			<div className="flex items-center gap-4 sm:gap-6">
 				<nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-3">
 					{navItems.map(({ label, to, icon: Icon, isActive }) => (
