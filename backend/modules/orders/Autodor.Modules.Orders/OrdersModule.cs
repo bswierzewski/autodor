@@ -55,7 +55,6 @@ public sealed class OrdersModule : IModuleEndpoint, IModuleMigration
         services.AddScoped<IProductsClient, ProductsClient>();
         services.AddSoap(() => new ProductsSoapClient(ProductsSoapClient.EndpointConfiguration.ProductsSoap),
             soap => soap
-                .AddCache(TimeSpan.FromDays(2))
                 .AddResilience()
                 .AddLogging());
 
