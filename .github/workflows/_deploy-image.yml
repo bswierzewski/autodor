@@ -12,7 +12,7 @@ on:
       image_file:
         required: true
         type: string
-      webhook_secret_names_json:
+      webhook_urls_secret_name:
         required: true
         type: string
       build_args:
@@ -89,26 +89,37 @@ jobs:
     name: Deploy ${{ inputs.service_name }}
     needs: build_image
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        secret_name: ${{ fromJson(inputs.webhook_secret_names_json) }}
 
     steps:
-      - name: Trigger Dokploy webhook (${{ matrix.secret_name }})
+      - name: Trigger Dokploy webhooks from ${{ inputs.webhook_urls_secret_name }}
         shell: bash
         env:
-          WEBHOOK_URL: ${{ secrets[matrix.secret_name] }}
+          WEBHOOK_URLS_JSON: ${{ secrets[inputs.webhook_urls_secret_name] }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'Wyzwalanie ręczne (workflow_dispatch)' }}
           SERVICE_NAME: ${{ inputs.service_name }}
         run: |
           set -euo pipefail
 
-          if [[ -z "$WEBHOOK_URL" ]]; then
-            echo "Secret ${{ matrix.secret_name }} is empty. Skipping."
+          if [[ -z "$WEBHOOK_URLS_JSON" ]]; then
+            echo "Secret ${{ inputs.webhook_urls_secret_name }} is empty or does not exist. Skipping Dokploy deployment."
             exit 0
           fi
 
+          if ! jq -e '
+            type == "array" and length > 0 and
+            all(.[];
+              type == "string" and
+              (startswith("https://") or startswith("http://")) and
+              (contains("\n") | not) and
+              (contains("\r") | not)
+            )
+          ' \
+            <<< "$WEBHOOK_URLS_JSON" > /dev/null; then
+            echo "Secret ${{ inputs.webhook_urls_secret_name }} must be a non-empty JSON array of HTTP(S) URLs. Skipping Dokploy deployment."
+            exit 0
+          fi
+
+          mapfile -t webhook_urls < <(jq -r '.[]' <<< "$WEBHOOK_URLS_JSON")
           short_sha="${GITHUB_SHA:0:7}"
 
           payload="$(jq -n \
@@ -117,12 +128,15 @@ jobs:
             --arg msg "$COMMIT_MESSAGE" \
             '{ref: $ref, head_commit: {id: $id, message: $msg}}')"
 
-          echo "Triggering ${SERVICE_NAME} webhook for ${{ matrix.secret_name }}..."
+          for webhook_url in "${webhook_urls[@]}"; do
+            echo "::add-mask::$webhook_url"
+            echo "Triggering ${SERVICE_NAME} webhook..."
 
-          curl --fail-with-body --silent --show-error \
-            -X POST "$WEBHOOK_URL" \
-            -H "Content-Type: application/json" \
-            -H "X-GitHub-Event: push" \
-            -d "$payload"
+            curl --fail-with-body --silent --show-error \
+              -X POST "$webhook_url" \
+              -H "Content-Type: application/json" \
+              -H "X-GitHub-Event: push" \
+              -d "$payload"
 
-          echo "Successfully triggered ${SERVICE_NAME} webhook for ${{ matrix.secret_name }}."
+            echo "Successfully triggered ${SERVICE_NAME} webhook."
+          done
