@@ -28,5 +28,5 @@ jobs:
       service_name: migrator
       image_name: autodor/migrator
       image_file: ./apps/migrator/Dockerfile
-      webhook_urls_secret_name: ${{ github.ref_name == 'main' && 'PROD_WEBHOOK_URLS' || 'DEV_WEBHOOK_URLS' }}
+      webhook_urls_secret_name: MIGRATOR_WEBHOOK_URLS
     secrets: inherit

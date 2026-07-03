@@ -303,13 +303,13 @@ These settings are important. Without them Dokploy may treat the migrator like a
 
 Webhook behavior:
 
-- keep a single Dokploy webhook for the migrator deployment,
-- trigger it only from CI after publishing the `autodor/migrator:latest` image,
-- use one shared webhook because both application instances use the same database migration job.
+- keep the Dokploy webhook URLs for the migrator deployment in one GitHub Actions secret,
+- trigger them only from CI after publishing the `autodor/migrator:latest` image,
+- store the secret as a non-empty JSON array of HTTP(S) URLs, for example `["https://example.com/webhook"]`.
 
-This repository currently stores that webhook in GitHub Actions as:
+This repository stores that array in GitHub Actions as:
 
-- `WEBHOOK_URL_MIGRATOR`
+- `MIGRATOR_WEBHOOK_URLS`
 
 If Dokploy requires a build target instead of a prebuilt image, use `apps/migrator/Dockerfile`.
 
@@ -472,8 +472,8 @@ Repository-specific CI/CD layout:
 - `migrator.yml` publishes `ghcr.io/<github-namespace>/autodor/migrator` with tags `latest` and `<short-sha>`
 - both workflows reuse `_deploy-image.yml` for image publishing, retention, and Dokploy webhook delivery
 - all workflows prune GHCR to the last 5 versions
-- `deploy.yml` triggers application webhooks `WEBHOOK_URL_MTP` and `WEBHOOK_URL_DOR`
-- `migrator.yml` triggers only the shared migrator webhook `WEBHOOK_URL_MIGRATOR`
+- `deploy.yml` triggers application webhooks from the `RUNTIME_WEBHOOK_URLS` JSON array secret
+- `migrator.yml` triggers migrator webhooks from the `MIGRATOR_WEBHOOK_URLS` JSON array secret
 
 Change detection rules used in CI:
 
