@@ -5,7 +5,7 @@ run-name: Deploy migrator from ${{ github.ref_name }}
 on:
   workflow_dispatch:
   push:
-    branches: [main, slice]
+    branches: [main]
     paths:
       - 'apps/migrator/Dockerfile'
       - 'apps/migrator/**'
