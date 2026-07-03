@@ -1,6 +1,6 @@
-name: Deploy Autodor
+name: Deploy runtime from main
 
-run-name: Deploy Autodor from ${{ github.ref_name }}
+run-name: Deploy runtime from ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
