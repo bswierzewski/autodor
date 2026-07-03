@@ -30,6 +30,8 @@ export const GetOrderQueryParams = zod.object({
   "date": zod.iso.datetime({"offset":true})
 })
 
+export const getOrderResponseNetAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
+export const getOrderResponseGrossAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
 export const getOrderResponseItemsItemQuantityRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
 export const getOrderResponseItemsItemPriceRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
 
@@ -40,6 +42,8 @@ export const GetOrderResponse = zod.object({
   "date": zod.iso.datetime({"offset":true}),
   "person": zod.string().nullable(),
   "customerNumber": zod.string().nullable(),
+  "netAmount": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseNetAmountRegExpTwo)]),
+  "grossAmount": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseGrossAmountRegExpTwo)]),
   "items": zod.array(zod.object({
   "itemNumber": zod.string(),
   "productDisplayName": zod.string(),
@@ -81,7 +85,8 @@ export const GetOrdersQueryParams = zod.object({
 })
 
 export const getOrdersResponseOrdersItemItemsCountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
-export const getOrdersResponseOrdersItemTotalAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
+export const getOrdersResponseOrdersItemNetAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
+export const getOrdersResponseOrdersItemGrossAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
 export const getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
 
 
@@ -93,7 +98,8 @@ export const GetOrdersResponse = zod.object({
   "person": zod.string().nullable(),
   "customerNumber": zod.string().nullable(),
   "itemsCount": zod.union([zod.number(),zod.stringFormat('int32', getOrdersResponseOrdersItemItemsCountRegExpTwo)]),
-  "totalAmount": zod.union([zod.number(),zod.stringFormat('double', getOrdersResponseOrdersItemTotalAmountRegExpTwo)]),
+  "netAmount": zod.union([zod.number(),zod.stringFormat('double', getOrdersResponseOrdersItemNetAmountRegExpTwo)]),
+  "grossAmount": zod.union([zod.number(),zod.stringFormat('double', getOrdersResponseOrdersItemGrossAmountRegExpTwo)]),
   "isExcluded": zod.boolean(),
   "excludedItemsCount": zod.union([zod.number(),zod.stringFormat('int32', getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo)])
 }))

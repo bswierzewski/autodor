@@ -9,6 +9,8 @@ public record GetOrderResponse(
     DateTime Date,
     string? Person,
     string? CustomerNumber,
+    decimal NetAmount,
+    decimal GrossAmount,
     List<OrderItemResponse> Items,
     bool IsExcluded
 );

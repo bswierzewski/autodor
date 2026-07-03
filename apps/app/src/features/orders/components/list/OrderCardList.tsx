@@ -10,11 +10,7 @@ type OrderCardListProps = {
 	onToggleSelect: (id: string) => void;
 };
 
-export function OrderCardList({
-	orders,
-	selectedOrderIds,
-	onToggleSelect,
-}: OrderCardListProps) {
+export function OrderCardList({ orders, selectedOrderIds, onToggleSelect }: OrderCardListProps) {
 	return (
 		<div className="grid gap-4">
 			{orders.map((order) => {
@@ -59,15 +55,23 @@ export function OrderCardList({
 											Data: <span className="font-medium text-foreground">{formatDate(order.date)}</span>
 										</p>
 										<p className="min-w-0 truncate text-right text-muted-foreground">
-											NIP: <span className="font-medium text-foreground">{order.customerNumber ?? "-"}</span>
+											Pozycje: <span className="font-medium text-foreground">{formatOrderItemsCount(order)}</span>
 										</p>
 									</div>
 									<div className="grid min-w-0 grid-cols-2 gap-3">
 										<p className="min-w-0 truncate text-muted-foreground">
-											Kwota: <span className="font-medium text-foreground">{formatCurrency(order.totalAmount)}</span>
+											NIP: <span className="font-medium text-foreground">{order.customerNumber ?? "-"}</span>
 										</p>
 										<p className="min-w-0 truncate text-right text-muted-foreground">
-											Pozycje: <span className="font-medium text-foreground">{formatOrderItemsCount(order)}</span>
+											Kontrahent: <span className="font-medium text-foreground">{order.person ?? "-"}</span>
+										</p>
+									</div>
+									<div className="grid min-w-0 grid-cols-2 gap-3">
+										<p className="min-w-0 truncate text-muted-foreground">
+											Netto: <span className="font-medium text-foreground">{formatCurrency(order.netAmount)}</span>
+										</p>
+										<p className="min-w-0 truncate text-right text-muted-foreground">
+											Brutto: <span className="font-medium text-foreground">{formatCurrency(order.grossAmount)}</span>
 										</p>
 									</div>
 								</div>

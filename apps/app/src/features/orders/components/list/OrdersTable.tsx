@@ -32,10 +32,11 @@ export function OrdersTable({ orders, selectedOrderIds, onToggleSelect, onToggle
 						</TableHead>
 						<TableHead>Numer</TableHead>
 						<TableHead>Data</TableHead>
-						<TableHead>Kontrahent</TableHead>
 						<TableHead>NIP</TableHead>
+						<TableHead>Kontrahent</TableHead>
 						<TableHead className="text-right">Pozycje</TableHead>
-						<TableHead className="text-right">Kwota</TableHead>
+						<TableHead className="text-right">Netto</TableHead>
+						<TableHead className="text-right">Brutto</TableHead>
 						<TableHead className="w-14 pr-5 text-right">Akcje</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -55,10 +56,11 @@ export function OrdersTable({ orders, selectedOrderIds, onToggleSelect, onToggle
 							</TableCell>
 							<TableCell className="font-medium">{order.number ?? "-"}</TableCell>
 							<TableCell className="text-muted-foreground">{formatDate(order.date)}</TableCell>
-							<TableCell className="text-muted-foreground">{order.person ?? "-"}</TableCell>
 							<TableCell className="text-muted-foreground">{order.customerNumber ?? "-"}</TableCell>
+							<TableCell className="text-muted-foreground">{order.person ?? "-"}</TableCell>
 							<TableCell className="text-right">{formatOrderItemsCount(order)}</TableCell>
-							<TableCell className="text-right font-medium">{formatCurrency(order.totalAmount)}</TableCell>
+							<TableCell className="text-right font-medium">{formatCurrency(order.netAmount)}</TableCell>
+							<TableCell className="text-right font-medium">{formatCurrency(order.grossAmount)}</TableCell>
 							<TableCell className="pr-5 text-right" onClick={(e) => e.stopPropagation()}>
 								<OrderActions order={order} />
 							</TableCell>

@@ -5,6 +5,8 @@ namespace Autodor.Modules.Orders.Domain.Aggregates;
 /// </summary>
 public record Order
 {
+    private const decimal VatRate = 0.23m;
+
     /// <summary>
     /// Gets the order identifier (OrderID).
     /// </summary>
@@ -34,6 +36,16 @@ public record Order
     /// Gets the list of order items.
     /// </summary>
     public List<OrderItem> Items { get; init; } = [];
+
+    /// <summary>
+    /// Gets the total net value of all order items.
+    /// </summary>
+    public decimal NetAmount => Items.Sum(item => item.Price * item.Quantity);
+
+    /// <summary>
+    /// Gets the total gross value of all order items using the standard VAT rate.
+    /// </summary>
+    public decimal GrossAmount => NetAmount * (1 + VatRate);
 
     /// <summary>
     /// Gets whether the order is excluded (populated by OrderService).

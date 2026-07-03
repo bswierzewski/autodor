@@ -17,7 +17,9 @@ export interface OrderSummaryResponse {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   itemsCount: number | string;
   /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  totalAmount: number | string;
+  netAmount: number | string;
+  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+  grossAmount: number | string;
   isExcluded: boolean;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   excludedItemsCount: number | string;

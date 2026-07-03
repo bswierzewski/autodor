@@ -15,6 +15,10 @@ export interface GetOrderResponse {
   person: string | null;
   /** @nullable */
   customerNumber: string | null;
+  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+  netAmount: number | string;
+  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+  grossAmount: number | string;
   items: OrderItemResponse[];
   isExcluded: boolean;
 }

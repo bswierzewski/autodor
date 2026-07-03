@@ -21,8 +21,6 @@ function DetailItem({ label, value }: DetailItemProps) {
 }
 
 export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps) {
-	const totalAmount = order.items.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0);
-	const excludedItemsCount = order.items.filter((item) => item.isExcluded).length;
 	const contractorNip = order.customerNumber?.trim() || undefined;
 	const contractorQuery = useGetContractors(contractorNip ? { nips: [contractorNip] } : undefined, {
 		query: {
@@ -33,49 +31,22 @@ export function OrderDetailsSummaryCard({ order }: OrderDetailsSummaryCardProps)
 
 	return (
 		<section className="rounded-3xl border bg-card p-6 shadow-sm">
-			<div className="space-y-3">
-				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">{order.number ?? order.id}</h1>
-				</div>
+			<dl className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-7">
+				<DetailItem label="Numer" value={order.number ?? order.id} />
+				<DetailItem label="Data" value={formatDate(order.date)} />
+				<DetailItem label="NIP" value={contractor?.nip ?? contractorNip ?? "-"} />
+				<DetailItem
+					label="Kontrahent"
+					value={contractor?.name ?? order.person ?? (contractorQuery.isLoading ? "Ładowanie..." : "-")}
+				/>
+				<DetailItem label="Pozycje" value={order.items.length} />
+				<DetailItem label="Netto" value={formatCurrency(order.netAmount)} />
+				<DetailItem label="Brutto" value={formatCurrency(order.grossAmount)} />
+			</dl>
 
-				<div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-					<div className="space-y-3">
-						<h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Zamówienie</h3>
-						<dl className="grid gap-3">
-							<DetailItem label="Data" value={formatDate(order.date)} />
-							<DetailItem label="Kwota" value={formatCurrency(totalAmount)} />
-							<DetailItem label="Pozycje" value={order.items.length} />
-							<DetailItem label="Pominięte pozycje" value={excludedItemsCount} />
-						</dl>
-					</div>
-
-					<div className="space-y-3">
-						<h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Kontrahent</h3>
-						<dl className="grid gap-3">
-							<DetailItem label="Nazwa" value={contractor?.name ?? contractorNip ?? "Brak NIP"} />
-							<DetailItem label="NIP" value={contractor?.nip ?? contractorNip ?? "-"} />
-							<DetailItem
-								label="Adres"
-								value={
-									contractor
-										? `${contractor.street}, ${contractor.zipCode} ${contractor.city}`
-										: contractorQuery.isLoading
-											? "Ładowanie danych kontrahenta..."
-											: "-"
-								}
-							/>
-							<DetailItem
-								label="Email"
-								value={contractor?.email ?? (contractorQuery.isLoading ? "Ładowanie danych kontrahenta..." : "-")}
-							/>
-						</dl>
-
-						{contractorQuery.isError ? (
-							<p className="text-sm text-destructive">Nie udało się pobrać danych kontrahenta.</p>
-						) : null}
-					</div>
-				</div>
-			</div>
+			{contractorQuery.isError ? (
+				<p className="mt-4 text-sm text-destructive">Nie udało się pobrać danych kontrahenta.</p>
+			) : null}
 		</section>
 	);
 }

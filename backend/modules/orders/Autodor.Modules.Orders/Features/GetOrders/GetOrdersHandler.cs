@@ -24,7 +24,8 @@ public static class GetOrdersHandler
                     o.Person,
                     o.CustomerNumber,
                     o.Items.Count,
-                    o.Items.Sum(i => i.Price * i.Quantity),
+                    o.NetAmount,
+                    o.GrossAmount,
                     IsExcluded: o.IsExcluded,
                     ExcludedItemsCount: o.Items.Count(i => i.IsExcluded)
                 ))

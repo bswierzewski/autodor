@@ -17,7 +17,8 @@ public record OrderSummaryResponse(
     string? Person,
     string? CustomerNumber,
     int ItemsCount,
-    decimal TotalAmount,
+    decimal NetAmount,
+    decimal GrossAmount,
     bool IsExcluded,
     int ExcludedItemsCount
 );
