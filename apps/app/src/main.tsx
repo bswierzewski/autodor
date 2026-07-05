@@ -1,3 +1,4 @@
+import { plPL } from "@clerk/localizations";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
@@ -30,6 +31,7 @@ if (!rootElement.innerHTML) {
 
 	root.render(
 		<ClerkProvider
+			localization={plPL}
 			publishableKey={ENV.VITE_CLERK_PUBLISHABLE_KEY}
 			signInFallbackRedirectUrl="/"
 			signUpFallbackRedirectUrl="/"
