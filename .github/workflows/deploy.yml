@@ -11,6 +11,7 @@ on:
 permissions:
   contents: read
   packages: write
+  pull-requests: read
 
 concurrency:
   group: pipeline-${{ github.ref }}
@@ -20,12 +21,45 @@ jobs:
   format:
     name: Check C# formatting
     runs-on: ubuntu-latest
+    outputs:
+      migrator_changed: ${{ steps.changes.outputs.migrator }}
+      runtime_changed: ${{ steps.changes.outputs.runtime }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Detect image-related changes
+        id: changes
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            migrator:
+              - 'apps/migrator/**'
+              - '**/Migrations/**'
+              - 'backend/**'
+              - 'Directory.Build.props'
+              - 'Directory.Packages.props'
+              - 'global.json'
+              - 'Autodor.slnx'
+              - '.dockerignore'
+              - '.github/workflows/deploy.yml'
+              - '.github/workflows/_deploy-image.yml'
+            runtime:
+              - 'Dockerfile'
+              - 'apps/api/**'
+              - 'apps/app/**'
+              - 'backend/**'
+              - 'Directory.Build.props'
+              - 'Directory.Packages.props'
+              - 'global.json'
+              - 'Autodor.slnx'
+              - '.dockerignore'
+              - '.github/workflows/deploy.yml'
+              - '.github/workflows/_deploy-image.yml'
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v5
@@ -44,7 +78,9 @@ jobs:
   migrator:
     name: Publish and optionally deploy migrator
     needs: format
-    if: github.event_name != 'pull_request'
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name == 'workflow_dispatch' || needs.format.outputs.migrator_changed == 'true')
     uses: ./.github/workflows/_deploy-image.yml
     with:
       service_name: migrator
@@ -55,8 +91,10 @@ jobs:
 
   runtime:
     name: Publish and optionally deploy runtime
-    needs: migrator
-    if: github.event_name != 'pull_request'
+    needs: format
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name == 'workflow_dispatch' || needs.format.outputs.runtime_changed == 'true')
     uses: ./.github/workflows/_deploy-image.yml
     with:
       service_name: runtime
