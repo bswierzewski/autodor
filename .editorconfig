@@ -1,22 +1,79 @@
+# ============================================================================
+# ROOT CONFIGURATION
+# Stop EditorConfig from searching for configuration files in parent folders.
+# ============================================================================
 root = true
 
+# ============================================================================
+# C# SOURCE FILES
+# Apply the following rules to every C# file in this repository.
+# ============================================================================
 [*.cs]
+
+# ----------------------------------------------------------------------------
+# FILE ENCODING AND LINE ENDINGS
+# Use UTF-8 without a byte order mark, Unix line endings, and exactly one final
+# newline. Remove trailing whitespace whenever the editor supports it.
+# ----------------------------------------------------------------------------
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# ----------------------------------------------------------------------------
+# INDENTATION
+# Use four spaces per indentation level. Tabs are displayed as four spaces if
+# they appear in an existing file.
+# ----------------------------------------------------------------------------
 indent_style = space
 indent_size = 4
 tab_width = 4
 
-# Using directives
+# ----------------------------------------------------------------------------
+# BRACES AND NEW LINES
+# Use the standard Microsoft Allman brace style when braces are required.
+# Omit braces when a control-flow statement contains only one statement.
+# ----------------------------------------------------------------------------
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_prefer_braces = false:warning
+
+# ----------------------------------------------------------------------------
+# SPACING
+# Keep control-flow statements and binary expressions consistently spaced.
+# Do not insert a space between a cast and the following expression.
+# ----------------------------------------------------------------------------
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_after_cast = false
+
+# ----------------------------------------------------------------------------
+# USING DIRECTIVES
+# Place System namespaces first, keep all imports in a single group, and place
+# using directives outside namespace declarations.
+# ----------------------------------------------------------------------------
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
 csharp_using_directive_placement = outside_namespace:suggestion
 
-# IDE0005: Remove unnecessary using directives
-dotnet_diagnostic.IDE0005.severity = warning
+# ----------------------------------------------------------------------------
+# SAFE CODE-STYLE PREFERENCES
+# Suggest low-risk improvements without enforcing broad syntax modernization.
+# Most of the repository already uses file-scoped namespace declarations.
+# ----------------------------------------------------------------------------
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+dotnet_style_readonly_field = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
 
-# IDE0055: Fix formatting
+# ----------------------------------------------------------------------------
+# CODE-STYLE DIAGNOSTICS
+# IDE0005 removes imports that are not required by the source file.
+# IDE0055 reports source files that do not follow the formatting rules above.
+# ----------------------------------------------------------------------------
+dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0055.severity = warning
