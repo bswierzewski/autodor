@@ -1,29 +1,62 @@
-name: Deploy runtime from main
+name: CI/CD pipeline
 
-run-name: Deploy runtime from ${{ github.ref_name }}
+run-name: ${{ github.event.head_commit.message || github.event.pull_request.title || format('Manual run by {0}', github.actor) }}
 
 on:
-  workflow_dispatch:
+  pull_request:
   push:
     branches: [main]
-    paths:
-      - 'Dockerfile'
-      - 'apps/api/**'
-      - 'apps/app/**'
-      - 'backend/**'
-      - 'Directory.Build.props'
-      - 'Directory.Packages.props'
-      - 'global.json'
-      - 'Autodor.slnx'
-      - '.github/workflows/deploy.yml'
-      - '.github/workflows/_deploy-image.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  format:
+    name: Check C# formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore solution
+        run: dotnet restore Autodor.slnx
+
+      - name: Verify whitespace and using order
+        run: dotnet format whitespace Autodor.slnx --verify-no-changes --no-restore
+
+      - name: Verify unnecessary usings
+        run: dotnet format style Autodor.slnx --diagnostics IDE0005 --verify-no-changes --severity info --no-restore
+
+  migrator:
+    name: Publish and optionally deploy migrator
+    needs: format
+    if: github.event_name != 'pull_request'
+    uses: ./.github/workflows/_deploy-image.yml
+    with:
+      service_name: migrator
+      image_name: autodor/migrator
+      image_file: ./apps/migrator/Dockerfile
+      webhook_urls_secret_name: MIGRATOR_WEBHOOK_URLS
+    secrets: inherit
+
+  runtime:
+    name: Publish and optionally deploy runtime
+    needs: migrator
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/_deploy-image.yml
     with:
       service_name: runtime

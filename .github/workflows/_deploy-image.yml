@@ -76,6 +76,7 @@ jobs:
             ${{ inputs.build_arg_secret_name && format('{0}={1}', inputs.build_arg_secret_name, secrets[inputs.build_arg_secret_name]) || '' }}
 
       - name: Retain recent container images
+        continue-on-error: true
         uses: snok/container-retention-policy@v3.1.0
         with:
           account: user
@@ -94,6 +95,7 @@ jobs:
 
     steps:
       - name: Trigger Dokploy webhooks from ${{ inputs.webhook_urls_secret_name }}
+        continue-on-error: true
         shell: bash
         env:
           WEBHOOK_URLS_JSON: ${{ secrets[inputs.webhook_urls_secret_name] }}
@@ -130,15 +132,23 @@ jobs:
             --arg msg "$COMMIT_MESSAGE" \
             '{ref: $ref, head_commit: {id: $id, message: $msg}}')"
 
+          failed=0
+
           for webhook_url in "${webhook_urls[@]}"; do
             echo "::add-mask::$webhook_url"
             echo "Triggering ${SERVICE_NAME} webhook..."
 
-            curl --fail-with-body --silent --show-error \
-              -X POST "$webhook_url" \
-              -H "Content-Type: application/json" \
-              -H "X-GitHub-Event: push" \
-              -d "$payload"
+            if ! curl --fail-with-body --silent --show-error \
+                -X POST "$webhook_url" \
+                -H "Content-Type: application/json" \
+                -H "X-GitHub-Event: push" \
+                -d "$payload"; then
+              echo "::warning::Failed to trigger ${SERVICE_NAME} webhook. Continuing the pipeline."
+              failed=1
+              continue
+            fi
 
             echo "Successfully triggered ${SERVICE_NAME} webhook."
           done
+
+          exit "$failed"
