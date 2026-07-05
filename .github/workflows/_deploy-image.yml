@@ -34,8 +34,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_image:
-    name: Build ${{ inputs.service_name }} image
+  Publish:
+    name: Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -87,9 +87,9 @@ jobs:
           cut-off: 1m
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
-    name: Deploy ${{ inputs.service_name }}
-    needs: build_image
+  Deploy:
+    name: Deploy
+    needs: Publish
     if: inputs.webhook_urls_secret_name != ''
     runs-on: ubuntu-latest
 

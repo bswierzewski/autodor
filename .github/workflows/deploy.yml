@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   format:
-    name: Check C# formatting
+    name: Validate formatting
     runs-on: ubuntu-latest
     outputs:
       migrator_changed: ${{ steps.changes.outputs.migrator }}
@@ -76,7 +76,7 @@ jobs:
         run: dotnet format style Autodor.slnx --diagnostics IDE0005 --verify-no-changes --severity info --no-restore
 
   migrator:
-    name: Publish and optionally deploy migrator
+    name: Migrator
     needs: format
     if: >-
       github.event_name != 'pull_request' &&
@@ -90,7 +90,7 @@ jobs:
     secrets: inherit
 
   runtime:
-    name: Publish and optionally deploy runtime
+    name: Runtime
     needs: format
     if: >-
       github.event_name != 'pull_request' &&
