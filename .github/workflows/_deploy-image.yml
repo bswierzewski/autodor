@@ -13,8 +13,9 @@ on:
         required: true
         type: string
       webhook_urls_secret_name:
-        required: true
+        required: false
         type: string
+        default: ""
       build_args:
         required: false
         type: string
@@ -88,6 +89,7 @@ jobs:
   deploy:
     name: Deploy ${{ inputs.service_name }}
     needs: build_image
+    if: inputs.webhook_urls_secret_name != ''
     runs-on: ubuntu-latest
 
     steps:

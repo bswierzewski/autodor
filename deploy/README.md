@@ -301,15 +301,11 @@ Required Dokploy settings for the migrator:
 
 These settings are important. Without them Dokploy may treat the migrator like a normal long-running application and keep restarting it after it exits successfully.
 
-Webhook behavior:
+Deployment behavior:
 
-- keep the Dokploy webhook URLs for the migrator deployment in one GitHub Actions secret,
-- trigger them only from CI after publishing the `autodor/migrator:latest` image,
-- store the secret as a non-empty JSON array of HTTP(S) URLs, for example `["https://example.com/webhook"]`.
-
-This repository stores that array in GitHub Actions as:
-
-- `MIGRATOR_WEBHOOK_URLS`
+- CI builds and publishes the `autodor/migrator:latest` image,
+- the migrator has no deployment webhook in GitHub Actions,
+- start the migration manually before deploying the application image.
 
 If Dokploy requires a build target instead of a prebuilt image, use `apps/migrator/Dockerfile`.
 
@@ -473,7 +469,7 @@ Repository-specific CI/CD layout:
 - both workflows reuse `_deploy-image.yml` for image publishing, retention, and Dokploy webhook delivery
 - all workflows prune GHCR to the last 5 versions
 - `deploy.yml` triggers application webhooks from the `RUNTIME_WEBHOOK_URLS` JSON array secret
-- `migrator.yml` triggers migrator webhooks from the `MIGRATOR_WEBHOOK_URLS` JSON array secret
+- `migrator.yml` only publishes the migrator image; its deployment is started manually before the application rollout
 
 Change detection rules used in CI:
 

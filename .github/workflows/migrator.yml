@@ -1,19 +1,17 @@
-name: Deploy migrator
+name: Build migrator image
 
-run-name: Deploy migrator from ${{ github.ref_name }}
+run-name: Build migrator image from ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'apps/migrator/Dockerfile'
       - 'apps/migrator/**'
       - 'backend/**/Migrations/**'
       - 'Directory.Build.props'
       - 'Directory.Packages.props'
       - 'global.json'
-      - 'Autodor.slnx'
       - '.github/workflows/migrator.yml'
       - '.github/workflows/_deploy-image.yml'
 
@@ -22,11 +20,10 @@ permissions:
   packages: write
 
 jobs:
-  deploy:
+  build:
     uses: ./.github/workflows/_deploy-image.yml
     with:
       service_name: migrator
       image_name: autodor/migrator
       image_file: ./apps/migrator/Dockerfile
-      webhook_urls_secret_name: MIGRATOR_WEBHOOK_URLS
     secrets: inherit
