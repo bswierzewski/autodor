@@ -10,6 +10,7 @@ export default defineConfig({
 			schemas: "./src/api/models",
 			client: "react-query",
 			mode: "tags-split",
+			formatter: "biome",
 			clean: ["!mutator.ts"],
 			override: {
 				mutator: {
@@ -31,6 +32,7 @@ export default defineConfig({
 			client: "zod",
 			mode: "tags-split",
 			fileExtension: ".zod.ts",
+			formatter: "biome",
 		},
 	},
 });

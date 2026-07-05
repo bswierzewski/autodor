@@ -4,476 +4,509 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
 
 import type {
-  ExcludeOrderCommand,
-  ExcludeOrderItemCommand,
-  GenerateDeliveryNoteCommand,
-  GetOrderParams,
-  GetOrderResponse,
-  GetOrdersParams,
-  GetOrdersResponse,
-  HttpValidationProblemDetails
-} from '../models';
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	MutationFunction,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult,
+} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { customFetch } from '.././mutator';
+import type {
+	ExcludeOrderCommand,
+	ExcludeOrderItemCommand,
+	GenerateDeliveryNoteCommand,
+	GetOrderParams,
+	GetOrderResponse,
+	GetOrdersParams,
+	GetOrdersResponse,
+	HttpValidationProblemDetails,
+} from "../models";
 
+import { customFetch } from ".././mutator";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-
-export const getUpdateOrderExclusionUrl = (id: string,) => {
-
-
-
-
-  return `/api/orders/${id}`
-}
+export const getUpdateOrderExclusionUrl = (id: string) => {
+	return `/api/orders/${id}`;
+};
 
 /**
  * @summary Include or exclude order from invoicing
  */
-export const updateOrderExclusion = async (id: string,
-    excludeOrderCommand: ExcludeOrderCommand, options?: RequestInit): Promise<void> => {
+export const updateOrderExclusion = async (
+	id: string,
+	excludeOrderCommand: ExcludeOrderCommand,
+	options?: RequestInit,
+): Promise<void> => {
+	return customFetch<void>(getUpdateOrderExclusionUrl(id), {
+		...options,
+		method: "PATCH",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(excludeOrderCommand),
+	});
+};
 
-  return customFetch<void>(getUpdateOrderExclusionUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      excludeOrderCommand,)
-  }
-);}
+export const getUpdateOrderExclusionMutationOptions = <
+	TError = HttpValidationProblemDetails,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof updateOrderExclusion>>,
+		TError,
+		{ id: string; data: ExcludeOrderCommand },
+		TContext
+	>;
+	request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof updateOrderExclusion>>,
+	TError,
+	{ id: string; data: ExcludeOrderCommand },
+	TContext
+> => {
+	const mutationKey = ["updateOrderExclusion"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
 
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof updateOrderExclusion>>,
+		{ id: string; data: ExcludeOrderCommand }
+	> = (props) => {
+		const { id, data } = props ?? {};
 
+		return updateOrderExclusion(id, data, requestOptions);
+	};
 
+	return { mutationFn, ...mutationOptions };
+};
 
-export const getUpdateOrderExclusionMutationOptions = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext> => {
+export type UpdateOrderExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderExclusion>>>;
+export type UpdateOrderExclusionMutationBody = ExcludeOrderCommand;
+export type UpdateOrderExclusionMutationError = HttpValidationProblemDetails;
 
-const mutationKey = ['updateOrderExclusion'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateOrderExclusion>>, {id: string;data: ExcludeOrderCommand}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  updateOrderExclusion(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateOrderExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderExclusion>>>
-    export type UpdateOrderExclusionMutationBody = ExcludeOrderCommand
-    export type UpdateOrderExclusionMutationError = HttpValidationProblemDetails
-
-    /**
+/**
  * @summary Include or exclude order from invoicing
  */
-export const useUpdateOrderExclusion = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderExclusion>>, TError,{id: string;data: ExcludeOrderCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateOrderExclusion>>,
-        TError,
-        {id: string;data: ExcludeOrderCommand},
-        TContext
-      > => {
-      return useMutation(getUpdateOrderExclusionMutationOptions(options), queryClient);
-    }
-    export const getGetOrderUrl = (id: string,
-    params: GetOrderParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const useUpdateOrderExclusion = <TError = HttpValidationProblemDetails, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof updateOrderExclusion>>,
+			TError,
+			{ id: string; data: ExcludeOrderCommand },
+			TContext
+		>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof updateOrderExclusion>>,
+	TError,
+	{ id: string; data: ExcludeOrderCommand },
+	TContext
+> => {
+	return useMutation(getUpdateOrderExclusionMutationOptions(options), queryClient);
+};
+export const getGetOrderUrl = (id: string, params: GetOrderParams) => {
+	const normalizedParams = new URLSearchParams();
 
-  Object.entries(params || {}).forEach(([key, value]) => {
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(key, value === null ? "null" : value.toString());
+		}
+	});
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
+	const stringifiedParams = normalizedParams.toString();
 
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/orders/${id}?${stringifiedParams}` : `/api/orders/${id}`
-}
+	return stringifiedParams.length > 0 ? `/api/orders/${id}?${stringifiedParams}` : `/api/orders/${id}`;
+};
 
 /**
  * @summary Get order by ID and date
  */
-export const getOrder = async (id: string,
-    params: GetOrderParams, options?: RequestInit): Promise<GetOrderResponse> => {
+export const getOrder = async (
+	id: string,
+	params: GetOrderParams,
+	options?: RequestInit,
+): Promise<GetOrderResponse> => {
+	return customFetch<GetOrderResponse>(getGetOrderUrl(id, params), {
+		...options,
+		method: "GET",
+	});
+};
 
-  return customFetch<GetOrderResponse>(getGetOrderUrl(id,params),
-  {
-    ...options,
-    method: 'GET'
+export const getGetOrderQueryKey = (id: string, params?: GetOrderParams) => {
+	return [`/api/orders/${id}`, ...(params ? [params] : [])] as const;
+};
 
-
-  }
-);}
-
-
-
-
-
-export const getGetOrderQueryKey = (id: string,
-    params?: GetOrderParams,) => {
-    return [
-    `/api/orders/${id}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getGetOrderQueryOptions = <TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(id: string,
-    params: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGetOrderQueryOptions = <
+	TData = Awaited<ReturnType<typeof getOrder>>,
+	TError = HttpValidationProblemDetails,
+>(
+	id: string,
+	params: GetOrderParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
 ) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetOrderQueryKey(id, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetOrderQueryKey(id,params);
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrder>>> = ({ signal }) =>
+		getOrder(id, params, { signal, ...requestOptions });
 
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getOrder>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrder>>> = ({ signal }) => getOrder(id,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getOrder>>>
-export type GetOrderQueryError = HttpValidationProblemDetails
-
+export type GetOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getOrder>>>;
+export type GetOrderQueryError = HttpValidationProblemDetails;
 
 export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
- id: string,
-    params: GetOrderParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOrder>>,
-          TError,
-          Awaited<ReturnType<typeof getOrder>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	id: string,
+	params: GetOrderParams,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<Awaited<ReturnType<typeof getOrder>>, TError, Awaited<ReturnType<typeof getOrder>>>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
- id: string,
-    params: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOrder>>,
-          TError,
-          Awaited<ReturnType<typeof getOrder>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	id: string,
+	params: GetOrderParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<Awaited<ReturnType<typeof getOrder>>, TError, Awaited<ReturnType<typeof getOrder>>>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
- id: string,
-    params: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	id: string,
+	params: GetOrderParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get order by ID and date
  */
 
 export function useGetOrder<TData = Awaited<ReturnType<typeof getOrder>>, TError = HttpValidationProblemDetails>(
- id: string,
-    params: GetOrderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	id: string,
+	params: GetOrderParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrder>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetOrderQueryOptions(id, params, options);
 
-  const queryOptions = getGetOrderQueryOptions(id,params,options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+	return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-
-
-export const getUpdateOrderItemExclusionUrl = (id: string,
-    itemNumber: string,) => {
-
-
-
-
-  return `/api/orders/${id}/items/${itemNumber}`
-}
+export const getUpdateOrderItemExclusionUrl = (id: string, itemNumber: string) => {
+	return `/api/orders/${id}/items/${itemNumber}`;
+};
 
 /**
  * @summary Include or exclude order item from invoicing
  */
-export const updateOrderItemExclusion = async (id: string,
-    itemNumber: string,
-    excludeOrderItemCommand: ExcludeOrderItemCommand, options?: RequestInit): Promise<void> => {
+export const updateOrderItemExclusion = async (
+	id: string,
+	itemNumber: string,
+	excludeOrderItemCommand: ExcludeOrderItemCommand,
+	options?: RequestInit,
+): Promise<void> => {
+	return customFetch<void>(getUpdateOrderItemExclusionUrl(id, itemNumber), {
+		...options,
+		method: "PATCH",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(excludeOrderItemCommand),
+	});
+};
 
-  return customFetch<void>(getUpdateOrderItemExclusionUrl(id,itemNumber),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      excludeOrderItemCommand,)
-  }
-);}
+export const getUpdateOrderItemExclusionMutationOptions = <
+	TError = HttpValidationProblemDetails,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof updateOrderItemExclusion>>,
+		TError,
+		{ id: string; itemNumber: string; data: ExcludeOrderItemCommand },
+		TContext
+	>;
+	request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof updateOrderItemExclusion>>,
+	TError,
+	{ id: string; itemNumber: string; data: ExcludeOrderItemCommand },
+	TContext
+> => {
+	const mutationKey = ["updateOrderItemExclusion"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
 
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof updateOrderItemExclusion>>,
+		{ id: string; itemNumber: string; data: ExcludeOrderItemCommand }
+	> = (props) => {
+		const { id, itemNumber, data } = props ?? {};
 
+		return updateOrderItemExclusion(id, itemNumber, data, requestOptions);
+	};
 
+	return { mutationFn, ...mutationOptions };
+};
 
-export const getUpdateOrderItemExclusionMutationOptions = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext> => {
+export type UpdateOrderItemExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderItemExclusion>>>;
+export type UpdateOrderItemExclusionMutationBody = ExcludeOrderItemCommand;
+export type UpdateOrderItemExclusionMutationError = HttpValidationProblemDetails;
 
-const mutationKey = ['updateOrderItemExclusion'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateOrderItemExclusion>>, {id: string;itemNumber: string;data: ExcludeOrderItemCommand}> = (props) => {
-          const {id,itemNumber,data} = props ?? {};
-
-          return  updateOrderItemExclusion(id,itemNumber,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateOrderItemExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderItemExclusion>>>
-    export type UpdateOrderItemExclusionMutationBody = ExcludeOrderItemCommand
-    export type UpdateOrderItemExclusionMutationError = HttpValidationProblemDetails
-
-    /**
+/**
  * @summary Include or exclude order item from invoicing
  */
-export const useUpdateOrderItemExclusion = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderItemExclusion>>, TError,{id: string;itemNumber: string;data: ExcludeOrderItemCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateOrderItemExclusion>>,
-        TError,
-        {id: string;itemNumber: string;data: ExcludeOrderItemCommand},
-        TContext
-      > => {
-      return useMutation(getUpdateOrderItemExclusionMutationOptions(options), queryClient);
-    }
-    export const getGenerateDeliveryNoteUrl = () => {
-
-
-
-
-  return `/api/delivery-notes`
-}
+export const useUpdateOrderItemExclusion = <TError = HttpValidationProblemDetails, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof updateOrderItemExclusion>>,
+			TError,
+			{ id: string; itemNumber: string; data: ExcludeOrderItemCommand },
+			TContext
+		>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof updateOrderItemExclusion>>,
+	TError,
+	{ id: string; itemNumber: string; data: ExcludeOrderItemCommand },
+	TContext
+> => {
+	return useMutation(getUpdateOrderItemExclusionMutationOptions(options), queryClient);
+};
+export const getGenerateDeliveryNoteUrl = () => {
+	return `/api/delivery-notes`;
+};
 
 /**
  * @summary Generate PDF delivery note for an order
  */
-export const generateDeliveryNote = async (generateDeliveryNoteCommand: GenerateDeliveryNoteCommand, options?: RequestInit): Promise<Blob> => {
+export const generateDeliveryNote = async (
+	generateDeliveryNoteCommand: GenerateDeliveryNoteCommand,
+	options?: RequestInit,
+): Promise<Blob> => {
+	return customFetch<Blob>(getGenerateDeliveryNoteUrl(), {
+		...options,
+		method: "POST",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(generateDeliveryNoteCommand),
+	});
+};
 
-  return customFetch<Blob>(getGenerateDeliveryNoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      generateDeliveryNoteCommand,)
-  }
-);}
+export const getGenerateDeliveryNoteMutationOptions = <
+	TError = HttpValidationProblemDetails,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof generateDeliveryNote>>,
+		TError,
+		{ data: GenerateDeliveryNoteCommand },
+		TContext
+	>;
+	request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof generateDeliveryNote>>,
+	TError,
+	{ data: GenerateDeliveryNoteCommand },
+	TContext
+> => {
+	const mutationKey = ["generateDeliveryNote"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
 
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof generateDeliveryNote>>,
+		{ data: GenerateDeliveryNoteCommand }
+	> = (props) => {
+		const { data } = props ?? {};
 
+		return generateDeliveryNote(data, requestOptions);
+	};
 
+	return { mutationFn, ...mutationOptions };
+};
 
-export const getGenerateDeliveryNoteMutationOptions = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext> => {
+export type GenerateDeliveryNoteMutationResult = NonNullable<Awaited<ReturnType<typeof generateDeliveryNote>>>;
+export type GenerateDeliveryNoteMutationBody = GenerateDeliveryNoteCommand;
+export type GenerateDeliveryNoteMutationError = HttpValidationProblemDetails;
 
-const mutationKey = ['generateDeliveryNote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateDeliveryNote>>, {data: GenerateDeliveryNoteCommand}> = (props) => {
-          const {data} = props ?? {};
-
-          return  generateDeliveryNote(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GenerateDeliveryNoteMutationResult = NonNullable<Awaited<ReturnType<typeof generateDeliveryNote>>>
-    export type GenerateDeliveryNoteMutationBody = GenerateDeliveryNoteCommand
-    export type GenerateDeliveryNoteMutationError = HttpValidationProblemDetails
-
-    /**
+/**
  * @summary Generate PDF delivery note for an order
  */
-export const useGenerateDeliveryNote = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateDeliveryNote>>, TError,{data: GenerateDeliveryNoteCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof generateDeliveryNote>>,
-        TError,
-        {data: GenerateDeliveryNoteCommand},
-        TContext
-      > => {
-      return useMutation(getGenerateDeliveryNoteMutationOptions(options), queryClient);
-    }
-    export const getGetOrdersUrl = (params: GetOrdersParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const useGenerateDeliveryNote = <TError = HttpValidationProblemDetails, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof generateDeliveryNote>>,
+			TError,
+			{ data: GenerateDeliveryNoteCommand },
+			TContext
+		>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof generateDeliveryNote>>,
+	TError,
+	{ data: GenerateDeliveryNoteCommand },
+	TContext
+> => {
+	return useMutation(getGenerateDeliveryNoteMutationOptions(options), queryClient);
+};
+export const getGetOrdersUrl = (params: GetOrdersParams) => {
+	const normalizedParams = new URLSearchParams();
 
-  Object.entries(params || {}).forEach(([key, value]) => {
+	Object.entries(params || {}).forEach(([key, value]) => {
+		if (value !== undefined) {
+			normalizedParams.append(key, value === null ? "null" : value.toString());
+		}
+	});
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
+	const stringifiedParams = normalizedParams.toString();
 
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/orders?${stringifiedParams}` : `/api/orders`
-}
+	return stringifiedParams.length > 0 ? `/api/orders?${stringifiedParams}` : `/api/orders`;
+};
 
 /**
  * @summary Get all orders within date range
  */
 export const getOrders = async (params: GetOrdersParams, options?: RequestInit): Promise<GetOrdersResponse> => {
+	return customFetch<GetOrdersResponse>(getGetOrdersUrl(params), {
+		...options,
+		method: "GET",
+	});
+};
 
-  return customFetch<GetOrdersResponse>(getGetOrdersUrl(params),
-  {
-    ...options,
-    method: 'GET'
+export const getGetOrdersQueryKey = (params?: GetOrdersParams) => {
+	return [`/api/orders`, ...(params ? [params] : [])] as const;
+};
 
-
-  }
-);}
-
-
-
-
-
-export const getGetOrdersQueryKey = (params?: GetOrdersParams,) => {
-    return [
-    `/api/orders`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getGetOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(params: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGetOrdersQueryOptions = <
+	TData = Awaited<ReturnType<typeof getOrders>>,
+	TError = HttpValidationProblemDetails,
+>(
+	params: GetOrdersParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
 ) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetOrdersQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetOrdersQueryKey(params);
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) =>
+		getOrders(params, { signal, ...requestOptions });
 
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getOrders>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) => getOrders(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>
-export type GetOrdersQueryError = HttpValidationProblemDetails
-
+export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>;
+export type GetOrdersQueryError = HttpValidationProblemDetails;
 
 export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
- params: GetOrdersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOrders>>,
-          TError,
-          Awaited<ReturnType<typeof getOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	params: GetOrdersParams,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<Awaited<ReturnType<typeof getOrders>>, TError, Awaited<ReturnType<typeof getOrders>>>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
- params: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOrders>>,
-          TError,
-          Awaited<ReturnType<typeof getOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	params: GetOrdersParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getOrders>>,
+					TError,
+					Awaited<ReturnType<typeof getOrders>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
- params: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+	params: GetOrdersParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get all orders within date range
  */
 
 export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = HttpValidationProblemDetails>(
- params: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	params: GetOrdersParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetOrdersQueryOptions(params, options);
 
-  const queryOptions = getGetOrdersQueryOptions(params,options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+	return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-
-
-

@@ -6,5 +6,5 @@
  */
 
 export interface ApplicationHealthResponse {
-  status: string;
+	status: string;
 }

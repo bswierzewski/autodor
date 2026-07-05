@@ -6,11 +6,11 @@
  */
 
 export interface OrderItemResponse {
-  itemNumber: string;
-  productDisplayName: string;
-  /** @pattern ^-?(?:0|[1-9]\d*)$ */
-  quantity: number | string;
-  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  price: number | string;
-  isExcluded: boolean;
+	itemNumber: string;
+	productDisplayName: string;
+	/** @pattern ^-?(?:0|[1-9]\d*)$ */
+	quantity: number | string;
+	/** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+	price: number | string;
+	isExcluded: boolean;
 }

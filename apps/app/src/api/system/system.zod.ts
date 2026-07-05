@@ -4,19 +4,18 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Get the application health status.
  */
 export const GetApplicationHealthResponse = zod.object({
-  "status": zod.string()
-})
+	status: zod.string(),
+});
 
 /**
  * @summary Get the application liveness status.
  */
 export const GetApplicationAlivenessResponse = zod.object({
-  "status": zod.string()
-})
+	status: zod.string(),
+});

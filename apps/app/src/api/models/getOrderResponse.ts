@@ -4,21 +4,21 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { OrderItemResponse } from './orderItemResponse';
+import type { OrderItemResponse } from "./orderItemResponse";
 
 export interface GetOrderResponse {
-  id: string;
-  /** @nullable */
-  number: string | null;
-  date: string;
-  /** @nullable */
-  person: string | null;
-  /** @nullable */
-  customerNumber: string | null;
-  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  netAmount: number | string;
-  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  grossAmount: number | string;
-  items: OrderItemResponse[];
-  isExcluded: boolean;
+	id: string;
+	/** @nullable */
+	number: string | null;
+	date: string;
+	/** @nullable */
+	person: string | null;
+	/** @nullable */
+	customerNumber: string | null;
+	/** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+	netAmount: number | string;
+	/** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+	grossAmount: number | string;
+	items: OrderItemResponse[];
+	isExcluded: boolean;
 }

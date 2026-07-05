@@ -6,11 +6,11 @@
  */
 
 export interface UpdateContractorCommand {
-  id?: string;
-  nip?: string;
-  name?: string;
-  street?: string;
-  city?: string;
-  zipCode?: string;
-  email?: string;
+	id?: string;
+	nip?: string;
+	name?: string;
+	street?: string;
+	city?: string;
+	zipCode?: string;
+	email?: string;
 }

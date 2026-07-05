@@ -6,5 +6,5 @@
  */
 
 export type GetOrderParams = {
-date: string;
+	date: string;
 };

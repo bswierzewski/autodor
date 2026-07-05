@@ -5,4 +5,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type HttpValidationProblemDetailsErrors = {[key: string]: string[]};
+export type HttpValidationProblemDetailsErrors = { [key: string]: string[] };

@@ -4,230 +4,244 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
 
 import type {
-  ApplicationHealthResponse,
-  HttpValidationProblemDetails
-} from '../models';
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseQueryOptions,
+	UseQueryResult,
+} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-import { customFetch } from '.././mutator';
+import type { ApplicationHealthResponse, HttpValidationProblemDetails } from "../models";
 
+import { customFetch } from ".././mutator";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-
 export const getGetApplicationHealthUrl = () => {
-
-
-
-
-  return `/api/health`
-}
+	return `/api/health`;
+};
 
 /**
  * @summary Get the application health status.
  */
-export const getApplicationHealth = async ( options?: RequestInit): Promise<ApplicationHealthResponse> => {
-
-  return customFetch<ApplicationHealthResponse>(getGetApplicationHealthUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const getApplicationHealth = async (options?: RequestInit): Promise<ApplicationHealthResponse> => {
+	return customFetch<ApplicationHealthResponse>(getGetApplicationHealthUrl(), {
+		...options,
+		method: "GET",
+	});
+};
 
 export const getGetApplicationHealthQueryKey = () => {
-    return [
-    `/api/health`
-    ] as const;
-    }
+	return [`/api/health`] as const;
+};
 
+export const getGetApplicationHealthQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApplicationHealth>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>;
+	request?: SecondParameter<typeof customFetch>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-export const getGetApplicationHealthQueryOptions = <TData = Awaited<ReturnType<typeof getApplicationHealth>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
+	const queryKey = queryOptions?.queryKey ?? getGetApplicationHealthQueryKey();
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplicationHealth>>> = ({ signal }) =>
+		getApplicationHealth({ signal, ...requestOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApplicationHealthQueryKey();
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getApplicationHealth>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type GetApplicationHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getApplicationHealth>>>;
+export type GetApplicationHealthQueryError = ApplicationHealthResponse | HttpValidationProblemDetails;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplicationHealth>>> = ({ signal }) => getApplicationHealth({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetApplicationHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getApplicationHealth>>>
-export type GetApplicationHealthQueryError = ApplicationHealthResponse | HttpValidationProblemDetails
-
-
-export function useGetApplicationHealth<TData = Awaited<ReturnType<typeof getApplicationHealth>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplicationHealth>>,
-          TError,
-          Awaited<ReturnType<typeof getApplicationHealth>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApplicationHealth<TData = Awaited<ReturnType<typeof getApplicationHealth>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplicationHealth>>,
-          TError,
-          Awaited<ReturnType<typeof getApplicationHealth>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApplicationHealth<TData = Awaited<ReturnType<typeof getApplicationHealth>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApplicationHealth<
+	TData = Awaited<ReturnType<typeof getApplicationHealth>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApplicationHealth>>,
+					TError,
+					Awaited<ReturnType<typeof getApplicationHealth>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApplicationHealth<
+	TData = Awaited<ReturnType<typeof getApplicationHealth>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApplicationHealth>>,
+					TError,
+					Awaited<ReturnType<typeof getApplicationHealth>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApplicationHealth<
+	TData = Awaited<ReturnType<typeof getApplicationHealth>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get the application health status.
  */
 
-export function useGetApplicationHealth<TData = Awaited<ReturnType<typeof getApplicationHealth>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetApplicationHealth<
+	TData = Awaited<ReturnType<typeof getApplicationHealth>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationHealth>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetApplicationHealthQueryOptions(options);
 
-  const queryOptions = getGetApplicationHealthQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+	return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-
-
 
 export const getGetApplicationAlivenessUrl = () => {
-
-
-
-
-  return `/api/alive`
-}
+	return `/api/alive`;
+};
 
 /**
  * @summary Get the application liveness status.
  */
-export const getApplicationAliveness = async ( options?: RequestInit): Promise<ApplicationHealthResponse> => {
-
-  return customFetch<ApplicationHealthResponse>(getGetApplicationAlivenessUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const getApplicationAliveness = async (options?: RequestInit): Promise<ApplicationHealthResponse> => {
+	return customFetch<ApplicationHealthResponse>(getGetApplicationAlivenessUrl(), {
+		...options,
+		method: "GET",
+	});
+};
 
 export const getGetApplicationAlivenessQueryKey = () => {
-    return [
-    `/api/alive`
-    ] as const;
-    }
+	return [`/api/alive`] as const;
+};
 
+export const getGetApplicationAlivenessQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApplicationAliveness>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>;
+	request?: SecondParameter<typeof customFetch>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-export const getGetApplicationAlivenessQueryOptions = <TData = Awaited<ReturnType<typeof getApplicationAliveness>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
+	const queryKey = queryOptions?.queryKey ?? getGetApplicationAlivenessQueryKey();
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplicationAliveness>>> = ({ signal }) =>
+		getApplicationAliveness({ signal, ...requestOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApplicationAlivenessQueryKey();
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getApplicationAliveness>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type GetApplicationAlivenessQueryResult = NonNullable<Awaited<ReturnType<typeof getApplicationAliveness>>>;
+export type GetApplicationAlivenessQueryError = ApplicationHealthResponse | HttpValidationProblemDetails;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplicationAliveness>>> = ({ signal }) => getApplicationAliveness({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetApplicationAlivenessQueryResult = NonNullable<Awaited<ReturnType<typeof getApplicationAliveness>>>
-export type GetApplicationAlivenessQueryError = ApplicationHealthResponse | HttpValidationProblemDetails
-
-
-export function useGetApplicationAliveness<TData = Awaited<ReturnType<typeof getApplicationAliveness>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplicationAliveness>>,
-          TError,
-          Awaited<ReturnType<typeof getApplicationAliveness>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApplicationAliveness<TData = Awaited<ReturnType<typeof getApplicationAliveness>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplicationAliveness>>,
-          TError,
-          Awaited<ReturnType<typeof getApplicationAliveness>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApplicationAliveness<TData = Awaited<ReturnType<typeof getApplicationAliveness>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApplicationAliveness<
+	TData = Awaited<ReturnType<typeof getApplicationAliveness>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApplicationAliveness>>,
+					TError,
+					Awaited<ReturnType<typeof getApplicationAliveness>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApplicationAliveness<
+	TData = Awaited<ReturnType<typeof getApplicationAliveness>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApplicationAliveness>>,
+					TError,
+					Awaited<ReturnType<typeof getApplicationAliveness>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApplicationAliveness<
+	TData = Awaited<ReturnType<typeof getApplicationAliveness>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get the application liveness status.
  */
 
-export function useGetApplicationAliveness<TData = Awaited<ReturnType<typeof getApplicationAliveness>>, TError = ApplicationHealthResponse | HttpValidationProblemDetails>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetApplicationAliveness<
+	TData = Awaited<ReturnType<typeof getApplicationAliveness>>,
+	TError = ApplicationHealthResponse | HttpValidationProblemDetails,
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationAliveness>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetApplicationAlivenessQueryOptions(options);
 
-  const queryOptions = getGetApplicationAlivenessQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+	return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-
-
-

@@ -71,10 +71,7 @@ export function DeleteContractorDialog({ contractor, children }: DeleteContracto
 
 				<AlertDialogFooter className="pt-2">
 					<AlertDialogCancel disabled={deleteContractorMutation.isPending}>Anuluj</AlertDialogCancel>
-					<AlertDialogAction
-						disabled={deleteContractorMutation.isPending}
-						onClick={handleDelete}
-					>
+					<AlertDialogAction disabled={deleteContractorMutation.isPending} onClick={handleDelete}>
 						{deleteContractorMutation.isPending ? <Spinner className="size-4" /> : null}
 						{deleteContractorMutation.isPending ? "Usuwanie..." : "Usuń"}
 					</AlertDialogAction>

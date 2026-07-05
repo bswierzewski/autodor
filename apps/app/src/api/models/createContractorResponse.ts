@@ -6,5 +6,5 @@
  */
 
 export interface CreateContractorResponse {
-  id: string;
+	id: string;
 }

@@ -6,14 +6,14 @@
  */
 
 export interface CreateInvoiceCommand {
-  /**
-     * @nullable
-     * @pattern ^-?(?:0|[1-9]\d*)$
-     */
-  invoiceNumber: number | string | null;
-  saleDate: string;
-  issueDate: string;
-  dates: string[];
-  orderIds: string[];
-  contractorNIP: string;
+	/**
+	 * @nullable
+	 * @pattern ^-?(?:0|[1-9]\d*)$
+	 */
+	invoiceNumber: number | string | null;
+	saleDate: string;
+	issueDate: string;
+	dates: string[];
+	orderIds: string[];
+	contractorNIP: string;
 }

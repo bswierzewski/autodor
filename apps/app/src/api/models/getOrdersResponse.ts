@@ -4,8 +4,8 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { OrderSummaryResponse } from './orderSummaryResponse';
+import type { OrderSummaryResponse } from "./orderSummaryResponse";
 
 export interface GetOrdersResponse {
-  orders: OrderSummaryResponse[];
+	orders: OrderSummaryResponse[];
 }

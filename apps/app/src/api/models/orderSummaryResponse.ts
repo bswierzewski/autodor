@@ -6,21 +6,21 @@
  */
 
 export interface OrderSummaryResponse {
-  id: string;
-  /** @nullable */
-  number: string | null;
-  date: string;
-  /** @nullable */
-  person: string | null;
-  /** @nullable */
-  customerNumber: string | null;
-  /** @pattern ^-?(?:0|[1-9]\d*)$ */
-  itemsCount: number | string;
-  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  netAmount: number | string;
-  /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  grossAmount: number | string;
-  isExcluded: boolean;
-  /** @pattern ^-?(?:0|[1-9]\d*)$ */
-  excludedItemsCount: number | string;
+	id: string;
+	/** @nullable */
+	number: string | null;
+	date: string;
+	/** @nullable */
+	person: string | null;
+	/** @nullable */
+	customerNumber: string | null;
+	/** @pattern ^-?(?:0|[1-9]\d*)$ */
+	itemsCount: number | string;
+	/** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+	netAmount: number | string;
+	/** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
+	grossAmount: number | string;
+	isExcluded: boolean;
+	/** @pattern ^-?(?:0|[1-9]\d*)$ */
+	excludedItemsCount: number | string;
 }

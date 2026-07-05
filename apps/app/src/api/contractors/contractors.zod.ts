@@ -4,81 +4,79 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Create a new contractor
  */
 export const CreateContractorBody = zod.object({
-  "name": zod.string(),
-  "nip": zod.string(),
-  "street": zod.string(),
-  "city": zod.string(),
-  "zipCode": zod.string(),
-  "email": zod.string()
-})
+	name: zod.string(),
+	nip: zod.string(),
+	street: zod.string(),
+	city: zod.string(),
+	zipCode: zod.string(),
+	email: zod.string(),
+});
 
 export const CreateContractorResponse = zod.object({
-  "id": zod.uuid()
-})
+	id: zod.uuid(),
+});
 
 /**
  * @summary Get all contractors, optionally filtered by NIPs
  */
 export const GetContractorsQueryParams = zod.object({
-  "nips": zod.array(zod.string()).optional()
-})
+	nips: zod.array(zod.string()).optional(),
+});
 
 export const GetContractorsResponseItem = zod.object({
-  "id": zod.uuid(),
-  "name": zod.string(),
-  "nip": zod.string(),
-  "street": zod.string(),
-  "city": zod.string(),
-  "zipCode": zod.string(),
-  "email": zod.string()
-})
-export const GetContractorsResponse = zod.array(GetContractorsResponseItem)
+	id: zod.uuid(),
+	name: zod.string(),
+	nip: zod.string(),
+	street: zod.string(),
+	city: zod.string(),
+	zipCode: zod.string(),
+	email: zod.string(),
+});
+export const GetContractorsResponse = zod.array(GetContractorsResponseItem);
 
 /**
  * @summary Delete contractor
  */
 export const DeleteContractorParams = zod.object({
-  "id": zod.uuid()
-})
+	id: zod.uuid(),
+});
 
 /**
  * @summary Get contractor by ID
  */
 export const GetContractorParams = zod.object({
-  "id": zod.uuid()
-})
+	id: zod.uuid(),
+});
 
 export const GetContractorResponse = zod.object({
-  "id": zod.uuid(),
-  "name": zod.string(),
-  "nip": zod.string(),
-  "street": zod.string(),
-  "city": zod.string(),
-  "zipCode": zod.string(),
-  "email": zod.string()
-})
+	id: zod.uuid(),
+	name: zod.string(),
+	nip: zod.string(),
+	street: zod.string(),
+	city: zod.string(),
+	zipCode: zod.string(),
+	email: zod.string(),
+});
 
 /**
  * @summary Update contractor details
  */
 export const UpdateContractorParams = zod.object({
-  "id": zod.uuid()
-})
+	id: zod.uuid(),
+});
 
 export const UpdateContractorBody = zod.object({
-  "id": zod.uuid().optional(),
-  "nip": zod.string().optional(),
-  "name": zod.string().optional(),
-  "street": zod.string().optional(),
-  "city": zod.string().optional(),
-  "zipCode": zod.string().optional(),
-  "email": zod.string().optional()
-})
-
+	id: zod.uuid().optional(),
+	nip: zod.string().optional(),
+	name: zod.string().optional(),
+	street: zod.string().optional(),
+	city: zod.string().optional(),
+	zipCode: zod.string().optional(),
+	email: zod.string().optional(),
+});

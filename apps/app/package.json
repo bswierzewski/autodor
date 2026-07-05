@@ -13,7 +13,8 @@
 		"orval": "orval",
 		"format": "biome format",
 		"lint": "biome lint",
-		"check": "biome check"
+		"check": "biome check",
+		"ci": "biome ci"
 	},
 	"dependencies": {
 		"@clerk/localizations": "^4.12.0",

@@ -4,95 +4,80 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation
-} from '@tanstack/react-query';
-import type {
-  MutationFunction,
-  QueryClient,
-  UseMutationOptions,
-  UseMutationResult
-} from '@tanstack/react-query';
 
-import type {
-  CreateInvoiceCommand,
-  HttpValidationProblemDetails
-} from '../models';
+import type { MutationFunction, QueryClient, UseMutationOptions, UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-import { customFetch } from '.././mutator';
+import type { CreateInvoiceCommand, HttpValidationProblemDetails } from "../models";
 
+import { customFetch } from ".././mutator";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-
 export const getCreateInvoiceUrl = () => {
-
-
-
-
-  return `/api/invoices`
-}
+	return `/api/invoices`;
+};
 
 /**
  * @summary Create a single invoice for selected orders
  */
-export const createInvoice = async (createInvoiceCommand: CreateInvoiceCommand, options?: RequestInit): Promise<void> => {
+export const createInvoice = async (
+	createInvoiceCommand: CreateInvoiceCommand,
+	options?: RequestInit,
+): Promise<void> => {
+	return customFetch<void>(getCreateInvoiceUrl(), {
+		...options,
+		method: "POST",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(createInvoiceCommand),
+	});
+};
 
-  return customFetch<void>(getCreateInvoiceUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createInvoiceCommand,)
-  }
-);}
+export const getCreateInvoiceMutationOptions = <TError = HttpValidationProblemDetails, TContext = unknown>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof createInvoice>>,
+		TError,
+		{ data: CreateInvoiceCommand },
+		TContext
+	>;
+	request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext> => {
+	const mutationKey = ["createInvoice"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
 
+	const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoice>>, { data: CreateInvoiceCommand }> = (
+		props,
+	) => {
+		const { data } = props ?? {};
 
+		return createInvoice(data, requestOptions);
+	};
 
+	return { mutationFn, ...mutationOptions };
+};
 
-export const getCreateInvoiceMutationOptions = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext> => {
+export type CreateInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof createInvoice>>>;
+export type CreateInvoiceMutationBody = CreateInvoiceCommand;
+export type CreateInvoiceMutationError = HttpValidationProblemDetails;
 
-const mutationKey = ['createInvoice'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createInvoice>>, {data: CreateInvoiceCommand}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createInvoice(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof createInvoice>>>
-    export type CreateInvoiceMutationBody = CreateInvoiceCommand
-    export type CreateInvoiceMutationError = HttpValidationProblemDetails
-
-    /**
+/**
  * @summary Create a single invoice for selected orders
  */
-export const useCreateInvoice = <TError = HttpValidationProblemDetails,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createInvoice>>, TError,{data: CreateInvoiceCommand}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createInvoice>>,
-        TError,
-        {data: CreateInvoiceCommand},
-        TContext
-      > => {
-      return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
-    }
+export const useCreateInvoice = <TError = HttpValidationProblemDetails, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof createInvoice>>,
+			TError,
+			{ data: CreateInvoiceCommand },
+			TContext
+		>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext> => {
+	return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
+};

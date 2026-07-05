@@ -6,11 +6,11 @@
  */
 
 export interface GetContractorResponse {
-  id: string;
-  name: string;
-  nip: string;
-  street: string;
-  city: string;
-  zipCode: string;
-  email: string;
+	id: string;
+	name: string;
+	nip: string;
+	street: string;
+	city: string;
+	zipCode: string;
+	email: string;
 }

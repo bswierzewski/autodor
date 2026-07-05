@@ -6,7 +6,7 @@
  */
 
 export interface ExcludeOrderItemCommand {
-  id?: string;
-  itemNumber?: string;
-  excluded?: boolean;
+	id?: string;
+	itemNumber?: string;
+	excluded?: boolean;
 }

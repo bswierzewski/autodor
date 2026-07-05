@@ -4,21 +4,20 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Create a single invoice for selected orders
  */
-export const createInvoiceBodyInvoiceNumberRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
-
+export const createInvoiceBodyInvoiceNumberRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
 
 export const CreateInvoiceBody = zod.object({
-  "invoiceNumber": zod.union([zod.number(),zod.stringFormat('int32', createInvoiceBodyInvoiceNumberRegExpTwo)]).nullable(),
-  "saleDate": zod.iso.datetime({"offset":true}),
-  "issueDate": zod.iso.datetime({"offset":true}),
-  "dates": zod.array(zod.iso.datetime({"offset":true})),
-  "orderIds": zod.array(zod.string()),
-  "contractorNIP": zod.string()
-})
-
+	invoiceNumber: zod
+		.union([zod.number(), zod.stringFormat("int32", createInvoiceBodyInvoiceNumberRegExpTwo)])
+		.nullable(),
+	saleDate: zod.iso.datetime({ offset: true }),
+	issueDate: zod.iso.datetime({ offset: true }),
+	dates: zod.array(zod.iso.datetime({ offset: true })),
+	orderIds: zod.array(zod.string()),
+	contractorNIP: zod.string(),
+});

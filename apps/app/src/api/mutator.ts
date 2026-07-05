@@ -25,10 +25,7 @@ async function parseResponse<T>(response: Response) {
 	return (body || null) as T;
 }
 
-export const customFetch = async <T>(
-	url: string,
-	options: RequestInit = {},
-): Promise<T> => {
+export const customFetch = async <T>(url: string, options: RequestInit = {}): Promise<T> => {
 	const token = await window.Clerk?.session?.getToken();
 
 	const headers = new Headers(options.headers);

@@ -4,104 +4,110 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Include or exclude order from invoicing
  */
 export const UpdateOrderExclusionParams = zod.object({
-  "id": zod.string()
-})
+	id: zod.string(),
+});
 
 export const UpdateOrderExclusionBody = zod.object({
-  "id": zod.string().optional(),
-  "excluded": zod.boolean().optional()
-})
+	id: zod.string().optional(),
+	excluded: zod.boolean().optional(),
+});
 
 /**
  * @summary Get order by ID and date
  */
 export const GetOrderParams = zod.object({
-  "id": zod.string()
-})
+	id: zod.string(),
+});
 
 export const GetOrderQueryParams = zod.object({
-  "date": zod.iso.datetime({"offset":true})
-})
+	date: zod.iso.datetime({ offset: true }),
+});
 
-export const getOrderResponseNetAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
-export const getOrderResponseGrossAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
-export const getOrderResponseItemsItemQuantityRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
-export const getOrderResponseItemsItemPriceRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
-
+export const getOrderResponseNetAmountRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+export const getOrderResponseGrossAmountRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+export const getOrderResponseItemsItemQuantityRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
+export const getOrderResponseItemsItemPriceRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
 
 export const GetOrderResponse = zod.object({
-  "id": zod.string(),
-  "number": zod.string().nullable(),
-  "date": zod.iso.datetime({"offset":true}),
-  "person": zod.string().nullable(),
-  "customerNumber": zod.string().nullable(),
-  "netAmount": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseNetAmountRegExpTwo)]),
-  "grossAmount": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseGrossAmountRegExpTwo)]),
-  "items": zod.array(zod.object({
-  "itemNumber": zod.string(),
-  "productDisplayName": zod.string(),
-  "quantity": zod.union([zod.number(),zod.stringFormat('int32', getOrderResponseItemsItemQuantityRegExpTwo)]),
-  "price": zod.union([zod.number(),zod.stringFormat('double', getOrderResponseItemsItemPriceRegExpTwo)]),
-  "isExcluded": zod.boolean()
-})),
-  "isExcluded": zod.boolean()
-})
+	id: zod.string(),
+	number: zod.string().nullable(),
+	date: zod.iso.datetime({ offset: true }),
+	person: zod.string().nullable(),
+	customerNumber: zod.string().nullable(),
+	netAmount: zod.union([zod.number(), zod.stringFormat("double", getOrderResponseNetAmountRegExpTwo)]),
+	grossAmount: zod.union([zod.number(), zod.stringFormat("double", getOrderResponseGrossAmountRegExpTwo)]),
+	items: zod.array(
+		zod.object({
+			itemNumber: zod.string(),
+			productDisplayName: zod.string(),
+			quantity: zod.union([zod.number(), zod.stringFormat("int32", getOrderResponseItemsItemQuantityRegExpTwo)]),
+			price: zod.union([zod.number(), zod.stringFormat("double", getOrderResponseItemsItemPriceRegExpTwo)]),
+			isExcluded: zod.boolean(),
+		}),
+	),
+	isExcluded: zod.boolean(),
+});
 
 /**
  * @summary Include or exclude order item from invoicing
  */
 export const UpdateOrderItemExclusionParams = zod.object({
-  "id": zod.string(),
-  "itemNumber": zod.string()
-})
+	id: zod.string(),
+	itemNumber: zod.string(),
+});
 
 export const UpdateOrderItemExclusionBody = zod.object({
-  "id": zod.string().optional(),
-  "itemNumber": zod.string().optional(),
-  "excluded": zod.boolean().optional()
-})
+	id: zod.string().optional(),
+	itemNumber: zod.string().optional(),
+	excluded: zod.boolean().optional(),
+});
 
 /**
  * @summary Generate PDF delivery note for an order
  */
 export const GenerateDeliveryNoteBody = zod.object({
-  "orderId": zod.string().optional(),
-  "date": zod.iso.datetime({"offset":true}).optional()
-})
+	orderId: zod.string().optional(),
+	date: zod.iso.datetime({ offset: true }).optional(),
+});
 
 /**
  * @summary Get all orders within date range
  */
 export const GetOrdersQueryParams = zod.object({
-  "from": zod.iso.datetime({"offset":true}),
-  "to": zod.iso.datetime({"offset":true})
-})
+	from: zod.iso.datetime({ offset: true }),
+	to: zod.iso.datetime({ offset: true }),
+});
 
-export const getOrdersResponseOrdersItemItemsCountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
-export const getOrdersResponseOrdersItemNetAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
-export const getOrdersResponseOrdersItemGrossAmountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)(?:\\.\\d+)?$');
-export const getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo = new RegExp('^-?(?:0|[1-9]\\d\*)$');
-
+export const getOrdersResponseOrdersItemItemsCountRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
+export const getOrdersResponseOrdersItemNetAmountRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+export const getOrdersResponseOrdersItemGrossAmountRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+export const getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
 
 export const GetOrdersResponse = zod.object({
-  "orders": zod.array(zod.object({
-  "id": zod.string(),
-  "number": zod.string().nullable(),
-  "date": zod.iso.datetime({"offset":true}),
-  "person": zod.string().nullable(),
-  "customerNumber": zod.string().nullable(),
-  "itemsCount": zod.union([zod.number(),zod.stringFormat('int32', getOrdersResponseOrdersItemItemsCountRegExpTwo)]),
-  "netAmount": zod.union([zod.number(),zod.stringFormat('double', getOrdersResponseOrdersItemNetAmountRegExpTwo)]),
-  "grossAmount": zod.union([zod.number(),zod.stringFormat('double', getOrdersResponseOrdersItemGrossAmountRegExpTwo)]),
-  "isExcluded": zod.boolean(),
-  "excludedItemsCount": zod.union([zod.number(),zod.stringFormat('int32', getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo)])
-}))
-})
-
+	orders: zod.array(
+		zod.object({
+			id: zod.string(),
+			number: zod.string().nullable(),
+			date: zod.iso.datetime({ offset: true }),
+			person: zod.string().nullable(),
+			customerNumber: zod.string().nullable(),
+			itemsCount: zod.union([zod.number(), zod.stringFormat("int32", getOrdersResponseOrdersItemItemsCountRegExpTwo)]),
+			netAmount: zod.union([zod.number(), zod.stringFormat("double", getOrdersResponseOrdersItemNetAmountRegExpTwo)]),
+			grossAmount: zod.union([
+				zod.number(),
+				zod.stringFormat("double", getOrdersResponseOrdersItemGrossAmountRegExpTwo),
+			]),
+			isExcluded: zod.boolean(),
+			excludedItemsCount: zod.union([
+				zod.number(),
+				zod.stringFormat("int32", getOrdersResponseOrdersItemExcludedItemsCountRegExpTwo),
+			]),
+		}),
+	),
+});

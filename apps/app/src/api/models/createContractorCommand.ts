@@ -6,10 +6,10 @@
  */
 
 export interface CreateContractorCommand {
-  name: string;
-  nip: string;
-  street: string;
-  city: string;
-  zipCode: string;
-  email: string;
+	name: string;
+	nip: string;
+	street: string;
+	city: string;
+	zipCode: string;
+	email: string;
 }

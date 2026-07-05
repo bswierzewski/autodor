@@ -6,5 +6,5 @@
  */
 
 export type GetContractorsParams = {
-nips?: string[];
+	nips?: string[];
 };

@@ -6,10 +6,10 @@
  */
 
 export type CreateValidationModelErrorParams = {
-Name?: string;
-Email?: string;
-/**
- * @pattern ^-?(?:0|[1-9]\d*)$
- */
-Quantity: number | string;
+	Name?: string;
+	Email?: string;
+	/**
+	 * @pattern ^-?(?:0|[1-9]\d*)$
+	 */
+	Quantity: number | string;
 };

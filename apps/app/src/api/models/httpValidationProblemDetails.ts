@@ -4,28 +4,28 @@
  * Autodor.OpenApi | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { HttpValidationProblemDetailsErrors } from './httpValidationProblemDetailsErrors';
+import type { HttpValidationProblemDetailsErrors } from "./httpValidationProblemDetailsErrors";
 
 /**
  * RFC 7807 validation-style problem details returned by the API.
  */
 export interface HttpValidationProblemDetails {
-  /** @nullable */
-  type?: string | null;
-  /** @nullable */
-  title?: string | null;
-  /**
-     * @nullable
-     * @pattern ^-?(?:0|[1-9]\d*)$
-     */
-  status?: number | string | null;
-  /** @nullable */
-  detail?: string | null;
-  /** @nullable */
-  instance?: string | null;
-  errors?: HttpValidationProblemDetailsErrors;
-  /** The trace identifier for request tracking. */
-  traceId?: string;
-  /** Timestamp when the error occurred in UTC. */
-  timestamp?: string;
+	/** @nullable */
+	type?: string | null;
+	/** @nullable */
+	title?: string | null;
+	/**
+	 * @nullable
+	 * @pattern ^-?(?:0|[1-9]\d*)$
+	 */
+	status?: number | string | null;
+	/** @nullable */
+	detail?: string | null;
+	/** @nullable */
+	instance?: string | null;
+	errors?: HttpValidationProblemDetailsErrors;
+	/** The trace identifier for request tracking. */
+	traceId?: string;
+	/** Timestamp when the error occurred in UTC. */
+	timestamp?: string;
 }

@@ -6,6 +6,6 @@
  */
 
 export interface GenerateDeliveryNoteCommand {
-  orderId?: string;
-  date?: string;
+	orderId?: string;
+	date?: string;
 }

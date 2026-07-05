@@ -6,6 +6,6 @@
  */
 
 export interface ExcludeOrderCommand {
-  id?: string;
-  excluded?: boolean;
+	id?: string;
+	excluded?: boolean;
 }
