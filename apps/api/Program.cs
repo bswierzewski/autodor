@@ -1,9 +1,9 @@
-using Autodor.Bootstrap;
 using Autodor.API.Extensions;
+using Autodor.Bootstrap;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting.Extensions;
-using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
+using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Identity.Extensions;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi;

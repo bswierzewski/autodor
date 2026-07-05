@@ -154,8 +154,8 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
             ClientTaxCode = "1176224556", // Known valid NIP from creation
             InvoiceDate = DateTime.Now.ToString("yyyy-MM-dd"),
             SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            Services = new List<InvoiceItem>
-            {
+            Services =
+            [
                 new()
                 {
                     Name = "Test Service",
@@ -164,7 +164,7 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
                     Quantity = 1,
                     UnitNetPrice = 10000 // 100.00 PLN in groszy
                 }
-            }
+            ]
         };
 
         // Act
@@ -192,8 +192,8 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
             ClientTaxCode = "117622455622", // Invalid NIP
             InvoiceDate = DateTime.Now.ToString("yyyy-dd-MM"), // Invalid format
             SaleDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            Services = new List<InvoiceItem>
-            {
+            Services =
+            [
                 new()
                 {
                     Name = "Test Service",
@@ -202,7 +202,7 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
                     Quantity = -1, // Invalid value
                     UnitNetPrice = 10000
                 }
-            }
+            ]
         };
 
         // Act

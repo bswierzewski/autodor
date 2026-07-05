@@ -15,11 +15,7 @@ public static class DeleteContractorHandler
         CancellationToken ct)
     {
         var contractor = await dbContext.Contractors
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct);
-
-        if (contractor is null)
-            throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
-
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct) ?? throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
         dbContext.Contractors.Remove(contractor);
     }
 }

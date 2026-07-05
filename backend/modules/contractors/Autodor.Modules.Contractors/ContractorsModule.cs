@@ -4,7 +4,6 @@ using Autodor.Modules.Contractors.Features.GetContractor;
 using Autodor.Modules.Contractors.Features.GetContractors;
 using Autodor.Modules.Contractors.Features.UpdateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
-using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using Microsoft.AspNetCore.Routing;

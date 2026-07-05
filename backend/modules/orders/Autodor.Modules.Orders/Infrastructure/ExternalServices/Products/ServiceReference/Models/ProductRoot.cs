@@ -12,7 +12,7 @@ public class ProductRoot
     /// Gets or sets the collection of product items from the Polcar response.
     /// </summary>
     [XmlElement("ITEM")]
-    public List<ProductItem> Items { get; set; } = new();
+    public List<ProductItem> Items { get; set; } = [];
 }
 
 /// <summary>

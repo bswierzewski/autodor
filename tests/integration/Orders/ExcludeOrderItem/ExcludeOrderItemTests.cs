@@ -1,9 +1,9 @@
+using System.Net;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 
 namespace Autodor.Tests.Integration.Orders.ExcludeOrderItem;
 

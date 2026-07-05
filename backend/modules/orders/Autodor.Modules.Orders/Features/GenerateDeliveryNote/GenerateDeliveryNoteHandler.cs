@@ -1,3 +1,4 @@
+using System.Reflection;
 using Autodor.Modules.Contractors.Contracts.Models;
 using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Orders.Domain.Aggregates;
@@ -10,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Reflection;
 using Wolverine;
 
 namespace Autodor.Modules.Orders.Features.GenerateDeliveryNote;
@@ -28,10 +28,7 @@ public static class GenerateDeliveryNoteHandler
         logger.LogInformation("Generating delivery note for order {OrderId} on date {Date}", command.OrderId, command.Date);
 
         // Fetch order with exclusions marked (OrderService handles enrichment and marking)
-        var order = await orderService.GetOrderAsync(command.OrderId, command.Date, ct);
-
-        if (order is null)
-            throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.OrderId}'.");
+        var order = await orderService.GetOrderAsync(command.OrderId, command.Date, ct) ?? throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.OrderId}'.");
 
         // Business logic: Filter out excluded order
         if (order.IsExcluded)
@@ -47,10 +44,7 @@ public static class GenerateDeliveryNoteHandler
         if (string.IsNullOrWhiteSpace(order.CustomerNumber))
             throw new NotFoundException("Numer klienta jest pusty.");
 
-        var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNIPQuery(order.CustomerNumber), ct);
-
-        if (contractor is null)
-            throw new NotFoundException($"Nie znaleziono kontrahenta o numerze NIP '{order.CustomerNumber}'.");
+        var contractor = await bus.InvokeAsync<ContractorDto?>(new GetContractorByNIPQuery(order.CustomerNumber), ct) ?? throw new NotFoundException($"Nie znaleziono kontrahenta o numerze NIP '{order.CustomerNumber}'.");
 
         // Generate PDF with non-excluded items
         var pdfBytes = CreateDocument(order, nonExcludedItems, contractor).GeneratePdf();

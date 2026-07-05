@@ -1,16 +1,16 @@
+using System.Collections.Frozen;
+using System.Net;
 using Autodor.Modules.Contractors.Domain.Aggregates;
 using Autodor.Modules.Contractors.Domain.ValueObjects;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Tests.Integration.Extensions;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using System.Collections.Frozen;
-using System.Net;
 
 namespace Autodor.Tests.Integration.Orders.GenerateDeliveryNote;
 

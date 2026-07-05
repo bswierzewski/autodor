@@ -16,11 +16,7 @@ public static class GetContractorHandler
     {
         var contractor = await dbContext.Contractors
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct);
-
-        if (contractor is null)
-            throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
-
+            .FirstOrDefaultAsync(c => c.Id == new ContractorId(command.Id), ct) ?? throw new NotFoundException($"Nie znaleziono kontrahenta o identyfikatorze {command.Id}.");
         return new GetContractorResponse(
             contractor.Id.Value,
             contractor.Name,

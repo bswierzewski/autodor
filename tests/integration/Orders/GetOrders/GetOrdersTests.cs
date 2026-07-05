@@ -1,7 +1,7 @@
-using Autodor.Tests.Integration.Shared;
-using BuildingBlocks.Tests.Integration.Fixtures;
-using BuildingBlocks.Tests.Integration.Extensions;
 using System.Net;
+using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Tests.Integration.Extensions;
+using BuildingBlocks.Tests.Integration.Fixtures;
 
 namespace Autodor.Tests.Integration.Orders.GetOrders;
 

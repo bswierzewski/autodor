@@ -51,7 +51,7 @@ public static class CreateInvoicesHandler
         // Resolve contractor details for all NIPs in a single cross-module query
         // instead of querying one by one inside the loop (avoids N+1 calls).
         var contractors = await bus.InvokeAsync<IEnumerable<ContractorDto>>(
-            new GetContractorsByNIPsQuery(ordersByContractor.Select(g => g.Key).ToList()), ct);
+            new GetContractorsByNIPsQuery([.. ordersByContractor.Select(g => g.Key)]), ct);
 
         // Index contractors by NIP for O(1) look-ups inside ProcessContractorAsync.
         var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);

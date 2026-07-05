@@ -1,5 +1,5 @@
-using BuildingBlocks.Tests.Integration.Fixtures;
 using BuildingBlocks.Infrastructure.Modules.Extensions;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Respawn.Graph;
 
 namespace Autodor.Tests.Integration.Shared;

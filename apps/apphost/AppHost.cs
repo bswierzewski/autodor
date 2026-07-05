@@ -1,4 +1,4 @@
-﻿var builder = DistributedApplication.CreateBuilder(args);
+var builder = DistributedApplication.CreateBuilder(args);
 
 // Add PostgreSQL database container
 var postgresPassword = builder.AddParameter("postgres-password", "autodor_local_password", secret: true);

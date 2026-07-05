@@ -15,7 +15,7 @@ public static class GetOrdersHandler
         var orders = await orderService.GetOrdersAsync(command.From, command.To, ct);
 
         return new GetOrdersResponse(
-            orders
+            [.. orders
                 .OrderByDescending(o => o.Date)
                 .Select(o => new OrderSummaryResponse(
                     o.Id!,
@@ -28,8 +28,7 @@ public static class GetOrdersHandler
                     o.GrossAmount,
                     IsExcluded: o.IsExcluded,
                     ExcludedItemsCount: o.Items.Count(i => i.IsExcluded)
-                ))
-                .ToList()
+                ))]
         );
     }
 }

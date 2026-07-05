@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Options;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.ServiceReference.Models;
@@ -7,7 +8,6 @@ using BuildingBlocks.Soap.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Frozen;
 
 namespace Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 

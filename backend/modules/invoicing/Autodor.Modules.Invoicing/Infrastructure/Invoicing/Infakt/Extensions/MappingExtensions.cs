@@ -1,8 +1,8 @@
-﻿using DomainInvoice = Autodor.Modules.Invoicing.Domain.Aggregates.Invoice;
 using DomainContractor = Autodor.Modules.Invoicing.Domain.ValueObjects.Contractor;
+using DomainInvoice = Autodor.Modules.Invoicing.Domain.Aggregates.Invoice;
 using DomainInvoiceItem = Autodor.Modules.Invoicing.Domain.ValueObjects.InvoiceItem;
-using InFaktInvoice = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests.Invoice;
 using InFaktClient = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests.Client;
+using InFaktInvoice = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests.Invoice;
 using InFaktInvoiceItem = Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Requests.InvoiceItem;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Extensions;
@@ -22,7 +22,7 @@ public static class MappingExtensions
             Kind = "vat",
             Currency = "PLN",
             ClientTaxCode = invoice.Contractor.NIP,
-            Services = invoice.Items.Select(item => item.ToInFaktInvoiceItem()).ToList()
+            Services = [.. invoice.Items.Select(item => item.ToInFaktInvoiceItem())]
         };
     }
 

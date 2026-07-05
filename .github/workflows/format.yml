@@ -1,0 +1,55 @@
+name: Verify .NET formatting
+
+on:
+  pull_request:
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '*.slnx'
+      - 'backend/building-blocks'
+      - '.editorconfig'
+      - 'Directory.Build.*'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - '.github/workflows/format.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '*.slnx'
+      - 'backend/building-blocks'
+      - '.editorconfig'
+      - 'Directory.Build.*'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - '.github/workflows/format.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    name: Check C# formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore solution
+        run: dotnet restore Autodor.slnx
+
+      - name: Verify whitespace and using order
+        run: dotnet format whitespace Autodor.slnx --verify-no-changes --no-restore
+
+      - name: Verify unnecessary usings
+        run: dotnet format style Autodor.slnx --diagnostics IDE0005 --verify-no-changes --severity info --no-restore

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using Autodor.Modules.Orders.Domain.Aggregates;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales;
 using Autodor.Modules.Orders.Infrastructure.ExternalServices.DistributorsSales.Models;
@@ -6,7 +7,6 @@ using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products.Models;
 using Autodor.Modules.Orders.Infrastructure.Persistence;
 using BuildingBlocks.Core.Utilities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Frozen;
 
 namespace Autodor.Modules.Orders.Infrastructure.Services.Orders;
 
@@ -104,7 +104,7 @@ public class OrderService(
 
         var products = await productsTask;
 
-        return validOrders
+        return [.. validOrders
             .Select(o =>
             {
                 var excludedItemsForOrder = excludedItems.GetValueOrDefault(o.Id) ?? [];
@@ -123,8 +123,7 @@ public class OrderService(
                     IsExcluded = excludedOrders.Contains(o.Id)
                 };
             }
-        )
-            .ToList();
+        )];
     }
 
     /// <summary>

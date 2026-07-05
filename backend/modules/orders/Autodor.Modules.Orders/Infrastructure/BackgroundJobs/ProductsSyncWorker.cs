@@ -1,4 +1,4 @@
-﻿using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
+using Autodor.Modules.Orders.Infrastructure.ExternalServices.Products;
 using BuildingBlocks.Infrastructure.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

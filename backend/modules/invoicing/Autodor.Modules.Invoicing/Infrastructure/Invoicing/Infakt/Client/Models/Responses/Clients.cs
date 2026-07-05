@@ -11,7 +11,7 @@ public class Clients
     /// Array of client entities.
     /// </summary>
     [JsonPropertyName("entities")]
-    public ICollection<Client> Entities { get; set; } = new List<Client>();
+    public ICollection<Client> Entities { get; set; } = [];
 
     /// <summary>
     /// Current page number (for pagination).

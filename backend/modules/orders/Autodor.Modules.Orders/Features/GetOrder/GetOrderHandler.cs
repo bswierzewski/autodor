@@ -13,10 +13,7 @@ public static class GetOrderHandler
         CancellationToken ct)
     {
         // Fetch order with exclusions marked (OrderService handles enrichment and marking)
-        var order = await orderService.GetOrderAsync(command.Id, command.Date, ct);
-
-        if (order is null)
-            throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.Id}'.");
+        var order = await orderService.GetOrderAsync(command.Id, command.Date, ct) ?? throw new NotFoundException($"Nie znaleziono zamówienia o identyfikatorze '{command.Id}'.");
 
         return new GetOrderResponse(
             order.Id!,
@@ -26,13 +23,13 @@ public static class GetOrderHandler
             order.CustomerNumber,
             order.NetAmount,
             order.GrossAmount,
-            order.Items.Select(i => new OrderItemResponse(
+            [.. order.Items.Select(i => new OrderItemResponse(
                 i.PartNumber,
                 i.ProductDisplayName,
                 i.Quantity,
                 i.Price,
                 IsExcluded: i.IsExcluded
-            )).ToList(),
+            ))],
             IsExcluded: order.IsExcluded
         );
     }

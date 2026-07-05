@@ -1,6 +1,6 @@
-using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
+using Autodor.Modules.Orders.Infrastructure.Services.Orders;
 
 namespace Autodor.Modules.Orders.Features.GetOrdersByDates;
 
@@ -28,16 +28,16 @@ public static class GetOrdersByDatesHandler
                 Person = o.Person ?? string.Empty,
                 CustomerNumber = o.CustomerNumber ?? string.Empty,
                 // Filter out excluded items
-                Items = o.Items
+                Items = [.. o.Items
                     .Where(i => !i.IsExcluded)
                     .Select(i => new OrderItemDto
                     {
                         Name = i.ProductDisplayName,
                         Quantity = i.Quantity,
                         Price = i.Price
-                    }).ToList()
+                    })]
             })
             // Remove orders that have no items after filtering
-            .Where(o => o.Items.Any());
+            .Where(o => o.Items.Count != 0);
     }
 }

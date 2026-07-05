@@ -1,6 +1,6 @@
+using System.Net.Http.Json;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Models.Responses;
 using BuildingBlocks.Core.Exceptions;
-using System.Net.Http.Json;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Handlers;
 

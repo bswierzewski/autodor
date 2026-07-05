@@ -2,8 +2,8 @@ using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.En
 using DomainContractor = Autodor.Modules.Invoicing.Domain.ValueObjects.Contractor;
 using DomainInvoice = Autodor.Modules.Invoicing.Domain.Aggregates.Invoice;
 using DomainInvoiceItem = Autodor.Modules.Invoicing.Domain.ValueObjects.InvoiceItem;
-using IFirmaInvoice = Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests.Invoice;
 using IFirmaContractor = Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests.Contractor;
+using IFirmaInvoice = Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests.Invoice;
 using IFirmaInvoiceItem = Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Requests.InvoiceItem;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Extensions;
@@ -29,7 +29,7 @@ public static class MappingExtensions
             VisibleGiosNumber = false,
             ContractorVatNumber = invoice.Contractor.NIP,
             Contractor = invoice.Contractor.ToIFirmaContractor(),
-            Items = invoice.Items.Select(item => item.ToIFirmaInvoiceItem()).ToList()
+            Items = [.. invoice.Items.Select(item => item.ToIFirmaInvoiceItem())]
         };
     }
 
