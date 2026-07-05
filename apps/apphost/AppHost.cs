@@ -25,7 +25,6 @@ var api = builder.AddProject<Projects.Autodor_API>("api")
     .WithHttpHealthCheck("/api/health")
     .WithUrlForEndpoint("http", url =>
     {
-        url.DisplayText = "Scalar";
         url.Url = "/scalar";
     });
 
