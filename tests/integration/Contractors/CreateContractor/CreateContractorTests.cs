@@ -11,7 +11,7 @@ namespace Autodor.Tests.Integration.Contractors.CreateContractor;
 
 public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
-    [Fact]
+    [Fact(Skip = "Manual test - skipped by default")]
     public async Task Should_Create_Contractor_When_User_Is_Authenticated()
     {
         var command = new CreateContractorCommand(

@@ -179,7 +179,7 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
         result.ProcessingDescription.Should().NotBeNullOrWhiteSpace();
     }
 
-    [Fact]
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
     public async Task CreateInvoiceAsync_WithInvalidInvoice_ShouldReturnError()
     {
         // Arrange
@@ -214,7 +214,7 @@ public class InFaktHttpClientTests(AutodorDatabaseFixture databaseFixture, HostF
         await action.Should().ThrowAsync<ValidationException>();
     }
 
-    [Fact]
+    [Fact(Skip = "Manual test - requires real InFakt API connection and valid credentials")]
     public async Task CreateInvoiceAsync_WithMissingRequiredField_ShouldReturnError()
     {
         // Arrange - Missing required Services field
