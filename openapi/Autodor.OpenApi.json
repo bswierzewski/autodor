@@ -1012,11 +1012,11 @@
           },
           "saleDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "issueDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "dates": {
             "type": "array",

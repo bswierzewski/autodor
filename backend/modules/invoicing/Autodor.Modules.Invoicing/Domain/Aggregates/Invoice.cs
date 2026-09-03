@@ -5,9 +5,9 @@ namespace Autodor.Modules.Invoicing.Domain.Aggregates;
 public record Invoice
 {
     public int? Number { get; init; }
-    public required DateTime IssueDate { get; init; }
-    public required DateTime SaleDate { get; init; }
-    public DateTime PaymentDue { get; init; }
+    public required DateOnly IssueDate { get; init; }
+    public required DateOnly SaleDate { get; init; }
+    public DateOnly PaymentDue { get; init; }
     public string PaymentMethod { get; init; } = "transfer";
     public string PlaceOfIssue { get; init; } = "Leszno";
     public string Notes { get; init; } = "";

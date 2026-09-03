@@ -37,8 +37,8 @@ public class CreateInvoiceTests(AutodorDatabaseFixture databaseFixture, HostFixt
         // Arrange
         var command = new CreateInvoiceCommand(
             InvoiceNumber: null,
-            SaleDate: DateTime.Today,
-            IssueDate: DateTime.Today,
+            SaleDate: DateOnly.FromDateTime(DateTime.Today),
+            IssueDate: DateOnly.FromDateTime(DateTime.Today),
             Dates: [new DateTime(2026, 2, 5)],
             OrderIds: ["3ff0615c-b902-f111-95f5-00155d0b7aef"],
             ContractorNIP: "1190712364"
@@ -61,8 +61,8 @@ public class CreateInvoiceTests(AutodorDatabaseFixture databaseFixture, HostFixt
         // Arrange
         var command = new CreateInvoiceCommand(
             InvoiceNumber: null,
-            SaleDate: DateTime.Today,
-            IssueDate: DateTime.Today,
+            SaleDate: DateOnly.FromDateTime(DateTime.Today),
+            IssueDate: DateOnly.FromDateTime(DateTime.Today),
             Dates: [DateTime.Today],
             OrderIds: ["ORDER-001"],
             ContractorNIP: "INVALID-NIP"
@@ -82,8 +82,8 @@ public class CreateInvoiceTests(AutodorDatabaseFixture databaseFixture, HostFixt
         // Arrange
         var command = new CreateInvoiceCommand(
             InvoiceNumber: null,
-            SaleDate: DateTime.Today,
-            IssueDate: DateTime.Today,
+            SaleDate: DateOnly.FromDateTime(DateTime.Today),
+            IssueDate: DateOnly.FromDateTime(DateTime.Today),
             Dates: [DateTime.Today],
             OrderIds: [],
             ContractorNIP: "1234567890"

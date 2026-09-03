@@ -54,8 +54,8 @@ export function CreateInvoiceForm({ selectedOrders, onSuccess, onCancel }: Creat
 			await createInvoiceMutation.mutateAsync({
 				data: {
 					invoiceNumber: rawNumber === "" ? null : Number(rawNumber),
-					issueDate: dayjs(value.issueDate).toISOString(),
-					saleDate: dayjs(value.saleDate).toISOString(),
+					issueDate: dayjs(value.issueDate).format("YYYY-MM-DD"),
+					saleDate: dayjs(value.saleDate).format("YYYY-MM-DD"),
 					contractorNIP: value.contractorNIP.trim(),
 					orderIds: selectedOrders.map((o) => o.id),
 					dates: selectedOrders.map((o) => dayjs(o.date).toISOString()),

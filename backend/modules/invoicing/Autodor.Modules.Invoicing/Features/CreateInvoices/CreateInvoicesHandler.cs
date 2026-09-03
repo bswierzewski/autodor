@@ -108,9 +108,9 @@ public static class CreateInvoicesHandler
         var invoice = new Invoice
         {
             Number = null,                              // assigned by the external provider
-            IssueDate = DateTime.Today,
-            SaleDate = saleDate,                        // last day of the billing period
-            PaymentDue = DateTime.Today.AddDays(14),
+            IssueDate = DateOnly.FromDateTime(DateTime.Today),
+            SaleDate = DateOnly.FromDateTime(saleDate), // last day of the billing period
+            PaymentDue = DateOnly.FromDateTime(DateTime.Today.AddDays(14)),
             Contractor = new Contractor(contractorDto.Name, contractorDto.City, contractorDto.Street,
                 contractorDto.NIP, contractorDto.ZipCode, contractorDto.Email),
             Items = items.AsReadOnly()

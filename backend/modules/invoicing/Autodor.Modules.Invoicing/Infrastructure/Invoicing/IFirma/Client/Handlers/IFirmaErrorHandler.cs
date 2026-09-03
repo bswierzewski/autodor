@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Responses;
+using BuildingBlocks.Core.Exceptions;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Handlers;
 
@@ -31,7 +32,7 @@ public class IFirmaErrorHandler : DelegatingHandler
         if (result is not null && !result.Response.IsSuccess)
         {
             response.Dispose();
-            throw new Exception(result.Response.Message ?? "Nieznany błąd z API iFirma.");
+            throw new DomainException(result.Response.Message ?? "Nieznany błąd z API iFirma.");
         }
 
         response.Content = new StringContent(content, Encoding.UTF8, "application/json");

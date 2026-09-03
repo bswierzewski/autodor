@@ -15,8 +15,8 @@ export const CreateInvoiceBody = zod.object({
 	invoiceNumber: zod
 		.union([zod.number(), zod.stringFormat("int32", createInvoiceBodyInvoiceNumberRegExpTwo)])
 		.nullable(),
-	saleDate: zod.iso.datetime({ offset: true }),
-	issueDate: zod.iso.datetime({ offset: true }),
+	saleDate: zod.iso.date(),
+	issueDate: zod.iso.date(),
 	dates: zod.array(zod.iso.datetime({ offset: true })),
 	orderIds: zod.array(zod.string()),
 	contractorNIP: zod.string(),

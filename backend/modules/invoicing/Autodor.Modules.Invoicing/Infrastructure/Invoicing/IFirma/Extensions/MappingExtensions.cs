@@ -15,10 +15,11 @@ public static class MappingExtensions
         return new IFirmaInvoice
         {
             Number = invoice.Number,
-            IssueDate = DateOnly.FromDateTime(invoice.IssueDate),
-            SalesDate = DateOnly.FromDateTime(invoice.SaleDate),
+            IssueDate = invoice.IssueDate,
+            SalesDate = invoice.SaleDate,
             IssuePlace = invoice.PlaceOfIssue,
-            PaymentDeadline = DateOnly.FromDateTime(invoice.PaymentDue),
+            PaymentDeadline = invoice.PaymentDue,
+            NumberingSeriesName = "Domyślna roczna",
             PaymentMethod = MapPaymentMethod(invoice.PaymentMethod),
             Notes = invoice.Notes,
             Paid = 0,
