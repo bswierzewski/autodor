@@ -1,12 +1,7 @@
-using System.Text;
-using System.Text.Json;
-using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Models.Responses;
-using BuildingBlocks.Core.Exceptions;
-
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Handlers;
 
 /// <summary>
-/// Converts unsuccessful HTTP responses and iFirma business errors into exceptions.
+/// Converts unsuccessful HTTP responses into exceptions.
 /// </summary>
 public class IFirmaErrorHandler : DelegatingHandler
 {
@@ -26,16 +21,6 @@ public class IFirmaErrorHandler : DelegatingHandler
             }
         }
 
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        var result = JsonSerializer.Deserialize<ResponseRoot>(content);
-
-        if (result is not null && !result.Response.IsSuccess)
-        {
-            response.Dispose();
-            throw new DomainException(result.Response.Message ?? "Nieznany błąd z API iFirma.");
-        }
-
-        response.Content = new StringContent(content, Encoding.UTF8, "application/json");
         return response;
     }
 }
