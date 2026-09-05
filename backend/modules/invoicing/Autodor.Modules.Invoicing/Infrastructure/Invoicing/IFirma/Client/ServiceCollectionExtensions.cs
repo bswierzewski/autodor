@@ -11,7 +11,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddIFirmaHttpClient(this IServiceCollection services)
     {
         services.AddTransient<IFirmaAuthenticationHandler>();
-        services.AddTransient<IFirmaErrorHandler>();
         services.AddRefitClient<IIFirmaHttpClient>()
             .ConfigureHttpClient((serviceProvider, client) =>
             {
@@ -20,8 +19,7 @@ public static class ServiceCollectionExtensions
                 client.BaseAddress = new Uri(baseUri);
                 client.Timeout = TimeSpan.FromSeconds(30);
             })
-            .AddHttpMessageHandler<IFirmaAuthenticationHandler>()
-            .AddHttpMessageHandler<IFirmaErrorHandler>();
+            .AddHttpMessageHandler<IFirmaAuthenticationHandler>();
 
         return services;
     }

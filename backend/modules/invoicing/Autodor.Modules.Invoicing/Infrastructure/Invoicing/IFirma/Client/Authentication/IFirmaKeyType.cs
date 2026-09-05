@@ -1,30 +1,19 @@
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Authentication;
 
 /// <summary>
-/// Enum defining the types of API keys supported by iFirma.
-/// Each type maps to a specific API endpoint and secret key configuration.
+/// Identifiers of authorization keys supported by the iFirma API.
 /// </summary>
 public enum IFirmaKeyType
 {
-    /// <summary>
-    /// API key for domestic invoice operations (faktury krajowe).
-    /// </summary>
-    Invoice,
-
-    /// <summary>
-    /// API key for subscriber/recurring billing operations.
-    /// </summary>
+    /// <summary>Key used to read and change the accounting month.</summary>
     Subscriber,
 
-    /// <summary>
-    /// API key for invoice/billing account operations.
-    /// </summary>
-    Account,
+    /// <summary>Key used for invoice operations.</summary>
+    Invoice,
 
-    /// <summary>
-    /// API key for expense operations (wydatki).
-    /// </summary>
-    Expense,
+    /// <summary>Key used for bill operations.</summary>
+    Bill,
 
-    // Add additional key types as needed when iFirma supports them
+    /// <summary>Key used for expense operations.</summary>
+    Expense
 }
