@@ -9,6 +9,10 @@ public sealed class CurrentUser : ICurrentUser
 {
     public string Id => "Migrator";
 
+    public string? Email => null;
+
+    public string? DisplayName => null;
+
     public bool IsAuthenticated => false;
 
     public IReadOnlySet<string> Roles => new HashSet<string>(StringComparer.OrdinalIgnoreCase);

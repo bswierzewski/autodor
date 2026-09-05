@@ -1,16 +1,23 @@
 using Autodor.Modules.Contractors.Features.CreateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
+using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Tests.Integration.Extensions;
 using BuildingBlocks.Tests.Integration.Fixtures;
-using BuildingBlocks.Tests.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Autodor.Tests.Integration.Contractors.CreateContractor;
 
 public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostFixture<Program> hostFixture) : IntegrationTest(databaseFixture, hostFixture)
 {
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        services.RemoveAll<ICurrentUser>();
+        services.AddSingleton<ICurrentUser, TestCurrentUser>();
+    }
+
     [Fact(Skip = "Manual test - skipped by default")]
     public async Task Should_Create_Contractor_When_User_Is_Authenticated()
     {
@@ -25,7 +32,6 @@ public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostF
 
         var result = await Host.Scenario(s =>
         {
-            s.As(new TestCurrentUser());
             s.Post.Json(command).ToUrl("/api/contractors");
             s.StatusCodeShouldBe(200);
         });
@@ -59,7 +65,6 @@ public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostF
         // Act
         var result = await Host.Scenario(s =>
         {
-            s.As(new TestCurrentUser());
             s.Post.Json(command).ToUrl("/api/contractors");
             s.StatusCodeShouldBe(200);
         });
@@ -76,5 +81,16 @@ public class CreateContractorTests(AutodorDatabaseFixture databaseFixture, HostF
         contractor.Should().NotBeNull();
         contractor!.Name.Should().Be("Test Company");
         contractor.NIP.Value.Should().Be("1234567890");
+    }
+
+    private sealed class TestCurrentUser : ICurrentUser
+    {
+        public string Id => "test-user";
+        public string? Email => "test@example.com";
+        public string? DisplayName => "Test User";
+        public bool IsAuthenticated => true;
+        public IReadOnlySet<string> Roles { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public IReadOnlySet<string> Permissions { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public bool HasPermission(string permission) => Permissions.Contains(permission);
     }
 }

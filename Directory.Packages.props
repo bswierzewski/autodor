@@ -24,10 +24,6 @@
     <!-- Email -->
     <PackageVersion Include="MailKit" Version="4.17.0" />
 
-    <!-- HTTP clients -->
-    <PackageVersion Include="Refit.HttpClientFactory" Version="15.2.0" />
-    <PackageVersion Include="Refit.Reflection" Version="15.2.0" />
-
     <!-- Documents / SOAP -->
     <PackageVersion Include="QuestPDF" Version="2026.8.0" />
     <PackageVersion Include="System.ServiceModel.Primitives" Version="10.0.652802" />

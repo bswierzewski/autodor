@@ -11,6 +11,7 @@
           "System"
         ],
         "summary": "Get the application health status.",
+        "description": "Returns the aggregated health status of the application and its dependencies.",
         "operationId": "GetApplicationHealth",
         "responses": {
           "200": {
@@ -52,6 +53,7 @@
           "System"
         ],
         "summary": "Get the application liveness status.",
+        "description": "Returns the application's liveness status based on its self check.",
         "operationId": "GetApplicationAliveness",
         "responses": {
           "200": {
@@ -70,6 +72,38 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApplicationHealthResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/version": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Get the application version.",
+        "description": "Returns the source revision used to build the application.",
+        "operationId": "GetVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionResponse"
                 }
               }
             }
@@ -1419,6 +1453,17 @@
             "type": "string"
           },
           "email": {
+            "type": "string"
+          }
+        }
+      },
+      "VersionResponse": {
+        "required": [
+          "sha"
+        ],
+        "type": "object",
+        "properties": {
+          "sha": {
             "type": "string"
           }
         }
