@@ -33,6 +33,7 @@ jobs:
           submodules: recursive
 
       - name: Detect image-related changes
+        # Changes to this pipeline intentionally rebuild both deployable images.
         id: changes
         uses: dorny/paths-filter@v4
         with:
