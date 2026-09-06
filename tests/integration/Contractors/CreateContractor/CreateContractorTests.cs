@@ -2,7 +2,6 @@ using Autodor.Modules.Contractors.Features.CreateContractor;
 using Autodor.Modules.Contractors.Infrastructure.Persistence;
 using Autodor.Tests.Integration.Shared;
 using BuildingBlocks.Core.Interfaces;
-using BuildingBlocks.Tests.Integration.Extensions;
 using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
