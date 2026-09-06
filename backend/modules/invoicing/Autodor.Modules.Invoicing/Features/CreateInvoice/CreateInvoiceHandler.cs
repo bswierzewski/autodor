@@ -3,15 +3,12 @@ using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Invoicing.Domain.Aggregates;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
-using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
 using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Wolverine;
 
 namespace Autodor.Modules.Invoicing.Features.CreateInvoice;
@@ -22,8 +19,7 @@ public static class CreateInvoiceHandler
     public static async Task<IResult> Handle(
         CreateInvoiceCommand command,
         IMessageBus bus,
-        IServiceProvider serviceProvider,
-        IOptions<InvoicingOptions> options,
+        IInvoiceService invoiceService,
         ILoggerFactory loggerFactory,
         CancellationToken ct)
     {
@@ -85,8 +81,6 @@ public static class CreateInvoiceHandler
             Contractor = invoiceContractor,
             Items = invoiceItems.AsReadOnly()
         };
-
-        var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
 
         await invoiceService.CreateInvoiceAsync(invoice, ct);
 

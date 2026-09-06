@@ -29,7 +29,7 @@ public sealed class InvoicingModule : IModuleEndpoint
 
     public void AddServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddValidatedOptions<InvoicingOptions>(configuration, InvoicingOptions.SectionName);
+        var invoicingOptions = services.AddValidatedOptionsSnapshot<InvoicingOptions>(configuration, InvoicingOptions.SectionName);
         services.AddValidatedOptions<InFaktOptions>(configuration, InFaktOptions.SectionName);
         services.AddValidatedOptions<IFirmaOptions>(configuration, IFirmaOptions.SectionName);
         services.AddValidatedOptions<SmtpOptions>(configuration, SmtpOptions.SectionName);
@@ -38,9 +38,17 @@ public sealed class InvoicingModule : IModuleEndpoint
         services.AddInFaktHttpClient();
         services.AddIFirmaHttpClient();
 
-        // Register both invoice service implementations as keyed services
-        services.AddKeyedScoped<IInvoiceService, InFaktInvoiceService>(InvoiceProvider.InFakt);
-        services.AddKeyedScoped<IInvoiceService, IFirmaInvoiceService>(InvoiceProvider.IFirma);
+        switch (invoicingOptions.Provider)
+        {
+            case InvoiceProvider.InFakt:
+                services.AddScoped<IInvoiceService, InFaktInvoiceService>();
+                break;
+            case InvoiceProvider.IFirma:
+                services.AddScoped<IInvoiceService, IFirmaInvoiceService>();
+                break;
+            default:
+                throw new InvalidOperationException($"Unsupported invoice provider: {invoicingOptions.Provider}.");
+        }
 
         services.AddSingleton<IEmailSender, MailKitEmailSender>();
         services.AddHostedService<CreateInvoicesScheduler>();

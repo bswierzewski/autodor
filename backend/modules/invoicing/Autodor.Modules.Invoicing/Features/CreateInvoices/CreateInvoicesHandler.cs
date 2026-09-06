@@ -3,13 +3,10 @@ using Autodor.Modules.Contractors.Contracts.Queries;
 using Autodor.Modules.Invoicing.Domain.Aggregates;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
-using Autodor.Modules.Invoicing.Infrastructure.Options;
 using Autodor.Modules.Orders.Contracts.Models;
 using Autodor.Modules.Orders.Contracts.Queries;
 using BuildingBlocks.Core.Exceptions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Wolverine;
 
 namespace Autodor.Modules.Invoicing.Features.CreateInvoices;
@@ -19,8 +16,7 @@ public static class CreateInvoicesHandler
     public static async Task<CreateInvoicesResult> Handle(
         CreateInvoicesCommand command,
         IMessageBus bus,
-        IServiceProvider serviceProvider,
-        IOptions<InvoicingOptions> options,
+        IInvoiceService invoiceService,
         ILoggerFactory loggerFactory,
         CancellationToken ct)
     {
@@ -55,10 +51,6 @@ public static class CreateInvoicesHandler
 
         // Index contractors by NIP for O(1) look-ups inside ProcessContractorAsync.
         var contractorDict = contractors.ToDictionary(c => c.NIP, c => c);
-
-        // Resolve the correct invoice provider (InFakt / iFirma) based on configuration.
-        // The keyed service allows switching providers without changing handler logic.
-        var invoiceService = serviceProvider.GetRequiredKeyedService<IInvoiceService>(options.Value.Provider);
 
         // Process each contractor sequentially to stay within external API rate limits.
         // Each result records whether the invoice was created or failed, so a single
