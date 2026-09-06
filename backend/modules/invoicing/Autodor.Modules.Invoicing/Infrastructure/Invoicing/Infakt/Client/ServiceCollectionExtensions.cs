@@ -1,8 +1,8 @@
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client.Handlers;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Options;
+using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Refit;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.Infakt.Client;
 
@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<InFaktAuthenticationHandler>();
         services.AddTransient<InFaktErrorHandler>();
-        services.AddRefitClient<IInFaktHttpClient>()
+        services.AddWolverineRefitClient<IInFaktHttpClient>()
             .ConfigureHttpClient((serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<InFaktOptions>>().Value;

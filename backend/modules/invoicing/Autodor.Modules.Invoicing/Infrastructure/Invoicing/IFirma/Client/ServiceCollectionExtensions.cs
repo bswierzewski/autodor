@@ -1,8 +1,8 @@
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client.Handlers;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Options;
+using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Refit;
 
 namespace Autodor.Modules.Invoicing.Infrastructure.Invoicing.IFirma.Client;
 
@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddIFirmaHttpClient(this IServiceCollection services)
     {
         services.AddTransient<IFirmaAuthenticationHandler>();
-        services.AddRefitClient<IIFirmaHttpClient>()
+        services.AddWolverineRefitClient<IIFirmaHttpClient>()
             .ConfigureHttpClient((serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<IFirmaOptions>>().Value;
