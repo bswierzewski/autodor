@@ -8,7 +8,7 @@
 import type { MutationFunction, QueryClient, UseMutationOptions, UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
-import type { CreateInvoiceCommand, HttpValidationProblemDetails } from "../models";
+import type { CreateInvoiceCommand, CreateManualInvoiceCommand, HttpValidationProblemDetails } from "../models";
 
 import { customFetch } from ".././mutator";
 
@@ -80,4 +80,85 @@ export const useCreateInvoice = <TError = HttpValidationProblemDetails, TContext
 	queryClient?: QueryClient,
 ): UseMutationResult<Awaited<ReturnType<typeof createInvoice>>, TError, { data: CreateInvoiceCommand }, TContext> => {
 	return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
+};
+export const getCreateManualInvoiceUrl = () => {
+	return `/api/invoices/manual`;
+};
+
+/**
+ * @summary Create an invoice from manually provided items
+ */
+export const createManualInvoice = async (
+	createManualInvoiceCommand: CreateManualInvoiceCommand,
+	options?: RequestInit,
+): Promise<void> => {
+	return customFetch<void>(getCreateManualInvoiceUrl(), {
+		...options,
+		method: "POST",
+		headers: { "Content-Type": "application/json", ...options?.headers },
+		body: JSON.stringify(createManualInvoiceCommand),
+	});
+};
+
+export const getCreateManualInvoiceMutationOptions = <
+	TError = HttpValidationProblemDetails,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof createManualInvoice>>,
+		TError,
+		{ data: CreateManualInvoiceCommand },
+		TContext
+	>;
+	request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof createManualInvoice>>,
+	TError,
+	{ data: CreateManualInvoiceCommand },
+	TContext
+> => {
+	const mutationKey = ["createManualInvoice"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof createManualInvoice>>,
+		{ data: CreateManualInvoiceCommand }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return createManualInvoice(data, requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type CreateManualInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof createManualInvoice>>>;
+export type CreateManualInvoiceMutationBody = CreateManualInvoiceCommand;
+export type CreateManualInvoiceMutationError = HttpValidationProblemDetails;
+
+/**
+ * @summary Create an invoice from manually provided items
+ */
+export const useCreateManualInvoice = <TError = HttpValidationProblemDetails, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof createManualInvoice>>,
+			TError,
+			{ data: CreateManualInvoiceCommand },
+			TContext
+		>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof createManualInvoice>>,
+	TError,
+	{ data: CreateManualInvoiceCommand },
+	TContext
+> => {
+	return useMutation(getCreateManualInvoiceMutationOptions(options), queryClient);
 };

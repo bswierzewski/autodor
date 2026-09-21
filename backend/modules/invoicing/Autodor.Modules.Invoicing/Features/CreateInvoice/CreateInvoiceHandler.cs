@@ -1,6 +1,5 @@
 using Autodor.Modules.Contractors.Contracts.Models;
 using Autodor.Modules.Contractors.Contracts.Queries;
-using Autodor.Modules.Invoicing.Domain.Aggregates;
 using Autodor.Modules.Invoicing.Domain.ValueObjects;
 using Autodor.Modules.Invoicing.Infrastructure.Invoicing;
 using Autodor.Modules.Orders.Contracts.Models;
@@ -51,16 +50,6 @@ public static class CreateInvoiceHandler
             throw new NotFoundException($"Nie znaleziono kontrahenta o numerze NIP {command.ContractorNIP}.");
         }
 
-        // Map contractor DTO to domain value object
-        var invoiceContractor = new Contractor(
-            Name: contractor.Name,
-            City: contractor.City,
-            Street: contractor.Street,
-            NIP: contractor.NIP,
-            ZipCode: contractor.ZipCode,
-            Email: contractor.Email
-        );
-
         // Collect all order items (already filtered for exclusions by Orders module)
         var invoiceItems = filteredOrders
             .SelectMany(o => o.Items)
@@ -72,15 +61,12 @@ public static class CreateInvoiceHandler
             })
             .ToList();
 
-        var invoice = new Invoice
-        {
-            Number = command.InvoiceNumber,
-            IssueDate = command.IssueDate,
-            SaleDate = command.SaleDate,
-            PaymentDue = command.IssueDate.AddDays(14), // Standard 14-day payment terms
-            Contractor = invoiceContractor,
-            Items = invoiceItems.AsReadOnly()
-        };
+        var invoice = InvoiceFactory.Create(
+            command.InvoiceNumber,
+            command.IssueDate,
+            command.SaleDate,
+            contractor,
+            invoiceItems.AsReadOnly());
 
         await invoiceService.CreateInvoiceAsync(invoice, ct);
 

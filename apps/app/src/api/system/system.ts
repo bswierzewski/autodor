@@ -18,7 +18,7 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 
-import type { ApplicationHealthResponse, HttpValidationProblemDetails } from "../models";
+import type { ApplicationHealthResponse, HttpValidationProblemDetails, VersionResponse } from "../models";
 
 import { customFetch } from ".././mutator";
 
@@ -29,6 +29,7 @@ export const getGetApplicationHealthUrl = () => {
 };
 
 /**
+ * Returns the aggregated health status of the application and its dependencies.
  * @summary Get the application health status.
  */
 export const getApplicationHealth = async (options?: RequestInit): Promise<ApplicationHealthResponse> => {
@@ -140,6 +141,7 @@ export const getGetApplicationAlivenessUrl = () => {
 };
 
 /**
+ * Returns the application's liveness status based on its self check.
  * @summary Get the application liveness status.
  */
 export const getApplicationAliveness = async (options?: RequestInit): Promise<ApplicationHealthResponse> => {
@@ -238,6 +240,106 @@ export function useGetApplicationAliveness<
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 	const queryOptions = getGetApplicationAlivenessQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return { ...query, queryKey: queryOptions.queryKey };
+}
+
+export const getGetVersionUrl = () => {
+	return `/api/version`;
+};
+
+/**
+ * Returns the source revision used to build the application.
+ * @summary Get the application version.
+ */
+export const getVersion = async (options?: RequestInit): Promise<VersionResponse> => {
+	return customFetch<VersionResponse>(getGetVersionUrl(), {
+		...options,
+		method: "GET",
+	});
+};
+
+export const getGetVersionQueryKey = () => {
+	return [`/api/version`] as const;
+};
+
+export const getGetVersionQueryOptions = <
+	TData = Awaited<ReturnType<typeof getVersion>>,
+	TError = HttpValidationProblemDetails,
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getVersion>>, TError, TData>>;
+	request?: SecondParameter<typeof customFetch>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetVersionQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getVersion>>> = ({ signal }) =>
+		getVersion({ signal, ...requestOptions });
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getVersion>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetVersionQueryResult = NonNullable<Awaited<ReturnType<typeof getVersion>>>;
+export type GetVersionQueryError = HttpValidationProblemDetails;
+
+export function useGetVersion<TData = Awaited<ReturnType<typeof getVersion>>, TError = HttpValidationProblemDetails>(
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getVersion>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getVersion>>,
+					TError,
+					Awaited<ReturnType<typeof getVersion>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVersion<TData = Awaited<ReturnType<typeof getVersion>>, TError = HttpValidationProblemDetails>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getVersion>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getVersion>>,
+					TError,
+					Awaited<ReturnType<typeof getVersion>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVersion<TData = Awaited<ReturnType<typeof getVersion>>, TError = HttpValidationProblemDetails>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getVersion>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get the application version.
+ */
+
+export function useGetVersion<TData = Awaited<ReturnType<typeof getVersion>>, TError = HttpValidationProblemDetails>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getVersion>>, TError, TData>>;
+		request?: SecondParameter<typeof customFetch>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetVersionQueryOptions(options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;

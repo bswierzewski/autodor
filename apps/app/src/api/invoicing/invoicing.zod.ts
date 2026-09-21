@@ -21,3 +21,29 @@ export const CreateInvoiceBody = zod.object({
 	orderIds: zod.array(zod.string()),
 	contractorNIP: zod.string(),
 });
+
+/**
+ * @summary Create an invoice from manually provided items
+ */
+export const createManualInvoiceBodyInvoiceNumberRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
+export const createManualInvoiceBodyItemsItemQuantityRegExpTwo = /^-?(?:0|[1-9]\d*)$/;
+export const createManualInvoiceBodyItemsItemNetUnitPriceRegExpTwo = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/;
+
+export const CreateManualInvoiceBody = zod.object({
+	invoiceNumber: zod
+		.union([zod.number(), zod.stringFormat("int32", createManualInvoiceBodyInvoiceNumberRegExpTwo)])
+		.nullable(),
+	saleDate: zod.iso.date(),
+	issueDate: zod.iso.date(),
+	contractorNIP: zod.string(),
+	items: zod.array(
+		zod.object({
+			itemNumber: zod.string(),
+			quantity: zod.union([zod.number(), zod.stringFormat("int32", createManualInvoiceBodyItemsItemQuantityRegExpTwo)]),
+			netUnitPrice: zod.union([
+				zod.number(),
+				zod.stringFormat("double", createManualInvoiceBodyItemsItemNetUnitPriceRegExpTwo),
+			]),
+		}),
+	),
+});

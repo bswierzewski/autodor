@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/react";
-import { PackageIcon, UsersThreeIcon } from "@phosphor-icons/react";
+import { FileCsvIcon, PackageIcon, UsersThreeIcon } from "@phosphor-icons/react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -17,6 +17,12 @@ const navItems = [
 		to: "/contractors",
 		icon: UsersThreeIcon,
 		isActive: (pathname: string) => pathname === "/contractors" || pathname.startsWith("/contractors/"),
+	},
+	{
+		label: "Faktura ręczna",
+		to: "/invoices/manual",
+		icon: FileCsvIcon,
+		isActive: (pathname: string) => pathname === "/invoices/manual",
 	},
 ] as const;
 

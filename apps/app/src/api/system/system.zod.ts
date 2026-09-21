@@ -7,6 +7,7 @@
 import * as zod from "zod";
 
 /**
+ * Returns the aggregated health status of the application and its dependencies.
  * @summary Get the application health status.
  */
 export const GetApplicationHealthResponse = zod.object({
@@ -14,8 +15,17 @@ export const GetApplicationHealthResponse = zod.object({
 });
 
 /**
+ * Returns the application's liveness status based on its self check.
  * @summary Get the application liveness status.
  */
 export const GetApplicationAlivenessResponse = zod.object({
 	status: zod.string(),
+});
+
+/**
+ * Returns the source revision used to build the application.
+ * @summary Get the application version.
+ */
+export const GetVersionResponse = zod.object({
+	sha: zod.string(),
 });

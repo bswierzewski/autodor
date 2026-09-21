@@ -966,6 +966,45 @@
           }
         ]
       }
+    },
+    "/api/invoices/manual": {
+      "post": {
+        "tags": [
+          "Invoicing"
+        ],
+        "summary": "Create an invoice from manually provided items",
+        "operationId": "CreateManualInvoice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateManualInvoiceCommand"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1067,6 +1106,44 @@
           },
           "contractorNIP": {
             "type": "string"
+          }
+        }
+      },
+      "CreateManualInvoiceCommand": {
+        "required": [
+          "invoiceNumber",
+          "saleDate",
+          "issueDate",
+          "contractorNIP",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "saleDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "contractorNIP": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManualInvoiceItem"
+            }
           }
         }
       },
@@ -1315,6 +1392,35 @@
           }
         },
         "description": "RFC 7807 validation-style problem details returned by the API."
+      },
+      "ManualInvoiceItem": {
+        "required": [
+          "itemNumber",
+          "quantity",
+          "netUnitPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "itemNumber": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "netUnitPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
       },
       "OrderItemResponse": {
         "required": [

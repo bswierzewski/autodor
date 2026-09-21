@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppErrorsRouteImport } from './routes/_app/errors'
 import { Route as AppContractorsRouteRouteImport } from './routes/_app/contractors/route'
 import { Route as AppOrdersOrderIdRouteImport } from './routes/_app/orders/$orderId'
+import { Route as AppInvoicesManualRouteImport } from './routes/_app/invoices/manual'
 import { Route as AppContractorsCreateRouteImport } from './routes/_app/contractors/create'
 import { Route as AppContractorsContractorIdEditRouteImport } from './routes/_app/contractors/$contractorId/edit'
 
@@ -53,6 +54,11 @@ const AppOrdersOrderIdRoute = AppOrdersOrderIdRouteImport.update({
   path: '/orders/$orderId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInvoicesManualRoute = AppInvoicesManualRouteImport.update({
+  id: '/invoices/manual',
+  path: '/invoices/manual',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppContractorsCreateRoute = AppContractorsCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/contractors': typeof AppContractorsRouteRouteWithChildren
   '/errors': typeof AppErrorsRoute
   '/contractors/create': typeof AppContractorsCreateRoute
+  '/invoices/manual': typeof AppInvoicesManualRoute
   '/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/errors': typeof AppErrorsRoute
   '/': typeof AppIndexRoute
   '/contractors/create': typeof AppContractorsCreateRoute
+  '/invoices/manual': typeof AppInvoicesManualRoute
   '/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/_app/errors': typeof AppErrorsRoute
   '/_app/': typeof AppIndexRoute
   '/_app/contractors/create': typeof AppContractorsCreateRoute
+  '/_app/invoices/manual': typeof AppInvoicesManualRoute
   '/_app/orders/$orderId': typeof AppOrdersOrderIdRoute
   '/_app/contractors/$contractorId/edit': typeof AppContractorsContractorIdEditRoute
 }
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/contractors'
     | '/errors'
     | '/contractors/create'
+    | '/invoices/manual'
     | '/orders/$orderId'
     | '/contractors/$contractorId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/errors'
     | '/'
     | '/contractors/create'
+    | '/invoices/manual'
     | '/orders/$orderId'
     | '/contractors/$contractorId/edit'
   id:
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/_app/errors'
     | '/_app/'
     | '/_app/contractors/create'
+    | '/_app/invoices/manual'
     | '/_app/orders/$orderId'
     | '/_app/contractors/$contractorId/edit'
   fileRoutesById: FileRoutesById
@@ -188,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrdersOrderIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/invoices/manual': {
+      id: '/_app/invoices/manual'
+      path: '/invoices/manual'
+      fullPath: '/invoices/manual'
+      preLoaderRoute: typeof AppInvoicesManualRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/contractors/create': {
       id: '/_app/contractors/create'
       path: '/create'
@@ -222,6 +241,7 @@ interface AppRouteChildren {
   AppContractorsRouteRoute: typeof AppContractorsRouteRouteWithChildren
   AppErrorsRoute: typeof AppErrorsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppInvoicesManualRoute: typeof AppInvoicesManualRoute
   AppOrdersOrderIdRoute: typeof AppOrdersOrderIdRoute
 }
 
@@ -229,6 +249,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppContractorsRouteRoute: AppContractorsRouteRouteWithChildren,
   AppErrorsRoute: AppErrorsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppInvoicesManualRoute: AppInvoicesManualRoute,
   AppOrdersOrderIdRoute: AppOrdersOrderIdRoute,
 }
 
