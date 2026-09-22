@@ -21,7 +21,7 @@ type ManualInvoiceCsvImportResult = {
 
 const expectedHeaders = ["nr_pozycji", "ilosc", "cena_netto"];
 const positiveIntegerPattern = /^[1-9]\d*$/;
-const positiveDecimalPattern = /^(?:0|[1-9]\d*)(?:\.\d+)?$/;
+const positiveDecimalPattern = /^(?:0|[1-9]\d*)(?:,\d+)?$/;
 
 export async function importManualInvoiceCsv(file: File): Promise<ManualInvoiceCsvImportResult> {
 	const result = Papa.parse<RawManualInvoiceRow>(await file.text(), {
@@ -50,7 +50,7 @@ export async function importManualInvoiceCsv(file: File): Promise<ManualInvoiceC
 		const quantityValue = row.ilosc?.trim() ?? "";
 		const netUnitPriceValue = row.cena_netto?.trim() ?? "";
 		const quantity = Number(quantityValue);
-		const netUnitPrice = Number(netUnitPriceValue);
+		const netUnitPrice = Number(netUnitPriceValue.replace(",", "."));
 		const hasValidItemNumber = itemNumber.length > 0 && itemNumber.length <= 300;
 		const hasValidQuantity = positiveIntegerPattern.test(quantityValue) && Number.isSafeInteger(quantity);
 		const hasValidNetUnitPrice =
@@ -71,7 +71,7 @@ export async function importManualInvoiceCsv(file: File): Promise<ManualInvoiceC
 		}
 		if (!hasValidNetUnitPrice) {
 			errors.push(
-				`Wiersz ${rowNumber}: cena_netto musi być dodatnią liczbą mniejszą niż 100 000 000, z kropką dziesiętną.`,
+				`Wiersz ${rowNumber}: cena_netto musi być dodatnią liczbą mniejszą niż 100 000 000, z przecinkiem dziesiętnym.`,
 			);
 		}
 
